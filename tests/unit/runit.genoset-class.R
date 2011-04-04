@@ -1,0 +1,169 @@
+##########
+# Examples
+##########
+
+test.sample.names = LETTERS[11:13]
+probe.names = letters[1:10]
+
+test.creation <- function() {
+
+  bob = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  locData.rd = RangedData(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")
+  
+  ted = BAFSet(
+    locData=locData.rd,
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  joe = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  tom = GenoSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  # Test making a BAFSet with Rle-based data
+  rle.bafset = BAFSet(
+    locData=locData.rd,
+    lrr=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
+    baf=DataFrame(K=Rle(31:40),L=Rle(41:50),M=Rle(51:60),row.names=probe.names),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  # Test making a CNSet with Rle-based data
+  rle.cnset = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  
+  checkTrue(validObject(bob),"Regular BAFSet")
+  checkTrue(validObject(ted),"BAFSet with out of genome order locData")
+  checkTrue(validObject(joe),"CNSet with out of genome order locData")
+  checkTrue(validObject(tom),"GenoSet with out of genome order locData")
+  checkTrue(validObject(rle.bafset),"BAFSet with Rle data")
+  checkTrue(validObject(rle.cnset),"CNSet with Rle-based data")
+}
+
+test.rd.gs.shared.api.and.getting.genome.info <- function() {
+  point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
+  point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe="hg19")
+  wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
+  gs = GenoSet(
+    locData=point.locData,
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  checkEquals( chr(point.locData), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
+  checkEquals( chr( point.locData ), chr( gs ) )
+  checkEquals( pos(point.locData), 1L:10L )
+  checkEquals( pos(wide.locData), seq(from=2L, length=10, by=3L ) )
+  checkEquals( pos( point.locData ), pos( gs ) )
+  checkEquals( uniqueChrs( point.locData ), c("chr1","chr3","chrX") )
+  checkEquals( uniqueChrs( point.locData ), uniqueChrs( gs ) )
+  checkEquals( names( point.locData ), c("chr1","chr3","chrX") )
+  checkEquals( names( point.locData ), names( gs ) )
+  checkEquals( ranges( point.locData ), ranges( gs ) )
+  checkEquals( elementLengths( point.locData ), elementLengths( gs ) )
+  checkEquals( orderedChrs( point.bad.chr.order.locData ), c("chr3","chr5","chrX") )
+  checkEquals( orderedChrs( point.locData ), orderedChrs( gs ) )
+  checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
+  checkEquals( chrInfo( point.locData ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
+  checkEquals( chrIndices( point.locData ), chrIndices( gs ) )
+  checkEquals( chrIndices( point.locData ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
+  checkEquals( genoPos( point.locData ), genoPos( gs ) )
+  checkEquals( genoPos( point.locData ), genoPos( gs ) )
+}
+
+test.subset <- function() {
+  
+  test.rd = RangedData(ranges=IRanges(start=8:14,width=1),names=letters[8:14],space=rep("chrX",7))
+    
+  test.ds = new("BAFSet",
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    )
+  
+  expected.ds = new("BAFSet",
+    locData=RangedData(ranges=IRanges(start=8:10,width=1,names=probe.names[8:10]),space="chrX",universe="hg18"),
+    lrr=matrix(c(8:10,18:20,28:30),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
+    baf=matrix(c(38:40,48:50,58:60),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
+    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    )
+  
+  chr3.ds = new("BAFSet",
+    locData=RangedData(ranges=IRanges(start=5:6,width=1,names=probe.names[5:6]),space="chr3",universe="hg18"),
+    lrr=matrix(c(5:6,15:16,25:26),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
+    baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
+    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    )
+  
+  checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[ranges(test.rd),], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[["chr3"]], chr3.ds, checkNames=FALSE )
+  
+}
+
+test.gcCorrect <- function() {
+
+  input.vector = c(rep(0.05,50),rep(0.08,50))
+  gc = input.vector
+  output.vector = rep(0,100)
+  checkEquals( gcCorrect(input.vector, gc ), output.vector )
+
+  input.matrix = matrix(c(input.vector,input.vector),ncol=2)
+  output.matrix = matrix(c(output.vector,output.vector),ncol=2)
+  checkEquals( gcCorrect(input.matrix, gc ), output.matrix )
+  
+  gc.w.na = gc
+  is.na(gc.w.na) = c(25,75)
+  output.matrix.w.na = output.matrix
+  output.matrix.w.na[ c(25,75), ] = NA
+  checkEquals( gcCorrect(input.matrix, gc.w.na ), output.matrix.w.na )
+
+}
+
+test.genomeOrder <- function() {
+  chr.names = c(rep("chr1",3),rep("chr2",3),rep("chr10",4))
+
+
+
+  ok.locs = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  checkTrue( isGenomeOrder(ok.locs), "Good locs" )
+
+  ok.locs.weak = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr10","chr2")))
+  checkTrue( isGenomeOrder(ok.locs.weak, strict=FALSE), "Good locs with disordered chrs OK" )
+  checkTrue( ! isGenomeOrder(ok.locs.weak, strict=TRUE), "Good locs with disordered chrs not strict" )
+
+  bad.locs = RangedData( ranges = IRanges(start=c(2,3,1,1:7),width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  checkTrue( ! isGenomeOrder(bad.locs, strict=TRUE), "Bad within chr, OK chr levels, fail")
+
+  checkEquals( 1:10, genomeOrder(ok.locs,strict=TRUE), "Perfect locs pass")
+  checkEquals( 1:10, genomeOrder(ok.locs.weak,strict=FALSE), "locs with disordered chr block pass with strict as FALSE")
+  checkEquals( c(1:3,8:10,4:7), genomeOrder(ok.locs.weak,strict=TRUE), "locs with disordered chr block pass with strict as FALSE")
+  
+}

@@ -1,0 +1,17 @@
+Package: genoset
+Type: Package
+Title: Provides classes similar to ExpressionSet for copy number analysis
+Version: 0.98.3
+Date: 2011-01-15
+Author: Peter M. Haverty
+Maintainer: Peter M. Haverty <phaverty@gene.com>
+Description: Load, manipulate, and plot copynumber and BAF data. GenoSet class extends eSet by adding a "locData" slot for a RangedData object from the IRanges package. This object contains feature genome location data and provides for simple subsetting on genome location. CNSet and BAFSet extend GenoSet and require assayData matrices for Copy Number (cn) or Log-R Ratio (lrr) and B-Allele Frequency (baf) data.
+License: Artistic-2.0
+LazyLoad: yes
+Depends: Biobase, IRanges
+Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats
+Suggests: RUnit
+Enhances: multicore
+biocViews: Infrastructure, DataRepresentation
+Collate: 'DataFrame-methods.R' 'genoset-class.R' 'cnset-class.R' 'bafset-class.R'
+

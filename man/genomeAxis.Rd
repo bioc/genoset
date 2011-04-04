@@ -1,0 +1,20 @@
+\name{genomeAxis}
+\alias{genomeAxis}
+\title{Label axis with base pair units}
+\usage{genomeAxis(locs, side=1, log=FALSE, do.other.side=TRUE)
+}
+\description{Label an axis with base positions}
+\details{Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks}
+\value{nothing}
+\author{Peter M. Haverty}
+\arguments{\item{locs}{RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.}
+\item{side}{integer side of plot to put axis}
+\item{log}{logical Is axis logged?}
+\item{do.other.side}{logical, label non-genome side with data values at tick marks?}
+}
+\examples{data(genoset)
+genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
+genomeAxis( locs=locData(baf.ds) )  # Add chromsome names and boundaries to a plot assuming genome along x-axis
+genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
+genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis}
+

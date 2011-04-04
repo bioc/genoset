@@ -1,0 +1,36 @@
+\name{runCBS}
+\alias{runCBS}
+\title{Run CBS Segmentation}
+\usage{runCBS(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025)
+}
+\description{Utility function to run CBS's three functions on one or more samples}
+\details{Takes care of running CBS segmentation on one or more samples. Makes appropriate
+input, smooths outliers, and segment}
+\alias{runCBS}
+\alias{segment}
+\alias{segmentation}
+\value{data frame of segments from CBS}
+\author{Peter M. Haverty}
+\arguments{\item{data}{numeric matrix with continuous data in one or more columns}
+\item{locs}{RangeData, like locData slot of GenoSet}
+\item{return.segs}{logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.}
+\item{n.cores}{numeric, number of cores to ask multicore to use}
+\item{smooth.region}{number of positions to left and right of individual positions to consider when smoothing single point outliers}
+\item{outlier.SD.scale}{number of SD single points must exceed smooth.region to be considered an outlier}
+\item{smooth.SD.scale}{floor used to reset single point outliers}
+\item{trim}{fraction of sample to smooth}
+}
+\examples{sample.names = paste("a",1:2,sep="")
+probe.names =  paste("p",1:30,sep="")
+ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
+locs = RangedData(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),space=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
+
+seg.rle.result = DataFrame( a1 = Rle(c(rep(5,20),rep(3,10))), a2 = Rle(c(rep(2,10),rep(7,10),rep(9,10))), row.names=probe.names )
+seg.list.result = list(
+a1 = data.frame( ID=rep("a1",2), chrom=factor(c("chr1","chr2")), loc.start=c(1,1), loc.end=c(20,10), num.mark=c(20,10), seg.mean=c(5,3), stringsAsFactors=FALSE),
+a2 = data.frame( ID=rep("a2",3), chrom=factor(c("chr1","chr1","chr2")), loc.start=c(1,11,1), loc.end=c(10,20,10), num.mark=c(10,10,10), seg.mean=c(2,7,9), stringsAsFactors=FALSE)
+)
+
+runCBS(ds,locs)  # Should give seg.rle.result
+runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result}
+
