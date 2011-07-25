@@ -1,14 +1,12 @@
 \name{runCBS}
 \alias{runCBS}
 \title{Run CBS Segmentation}
-\usage{runCBS(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025)
+\usage{runCBS(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001)
 }
 \description{Utility function to run CBS's three functions on one or more samples}
 \details{Takes care of running CBS segmentation on one or more samples. Makes appropriate
 input, smooths outliers, and segment}
 \alias{runCBS}
-\alias{segment}
-\alias{segmentation}
 \value{data frame of segments from CBS}
 \author{Peter M. Haverty}
 \arguments{\item{data}{numeric matrix with continuous data in one or more columns}
@@ -19,6 +17,7 @@ input, smooths outliers, and segment}
 \item{outlier.SD.scale}{number of SD single points must exceed smooth.region to be considered an outlier}
 \item{smooth.SD.scale}{floor used to reset single point outliers}
 \item{trim}{fraction of sample to smooth}
+\item{alpha}{pvalue cutoff for calling a breakpoint}
 }
 \examples{sample.names = paste("a",1:2,sep="")
 probe.names =  paste("p",1:30,sep="")

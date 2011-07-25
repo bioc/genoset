@@ -924,18 +924,33 @@ segs2RleDataFrame <- function(seg.list, locs) {
   return(rle.data.frame)
 }
 
-##' Take a DataFrame of Rle vectors and make a list of data.frames
+##' Make a RangedData from segments
 ##'
-##' Like the inverse of segs2RleDataFrame. Take a DataFrame with Rle
+##' Starting from a data.frame of segments, like from CBS and segTable, organize as a RangedData. Label data "score",
+##' so it can easily be made into various genome browser formats using rtracklayer.
+##' @param segs data.frame, like from segment in DNAcopy or segTable
+##' @return RangedData
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+segs2RangedData <- function(segs) {
+  rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean)
+  return(rd)
+}
+
+##' Convert Rle objects to tables of segments
+##'
+##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
+##' Rle or a DataFrame with Rle
 ##' columns and the locData RangedData both from a GenoSet object
 ##' and make a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
 ##' exactly to probe locations in locData and the input to
 ##' segs2RleDataFrame are not necessarily so.
 ##'
-##' @param df list or DataFrame of Rle vectors
+##' @param object Rle or list/DataFrame of Rle vectors
 ##' @param locs RangedData with rows corresponding to rows of df
-##' @return list of data.frames with columns ID, chrom, loc.start, loc.end, num.mark, seg.mean
+##' @param sample.name character for single Rle optionally include "ID" column with this sample name
+##' @return one or a list of data.frames with columns ID, chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
 ##' @examples
 ##'   data(genoset)
@@ -944,23 +959,35 @@ segs2RleDataFrame <- function(seg.list, locs) {
 ##'   assayDataElement( baf.ds, "lrr.segs" ) = df
 ##'   segTable( df, locData(baf.ds) )
 ##'   segTable( assayDataElement(baf.ds,"lrr.segs"), locData(baf.ds) )
+##'   segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
 ##' @author Peter M. Haverty
-segTable <- function(df, locs) {
-  segs = sapply( names(df),
+setGeneric("segTable", function(object,...) standardGeneric("segTable"))
+setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
+  chr.ind = chrIndices(locs)
+  num.mark = unlist(aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"]))
+  seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"]))
+  loc.end.indices = cumsum(num.mark)
+  loc.end = end(locs)[loc.end.indices]
+  loc.start.indices = (loc.end.indices - num.mark) + 1
+  loc.start = start(locs)[loc.start.indices]
+  chrom = as.character(space(locs))[loc.start.indices]
+  if (is.null(sample.name)) {
+    sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
+  } else {
+    sample.seg = data.frame(ID = sample.name, chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
+  }
+  return(sample.seg)
+})
+
+setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
+  segs = sapply( names(object),
     function(x) {
-      temp.rle = df[[x]]
-      num.mark = runLength(temp.rle)
-      loc.end.indices = cumsum(num.mark)
-      loc.end = end(locs)[loc.end.indices]
-      loc.start.indices = (loc.end.indices - num.mark) + 1
-      loc.start = start(locs)[loc.start.indices]
-      seg.mean = runValue(temp.rle)
-      chrom = as.character(space(locs))[loc.start.indices]
-      sample.seg = data.frame(ID = x, chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean)
+      temp.rle = object[[x]]
+      sample.seg = segTable(temp.rle,locs,sample.name=x)
       return(sample.seg)
     },simplify=FALSE, USE.NAMES=TRUE)
   return(segs)
-}
+})
 
 ##' Utility function to run CBS's three functions on one or more samples
 ##' 
@@ -968,7 +995,7 @@ segTable <- function(df, locs) {
 ##' input, smooths outliers, and segment
 ##' 
 ##' @title Run CBS Segmentation
-##' @aliases runCBS segment segmentation
+##' @aliases runCBS
 ##' @param data numeric matrix with continuous data in one or more columns
 ##' @param locs RangeData, like locData slot of GenoSet
 ##' @param return.segs logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.
@@ -977,6 +1004,7 @@ segTable <- function(df, locs) {
 ##' @param outlier.SD.scale number of SD single points must exceed smooth.region to be considered an outlier
 ##' @param smooth.SD.scale floor used to reset single point outliers
 ##' @param trim fraction of sample to smooth
+##' @param alpha pvalue cutoff for calling a breakpoint
 ##' @return data frame of segments from CBS
 ##' @export runCBS
 ##' @examples
@@ -994,7 +1022,8 @@ segTable <- function(df, locs) {
 ##'     runCBS(ds,locs)  # Should give seg.rle.result
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 ##' @author Peter M. Haverty
-runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025) {
+runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
+  if (alpha == 0.01) { data("default.DNAcopy.bdry", package="DNAcopy") }
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
   loc.pos = as.numeric(pos(locs))
@@ -1015,7 +1044,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), sm
       ok.indices = !is.na(temp.data)
       CNA.object <- CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
       smoothed.CNA.object <- smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
-      segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=0, alpha=0.001)
+      segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=0, alpha=alpha)
       if (return.segs == TRUE) {
         return(segment.smoothed.CNA.object$output)
       } else {
@@ -1049,27 +1078,25 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), sm
 ##'
 ##' @param starts numeric or integer, first base position of each query range
 ##' @param stops numeric or integer, last base position of each query range
-##' @param positions Base positions in which to search 
-##' @param initial.bounds numeric, length 2, first and last index of portion of positions to do search in (e.g. one chr in a genome)
+##' @param positions Base positions in which to search
+##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
 ##' @return integer matrix of 2 columms for start and stop index of range in data
 ##' @export boundingIndices2
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )
 ##' @author Peter M. Haverty
-boundingIndices2 <- function(starts, stops, positions, initial.bounds=NULL) {
-  if (!is.null(initial.bounds)) {
-    if (length(initial.bounds) != 2) { stop("initial.bounds specified, but of wrong length.") }
-    positions = positions[initial.bounds[1]:initial.bounds[2]]
-  }
+boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
   indices = c(findInterval(starts,positions,rightmost.closed=FALSE), findInterval(stops,positions,rightmost.closed=FALSE))
   dim(indices) = c(length(starts),2)
   indices[ indices == 0L ] = 1L  # If off left end, set to 1
-  right.bounds.to.expand = positions[indices[,2]] != stops
-  indices[ right.bounds.to.expand,2 ] = indices[ right.bounds.to.expand,2 ] + 1L  # Right end index moves right one unless it is an exact match
 
-  if (!is.null(initial.bounds)) {  # Convert indices back to indices in full positions before subsetting by initial.bounds
-    indices = indices + as.integer(initial.bounds[1] - 1L)
+  right.bounds.to.expand = positions[indices[,2]] < stops
+  indices[ right.bounds.to.expand,2 ] = indices[ right.bounds.to.expand,2 ] + 1L  # Right end index moves right one unless it is an exact match
+  indices[ indices > length(positions) ] = length(positions)  # If off right end, set to right end
+  
+  if (!is.null(offset)) {  # Convert indices back to indices in full positions before subsetting by initial.bounds
+    indices = indices + as.integer(offset)
   }
   return(indices)
 }
@@ -1082,59 +1109,50 @@ boundingIndices2 <- function(starts, stops, positions, initial.bounds=NULL) {
 ##' Some genes will fall entirely between two features and thus would not return any ranges
 ##' with findOverlaps. Specifically, this function will find the indices of the features
 ##' (first and last) bounding the ends of a range/gene (start and stop) such that
-##' first <= start <= stop <= last. Equality is necessary so that multiple conversions between
+##' first <= start < stop <= last. Equality is necessary so that multiple conversions between
 ##' indices and genomic positions will not expand with each conversion. Ranges/genes that are
 ##' outside the range of feature positions will be given the indices of the corresponding
 ##' first or last index rather than 0 or n + 1 so that genes can always be connected to some data.
 ##'
-##' This function uses the trick from findIntervals, where is for k queries and n features it
+##' This function uses some tricks from findIntervals, where is for k queries and n features it
 ##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
 ##' faster for sets of query genes that are sorted by start position within each chromosome.
 ##' The index of the stop position for each gene is found using the left bound from the start
 ##' of the gene reducing the search space for the stop position somewhat. This function has
 ##' important differences from intervalBound, which uses findInterval: boundingIndices does not
-##' check for NAs or unsorted data in the subject positions. Also, the subject positions are
+##' check for NAs or unsorted data in the subject positions. Also, the positions are
 ##' kept as integer, where intervalBound (and findInterval) convert them to doubles. These
 ##' three once-per-call differences account for much of the speed improvement in boundingIndices.
 ##' These three differences are meant for position info coming from GenoSet objects
-##' and intervalBound is safer for general use.
+##' and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
+##' does not check that the positions are ordered. The starts and stops need not be sorted, but
+##' it will be much faster if they are.
 ##'
 ##' @param starts integer vector of first base position of each query range
 ##' @param stops integer vector of last base position of each query range
 ##' @param positions Base positions in which to search
 ##' @param valid.indices logical, TRUE assures that the returned indices don't go off either end of the array, i.e. 0 becomes 1 and n+1 becomes n
-##' @param initial.bounds vector of length 2, first and last index of positions to use in search. For example bounds of a chromosome in whole genome base positions
+##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
 ##' @param all.indices logical, return a list containing full sequence of indices for each query
 ##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
-##' @seealso intervalBound
+##' @seealso boundingIndices2
 ##' @export boundingIndices
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,initial.bounds=NULL,all.indices=FALSE) {
-  ###   valid.indices 
-  
-  # Left bound
-  if ( is.null(initial.bounds) | length(initial.bounds) != 2) {
-    initial.bounds = c(1,length(positions))
-  }
-  start.indices = integer(length(starts))
-  stop.indices = integer(length(starts))
-  bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.integer(initial.bounds), as.integer(length(starts)), start.indices=start.indices, stop.indices=start.indices)
-  answer.mat = c(bound.results$start.indices, bound.results$stop.indices)
-  dim(answer.mat) = c(length(starts),2)
-  answer.mat = answer.mat + 1  # Back to 1-based indices
-  
-  if (valid.indices) {
-    answer.mat[ answer.mat[,1] < initial.bounds[1], 1] = initial.bounds[1]
-    answer.mat[ answer.mat[,2] > initial.bounds[2], 2] = initial.bounds[2]
-  }
-  
+boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indices=FALSE, offset=0) {
+  bounds = vector("integer",length(starts)*2L)
+  bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions),
+    as.integer(length(starts)), as.integer(length(positions)), bounds=bounds, as.integer(valid.indices), as.integer(offset),
+    DUP=FALSE, NAOK=TRUE)
+  bounds = bound.results$bounds
+  dim(bounds) = c(length(starts),2)
+
   if (all.indices == TRUE) { # Return all covered and bounding indices
-    return( apply( answer.mat, 1, function(x) { seq(from=x[1], to=x[2]) }) )
+    return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )
   } else {  # Just return left and right indices
-    return(answer.mat)
+    return(bounds)
   }
   
 }
@@ -1173,29 +1191,63 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
     cat("Setting query to genome order.")
     query.rd = query.rd[ genomeOrder(query.rd,strict=FALSE),]
   }
-  
+
   chr.names = intersect( names(query.rd), names(locData(subject)) )  # All chrs in both sets
   chr.indices = chrIndices(subject)  # Bounds of each chr
 
   # Foreach chr
-  positions = pos(subject)
+  subject.ranges = ranges(subject)
+  subject.starts = start(subject.ranges)
+  subject.stops = end(subject.ranges)
   query.ranges = ranges(query.rd)
-  query.starts = as.list(start(query.ranges))
-  query.stops = as.list(end(query.ranges))
+  query.starts = start(query.ranges)
+  query.stops = end(query.ranges)
   
-  range.means.by.chr = lapply( chr.names, function(x) {  # lapply here so I can switch to mclapply later
-    initial.bounds = chr.indices[x,c("first","last")] # Indices of features on current chr
-    indices = boundingIndices( starts=query.starts[[x]], stops=query.stops[[x]], positions=positions, initial.bounds=initial.bounds ) # Find bounds of query in this chr
-
-    # Foreach query
-    range.means = apply( indices, 1, function(index.row) {  # Get average of all features corresponding to this query for each sample
-      return( colMeans( assayDataElement(subject,assay.element)[index.row[1]:index.row[2],,drop=FALSE], na.rm=TRUE ) )
-    })
-    return(range.means)
+  ranges.by.chr = lapply( chr.names, function(x) {  # lapply here so I can switch to mclapply later
+    indices = boundingIndices( starts=query.starts[[x]], stops=query.stops[[x]], positions=subject.starts[[x]], offset=chr.indices[x,"offset"] ) # Find bounds of query in this chr
+    rownames(indices) = names(query.ranges[[x]])
+    return(indices)
   })
-  all.range.means = do.call(cbind, range.means.by.chr)  # Big matrix of results for all chrs
-  colnames(all.range.means) = rownames(query.rd)
-  return(all.range.means)
+  all.indices = do.call(rbind,ranges.by.chr)
+
+  # Temporary hack for DataFrame of Rle
+  data.matrix = assayDataElement(subject,assay.element)
+
+  if (class(data.matrix) == "DataFrame") {
+    sample.vals = sapply( colnames(data.matrix), function(x) { rangeColMeans( all.indices, as.numeric(data.matrix[,x] )) }, USE.NAMES=TRUE, simplify=FALSE)
+    range.means = do.call(cbind,sample.vals)
+  } else {
+    range.means = rangeColMeans( all.indices, data.matrix )
+  }
+  return(range.means)
+}
+
+##' Calculate column means for multiple ranges
+##'
+##' Essentially colMeans with a loop, all in a .Call. Designed to take a
+##' 2-column matrix of row indices, bounds, for a matrix, x, and calculate
+##' mean for each range in each column (or along a single vector). bounds
+##' matrix need not cover all rows.
+##' 
+##' @param bounds A two column integer matrix of row indices
+##' @param x A numeric matrix with rows corresponding to indices in bounds.
+##' @return A numeric matrix or vector, matching the form of x. One row for
+##' each row in bounds, one col for each col of x and appropriate dimnames.
+##' If x is a vector, just a vector with names from the rownames of bounds.
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+rangeColMeans <- function( bounds, x ) {
+  if (! is.matrix(bounds) && ncol(bounds) == 2) {
+    stop("bounds must be a matrix with 2 columns\n")
+  }
+  if (!is.double(x)) {
+    storage.mode(x) = "double"
+  }
+  if (!is.integer(bounds)) {
+    storage.mode(bounds) = "integer"
+  }
+  ans = .Call("rangeColMeans", bounds, x)
+  return(ans)
 }
 
 ##' Order chromosome names in proper genome order

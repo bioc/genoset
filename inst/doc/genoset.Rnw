@@ -69,14 +69,14 @@ requires 'lrr' and 'baf', and genoset can take assayData elements with
 any name.  Also notice how assayData elements can be matrices or
 DataFrames with Rle columns.
 
-<<objectcreation, eval=TRUE, cache=FALSE>>=
+<<objectcreation>>=
 library(genoset)
 data(genoset)
-genoset.ds = GenoSet( locData=locData.rd, foo=fake.lrr, pData=fake.pData, annotation="SNP6" )
+genoset.ds = GenoSet( locData=locData.rd, foo=fake.lrr, pData=fake.pData, annotation="SNP6", universe="hg19" )
 
-baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6", universe="hg19" )
 
-cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6" )
+cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6", universe="hg19" )
 cn.ds
 
 rle.baf.ds = BAFSet( locData=locData.rd,
@@ -87,33 +87,38 @@ rle.baf.ds = BAFSet( locData=locData.rd,
   )
 @ 
 
-\subsection{Using the Subset Features}
-
-GenoSet objects can be subset using chromosome names, or with a set of ranges
-
-<<subsetdc, eval=TRUE, cache=FALSE>>=
-chr12.ds = cn.ds[["chr12"]]
-chr12.ds
-gene.rd = RangedData(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),
-                       names=c("HER2","CMYC")), space=c("chr17","chr8"))
-gene.ds = cn.ds[ gene.rd, ]
-gene.ds
-@ 
-
-GenoSet objects can also be subset by a group of samples and/or features, just like an ExpressionSet.
-<<subsetsamples, eval=TRUE, cache=FALSE>>=
-cn.ds[1:4,1:2]
-@ 
-
-\subsection{Slots}
-
-CNSets extend ExpressionSets and so have all of the same functions and slots, except that the
-exprs slot and getter and setter functions have been replaced with ``cn''.  The locData slot has
+Let's have look at what's inside these objects.   CNSets extend
+ExpressionSets and so have all of the same functions and slots, except 
+that the exprs slot and getter and setter functions have been replaced with ``cn''.  The locData slot has
 been added.  This slot holds a RangedData object that keeps track of the feature positions and
 allows for quick subsetting. The RangedData object is always sorted such that the chromosomes
-are in contiguous blocks, which provides a constraint on the ordering of the CNSet.  There are a
-number of functions for getting portions of the locData data.  ``chr'' and ``pos'' return the
-chromosome and position information for each feature. ``genoPos'' is like ``pos'', but it
+are in contiguous blocks, which provides a constraint on the ordering of the CNSet.
+
+<<<objectinspection>>= >>=
+slotNames(genoset.ds)
+phenoData(genoset.ds)
+pData(genoset.ds)
+universe(genoset.ds)
+annotation(genoset.ds)
+locData(genoset.ds)
+
+# The assayData slot is a collection of equally sized matrix-like objects.
+# Access to required elements can be done by special accessor functions. Others require more typing.
+assayDataElementNames(baf.ds)
+head( baf(baf.ds) )
+head( lrr(baf.ds) )
+head( cn(cn.ds) )
+head( assayDataElement(genoset.ds,"foo") )
+@ 
+
+Now lets look at some special functions for accessing genome
+information from a genoset object. Methods for RangedData have also
+been added to give the same API. We can access per-probe information
+as well as summaries of chromosome boundaries in base-pair or
+row-index units.   There are a number of functions for getting
+portions of the locData data. ``chr'' and ``pos'' return the
+chromosome and position information 
+for each feature. ``genoPos'' is like ``pos'', but it
 returns the base positions counting from the first base in the genome, with the
 chromosomes in order by number and then alphabetically for the letter
 chromosomes. ``orderedChrs'' returns this ordered vector of unique chromosome
@@ -123,38 +128,171 @@ used for drawing chromosome boundaries on genome-scale plots. ``pos''
 and ``genoPos'' are defined as the floor of the average of each
 features start and end positions.
 
+<<accessgenomeinfo>>=
+names(genoset.ds)
+orderedChrs(genoset.ds)
+chrOrder(c("chr12","chr12","chrX","chr8","chr7","chrY"))
+chrInfo(genoset.ds)
+chrIndices(genoset.ds)
+elementLengths(genoset.ds)
+
+head(ranges(genoset.ds))
+head(chr(genoset.ds))
+head(start(genoset.ds))
+head(end(genoset.ds))
+head(pos(genoset.ds)) # Floor of start, end midpoint
+tail(pos(genoset.ds))
+tail(genoPos(genoset.ds))
+@ 
+
+\subsection{Using the Subset Features}
+
+GenoSet objects can be subset using chromosome names, or with a set of
+ranges. Please note that the double bracket operator has be re-tasked
+to subset by chromosome, rather than accessing columns of the
+phenoData slot. The dollar operator still retains this functionality. 
+Chromosome names will always be treated as character, 
+never numeric or integer. 
+   
+<<subsetdc>>=
+# Subset by chromosome
+chr12.ds = cn.ds[["chr12"]]
+chr12.ds
+
+# Subset by a collection of gene locations
+gene.rd = RangedData(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
+                       names=c("HER2","CMYC")), space=c("chr17","chr8"))
+gene.ds = cn.ds[ gene.rd, ]
+gene.ds
+
+# Dollar still pulls a column from phenoData
+genoset.ds$a
+@ 
+
+GenoSet objects can also be subset by a group of samples and/or
+features, just like an ExpressionSet, or a matrix for that matter.
+
+<<subsetsamples>>=
+cn.ds[1:4,1:2]
+cn.ds[ c("p1","p2"), cn.ds$b %in% c("E","F")]
+@ 
+
+\subsection{Genome Order}
+GenoSet and RangedData objects can be set to and checked for genome
+order. Weak genome order requires that features be ordered within each
+chromsome. Strong genome order requires a certain order of chromosomes
+as well. Features must be ordered so that features from the same
+chromosome are in contiguous blocks.
+
+Certain methods on GenoSet objects expect the rows to be in genome
+order. In this package, the use of a RangedData object for feature
+location info (the locData slot) keeps data for each chromosome in a
+contiguous block of rows. Users are free to rearrange rows within
+chromosome as they please. The function ``isGenomeOrder'' can check if
+a rangedData object, like the locData slot, is in genome order. Here
+``genome order'' means that the rows within each chromosome are
+ordered by start position. ``Strict genome order'' requires that the
+chromosome be in a certain order too. The proper order of chromosomes
+is desirable for full-genome plots and is specified by the
+``chrOrder'' function. The function ``genomeOrder'' returns a list of
+integer indices to use to set a GenoSet or RangedData to weak, or
+optionaly, strict genome order. The object creation methods ``Genoset'',
+``BAFSet'', and ``CNSet'' order their objects in strict genome order. 
+Methods, like those in the next section, that require genome order use
+``genomeOrder'' to set it themselves, so users are not required to
+keep track of whether or not they have changed the row order.
+
+<<genomeorder, eval=TRUE>>=
+chrOrder(names(genoset.ds))
+head(genomeOrder(genoset.ds, strict=FALSE))
+isGenomeOrder(genoset.ds, strict=TRUE)
+@
+
+\subsection{Gene Level Summaries}
+GenoSets contain feature level data. Often it is desirable to get
+summaries of assayData matrices over an arbitrary set of ranges, like
+genes or cytobands. The function ``rangeSampleMeans'' serves this
+purpose. Given a RangedData of arbitrary genome ranges, a
+GenoSet-based object, and the name of a member of that objects
+assayData slot, ``rangeSampleMeans'' will return a matrix of values
+for each of those ranges and for each sample. For each range,
+``rangeSampleMeans'' uses ``boundingIndices'' to select the features
+covered by that range and the features bounding that range. The
+bounding features are the features with locations equal to the start
+and end of the range or those outside the range and closest to the
+ends of the range. This bounding ensures that the full extent of the
+range is accounted for, and more importantly, at least two features
+are included for each gene, even if the range falls between two
+features. ``rangeColMeans'' is used to do a fast average of each of a
+set of such bounding indices for each sample. These functions are
+optimized for speed.  For example, with 2.5M features and ~750
+samples, it takes 0.12 seconds to find the features bounded by all
+Entrez Genes (one RefSeq each). Calculating the mean value for each
+gene and sample takes ~9 seconds for a matrix of array data and ~30
+seconds for a DataFrame of compressed Rle objects.
+
+As an example, let's say you want to get the copynumber of your two
+favorite genes from the subsetting example:
+
+<<genelevel, eval=TRUE>>=
+# Get the gene-level summary
+boundingIndices( c(127e6,127.5e6), c(127e6,128e6), pos(chr12.ds) )
+rangeSampleMeans(gene.rd, baf.ds, "lrr")
+@ 
 
 \subsection{Processing Data}
-Genoset contains a convenience function for segmenting data for each sample/chr using the
-DNACopy package (CBS)
+Segmentation is the process of identifying blocks of the genome in
+each sample that have the same copynumber value. It is a smoothing
+method that attempts to replicate the biological reality where chunks
+of chromsome have been deleted or amplified.
 
-<<cbs, eval=TRUE, cache=TRUE>>=
+Genoset contains a convenience function for segmenting data for each sample/chr using the
+DNACopy package (CBS).  GenoSet adds features to split jobs among
+processor cores. When the library ``multicore'' is loaded, the
+argument n.cores can control the number of processor cores
+utilized. Additionally, GenoSet stores segment values so that they can be
+accessed quickly at both the feature and segment level. We use a
+``DataFrame'' object from IRanges where each column is a
+Run-Length-Encoded ``Rle'' object. This dramatically reduces the
+amount of memory required. Note how the segmented values
+become just another member of the assayData slot.
+
+<<cbs>>=
+# Try running CBS directly
+library(DNAcopy)
+cbs.cna = CNA(cn(cn.ds), chr(cn.ds), pos(cn.ds) )
+cbs.smoothed.CNA = smooth.CNA( cbs.cna )
+cbs.segs = segment( cbs.cna )
+
+# Or use the convenience function runCBS
+assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds))
+
+library(multicore)
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds), n.cores=3)
+assayDataElement(cn.ds,"cn.segs")[1:5,1:3]
+segTable( assayDataElement(cn.ds,"cn.segs"), locData(cn.ds) )
+
 @ 
+Other segmenting methods could also be used. See "segs2Rle",
+"segs2RleDataFrame", and "segs2RangedData" for ways to turn their
+results into a DataFrame of Rle.
 
 This function makes use of the multicore package to run things in
-parallel, so plan ahead when picking ``ncores''. Memory usage can be
+parallel, so plan ahead when picking ``n.cores''. Memory usage can be
 a bit hard to predict.
 
-By default runCBS returns a DataFrame (from the IRanges package) with
-Run Length Encoded (Rle objects from the IRanges package) columns.  This
-dramatically reduces the amount of memory required. DataFrame objects
-are valid assayData elements in GenoSet (see object creation above). 
-runCBS can optionally return a list of data.frames, one for each
-sample. These data.frames are simply the output of DNAcopy.
+\subsection{Correction of Copy Number for local GC Content}
+FOO
 
-<<cbssegs, eval=FALSE, cache=TRUE>>=
-segs = runCBS(cn(cn.ds), locData(cn.ds), n.cores=3, return.segs=TRUE)
-@ 
-
-These segments can also be obtained from the DataFrame of Rle objects:
-
-<<segs2mat, eval=FALSE, cache=TRUE>>=
-segTable(assayDataElement(cn.ds,"cn.segs"), locData(cn.ds))
-@
- 
 \subsection{Plots}
 CNSet has some handy plots for plotting data along the genome.
+Segmented data ``knows'' it should be plotted as lines, rather than
+points. One often wants to plot just one chromosome, so a convenience
+argument for chromosome subsetting is provided. ``genoPlot'' can plot 
+single samples from a GenoSet (or derived) object. ``genoPlot'' marks 
+chromosome boundaries and labels positions in ``bp'', ``kb'', ``Mb'', 
+or ``Gb'' units as appropriate. Simple data and numeric position data 
+can be plotted too.
 
 <<fig=FALSE, echo=FALSE>>=
 png(file="genoset-plotgenome.png",width=12,height=5,res=150,units="in")
@@ -200,6 +338,11 @@ The result is shown in Fig.~\ref{plotchr}.
   \end{center}
 \end{figure}
 
+<<plotchrsimple, eval=FALSE>>=
+chr12.ds = cn.ds[["chr12"]]
+genoPlot(pos(chr12.ds),cn(chr12.ds)[,1],locs=locData(chr12.ds))  # Numeric data and location
+genoPlot(pos(chr12.ds),assayDataElement(chr12.ds,"cn.segs")[,1],add=TRUE, col="red") # Rle data and numeric position
+@ 
 
 \section{BAFSet Objects}
 BAFSet objects are similar in most ways to CNSet objects, but require
@@ -214,8 +357,16 @@ AA, AB, BB), but NA'ing values over a certain value works OK.  A hom.cutoff of 0
 suggested for Affymetrix arrays and 0.95 for Illumina arrays, following Staaf, et al.
 
 
-<<mbafcutoff, eval=TRUE, cache=TRUE>>=
-assayDataElement(baf.ds,"mbaf") = baf2mbaf(baf(baf.ds),hom.cutoff = 0.90)
+<<mbafcutoff>>=
+mbaf.data = baf2mbaf(baf(baf.ds),hom.cutoff = 0.90)
+assayDataElement(baf.ds,"mbaf") = mbaf.data
+
+# Or use compress it to a DataFrame of Rle
+# ~1/3 space used on random data
+mbaf.data = DataFrame( sapply(colnames( mbaf.data),
+  function(x) { Rle( mbaf.data[,x] ) },
+  USE.NAMES=TRUE, simplify=FALSE ) )
+as.numeric(object.size( assayDataElement(baf.ds,"mbaf")))  / as.numeric( object.size(mbaf.data))
 @ 
 
 Using the HOM SNP calls from the matched normal works much better. A
@@ -227,9 +378,11 @@ names in your genotype matrix.  If this method is used and some
 columns in your baf matrix do not have an entry in this list, then
 those baf columns are cleaned of HOMs using the hom.cutoff, as above.
 
-Both mBAF and LRR can and should be segmented
+Both mBAF and LRR can and should be segmented. Consider storing mBAF
+as a DataFrame of Rle as only the ~1/1000 HET positions are being used
+and all those NA HOM positions will compress nicely.
 
-<<segment, eval=TRUE, cache=TRUE>>=
+<<segment>>=
 assayDataElement(baf.ds,"baf.segs") = runCBS( assayDataElement(baf.ds,"mbaf"), locData(baf.ds) )
 assayDataElement(baf.ds,"lrr.segs") = runCBS( lrr(baf.ds), locData(baf.ds) )
 @ 
@@ -242,7 +395,7 @@ can be ``lrr'' or ``baf'' or any other element you happen to have put in ``assay
 <<fig=FALSE, echo=FALSE>>=
 png(file="genoset-plotlrr.png",width=7,height=4,res=150,units="in")
 @ 
-<<plotlrr, eval=TRUE>>=
+<<plotlrr>>=
 genoPlot(baf.ds,1,chr="chr12",element="lrr",main="LRR of chr12")
 genoPlot(baf.ds,1,chr="chr12",element="lrr.segs",add=TRUE,col="red")
 @
@@ -283,48 +436,24 @@ The result is shown in Fig.~\ref{plotbaf}.
   \end{center}
 \end{figure}
 
-\subsection{Genome Order}
-Certain methods on GenoSet objects expect the rows to be in genome
-order. In this package, the use of a RangedData object for feature
-location info (the locData slot) keeps data for each chromosome in a
-contiguous block of rows. Users are free to rearrange rows within
-chromosome as they please. The function ``isGenomeOrder'' can check if
-a rangedData object, like the locData slot, is in genome order. Here
-``genome order'' means that the rows within each chromosome are
-ordered by start position. ``Strict genome order'' requires that the
-chromosome be in a certain order too. The proper order of chromosomes
-is desirable for full-genome plots and is specified by the
-``chrOrder'' function. The function ``genomeOrder'' returns a list of
-integer indices to use to set a GenoSet or RangedData to weak, or
-optionaly, strict genome order. The object creation methods ``Genoset'',
-``BAFSet'', and ``CNSet'' order their objects in strict genome order. Methods, like those in the next section, that require genome order use
-``genomeOrder'' to set it themselves, so users are not required to
-keep track of whether or not they have changed the row order.
+\subsection{Cross-sample summaries}
+You can quickly calculate summaries across samples to identify regions
+with frequent alterations.  A bit more care is necessary to work one
+sample at a time if your data ``matrix'' is a DataFrame.
 
-\subsection{Gene Level Summaries}
-
-GenoSet contains feature level data. Often it is desirable to get
-summaries of assayData matrices over an arbitrary set of ranges, like
-genes or cytobands. The function ``rangeSampleMeans'' serves this
-purpose. Given a RangedData of arbitrary genome ranges, a
-GenoSet-based object, and the name of a member of that objects
-assayData slot, ``rangeSampleMeans'' will return a matrix of values
-for each of those ranges and for each sample. For each range,
-``rangeSampleMeans'' uses ``boundingIndices'' to select the features
-covered by that range and the features bounding that range. The
-bounding features are the features with locations equal to the start
-and end of the range or those outside the range and closest to the
-ends of the range. This bounding ensures that the full extent of the
-range is accounted for, and more importantly, at least two features
-are included for each gene, even if the range falls between two features.
-
-As an example, let's say you want to get the copynumber of your two
-favorite genes from the subsetting example:
-
-<<genelevel, eval=TRUE>>=
-# Get the gene-level summary
-rangeSampleMeans(gene.rd, baf.ds, "lrr")
+<<crosssample>>=
+gain.list = lapply(sampleNames(baf.ds),
+  function(sample.name) {
+    as.logical( assayDataElement(baf.ds,"lrr.segs")[,sample.name] > 0.3 )
+})
+gain.mat = do.call(cbind, gain.list)
+gain.freq = rowMeans(gain.mat,na.rm=TRUE)
 @ 
-  
 
+GISTIC (by Behroukhim and Getz of the Broad Institute) is the standard 
+method for assessing significance of such summaries. You'll find 
+``segTable'' convenient for getting your data formatted for input. I 
+find it convenient to load GISTIC output as a RangedData for 
+intersection with gene locations.
+  
 \end{document}

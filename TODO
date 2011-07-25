@@ -91,3 +91,7 @@ Update rangeSampleMeans, etc. to work on cases where start != stop.  pos and gen
 baf2mbaf should output DF of Rle.  DF need as.matrix method, and runCBS should as.matrix temp.data. Rle also needs density method. modeCenter needs a method on Rle where this would be used.  Need tests or these and modeCenter on matrix.
 
 gcCorrect should now NA rows of the matrix corresponding to NA gc values. subset arg should be used to ignore these rows. loadGC (now in gcContent package) should not subset out these rows.  Subsetting takes a whileand we don't necessarily want to subset ALL assayData elements.
+
+
+# Wed 07-20-2011 - 09:30
+boundingIndices should make it's return matrix internall and put dimnames on it.  Will do when I make a .Call version.

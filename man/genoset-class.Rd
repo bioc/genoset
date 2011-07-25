@@ -45,8 +45,11 @@
 \alias{genoPlot,numeric,Rle-method}
 \alias{genoPlot,numeric,numeric-method}
 
-% DataFrame extensions:
+% DataFrame and extensions:
 \alias{colMeans,DataFrame-method}
+\alias{segTable,Rle-method}
+\alias{segTable,DataFrame-method}
+
 
 \title{GenoSet class}
 

@@ -1,7 +1,7 @@
 \name{boundingIndices2}
 \alias{boundingIndices2}
 \title{Find indices of features bounding a set of chromsome ranges/genes...}
-\usage{boundingIndices2(starts, stops, positions, initial.bounds)
+\usage{boundingIndices2(starts, stops, positions, offset)
 }
 \description{Find indices of features bounding a set of chromsome ranges/genes}
 \details{This function is similar to findOverlaps but it guarantees at least two features will be
@@ -23,7 +23,7 @@ that genes can always be connected to some data.}
 \arguments{\item{starts}{numeric or integer, first base position of each query range}
 \item{stops}{numeric or integer, last base position of each query range}
 \item{positions}{Base positions in which to search}
-\item{initial.bounds}{numeric, length 2, first and last index of portion of positions to do search in (e.g. one chr in a genome)}
+\item{offset}{integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)}
 }
 \examples{starts = seq(10,100,10)
 boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )}

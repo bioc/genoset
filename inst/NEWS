@@ -1,4 +1,4 @@
-1.1
+1.0.0 
 
 Object creation at user level changed so that GenoSet, BAFSet, and CNSet functions all 
 call an internal input checker and object generator function initGenoSet rather than having
@@ -20,3 +20,6 @@ GenoSet now share some API to make this easier. RangedData gets chr and pos, Gen
 ranges, and elementLengths. Now chrInfo, chrIndices, genoPos, etc. can work on either object type.
 
 pos and genoPos now defined as floor of mean of start and end positions.
+
+1.0.6
+Substantial speed improvements for boundingIndices() and rangeSampleMeans.
