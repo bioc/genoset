@@ -55,9 +55,9 @@ accessible with locData().
 \item{j}{character, RangedData, RangesList, logical, integer}
 \item{drop}{logical drop levels of space factor?}
 \item{...}{additional subsetting args}
-\item{ds}{A GenoSet object or derivative}
+\item{object}{A GenoSet object or derivative}
 \item{expand}{numeric, expand each feature location by this many bases on each side}
-\item{bsgenome,}{sequence db object from BSgenome (e.g. Hsapiens)x}
+\item{bsgenome,}{sequence db object from BSgenome (e.g. Hsapiens)}
 }
 \examples{data(genoset)
 space(genoset.ds)
@@ -70,7 +70,9 @@ genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
 genoset.ds[ , "K"]  # Sample called K
 rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
 genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
+genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8\dontrun{data(genoset)}
+\dontrun{library(BSgenome.Hsapiens.UCSC.hg19)}
+\dontrun{cn.ds = loadGC(cn.ds,expand=1e6,bsgenome=Hsapiens)}}
 \alias{start,-method}
 \alias{start}
 \alias{end,-method}
@@ -88,6 +90,8 @@ genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
 \S4method{[}{GenoSet,RangedData,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{[}{GenoSet,RangesList,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{[[}{GenoSet,character}(x, i, ..., drop=FALSE)
+\S4method{loadGC}{RangedData,numeric,BSgenome}(object, expand=1e+06, bsgenome)
+\S4method{loadGC}{GenoSet,numeric,BSgenome}(object, expand, bsgenome)
 }
 \alias{[,GenoSet,character,ANY-method}
 \alias{[}
@@ -99,8 +103,8 @@ genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
 \alias{[[}
 \alias{loadGC-methods}
 \alias{loadGC}
-\alias{loadGC,-method}
+\alias{loadGC,RangedData,numeric,BSgenome-method}
 \alias{loadGC}
-\alias{loadGC,-method}
+\alias{loadGC,GenoSet,numeric,BSgenome-method}
 \alias{loadGC}
 

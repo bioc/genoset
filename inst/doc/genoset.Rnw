@@ -304,7 +304,7 @@ BSgenome. Be careful to use a version of BSgenome that matches the
 ``universe'', or mapping, of your data set. loadGC adds a ``gc''
 column to the locData slot.
 
-<<GC>>=
+<<GC, exec=FALSE>>=
 library(BSgenome.Hsapiens.UCSC.hg19)
 cn.ds2 = cn.ds
 cn.ds2 = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)

@@ -10,7 +10,7 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends: Biobase, IRanges
 Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats
-Suggests: RUnit, BSgenome.Hsapiens.UCSC.hg19
-Enhances: multicore
+Suggests: RUnit, BSgenome, BSgenome.Hsapiens.UCSC.hg19
+Enhances: multicore, BSgenome, BSgenome.Hsapiens.UCSC.hg19
 biocViews: Infrastructure, DataRepresentation
 Collate: 'DataFrame-methods.R' 'genoset-class.R' 'cnset-class.R' 'bafset-class.R'

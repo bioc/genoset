@@ -4,7 +4,7 @@
 
 suppressMessages(library(genoset))
 suppressMessages(library(RUnit))
-suppressMessages(library(BSgenome))
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 
 options(warn=1)
 

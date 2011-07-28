@@ -23,3 +23,6 @@ pos and genoPos now defined as floor of mean of start and end positions.
 
 1.0.6
 Substantial speed improvements for boundingIndices() and rangeSampleMeans.
+
+1.1.7
+Added loadGC function to get local GC content and version bump for bioC2.9

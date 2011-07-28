@@ -22,8 +22,8 @@
 \alias{names,GenoSet-method}
 \alias{ranges,GenoSet-method}
 \alias{elementLengths,GenoSet-method}
-\alias{loadGC<-,GenoSet-method}
-\alias{loadGC<-,RangedData-method}
+\alias{loadGC<-,GenoSet,numeric,BSgenome-method}
+\alias{loadGC<-,RangedData,numeric,BSgenome-method}
 
 % Subsetting
 \alias{[,GenoSet,ANY-method}

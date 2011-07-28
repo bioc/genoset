@@ -833,21 +833,20 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' may be truncated to remove positions without GC information.  GC data are
 ##' accessible with locData().
 ##' 
-##' @param ds A GenoSet object or derivative
+##' @param object A GenoSet object or derivative
 ##' @param expand numeric, expand each feature location by this many bases on each side
-##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)x
+##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)
 ##' @return An updated object, with GC percentage information added to the locData slot.
 ##' @export loadGC
-##' @examples \dontrun{
-##'    library(BSgenome.Hsapiens.UCSC.hg19)
-##'    data(genoset)
-##'    cn.ds = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
-##' }
+##' @examples
+##'    \dontrun{data(genoset)}
+##'    \dontrun{library(BSgenome.Hsapiens.UCSC.hg19)}
+##'    \dontrun{cn.ds = loadGC(cn.ds,expand=1e6,bsgenome=Hsapiens)}
 ##' @rdname genoset-methods
 ##' @author Peter M. Haverty
-setGeneric("loadGC", function(object,...) standardGeneric("loadGC"))
+setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
 ##' @rdname genoset-methods
-setMethod("loadGC", "RangedData",
+setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
           function(object,expand=1e6,bsgenome) {
             expanded.ranges = ranges(object) + expand
             start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
@@ -862,7 +861,7 @@ setMethod("loadGC", "RangedData",
             return(object)
           })
 ##' @rdname genoset-methods
-setMethod("loadGC", "GenoSet", function(object,expand,bsgenome) {
+setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand,bsgenome) {
   # Load gc into locData of GenoSet object
   ds = loadGC( locData(object),expand,bsgenome )
   locData(object) = ds
