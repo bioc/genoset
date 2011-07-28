@@ -101,9 +101,12 @@ pData(genoset.ds)
 universe(genoset.ds)
 annotation(genoset.ds)
 locData(genoset.ds)
+@ 
 
-# The assayData slot is a collection of equally sized matrix-like objects.
-# Access to required elements can be done by special accessor functions. Others require more typing.
+The assayData slot is a collection of equally sized matrix-like objects.
+Access to required elements can be done by special accessor functions. Others require more typing.
+
+<<objectassaydata>>=
 assayDataElementNames(baf.ds)
 head( baf(baf.ds) )
 head( lrr(baf.ds) )
@@ -111,6 +114,7 @@ head( cn(cn.ds) )
 head( assayDataElement(genoset.ds,"foo") )
 @ 
 
+\subsection{Accessing Genome Information}
 Now lets look at some special functions for accessing genome
 information from a genoset object. Methods for RangedData have also
 been added to give the same API. We can access per-probe information
@@ -140,7 +144,7 @@ head(ranges(genoset.ds))
 head(chr(genoset.ds))
 head(start(genoset.ds))
 head(end(genoset.ds))
-head(pos(genoset.ds)) # Floor of start, end midpoint
+head(pos(genoset.ds))
 tail(pos(genoset.ds))
 tail(genoPos(genoset.ds))
 @ 
@@ -153,19 +157,22 @@ to subset by chromosome, rather than accessing columns of the
 phenoData slot. The dollar operator still retains this functionality. 
 Chromosome names will always be treated as character, 
 never numeric or integer. 
-   
-<<subsetdc>>=
-# Subset by chromosome
+
+Subset by chromosome   
+<<subsetbychr>>=
 chr12.ds = cn.ds[["chr12"]]
 chr12.ds
-
-# Subset by a collection of gene locations
+@ 
+Subset by a collection of gene locations
+<<subsetbygene>>=
 gene.rd = RangedData(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
                        names=c("HER2","CMYC")), space=c("chr17","chr8"))
 gene.ds = cn.ds[ gene.rd, ]
 gene.ds
+@ 
 
-# Dollar still pulls a column from phenoData
+Dollar still pulls a column from phenoData
+<<dollarsample>>=
 genoset.ds$a
 @ 
 
@@ -189,7 +196,7 @@ order. In this package, the use of a RangedData object for feature
 location info (the locData slot) keeps data for each chromosome in a
 contiguous block of rows. Users are free to rearrange rows within
 chromosome as they please. The function ``isGenomeOrder'' can check if
-a rangedData object, like the locData slot, is in genome order. Here
+a RangedData object, like the locData slot, is in genome order. Here
 ``genome order'' means that the rows within each chromosome are
 ordered by start position. ``Strict genome order'' requires that the
 chromosome be in a certain order too. The proper order of chromosomes
@@ -216,9 +223,8 @@ purpose. Given a RangedData of arbitrary genome ranges, a
 GenoSet-based object, and the name of a member of that objects
 assayData slot, ``rangeSampleMeans'' will return a matrix of values
 for each of those ranges and for each sample. For each range,
-``rangeSampleMeans'' uses ``boundingIndices'' to select the features
-covered by that range and the features bounding that range. The
-bounding features are the features with locations equal to the start
+``rangeSampleMeans'' uses ``boundingIndices'' to select the features 
+bounding that range. The bounding features are the features with locations equal to the start
 and end of the range or those outside the range and closest to the
 ends of the range. This bounding ensures that the full extent of the
 range is accounted for, and more importantly, at least two features
@@ -234,13 +240,13 @@ seconds for a DataFrame of compressed Rle objects.
 As an example, let's say you want to get the copynumber of your two
 favorite genes from the subsetting example:
 
+Get the gene-level summary:
 <<genelevel, eval=TRUE>>=
-# Get the gene-level summary
-boundingIndices( c(127e6,127.5e6), c(127e6,128e6), pos(chr12.ds) )
+boundingIndices( c(127e6,127.5e6), c(127e6,128e6), start(chr12.ds) )
 rangeSampleMeans(gene.rd, baf.ds, "lrr")
 @ 
 
-\subsection{Processing Data}
+\section{Processing Data}
 Segmentation is the process of identifying blocks of the genome in
 each sample that have the same copynumber value. It is a smoothing
 method that attempts to replicate the biological reality where chunks
@@ -254,26 +260,28 @@ utilized. Additionally, GenoSet stores segment values so that they can be
 accessed quickly at both the feature and segment level. We use a
 ``DataFrame'' object from IRanges where each column is a
 Run-Length-Encoded ``Rle'' object. This dramatically reduces the
-amount of memory required. Note how the segmented values
+amount of memory required to store the segments. Note how the segmented values
 become just another member of the assayData slot.
 
-<<cbs>>=
-# Try running CBS directly
+Try running CBS directlyq
+<<cbsdirect>>=
 library(DNAcopy)
 cbs.cna = CNA(cn(cn.ds), chr(cn.ds), pos(cn.ds) )
 cbs.smoothed.CNA = smooth.CNA( cbs.cna )
 cbs.segs = segment( cbs.cna )
+@ 
 
-# Or use the convenience function runCBS
+Or use the convenience function runCBS
+<<runCBS>>=
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds))
 
 library(multicore)
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds), n.cores=3)
 assayDataElement(cn.ds,"cn.segs")[1:5,1:3]
 segTable( assayDataElement(cn.ds,"cn.segs"), locData(cn.ds) )
-
 @ 
-Other segmenting methods could also be used. See "segs2Rle",
+
+Other segmenting methods can also be used of course. See "segs2Rle",
 "segs2RleDataFrame", and "segs2RangedData" for ways to turn their
 results into a DataFrame of Rle.
 
@@ -282,7 +290,24 @@ parallel, so plan ahead when picking ``n.cores''. Memory usage can be
 a bit hard to predict.
 
 \subsection{Correction of Copy Number for local GC Content}
-FOO
+Copy number data generally shows a GC content effect that appears as
+slow ``waves'' along the genome (Diskin et al., NAR, 2008). The
+function ``gcCorrect'' can be used to remove this effect resulting in
+much clearer data and more accurate segmentation. GC content is best
+measured as the gc content in windows around each feature, about 2Mb
+in size. The function ``loadGC'' can calculate GC content in bins of a
+specified size using the genome sequence object from a package like
+BSgenome. Be careful to use a version of BSgenome that matches the
+``universe'', or mapping, of your data set. loadGC adds a ``gc''
+column to the locData slot.
+
+<<GC>>=
+library(BSgenome.Hsapiens.UCSC.hg19)
+cn.ds2 = cn.ds
+cn.ds2 = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
+head(locData(cn.ds2)$gc)
+cn(cn.ds2) = gcCorrect(cn(cn.ds2),locData(cn.ds2)$gc)
+@ 
 
 \subsection{Plots}
 CNSet has some handy plots for plotting data along the genome.
@@ -338,6 +363,7 @@ The result is shown in Fig.~\ref{plotchr}.
   \end{center}
 \end{figure}
 
+Plot data without a GenoSet object using numeric or Rle data:
 <<plotchrsimple, eval=FALSE>>=
 chr12.ds = cn.ds[["chr12"]]
 genoPlot(pos(chr12.ds),cn(chr12.ds)[,1],locs=locData(chr12.ds))  # Numeric data and location
@@ -346,23 +372,30 @@ genoPlot(pos(chr12.ds),assayDataElement(chr12.ds,"cn.segs")[,1],add=TRUE, col="r
 
 \section{BAFSet Objects}
 BAFSet objects are similar in most ways to CNSet objects, but require
-at least two types of data, LRR and BAF, in AssayData.
+at least two types of data, LRR and BAF, in AssayData. ``BAF''
+represent the B-Allele Frequency or the fraction of array signal
+coming from one allele. BAF provides a measure of Loss of
+Heterozygosity (LOH).``LRR'' is the Log R Ratio, or log2(
+tumor/expected ), which is basically the traditional copynumber
+logratio by another name. Both terms come from Illumina and are
+discussed in Peiffer et al., 2008.
 
 \subsection{Processing Data}
-
 BAF data can be converted into the ``Modified BAF'' or mBAF metric, introduced by Staaf, et
 al., 2008. mBAF folds the values around the 0.5 axis and makes the HOM positions NA.  The
-preferred way to identify HOMs is to use genotype calls from a matched normal (-1,0,1,2 for NA,
-AA, AB, BB), but NA'ing values over a certain value works OK.  A hom.cutoff of 0.90 is
+preferred way to identify HOMs is to use genotype calls from a matched
+normal (AA, AC, AG, etc.), but NA'ing values over a certain value works OK.  A hom.cutoff of 0.90 is
 suggested for Affymetrix arrays and 0.95 for Illumina arrays, following Staaf, et al.
 
-
+Return data as a matrix:
 <<mbafcutoff>>=
 mbaf.data = baf2mbaf(baf(baf.ds),hom.cutoff = 0.90)
 assayDataElement(baf.ds,"mbaf") = mbaf.data
+@ 
 
-# Or use compress it to a DataFrame of Rle
-# ~1/3 space used on random data
+... or use compress it to a DataFrame of Rle. This uses ~1/3 the space
+on our random test data.
+<<mbaftorle>>=
 mbaf.data = DataFrame( sapply(colnames( mbaf.data),
   function(x) { Rle( mbaf.data[,x] ) },
   USE.NAMES=TRUE, simplify=FALSE ) )

@@ -1,4 +1,4 @@
-#####  Class definition for GenoSet, which will extend eSet
+######  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
 ######   by location.
@@ -825,6 +825,51 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
     }
   }
 }
+
+##' Load local GC percentage around features
+##'
+##' Local GC content  can be used to remove GC artifacts from copynumber data
+##' see Diskin, 2008). GC% column will be added to the feature data.  The dataset
+##' may be truncated to remove positions without GC information.  GC data are
+##' accessible with locData().
+##' 
+##' @param ds A GenoSet object or derivative
+##' @param expand numeric, expand each feature location by this many bases on each side
+##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)x
+##' @return An updated object, with GC percentage information added to the locData slot.
+##' @export loadGC
+##' @examples \dontrun{
+##'    library(BSgenome.Hsapiens.UCSC.hg19)
+##'    data(genoset)
+##'    cn.ds = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
+##' }
+##' @rdname genoset-methods
+##' @author Peter M. Haverty
+setGeneric("loadGC", function(object,...) standardGeneric("loadGC"))
+##' @rdname genoset-methods
+setMethod("loadGC", "RangedData",
+          function(object,expand=1e6,bsgenome) {
+            expanded.ranges = ranges(object) + expand
+            start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
+            end(expanded.ranges)[ end(expanded.ranges) < 1L ] = 1L
+            if ( ! all( grepl("^chr",names(expanded.ranges)))) {
+              names(expanded.ranges) = gsub("^chr","",names(expanded.ranges)) # Get rid of any chr prefixes that may exist
+              names(expanded.ranges) = paste("chr",names(expanded.ranges),sep="") # Add chr prefix to all
+            }
+            allSeqs = getSeq(bsgenome, expanded.ranges)
+            GCcounts = sapply( seq_len(length(allSeqs)), function(x) { GC = countPattern("G",allSeqs[x]) + countPattern("C",allSeqs[x])})
+            object$gc = (GCcounts / unname(unlist(width(expanded.ranges)))) * 100
+            return(object)
+          })
+##' @rdname genoset-methods
+setMethod("loadGC", "GenoSet", function(object,expand,bsgenome) {
+  # Load gc into locData of GenoSet object
+  ds = loadGC( locData(object),expand,bsgenome )
+  locData(object) = ds
+  return(object)
+})
+
+
 ##' Correct copy number for GC content
 ##'
 ##' Copy number estimates from various platforms show "Genomic Waves" (Diskin et al.,

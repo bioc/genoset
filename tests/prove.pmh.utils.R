@@ -4,6 +4,7 @@
 
 suppressMessages(library(genoset))
 suppressMessages(library(RUnit))
+suppressMessages(library(BSgenome))
 
 options(warn=1)
 

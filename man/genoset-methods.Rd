@@ -21,6 +21,12 @@ feature in a factor names 'space'.
 \code{elementLengths,-method}: Get elementLengths from locData slot
 
 
+\code{loadGC-methods}: Local GC content  can be used to remove GC artifacts from copynumber data
+see Diskin, 2008). GC% column will be added to the feature data.  The dataset
+may be truncated to remove positions without GC information.  GC data are
+accessible with locData().
+
+
 }
 \value{\code{space,-method}: factor
 
@@ -39,6 +45,9 @@ feature in a factor names 'space'.
 \code{elementLengths,-method}: character
 
 
+\code{loadGC-methods}: An updated object, with GC percentage information added to the locData slot.
+
+
 }
 \author{Peter M. Haverty}
 \arguments{\item{x}{GenoSet}
@@ -46,6 +55,9 @@ feature in a factor names 'space'.
 \item{j}{character, RangedData, RangesList, logical, integer}
 \item{drop}{logical drop levels of space factor?}
 \item{...}{additional subsetting args}
+\item{ds}{A GenoSet object or derivative}
+\item{expand}{numeric, expand each feature location by this many bases on each side}
+\item{bsgenome,}{sequence db object from BSgenome (e.g. Hsapiens)x}
 }
 \examples{data(genoset)
 space(genoset.ds)
@@ -85,4 +97,10 @@ genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
 \alias{[}
 \alias{[[,GenoSet,character-method}
 \alias{[[}
+\alias{loadGC-methods}
+\alias{loadGC}
+\alias{loadGC,-method}
+\alias{loadGC}
+\alias{loadGC,-method}
+\alias{loadGC}
 
