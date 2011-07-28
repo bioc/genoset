@@ -274,7 +274,10 @@ cbs.segs = segment( cbs.cna )
 Or use the convenience function runCBS
 <<runCBS>>=
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds))
+@ 
 
+Try it with multicore
+<<cbsmulticore,exec=FALSE>>=
 library(multicore)
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds), n.cores=3)
 assayDataElement(cn.ds,"cn.segs")[1:5,1:3]
