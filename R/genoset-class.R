@@ -831,7 +831,7 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' Local GC content  can be used to remove GC artifacts from copynumber data
 ##' see Diskin, 2008). GC% column will be added to the feature data.  The dataset
 ##' may be truncated to remove positions without GC information.  GC data are
-##' accessible with locData().
+##' accessible with locData(). Uses a cool BSgenome trick from Michael Lawrence.
 ##' 
 ##' @param object A GenoSet object or derivative
 ##' @param expand numeric, expand each feature location by this many bases on each side
@@ -848,16 +848,17 @@ setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
 ##' @rdname genoset-methods
 setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
           function(object,expand=1e6,bsgenome) {
-            expanded.ranges = ranges(object) + expand
-            start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
-            end(expanded.ranges)[ end(expanded.ranges) < 1L ] = 1L
+            expanded.ranges = ranges(object) + expand # Zoom
+            # Check chr name matches
             if ( ! all( grepl("^chr",names(expanded.ranges)))) {
               names(expanded.ranges) = gsub("^chr","",names(expanded.ranges)) # Get rid of any chr prefixes that may exist
               names(expanded.ranges) = paste("chr",names(expanded.ranges),sep="") # Add chr prefix to all
             }
-            allSeqs = getSeq(bsgenome, expanded.ranges)
-            GCcounts = sapply( seq_len(length(allSeqs)), function(x) { GC = countPattern("G",allSeqs[x]) + countPattern("C",allSeqs[x])})
-            object$gc = (GCcounts / unname(unlist(width(expanded.ranges)))) * 100
+            # Check and fix zooming off of the chr ends
+            start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
+            end(expanded.ranges)[ end(expanded.ranges) > seqlengths(bsgenome)[chr(object)] ] = seqlengths(bsgenome)[chr(object)]
+            allSeqs = getSeq(bsgenome, expanded.ranges, as.character=FALSE)
+            object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)
             return(object)
           })
 ##' @rdname genoset-methods

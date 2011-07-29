@@ -167,3 +167,7 @@ test.genomeOrder <- function() {
   checkEquals( c(1:3,8:10,4:7), genomeOrder(ok.locs.weak,strict=TRUE), "locs with disordered chr block pass with strict as FALSE")
   
 }
+
+test.loadGC <- function() {
+
+}
