@@ -8,7 +8,7 @@
 must be in order specified by chrOrder.}
 \value{logical}
 \author{Peter M. Haverty}
-\arguments{\item{ds}{RangedData}
+\arguments{\item{ds}{RangedData or GenoSet}
 \item{strict}{logical, should space/chromosome order be identical to that from chrOrder?}
 }
 \examples{data(genoset)

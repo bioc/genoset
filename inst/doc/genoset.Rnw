@@ -36,7 +36,6 @@
 @ 
 
 \section{Introduction}
-
 The genoset package offers an extension of the BioConductor eSet object for genome
 arrays. The package offers three classes. The first class is the
 ``GenoSet'' class which can hold an arbitrary number of equal-sized
@@ -211,7 +210,9 @@ keep track of whether or not they have changed the row order.
 
 <<genomeorder, eval=TRUE>>=
 chrOrder(names(genoset.ds))
-head(genomeOrder(genoset.ds, strict=FALSE))
+isGenomeOrder(genoset.ds, strict=FALSE)
+isGenomeOrder(genoset.ds, strict=TRUE)
+genoset.ds = toGenomeOrder(genoset.ds, strict=TRUE)
 isGenomeOrder(genoset.ds, strict=TRUE)
 @
 
@@ -309,6 +310,7 @@ library(BSgenome.Hsapiens.UCSC.hg19)
 cn.ds2 = cn.ds
 cn.ds2 = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
 head(locData(cn.ds2)$gc)
+genoPlot(genoPos(cn.ds),locData(cn.ds2)$gc,locs=locData(cn.ds))
 cn(cn.ds2) = gcCorrect(cn(cn.ds2),locData(cn.ds2)$gc)
 @ 
 

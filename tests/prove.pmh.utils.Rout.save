@@ -1,6 +1,6 @@
 
-R version 2.12.1 (2010-12-16)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.13.0 (2011-04-13)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
@@ -24,9 +24,11 @@ Type 'q()' to quit R.
 > 
 > suppressMessages(library(genoset))
 > suppressMessages(library(RUnit))
-> suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 > 
 > options(warn=1)
+> RUnit = options("RUnit")$RUnit
+> RUnit$silent = TRUE
+> options("RUnit"=RUnit)
 > 
 > testsuite.genoset <- defineTestSuite("genoset.test.suite", 
 +                                        dirs = "unit",

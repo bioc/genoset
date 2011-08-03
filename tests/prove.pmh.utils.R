@@ -4,9 +4,11 @@
 
 suppressMessages(library(genoset))
 suppressMessages(library(RUnit))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 
 options(warn=1)
+RUnit = options("RUnit")$RUnit
+RUnit$silent = TRUE
+options("RUnit"=RUnit)
 
 testsuite.genoset <- defineTestSuite("genoset.test.suite", 
                                        dirs = "unit",

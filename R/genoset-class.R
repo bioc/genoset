@@ -8,7 +8,8 @@
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom methods ANY character matrix numeric
-##' 
+##' @importClassesFrom BSgenome BSgenome
+##' @importFrom BSgenome getSeq
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
@@ -26,6 +27,8 @@
 ##' @importFrom methods slot "slot<-" callNextMethod is new
 ##'
 ##' @importFrom stats density lm residuals
+##'
+##' @importFrom GenomicRanges seqlengths
 ##'
 ##' @include DataFrame-methods.R
 ##' @useDynLib genoset
@@ -94,7 +97,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
     rownames(locData) = clean.loc.rownames
   }
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
-    locData = locData[ genomeOrder( locData, strict=TRUE ), ]
+    locData = toGenomeOrder(locData, strict=TRUE )
   }
 
  # Create assayData
@@ -195,6 +198,13 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, ...) {
 # Getters and Setters
 #####################
 
+setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
+          function(object,value) {
+            value = make.names(value,unique=TRUE)
+            object = callNextMethod(object,value)
+            return(object)
+          })
+
 ##' Set featureNames
 ##'
 ##' Set featureNames including rownames of position info
@@ -207,6 +217,7 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, ...) {
 setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
                  function(object, value) {
+                   value = make.names(value,unique=TRUE)
                    object = callNextMethod(object,value)
                    rownames(slot(object,"locData")) = value
                    return(object)
@@ -246,7 +257,15 @@ setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 ##' @rdname locData
 setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
                  function(object,value) {
+                   if (! all( rownames(value) %in% featureNames(object))) {
+                       stop("Can not replace locData using rownames not in this GenoSet")
+                     }
                    slot(object,"locData") = value
+                   if (! all(rownames(value) == featureNames(object))) {
+                     for (adname in assayDataElementNames(object)) {
+                       assayDataElement(object,adname) = assayDataElement(object,adname)[rownames(value),]
+                     }
+                   }
                    return(object)
                    })
 
@@ -377,6 +396,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             if ( ! missing(i) ) {
               x@locData = x@locData[i,,drop=TRUE]
+              i = match(rownames(x@locData),featureNames(x)) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
             }
             callNextMethod(x,i,j,...,drop=drop)
           })
@@ -838,10 +858,6 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)
 ##' @return An updated object, with GC percentage information added to the locData slot.
 ##' @export loadGC
-##' @examples
-##'    \dontrun{data(genoset)}
-##'    \dontrun{library(BSgenome.Hsapiens.UCSC.hg19)}
-##'    \dontrun{cn.ds = loadGC(cn.ds,expand=1e6,bsgenome=Hsapiens)}
 ##' @rdname genoset-methods
 ##' @author Peter M. Haverty
 setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
@@ -856,9 +872,11 @@ setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsg
             }
             # Check and fix zooming off of the chr ends
             start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
-            end(expanded.ranges)[ end(expanded.ranges) > seqlengths(bsgenome)[chr(object)] ] = seqlengths(bsgenome)[chr(object)]
+            for( chrname in names(expanded.ranges) ) {
+              end(expanded.ranges[[chrname]])[ end(expanded.ranges[[chrname]]) > seqlengths(bsgenome)[[ chrname ]] ] = seqlengths(bsgenome)[[ chrname ]]
+            }
             allSeqs = getSeq(bsgenome, expanded.ranges, as.character=FALSE)
-            object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)
+            object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
             return(object)
           })
 ##' @rdname genoset-methods
@@ -1230,11 +1248,11 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
 
   if (! isGenomeOrder(locData(subject),strict=FALSE) ) {
     cat("Setting subject to genome order.")
-    subject = subject[ genomeOrder(locData(subject),strict=FALSE),]
+    subject = toGenomeOrder(subject)
   }
   if (! isGenomeOrder(query.rd,strict=FALSE) ) {
     cat("Setting query to genome order.")
-    query.rd = query.rd[ genomeOrder(query.rd,strict=FALSE),]
+    query.rd = toGenomeOrder(query.rd)
   }
 
   chr.names = intersect( names(query.rd), names(locData(subject)) )  # All chrs in both sets
@@ -1319,7 +1337,7 @@ chrOrder <- function(chr.names) {
 ##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromsomes
 ##' must be in order specified by chrOrder.
 ##' 
-##' @param ds RangedData
+##' @param ds RangedData or GenoSet
 ##' @param strict logical, should space/chromosome order be identical to that from chrOrder?
 ##' @return logical
 ##' @export isGenomeOrder
@@ -1334,12 +1352,15 @@ isGenomeOrder <- function(ds, strict=FALSE) {
     }
   }
   for (chr.name in names(ds)) { # Check each chr for ordered start
-    if ( is.unsorted(start(ds[chr.name])) ) {
+    if ( is.unsorted(start(ranges(ds))[[chr.name]]) ) {
       return(FALSE)
     }
   }
   return(TRUE)
 }
+
+##' @rdname genomeorder
+setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 
 ##' Get indices to set a RangedData or GenoSet to genome order
 ##'
@@ -1349,16 +1370,25 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 ##' @param ds RangedData or GenoSet
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
 ##' @return numeric vector of indices for re-ordering
-##' @export genomeOrder
+##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)
-##'   genomeOrder( baf.ds )
-##'   genomeOrder( baf.ds, strict=TRUE )
+##'   toGenomeOrder( baf.ds, strict=TRUE )
+##'   toGenomeOrder( baf.ds )
+##'   toGenomeOrder( locData(baf.ds) )
 ##' @author Peter M. Haverty
-genomeOrder <- function(ds, strict=FALSE) {
-  chrs = space(ds)
-  if (strict == TRUE) {
-    chrs = factor(chrs, levels=chrOrder( levels(chrs) ) )
-  }
-  return( order(chrs,start(ds)) )
-}
+##' @rdname genomeorder
+setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
+          function(ds, strict=FALSE) {
+            if (strict == TRUE) {
+              ds = ds[ chrOrder(names(ds)) ]
+            }
+            return( ds[order(as.integer(space(ds)),start(ds)),,drop=FALSE] )
+          }
+        )
+##' @rdname genomeorder
+setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
+          function(ds,strict=TRUE) {
+            locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
+            return(ds)
+          })

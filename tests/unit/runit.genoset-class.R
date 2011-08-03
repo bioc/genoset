@@ -1,7 +1,3 @@
-##########
-# Examples
-##########
-
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 
@@ -62,6 +58,60 @@ test.creation <- function() {
   checkTrue(validObject(tom),"GenoSet with out of genome order locData")
   checkTrue(validObject(rle.bafset),"BAFSet with Rle data")
   checkTrue(validObject(rle.cnset),"CNSet with Rle-based data")
+}
+
+test.sampleNames <- function() {
+  ds = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  bad.sampleNames = c("K-fed","&FOO","&FOO")
+  checkEquals( sampleNames(ds), test.sample.names )
+  sampleNames(ds) = bad.sampleNames
+  checkEquals( sampleNames(ds), c("K.fed","X.FOO","X.FOO.1") )
+}
+
+test.featureNames <- function() {
+  ds = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  bad.featureNames = c("a.","b,,","-foo",letters[4:9],"b,,")
+  checkEquals( featureNames(ds), probe.names )
+  featureNames(ds) = bad.featureNames
+  checkEquals( featureNames(ds), c("a.","b..","X.foo",letters[4:9],"b...1"))
+}
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @return 
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+test.locData <- function() {
+  ld = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
+  ds = CNSet(
+    locData=ld,
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  checkEquals(ld,locData(ds))
+  ld.new = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
+  locData(ds) = ld.new
+  ds.new = CNSet(
+    locData=ld.new,
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  checkEquals(ds,ds.new,check.attributes=FALSE)
+  ld.bad = ld.new
+  rownames(ld.bad)[1] = "FOO"
+  checkException( eval(parse(text="locData(ds) = ld.bad")) )
 }
 
 test.rd.gs.shared.api.and.getting.genome.info <- function() {
@@ -150,8 +200,6 @@ test.gcCorrect <- function() {
 test.genomeOrder <- function() {
   chr.names = c(rep("chr1",3),rep("chr2",3),rep("chr10",4))
 
-
-
   ok.locs = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
   checkTrue( isGenomeOrder(ok.locs), "Good locs" )
 
@@ -159,13 +207,33 @@ test.genomeOrder <- function() {
   checkTrue( isGenomeOrder(ok.locs.weak, strict=FALSE), "Good locs with disordered chrs OK" )
   checkTrue( ! isGenomeOrder(ok.locs.weak, strict=TRUE), "Good locs with disordered chrs not strict" )
 
-  bad.locs = RangedData( ranges = IRanges(start=c(2,3,1,1:7),width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  bad.locs = RangedData( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  bad.locs.bad.chr = RangedData( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), space=factor(chr.names,levels=c("chr2","chr1","chr10")))
   checkTrue( ! isGenomeOrder(bad.locs, strict=TRUE), "Bad within chr, OK chr levels, fail")
 
-  checkEquals( 1:10, genomeOrder(ok.locs,strict=TRUE), "Perfect locs pass")
-  checkEquals( 1:10, genomeOrder(ok.locs.weak,strict=FALSE), "locs with disordered chr block pass with strict as FALSE")
-  checkEquals( c(1:3,8:10,4:7), genomeOrder(ok.locs.weak,strict=TRUE), "locs with disordered chr block pass with strict as FALSE")
-  
+  checkEquals( ok.locs, toGenomeOrder(ok.locs,strict=TRUE), "Perfect locs pass")
+  checkEquals( ok.locs.weak, toGenomeOrder(ok.locs.weak,strict=FALSE), "locs with disordered chr block pass with strict as FALSE")
+  checkEquals( ok.locs, toGenomeOrder(ok.locs.weak,strict=TRUE), "locs disordered chrs, but ok within chrs passes with strict as TRUE")
+  checkEquals( ok.locs, toGenomeOrder(bad.locs,strict=TRUE), "locs ok chrs, but disordered within")
+  checkEquals( ok.locs, toGenomeOrder(bad.locs.bad.chr,strict=TRUE), "locs with disordered chrs and within chrs")
+
+  good.ds = CNSet(
+    locData=ok.locs,
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(rownames(ok.locs),test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6", universe="hg19"
+    )
+  bad.ds = good.ds[ c(6,5,4,3,2,1,10:7),]
+  bad.ds.bad.chrs = CNSet(
+    locData=bad.locs.bad.chr,
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(rownames(ok.locs),test.sample.names))[c(4,6,5,2,3,1,10:7),],
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6", universe="hg19"
+    )
+  checkTrue(isGenomeOrder(good.ds))
+  checkTrue(!isGenomeOrder(bad.ds))
+  checkEquals( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs" )
+  checkEquals( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs, disordered chrs" )
 }
 
 test.loadGC <- function() {
