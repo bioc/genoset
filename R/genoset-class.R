@@ -700,10 +700,10 @@ setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
 setMethod("genoPlot",c(x="numeric",y="numeric"),
           function(x, y, add=FALSE, xlab="", ylab="", col="black", locs=NULL, ...) {
             if (add == FALSE) {
-              plot(x,y,axes=FALSE,xlab=xlab,ylab=ylab,xaxs="i",...)
+              plot(x,y,axes=FALSE,xlab=xlab,ylab=ylab,xaxs="i",col=col,...)
               genomeAxis(locs=locs)
             } else {
-              points(x,y,...)
+              points(x,y,col=col,...)
             }
             return(invisible())
           })
@@ -722,7 +722,7 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
             loc.start.indices = (loc.end.indices - num.mark) + 1
             loc.start = x[loc.start.indices]
             seg.mean = runValue(y)
-            segments(loc.start, seg.mean, loc.end, seg.mean, col=col, lwd=lwd)
+            segments(loc.start, seg.mean, loc.end, seg.mean, col=col, lwd=lwd, col=col)
             return(invisible())
           })
 

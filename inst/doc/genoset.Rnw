@@ -278,7 +278,7 @@ assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds))
 @ 
 
 Try it with multicore
-<<cbsmulticore,exec=FALSE>>=
+<<cbsmulticore,eval=FALSE>>=
 library(multicore)
 assayDataElement(cn.ds,"cn.segs") = runCBS(cn(cn.ds),locData(cn.ds), n.cores=3)
 assayDataElement(cn.ds,"cn.segs")[1:5,1:3]
@@ -305,7 +305,7 @@ BSgenome. Be careful to use a version of BSgenome that matches the
 ``universe'', or mapping, of your data set. loadGC adds a ``gc''
 column to the locData slot.
 
-<<GC, exec=FALSE>>=
+<<GC, eval=FALSE>>=
 library(BSgenome.Hsapiens.UCSC.hg19)
 cn.ds2 = cn.ds
 cn.ds2 = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
