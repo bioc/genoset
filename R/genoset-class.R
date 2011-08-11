@@ -722,7 +722,7 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
             loc.start.indices = (loc.end.indices - num.mark) + 1
             loc.start = x[loc.start.indices]
             seg.mean = runValue(y)
-            segments(loc.start, seg.mean, loc.end, seg.mean, col=col, lwd=lwd, col=col)
+            segments(loc.start, seg.mean, loc.end, seg.mean, col=col, lwd=lwd)
             return(invisible())
           })
 
