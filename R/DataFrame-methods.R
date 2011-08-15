@@ -27,3 +27,8 @@ setMethod("annotatedDataFrameFrom",
           signature(object="DataFrame"),
           Biobase:::annotatedDataFrameFromMatrix)
 
+# Allow eSet constructor to make featureNames from a big.matrix as if it were a matrix
+setMethod("annotatedDataFrameFrom",
+          signature(object="big.matrix"),
+          Biobase:::annotatedDataFrameFromMatrix)
+
