@@ -12,5 +12,5 @@ Depends: Biobase, IRanges
 Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats, GenomicRanges, BSgenome
 Suggests: RUnit
 Enhances: multicore, BSgenome.Hsapiens.UCSC.hg19
-biocViews: Infrastructure, DataRepresentation
+biocViews: Infrastructure, DataRepresentation, Microarray, SNP, CopyNumberVariants
 Collate: 'DataFrame-methods.R' 'genoset-class.R' 'cnset-class.R' 'bafset-class.R'
