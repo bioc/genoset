@@ -493,5 +493,29 @@ method for assessing significance of such summaries. You'll find
 ``segTable'' convenient for getting your data formatted for input. I 
 find it convenient to load GISTIC output as a RangedData for 
 intersection with gene locations.
+
+\section{Big Data and bigmemory}
+Genome-scale data can be huge and keeping everything in memory can get
+you into trouble quickly, especially if you like using multicore.
+
+GenoSet supports using big.matrix objects from the bigmemory package
+as assayDataElements.  GenoSet uses one minor modification of the
+big.matrix object to facilitate saving to and reloading from
+disk. Specifically, genoset places the path to the big.matrix
+``description'' file in an attribute of the object called ``desc''.
+This is handled by the convertToBigMatrix function.
+
+Additionally, the function loadGenoSet takes care of re-attaching all
+big.matrix objects to their on-disk components. loadGenoSet takes the
+path to a RData file as its argument. It assumes the RData file
+contains only only object, which is an object of class eSet or an
+object of a derived class.  loadGenoSet works for any GenoSet, not
+just those that contain big.matrix matrices.
+
+<<bigmatrix, eval=FALSE>>=
+cn.ds = convertToBigMatrix(cn.ds)
+save(cn.ds,file="cn.RData")
+reloaded.cn.ds = loadGenoSet("cn.RData")
+@ 
   
 \end{document}

@@ -30,8 +30,11 @@
 ##'
 ##' @importFrom GenomicRanges seqlengths
 ##'
+##' @importFrom bigmemory as.big.matrix attach.big.matrix is.nil is.big.matrix
+##' 
 ##' @include DataFrame-methods.R
 ##' @useDynLib genoset
+
 
 ###############
 # Class GenoSet
@@ -1392,3 +1395,64 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
             return(ds)
           })
+
+#############################
+### Working with data on disk
+#############################
+
+##' Load a GenoSet from a RData file
+##'
+##' Given a RData file with one object (a GenoSet or related object), load it, attach bigmatrix
+##' objects as necessary, and return.
+##' @param path character, path to RData file
+##' @return GenoSet or related object (only object in RData file)
+##' @examples
+##' \dontrun{ ds = loadGenoSet("/path/to/genoset.RData") }
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+loadGenoSet <- function(path) {
+  object = get(load(path)[1])
+  if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
+  for( ad.name in assayDataElementNames(object)) {
+    if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
+      assayDataElement(object,ad.name) = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )
+    }
+  }
+  return(object)
+}
+
+##' Make standard matrices in a GenoSet filebacked bigmatrix objects
+##'
+##' Make standard matrices in a GenoSet filebacked bigmatrix objects
+##' @param object GenoSet
+##' @param prefix character, prefix for all bigmatrix related files
+##' @param path character, directory to be created for all bigmatrix files, can be pre-existing
+##' @return GenoSet or related, updated copy of "object"
+##' @examples
+##' \dontrun{ ds = convertToBigMatrix(ds) }
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
+  dir.create(path,showWarnings=FALSE)
+  path = file.path(getwd(),path)
+  for( ad.name in assayDataElementNames(object)) {
+    if (is.matrix( assayDataElement(object,ad.name) ) ) {
+      back.file = paste(prefix,ad.name,"bin",sep=".")
+      desc.file = paste(prefix,ad.name,"desc",sep=".")
+      if (is.integer( assayDataElement(object,ad.name) )) {
+        mat.type = "integer"
+      } else if (is.double( assayDataElement(object,ad.name))) {
+        mat.type = "double"
+      } else {
+        next;
+      }
+      cat(paste("Converting", ad.name, "to big.matrix ...\n"))
+      assayDataElement(object,ad.name) = as.big.matrix(assayDataElement(object,ad.name),
+                        backingfile=back.file,
+                        descriptorfile=desc.file,
+                        backingpath=path)
+      attr(assayDataElement(object,ad.name),"desc") = file.path(path,desc.file)
+    }
+  }
+  return(object)
+}

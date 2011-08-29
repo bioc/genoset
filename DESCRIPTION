@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.1.8
+Version: 1.1.9
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -9,7 +9,7 @@ Description: Load, manipulate, and plot copynumber and BAF data. GenoSet class e
 License: Artistic-2.0
 LazyLoad: yes
 Depends: Biobase, IRanges
-Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats, GenomicRanges, BSgenome
+Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats, GenomicRanges, BSgenome, bigmemory
 Suggests: RUnit
 Enhances: multicore, BSgenome.Hsapiens.UCSC.hg19
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP, CopyNumberVariants
