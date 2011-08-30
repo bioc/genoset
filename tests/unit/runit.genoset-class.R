@@ -85,12 +85,7 @@ test.featureNames <- function() {
   featureNames(ds) = bad.featureNames
   checkEquals( featureNames(ds), c("a.","b..","X.foo",letters[4:9],"b...1"))
 }
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @return 
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
+
 test.locData <- function() {
   ld = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
   ds = CNSet(
@@ -140,6 +135,8 @@ test.rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( orderedChrs( point.locData ), orderedChrs( gs ) )
   checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
   checkEquals( chrInfo( point.locData ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
+  checkEquals( chrIndices( point.locData, "chr3"), c(5,6) )
+  checkException( chrIndices( point.locData, "chrFOO") )
   checkEquals( chrIndices( point.locData ), chrIndices( gs ) )
   checkEquals( chrIndices( point.locData ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
@@ -170,12 +167,52 @@ test.subset <- function() {
     baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
     )
+    test.sample.names = LETTERS[11:13]
+  probe.names = letters[1:10]
   
+  ds = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  subset.rows.ds = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")[2:3,,drop=TRUE],
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  
+  subset.cols.ds = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    lrr=matrix(11:30,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
+    baf=matrix(41:60,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))[2:3,]),
+    annotation="SNP6"
+    )
+
+  gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
+  
+  # Subsetting whole object
+  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
+  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
+  checkEquals( ds[ gene.rd, ], subset.rows.ds, check.attributes=FALSE)
+  
+  # Subsetting assayData / extracting
+  checkEquals( ds[ 4:6, 1:2, "lrr"], lrr(ds)[4:6,1:2])
+  checkEquals( ds[ 5, 3, "baf"], baf(ds)[5,3])
+  checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])
+  checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
+  checkEquals( ds[ gene.rd, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
+
+  # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[ranges(test.rd),], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[["chr3"]], chr3.ds, checkNames=FALSE )
-  
+  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
 }
 
 test.gcCorrect <- function() {

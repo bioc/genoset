@@ -69,8 +69,7 @@ elementLengths(genoset.ds) # Returns the number of probes per chromosomedata(gen
 genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
 genoset.ds[ , "K"]  # Sample called K
 rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
-genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
+genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17}
 \alias{start,-method}
 \alias{start}
 \alias{end,-method}
@@ -83,11 +82,10 @@ genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
 \alias{elementLengths}
 \alias{[,GenoSet,ANY,ANY-method}
 \alias{[}
-\usage{\S4method{[}{GenoSet,ANY,ANY}(x, i, j, ..., drop=FALSE)
+\usage{\S4method{[}{GenoSet,ANY,ANY}(x, i, j, k, ..., drop=FALSE)
 \S4method{[}{GenoSet,character,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{[}{GenoSet,RangedData,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{[}{GenoSet,RangesList,ANY}(x, i, j, ..., drop=FALSE)
-\S4method{[[}{GenoSet,character}(x, i, ..., drop=FALSE)
 \S4method{loadGC}{RangedData,numeric,BSgenome}(object, expand=1e+06, bsgenome)
 \S4method{loadGC}{GenoSet,numeric,BSgenome}(object, expand, bsgenome)
 }
@@ -97,8 +95,6 @@ genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8}
 \alias{[}
 \alias{[,GenoSet,RangesList,ANY-method}
 \alias{[}
-\alias{[[,GenoSet,character-method}
-\alias{[[}
 \alias{loadGC-methods}
 \alias{loadGC}
 \alias{loadGC,RangedData,numeric,BSgenome-method}

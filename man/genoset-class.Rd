@@ -26,10 +26,10 @@
 \alias{loadGC<-,RangedData,numeric,BSgenome-method}
 
 % Subsetting
-\alias{[,GenoSet,ANY-method}
-\alias{[,GenoSet,RangedData-method}
-\alias{[,GenoSet,RangesList-method}
-\alias{[,GenoSet,character-method}
+\alias{[,GenoSet,ANY,ANY-method}
+\alias{[,GenoSet,RangedData,ANY-method}
+\alias{[,GenoSet,RangesList,ANY-method}
+\alias{[,GenoSet,character,ANY-method}
 
 % Genome info from GenoSet or RangedData
 \alias{chr,GenoSet-method}

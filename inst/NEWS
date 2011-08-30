@@ -29,3 +29,12 @@ Added loadGC function to get local GC content and version bump for bioC2.9
 
 1.1.8
 genomeOrder becomes toGenomeOrder which now takes and returns a GenoSet or RangedData rather than just returning the index to reorder such objects.  locData<- now reorders the whole GenoSet and assures that all of the featureNames match.
+
+1.1.9
+Added support for big.matrix objects from bigmemory as assayDataElements
+
+1.1.10
+***API Change*** list operator "[[" no longer used to subset by chromosome. It reverts back to extracting a column from pData like other eSets. chrIndices gains a "chr" argument that serves as a fast way to get the indices needed to subset rows by chromosome.
+
+1.1.11
+***API Addition*** "k" argument to "[" can be used to subset from a specific assayDataElement.  Numeric and character "k"s are allowed.  assayDataElement(ds,k)[i,j] is the same as ds[i,j,k], but "i" can be a RangedData or RangesList.

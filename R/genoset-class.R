@@ -57,7 +57,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 ##' become part of the assayData slot of the resulting object. This function passes
 ##' control to the "genoSet" object which performs argument checking including
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
-##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
+##' order can be disrupted by "[" calls and will be checked by methods that
 ##' require it.
 ##' 
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
@@ -167,7 +167,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
 ##' or DataFrame objects (from IRanges). This function passes
 ##' control to the "initGenoSet" method which performs argument checking including
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
-##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
+##' order can be disrupted by "[" calls and will be checked by methods that
 ##' require it.
 ##' 
 ##' @param locData A RangedData object specifying feature chromosome
@@ -393,10 +393,13 @@ setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locD
 ##'   genoset.ds[ , "K"]  # Sample called K
 ##'   rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
 ##'   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-##'   genoset.ds[[ "chr8" ]]    # All samples and probes for chromosome 8
-##' @rdname genoset-methods
+##'  @rdname genoset-methods
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
-          function(x,i,j,...,drop=FALSE) {
+          function(x,i,j,k,...,drop=FALSE) {
+            if (! missing(k)) {
+              if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
+              return(assayDataElement(x,k)[i,j])
+            }
             if ( ! missing(i) ) {
               x@locData = x@locData[i,,drop=TRUE]
               i = match(rownames(x@locData),featureNames(x)) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
@@ -424,18 +427,6 @@ setMethod("[", signature=signature(x="GenoSet", i="RangesList", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %in% i)
             callNextMethod(x,indices,j,...,drop=drop)
-          })
-
-##' @exportMethod "[["
-##' @rdname genoset-methods
-setMethod("[[", signature=signature(x="GenoSet", i="character"),
-          function(x,i,...,drop=FALSE) {
-            if (! i %in% names(locData(x))) {
-              stop("Can not subset on chromosome '",i,"' because it is not represented in data set")
-            }
-            index.range = chrIndices(x)[i,c("first","last")]
-            indices = index.range["first"]:index.range["last"]
-            return(x[indices,...,drop=drop])
           })
 
 #######
@@ -605,9 +596,11 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSet"),
 ##'
 ##' Sometimes it is handy to know the first and last index for each chr.
 ##' This is like chrInfo but for feature indices rather than chromosome
-##' locations.
+##' locations. If chr is specified, the function will return a sequence
+##' of integers representing the row indices of features on that chromosome.
 ##' 
 ##' @param object GenoSet or RangedData
+##' @param chr character, specific chromosome name
 ##' @return data.frame with "first" and "last" columns
 ##' @author Peter M. Haverty
 ##' @export chrIndices
@@ -616,14 +609,18 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSet"),
 ##'   chrIndices(genoset.ds)
 ##'   chrIndices(locData(genoset.ds))  # The same
 ##' @rdname chrIndices-methods
-setGeneric("chrIndices", function(object) standardGeneric("chrIndices") )
+setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 ##' @rdname chrIndices-methods
 setMethod("chrIndices", signature(object="RangedDataOrGenoSet"),
-          function(object) {
+          function(object,chr=NULL) {
             chr.names = names(object)
             chr.info = matrix(ncol=3,nrow=length(chr.names), dimnames=list(chr.names,c("first","last","offset")))
             chr.info[,"last"] = cumsum( elementLengths(object) )
             chr.info[,"first"] = c(1,chr.info[- nrow(chr.info),"last"] + 1)
+            if (!is.null(chr)) {
+              if (! chr %in% names(object)) { stop("Must specify a valid chromosome name in chrIndices.\n") }
+              return( seq.int( chr.info[chr,"first"], chr.info[chr,"last"]) )
+            }
             chr.info[,"offset"] = chr.info[,"first"] -1
             return(chr.info)
         })
@@ -737,11 +734,9 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
     stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
   }
   if ( !is.null(chr) ) {
-    index.range = chrIndices(x)[chr,c("first","last")]
-    indices = index.range["first"]:index.range["last"]
-    chr.locData = locData(x)[chr]
+    indices = chrIndices(x,chr)
     element.values = assayDataElement(x,element)[indices,y]
-    positions = start(chr.locData)
+    positions = start(x)[indices]
     locs = NULL
   } else {
     element.values = assayDataElement(x,element)[,y]

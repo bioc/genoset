@@ -9,7 +9,7 @@ generally discouraged from calling "new" directly. The "..." argument is for any
 become part of the assayData slot of the resulting object. This function passes
 control to the "genoSet" object which performs argument checking including
 dimname matching among relevant slots and sets everything to genome order. Genome
-order can be disrupted by "[" or "[[" calls and will be checked by methods that
+order can be disrupted by "[" calls and will be checked by methods that
 require it.}
 \value{A GenoSet object or derivative as specified by "type" arg}
 \author{Peter M. Haverty}

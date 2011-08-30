@@ -150,18 +150,16 @@ tail(genoPos(genoset.ds))
 
 \subsection{Using the Subset Features}
 
-GenoSet objects can be subset using chromosome names, or with a set of
-ranges. Please note that the double bracket operator has be re-tasked
-to subset by chromosome, rather than accessing columns of the
-phenoData slot. The dollar operator still retains this functionality. 
-Chromosome names will always be treated as character, 
-never numeric or integer. 
+GenoSet objects can be subset using matrix notation. The ``features''
+index can be a set of ranges. chrIndices with a chromosome argument is
+a convenient way to get the indices needed to subset by chromosome.
 
 Subset by chromosome   
 <<subsetbychr>>=
-chr12.ds = cn.ds[["chr12"]]
+chr12.ds = cn.ds[ chrIndices(cn.ds,"chr12"), ]
 chr12.ds
 @ 
+
 Subset by a collection of gene locations
 <<subsetbygene>>=
 gene.rd = RangedData(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
@@ -170,17 +168,30 @@ gene.ds = cn.ds[ gene.rd, ]
 gene.ds
 @ 
 
-Dollar still pulls a column from phenoData
-<<dollarsample>>=
-genoset.ds$a
-@ 
-
 GenoSet objects can also be subset by a group of samples and/or
 features, just like an ExpressionSet, or a matrix for that matter.
 
 <<subsetsamples>>=
 cn.ds[1:4,1:2]
 cn.ds[ c("p1","p2"), cn.ds$b %in% c("E","F")]
+@ 
+
+eSet-derived classes tend to have special functions to get and set
+specific assayDataElement members (the big data matrices). For
+example, ExpressionSet has the ``exprs'' function. Likewise, BAFSet
+has ``baf'' and ``lrr'' and CNSet has ``cn''. It is common to put
+other optional matrices in assayData too (e.g. genotypes, quality
+scores, etc.). These can be get and set with the ``assayDataElement''
+function, but typing that out can get old.  GenoSet and derived
+classes use the ``k'' argument to the matrix subsetting bracket to
+subset from a specific assayDataElement. In addition to saving some
+typing, you can directly use a set of ranges to subset the
+assayDataElement.
+
+<<subsetassaydata>>=
+all( cn.ds[ 1:4,1:2,"cn"] == cn(cn.ds)[1:4,1:2] )
+all( cn.ds[ 1:4,1:2,"cn"] == assayDataElement(cn.ds,"cn")[1:4,1:2] )
+cn.ds[ gene.rd, 1:2, "cn" ]
 @ 
 
 \subsection{Genome Order}
@@ -370,7 +381,7 @@ The result is shown in Fig.~\ref{plotchr}.
 
 Plot data without a GenoSet object using numeric or Rle data:
 <<plotchrsimple, eval=FALSE>>=
-chr12.ds = cn.ds[["chr12"]]
+chr12.ds = cn.ds[chr(cn.ds) == "chr12",]
 genoPlot(pos(chr12.ds),cn(chr12.ds)[,1],locs=locData(chr12.ds))  # Numeric data and location
 genoPlot(pos(chr12.ds),assayDataElement(chr12.ds,"cn.segs")[,1],add=TRUE, col="red") # Rle data and numeric position
 @ 

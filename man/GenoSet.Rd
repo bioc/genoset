@@ -10,7 +10,7 @@ become part of the assayData slot of the resulting object. "..." can be matrices
 or DataFrame objects (from IRanges). This function passes
 control to the "initGenoSet" method which performs argument checking including
 dimname matching among relevant slots and sets everything to genome order. Genome
-order can be disrupted by "[" or "[[" calls and will be checked by methods that
+order can be disrupted by "[" calls and will be checked by methods that
 require it.}
 \value{A GenoSet object}
 \author{Peter M. Haverty}
