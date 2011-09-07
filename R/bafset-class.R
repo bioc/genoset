@@ -171,12 +171,12 @@ setMethod("genoPlot", signature(x="BAFSet",y="ANY"),
           function(x, y, element="lrr", chr=NULL, add=FALSE, ...) {
 
             if (element == "baf") {
-              callNextMethod(x, y, element, chr, add, pch=20, ylim=c(0,1), ylab="B-Allele Frequency", ...)
+              callNextMethod(x, y, element, chr, add, ylim=c(0,1), ylab="B-Allele Frequency", ...)
             } else if (element == "lrr") {
-              callNextMethod(x, y, element, chr, add, pch=20, ylab="Log2 Ratio", ...)
+              callNextMethod(x, y, element, chr, add, ylab="Log2 Ratio", ...)
               abline(h=0,lwd=2,lty=2)
             } else {
-              callNextMethod(x, y, element, chr, add, pch=20, ...)
+              callNextMethod(x, y, element, chr, add, ...)
             }
           })
 

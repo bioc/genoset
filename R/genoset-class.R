@@ -385,6 +385,7 @@ setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locD
 ##' @param x GenoSet
 ##' @param i character, RangedData, RangesList, logical, integer
 ##' @param j character, RangedData, RangesList, logical, integer
+##' @param k chracter or integer
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
 ##' @examples
@@ -727,7 +728,7 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
           })
 
 ##' @rdname genoPlot
-setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, chr=NULL, add=FALSE, pch=19, xlab="", ylab="", ...) {
+setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
 
   # Get position info, subset by chr if necessary
   if (! element %in% assayDataElementNames(x)) {
@@ -1410,7 +1411,7 @@ loadGenoSet <- function(path) {
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
   for( ad.name in assayDataElementNames(object)) {
     if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
-      assayDataElement(object,ad.name) = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )
+      assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
     }
   }
   return(object)
@@ -1418,10 +1419,16 @@ loadGenoSet <- function(path) {
 
 ##' Make standard matrices in a GenoSet filebacked bigmatrix objects
 ##'
-##' Make standard matrices in a GenoSet filebacked bigmatrix objects
+##' Make standard matrices in a GenoSet filebacked bigmatrix objects. Something like a
+##' factor can be obtained using integer assayDataElements with a "levels" attribute. The
+##' levels attribute will be maintained. Such objects will be stored as char on disk if
+##' there are < 128 levels, and integer otherwise. "nlevels" and "levels" will work on
+##' these objects as they only require the levels attribute. The "as.character" functionality
+##' of a factor can be obtained like this: levels(assayDataElement(ds,"geno"))[ ds[1:5,1:5,"geno"] ]
+##' for a GenoSet called "ds" with a factor-like element called "geno".
 ##' @param object GenoSet
 ##' @param prefix character, prefix for all bigmatrix related files
-##' @param path character, directory to be created for all bigmatrix files, can be pre-existing
+##' @param path character, directory to be created for all bigmatrix files, can be pre-existing.
 ##' @return GenoSet or related, updated copy of "object"
 ##' @examples
 ##' \dontrun{ ds = convertToBigMatrix(ds) }
@@ -1431,23 +1438,67 @@ convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
   dir.create(path,showWarnings=FALSE)
   path = file.path(getwd(),path)
   for( ad.name in assayDataElementNames(object)) {
+
     if (is.matrix( assayDataElement(object,ad.name) ) ) {
       back.file = paste(prefix,ad.name,"bin",sep=".")
       desc.file = paste(prefix,ad.name,"desc",sep=".")
-      if (is.integer( assayDataElement(object,ad.name) )) {
-        mat.type = "integer"
+
+      if (is.integer( assayDataElement(object,ad.name))) {
+        if (nlevels( assayDataElement(object,ad.name)) > 0) {  # Incoming "factor" from asFactorMatrix
+          options(bigmemory.typecast.warning=FALSE)
+
+          if ( nlevels(assayDataElement(object,ad.name)) > 127 ) {
+            mat.type = "integer"
+          } else {
+            mat.type = "char"
+          }
+        } else {
+          mat.type = "integer"
+        }
       } else if (is.double( assayDataElement(object,ad.name))) {
         mat.type = "double"
       } else {
+        # Other types not handled yet
+        ### character matrices probably too big to unique, need to handle conversion to factor with asFactorMatrix
         next;
       }
-      cat(paste("Converting", ad.name, "to big.matrix ...\n"))
-      assayDataElement(object,ad.name) = as.big.matrix(assayDataElement(object,ad.name),
-                        backingfile=back.file,
-                        descriptorfile=desc.file,
-                        backingpath=path)
-      attr(assayDataElement(object,ad.name),"desc") = file.path(path,desc.file)
+      
+      cat("Converting", ad.name, "to big.matrix ...\n")
+      new.matrix = as.big.matrix(assayDataElement(object,ad.name),
+        type=mat.type,
+        backingfile=back.file,
+        descriptorfile=desc.file,
+        backingpath=path)
+      attr(new.matrix,"desc") = file.path(path,desc.file)
+      if (nlevels(assayDataElement(object,ad.name)) > 0) {
+        attr( new.matrix, "levels") = levels(assayDataElement(object,ad.name))
+        options(bigmemory.typecast.warning=TRUE)
+      }
+      assayDataElement(object,ad.name) = new.matrix
     }
   }
   return(object)
 }
+
+##' Make factor matrix from character matrix
+##'
+##' Make factor matrix from character matrix for use with convertToBigMatrix.
+##' Makes an integer matrix with levels since as.big.matrix would make a
+##' factor matrix into a 1D object for some reason. Character matrices should
+##' be converted to factors with explicit levels as huge matrices are likely
+##' too big to unique.
+##'
+##' @param object matrix of characters
+##' @param levels character
+##' @return factor with dimensions matching object
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+asFactorMatrix <- function(object, levels) {
+  big.factor = as.integer(factor(object,levels=levels))
+  attributes(big.factor) = attributes(object)
+  levels(big.factor) = levels
+  return(big.factor)
+}
+
+geno.levels = paste( c(rep("A",4),rep("C",4),rep("G",4),rep("T",4)), rep(c("A","C","G","T"),4), sep="")
+ab.levels = c("AA","AB","BB")

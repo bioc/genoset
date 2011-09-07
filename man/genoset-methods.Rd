@@ -53,6 +53,7 @@ accessible with locData(). Uses a cool BSgenome trick from Michael Lawrence.
 \arguments{\item{x}{GenoSet}
 \item{i}{character, RangedData, RangesList, logical, integer}
 \item{j}{character, RangedData, RangesList, logical, integer}
+\item{k}{chracter or integer}
 \item{drop}{logical drop levels of space factor?}
 \item{...}{additional subsetting args}
 \item{object}{A GenoSet object or derivative}

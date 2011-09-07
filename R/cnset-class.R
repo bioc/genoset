@@ -109,10 +109,10 @@ setMethod("genoPlot", signature(x="CNSet", y="ANY"),
           function(x, y, element="cn", chr=NULL, add=FALSE, ...) {
             # Plot copynumber
             if (element == "cn") {
-              callNextMethod(x, y, element, chr, add, ylab="Log2 Ratio",pch=20, ...)
+              callNextMethod(x, y, element, chr, add, ylab="Log2 Ratio", ...)
               abline(h=0,lty=2,lwd=2)
             } else {
-              callNextMethod(x, y, element, chr, add, pch=20, ...)
+              callNextMethod(x, y, element, chr, add, ...)
             }
           } )
 
