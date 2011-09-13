@@ -399,7 +399,11 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
               if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
-              return(assayDataElement(x,k)[i,j])
+              if (missing(i) && missing(j)) {
+                return(assayDataElement(x,k)) # Necessary to get whole big.matrix object
+              } else {
+                return(assayDataElement(x,k)[i,j])
+              }
             }
             if ( ! missing(i) ) {
               x@locData = x@locData[i,,drop=TRUE]
@@ -1403,10 +1407,10 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 ##' @param path character, path to RData file
 ##' @return GenoSet or related object (only object in RData file)
 ##' @examples
-##' \dontrun{ ds = loadGenoSet("/path/to/genoset.RData") }
+##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-loadGenoSet <- function(path) {
+readGenoSet <- function(path) {
   object = get(load(path)[1])
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
   for( ad.name in assayDataElementNames(object)) {
@@ -1436,7 +1440,7 @@ loadGenoSet <- function(path) {
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
   dir.create(path,showWarnings=FALSE)
-  path = file.path(getwd(),path)
+  path = normalizePath(path)
   for( ad.name in assayDataElementNames(object)) {
 
     if (is.matrix( assayDataElement(object,ad.name) ) ) {
@@ -1462,7 +1466,7 @@ convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
         ### character matrices probably too big to unique, need to handle conversion to factor with asFactorMatrix
         next;
       }
-      
+
       cat("Converting", ad.name, "to big.matrix ...\n")
       new.matrix = as.big.matrix(assayDataElement(object,ad.name),
         type=mat.type,
@@ -1487,6 +1491,9 @@ convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
 ##' factor matrix into a 1D object for some reason. Character matrices should
 ##' be converted to factors with explicit levels as huge matrices are likely
 ##' too big to unique.
+##'
+##' Caution: use asFactorMatrix on matrices already in an eSet.  The eSet constructor will
+##' apparently wipe out the levels.
 ##'
 ##' @param object matrix of characters
 ##' @param levels character
