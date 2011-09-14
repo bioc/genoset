@@ -207,7 +207,7 @@ setMethod("genoPlot", signature(x="BAFSet",y="ANY"),
 ##' @export
 ##' @author Peter M. Haverty
 baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
-  mbaf = abs(baf - 0.5) + 0.5
+  mbaf = abs(baf[,] - 0.5) + 0.5
   is.na(mbaf) <- mbaf > hom.cutoff
   
   if (!is.null(calls) && !is.null(call.pairs)) {
@@ -218,6 +218,9 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
     if (! all(call.pairs %in% colnames(calls)) ) {
       stop("call.pairs values and calls colnames mismatch\n")
     }
+    if ( ! all.equal( rownames(calls), rownames(baf)) ) {
+      stop("featureNames mismatch between calls and baf.")
+    }
     
     # Check row matching between baf and calls.
     # Some calls rows will be missing from mbaf because PennCNV threw those features out.
@@ -227,10 +230,10 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
     # False negatives very possible, percent row overlap output will warn at least
 
     # NA all mbaf data for which there is a genotype and it is not HET
-    ok.rows = intersect( rownames(calls), rownames(mbaf) )
-    calls = calls[ ok.rows, ]
-    writeLines( sprintf("%.1f percent of features in calls overlap with BAF data", (length(ok.rows)/nrow(baf)) * 100) )
-    is.na(mbaf[rownames(calls),names(call.pairs)]) <- calls[,unlist(call.pairs)] %in% c("AA","CC","GG","TT")
+
+    hom.genotypes = c("AA","CC","GG","TT","AA","BB")
+    if (nlevels(calls) > 0) { hom.genotypes = which( levels(calls) %in% hom.genotypes ) }
+    is.na(mbaf[rownames(calls),names(call.pairs)]) <- calls[,unlist(call.pairs)] %in% hom.genotypes
   }
   return(mbaf)
 }

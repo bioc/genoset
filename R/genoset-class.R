@@ -874,16 +874,16 @@ setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsg
               names(expanded.ranges) = paste("chr",names(expanded.ranges),sep="") # Add chr prefix to all
             }
             # Check and fix zooming off of the chr ends
-            start(expanded.ranges)[ start(expanded.ranges) < 1L ] = 1L
-            for( chrname in names(expanded.ranges) ) {
-              end(expanded.ranges[[chrname]])[ end(expanded.ranges[[chrname]]) > seqlengths(bsgenome)[[ chrname ]] ] = seqlengths(bsgenome)[[ chrname ]]
-            }
+            expanded.ranges = restrict(expanded.ranges, start=1L,
+              end=seqlengths(bsgenome)[ as.character(space(expanded.ranges)) ],
+              keep.all.ranges=TRUE)
+            # Get seqs and get GC content
             allSeqs = getSeq(bsgenome, expanded.ranges, as.character=FALSE)
             object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
             return(object)
           })
 ##' @rdname genoset-methods
-setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand,bsgenome) {
+setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand=1e6,bsgenome) {
   # Load gc into locData of GenoSet object
   ds = loadGC( locData(object),expand,bsgenome )
   locData(object) = ds
@@ -1089,7 +1089,6 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 ##' @author Peter M. Haverty
 runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
-  if (alpha == 0.01) { data("default.DNAcopy.bdry", package="DNAcopy") }
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
   loc.pos = as.numeric(pos(locs))

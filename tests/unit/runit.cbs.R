@@ -70,4 +70,5 @@ test.runCBS <- function() {
   checkEquals( runCBS(ds.with.na,locs, n.cores=8), seg.rle.result, "Return DF of Rle with some NA in starting data")
   checkEquals( runCBS(ds,locs, n.cores=8, return.segs=TRUE), seg.list.result, "Return seg dfs")
   checkEquals( runCBS(seg.rle.result,locs, n.cores=8), seg.rle.result, "Return seg dfs starting from DF of Rle (like mbaf)")
+  checkEquals( runCBS(ds,locs, n.cores=8,alpha=0.01), seg.rle.result, "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
 }

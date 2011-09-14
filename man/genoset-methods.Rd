@@ -88,7 +88,7 @@ genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which over
 \S4method{[}{GenoSet,RangedData,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{[}{GenoSet,RangesList,ANY}(x, i, j, ..., drop=FALSE)
 \S4method{loadGC}{RangedData,numeric,BSgenome}(object, expand=1e+06, bsgenome)
-\S4method{loadGC}{GenoSet,numeric,BSgenome}(object, expand, bsgenome)
+\S4method{loadGC}{GenoSet,numeric,BSgenome}(object, expand=1e+06, bsgenome)
 }
 \alias{[,GenoSet,character,ANY-method}
 \alias{[}
