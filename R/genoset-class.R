@@ -1459,6 +1459,9 @@ readGenoSet <- function(path) {
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
+  browser()
+  orig.umask = Sys.umask()
+  Sys.umask("002")
   dir.create(path,showWarnings=FALSE)
   path = normalizePath(path)
   for( ad.name in assayDataElementNames(object)) {
@@ -1501,6 +1504,7 @@ convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
       assayDataElement(object,ad.name) = new.matrix
     }
   }
+  Sys.umask(orig.umask)
   return(object)
 }
 
