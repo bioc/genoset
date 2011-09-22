@@ -25,6 +25,8 @@ feature in a factor names 'space'.
 see Diskin, 2008). GC% column will be added to the feature data.  The dataset
 may be truncated to remove positions without GC information.  GC data are
 accessible with locData(). Uses a cool BSgenome trick from Michael Lawrence.
+This takes 5.6 hours for 2Mb windows on 2.5M probes, so look for some custom C
+in future releases.
 
 
 }

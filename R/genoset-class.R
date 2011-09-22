@@ -855,6 +855,8 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' see Diskin, 2008). GC% column will be added to the feature data.  The dataset
 ##' may be truncated to remove positions without GC information.  GC data are
 ##' accessible with locData(). Uses a cool BSgenome trick from Michael Lawrence.
+##' This takes 5.6 hours for 2Mb windows on 2.5M probes, so look for some custom C
+##' in future releases.
 ##' 
 ##' @param object A GenoSet object or derivative
 ##' @param expand numeric, expand each feature location by this many bases on each side
@@ -882,6 +884,7 @@ setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsg
             object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
             return(object)
           })
+
 ##' @rdname genoset-methods
 setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand=1e6,bsgenome) {
   # Load gc into locData of GenoSet object
@@ -1399,6 +1402,29 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 ### Working with data on disk
 #############################
 
+##' Attach on-disk matrices into assayData
+##'
+##' GenoSet objects can hold big.matrix objects in their assayData slot environment.
+##' After re-loading the GenoSet from disk, these objects will each need to be re-attached
+##' to their on-disk component using their resource locators stored in their "desc"
+##' attributes. This function checks each assayDataElement to see if it is an un-attached
+##' big.matrix object, re-attaching if necessary. All other assayDataElements are left
+##' untouched. In later releases this function will also handle other on-disk types,
+##' like HDF5-based matrices.
+##' @param object GenoSet
+##' @return GenoSet
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+attachAssayDataElements <- function(object) {
+  for( ad.name in assayDataElementNames(object)) {
+    if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
+      if (is.null(attr(assayDataElement,object,ad.name))) { stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.") }
+      assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
+    }
+  }
+  return(object)
+}
+
 ##' Load a GenoSet from a RData file
 ##'
 ##' Given a RData file with one object (a GenoSet or related object), load it, attach bigmatrix
@@ -1412,12 +1438,7 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 readGenoSet <- function(path) {
   object = get(load(path)[1])
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
-  for( ad.name in assayDataElementNames(object)) {
-    if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
-      assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
-    }
-  }
-  return(object)
+  return( attachAssayDataElements(object) )
 }
 
 ##' Make standard matrices in a GenoSet filebacked bigmatrix objects
