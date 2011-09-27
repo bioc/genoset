@@ -213,6 +213,10 @@ test.subset <- function() {
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
   checkEquals( bm.ds[ 1:3, 1:3, "lrr"], assayDataElement(bm.ds,"lrr")[1:3,1:3], "Extract part of big.matrix" )
   checkIdentical( bm.ds[ , , "lrr"], assayDataElement(bm.ds,"lrr"), "Extract whole big.matrix" )
+  checkEquals( bm.ds[ , 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[,1:2], "Extract cols from big.matrix" )
+  checkEquals( bm.ds[ 1:2, , "lrr"], assayDataElement(bm.ds,"lrr")[1:2,], "Extract rows from big.matrix" )
+  checkEquals( bm.ds[ 1:2, 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[1:2,1:2], "Extract rectangle from big.matrix" )
+  
   
   # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )

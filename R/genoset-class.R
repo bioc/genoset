@@ -401,6 +401,10 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
               if (missing(i) && missing(j)) {
                 return(assayDataElement(x,k)) # Necessary to get whole big.matrix object
+              } else if (missing(i)) {
+                return(assayDataElement(x,k)[,j])
+              } else if (missing(j)) {
+                return(assayDataElement(x,k)[i,])
               } else {
                 return(assayDataElement(x,k)[i,j])
               }
@@ -1418,8 +1422,11 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 attachAssayDataElements <- function(object) {
   for( ad.name in assayDataElementNames(object)) {
     if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
-      if (is.null(attr(assayDataElement,object,ad.name))) { stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.") }
-      assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
+      if (is.null(attr(assayDataElement(object,ad.name),"desc"))) {
+        stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.")
+      } else {
+        assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
+      }
     }
   }
   return(object)
@@ -1459,7 +1466,6 @@ readGenoSet <- function(path) {
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
-  browser()
   orig.umask = Sys.umask()
   Sys.umask("002")
   dir.create(path,showWarnings=FALSE)
