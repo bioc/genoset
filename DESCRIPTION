@@ -9,7 +9,7 @@ Description: Load, manipulate, and plot copynumber and BAF data. GenoSet class e
 License: Artistic-2.0
 LazyLoad: yes
 Depends: Biobase, IRanges
-Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats, GenomicRanges, BSgenome, bigmemory
+Imports: Biobase, DNAcopy, graphics, IRanges, methods, stats, GenomicRanges, BSgenome, Biostrings, bigmemory
 Suggests: RUnit
 Enhances: multicore, BSgenome.Hsapiens.UCSC.hg19
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP, CopyNumberVariants
