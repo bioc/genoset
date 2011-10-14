@@ -908,7 +908,8 @@ setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgeno
 ##' 
 ##' @title cgCorrect
 ##' @param ds numeric matrix of copynumber or log2ratio values, samples in columns
-##' @param gc numeric vector, GC percentage for each row of ds
+##' @param gc numeric vector, GC percentage for each row of ds, must not have NAs
+##' @param retain.mean logical, center on zero or keep same mean?
 ##' @return numeric matrix, residuals of ds regressed on gc
 ##' @export gcCorrect
 ##' @examples
@@ -916,11 +917,16 @@ setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgeno
 ##'   ds = rnorm(100) + (0.1 * gc)
 ##'   gcCorrect(ds, gc)
 ##' @author Peter M. Haverty
-gcCorrect <- function(ds, gc) {
-  gc.na = is.na( gc )
-  is.na(ds) = gc.na
+gcCorrect <- function(ds, gc, retain.mean=TRUE) {
   fit = lm( ds ~ gc, na.action=na.exclude )
   ds.fixed = residuals(fit)
+  if (retain.mean == TRUE) {
+    if (is.null(dim(ds))) {
+      ds.fixed = ds.fixed + mean(ds,na.rm=TRUE)
+    } else {
+      ds.fixed = sweep(ds.fixed,2,colMeans(ds,na.rm=TRUE),FUN="+")
+    }
+  }
   if (is.null(dim(ds))) {
     ds.fixed = unname(ds.fixed)
   } else {
@@ -1102,7 +1108,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), sm
   loc.chr = chr(locs)
   
   # mclapply over samples. cbs can loop over the columns of data, but want to use multiple forks
-  if (is.loaded("mc_fork", PACKAGE="multicore")) {
+  if (n.cores > 1 && is.loaded("mc_fork", PACKAGE="multicore")) {
     mcLapply <- get('mclapply', envir=getNamespace('multicore'))
     loopFunc = function(...) { mcLapply(...,mc.cores=n.cores, mc.preschedule=FALSE) }
     cat("Using mclapply for segmentation ...\n")
