@@ -1543,5 +1543,24 @@ asFactorMatrix <- function(object, levels) {
   return(big.factor)
 }
 
-geno.levels = paste( c(rep("A",4),rep("C",4),rep("G",4),rep("T",4)), rep(c("A","C","G","T"),4), sep="")
-ab.levels = c("AA","AB","BB")
+#geno.levels = paste( c(rep("A",4),rep("C",4),rep("G",4),rep("T",4)), rep(c("A","C","G","T"),4), sep="")
+#ab.levels = c("AA","AB","BB")
+
+##' Update "desc" attributes for big.matrix assayDataElement to new location
+##'
+##' Update "desc" attributes for big.matrix assayDataElement to new location. Assumes files have already
+##' been moved on the filesystem. Assumes names of description and data files are the same.
+##' 
+##' @param ds eSet
+##' @param new.bigmat.dir character, path to directory holding desc and data files
+##' @return eSet
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+relocateAssayData <- function(ds, new.bigmat.dir) {
+  for (ad.name in assayDataElementNames(ds)) {
+    if (is.big.matrix( assayDataElement(ds,ad.name) )) {
+      attr( assayDataElement(ds,ad.name), "desc" ) = file.path( new.bigmat.dir, basename( attr(assayDataElement(ds,ad.name),"desc") ) )
+    }
+  }
+  return(ds)
+}
