@@ -1045,17 +1045,30 @@ segs2RangedData <- function(segs) {
 ##'   segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
 ##' @author Peter M. Haverty
 setGeneric("segTable", function(object,...) standardGeneric("segTable"))
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @param object 
+##' @param locs 
+##' @param sample.name 
+##' @return 
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
 setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
-  # All the time goes into start, end, and space, particularly the unlist.  Maybe faster by chr then cbind?
+  # All the time goes into start and end.  Maybe faster looping by chr?
+  # Tried various ways to do by chr, one df by chr especially slow
+  
   chr.ind = chrIndices(locs)
-  num.mark = unlist(aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"]))
+  num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"])
+  chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(locs))
+  num.mark = unlist(num.mark)
   seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"]))
-
+  
   loc.end.indices = cumsum(num.mark)
   loc.end = end(locs)[loc.end.indices]  # unlist here is the big time waster
   loc.start.indices = (loc.end.indices - num.mark) + 1L
   loc.start = start(locs)[loc.start.indices] # unlist here is the big time waster
-  chrom = space(locs)[loc.start.indices]
+
   if (is.null(sample.name)) {
     sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
   } else {
