@@ -23,9 +23,9 @@ basic.segs.after = list(
   )
 
 basic.rds.after = list(
-  K = RangedData( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),space = c("chr1","chr3","chrX"),  score = c(5.3,2.3,1.2) ),
-  L = RangedData( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), space = c("chr1","chr1","chr3","chrX","chrX"), score = c(1.1,1.4,2.2,3.3,0.5)),
-  M = RangedData( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), space = c("chr1","chr1","chr3","chr3","chrX"), score = c(3.3,4.3,4.3,6.3,7.3))
+  K = RangedData( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),space = c("chr1","chr3","chrX"),  score = c(5.3,2.3,1.2), num.mark = c(4,2,4) ),
+  L = RangedData( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), space = c("chr1","chr1","chr3","chrX","chrX"), score = c(1.1,1.4,2.2,3.3,0.5), num.mark = c(1,3,2,2,2)),
+  M = RangedData( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), space = c("chr1","chr1","chr3","chr3","chrX"), score = c(3.3,4.3,4.3,6.3,7.3), num.mark = c(1,3,1,1,4))
   )
 
 test.segs2RangedData <- function() {

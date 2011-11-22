@@ -976,11 +976,15 @@ modeCenter <- function(ds) {
 ##'   segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the RangedData locs
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2Rle <- function(segs, locs) {
-  temp.rle = Rle(as.numeric(NA),nrow(locs))
-  seg.rd = RangedData( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
-    space=segs[,"chrom"], "Value"=segs[,"seg.mean"])
-  seg.overlap = as.matrix( findOverlaps(seg.rd, locs ) )
-  temp.rle[ seg.overlap[,2], drop=FALSE ] = seg.rd[ seg.overlap[,1], ]$Value
+#  if (sum(segs[,"num.mark"],na.rm=TRUE) == nrow(locs)) {
+#    return(Rle( segs[,"seg.mean"], segs[,"num.mark"]))
+#  } else {
+    temp.rle = Rle(as.numeric(NA),nrow(locs))
+    seg.rd = RangedData( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
+      space=segs[,"chrom"], "Value"=segs[,"seg.mean"])
+    seg.overlap = as.matrix( findOverlaps(seg.rd, locs ) )
+    temp.rle[ seg.overlap[,2], drop=FALSE ] = seg.rd[ seg.overlap[,1], ]$Value
+#  }
   return(temp.rle)
 }
 
@@ -1012,7 +1016,7 @@ segs2RleDataFrame <- function(seg.list, locs) {
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2RangedData <- function(segs) {
-  rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean)
+  rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean,num.mark=segs$num.mark)
   return(rd)
 }
 
@@ -1042,14 +1046,16 @@ segs2RangedData <- function(segs) {
 ##' @author Peter M. Haverty
 setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
+  # All the time goes into start, end, and space, particularly the unlist.  Maybe faster by chr then cbind?
   chr.ind = chrIndices(locs)
   num.mark = unlist(aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"]))
   seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"]))
+
   loc.end.indices = cumsum(num.mark)
-  loc.end = end(locs)[loc.end.indices]
-  loc.start.indices = (loc.end.indices - num.mark) + 1
-  loc.start = start(locs)[loc.start.indices]
-  chrom = as.character(space(locs))[loc.start.indices]
+  loc.end = end(locs)[loc.end.indices]  # unlist here is the big time waster
+  loc.start.indices = (loc.end.indices - num.mark) + 1L
+  loc.start = start(locs)[loc.start.indices] # unlist here is the big time waster
+  chrom = space(locs)[loc.start.indices]
   if (is.null(sample.name)) {
     sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
   } else {
