@@ -1445,15 +1445,26 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 attachAssayDataElements <- function(object) {
+  # Most of the time goes into "dget", which reads and parses the description from file.  Could cache those ...
+  storage.mode <- storageMode(object)
+  if (storage.mode == "lockedEnvironment") {
+    aData <- copyEnv(assayData(object))
+  } else {
+    aData = assayData(object)[[elt]]
+  }
+  
   for( ad.name in assayDataElementNames(object)) {
-    if ( is.big.matrix( assayDataElement(object,ad.name) ) && is.nil( assayDataElement(object,ad.name)@address ) ) {
-      if (is.null(attr(assayDataElement(object,ad.name),"desc"))) {
+    if ( is.big.matrix( aData[[ad.name]] ) && is.nil( aData[[ad.name]]@address ) ) {
+      if (is.null(attr(aData[[ad.name]],"desc"))) {
         stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.")
       } else {
-        assayDataElement(object,ad.name)@address = attach.big.matrix( attr(assayDataElement(object,ad.name),"desc") )@address
+        aData[[ad.name]]@address = attach.big.matrix( attr(aData[[ad.name]],"desc") )@address
       }
     }
   }
+
+  if (storage.mode == "lockedEnvironment") { Biobase:::assayDataEnvLock(aData) }
+  assayData(object) <- aData
   return(object)
 }
 
