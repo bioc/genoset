@@ -1440,20 +1440,18 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 ##' big.matrix object, re-attaching if necessary. All other assayDataElements are left
 ##' untouched. In later releases this function will also handle other on-disk types,
 ##' like HDF5-based matrices.
-##' @param object GenoSet
-##' @return GenoSet
+##' @param assayData, list, environment, or lockedEnvironment
+##' @return assayData, in storage mode of input assayData
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-attachAssayDataElements <- function(object) {
+attachAssayDataElements <- function(aData) {
   # Most of the time goes into "dget", which reads and parses the description from file.  Could cache those ...
-  storage.mode <- storageMode(object)
+  storage.mode <- storageMode(aData)
   if (storage.mode == "lockedEnvironment") {
-    aData <- copyEnv(assayData(object))
-  } else {
-    aData = assayData(object)[[elt]]
+    aData <- copyEnv(aData)
   }
   
-  for( ad.name in assayDataElementNames(object)) {
+  for( ad.name in assayDataElementNames(aData)) {
     if ( is.big.matrix( aData[[ad.name]] ) && is.nil( aData[[ad.name]]@address ) ) {
       if (is.null(attr(aData[[ad.name]],"desc"))) {
         stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.")
@@ -1464,8 +1462,7 @@ attachAssayDataElements <- function(object) {
   }
 
   if (storage.mode == "lockedEnvironment") { Biobase:::assayDataEnvLock(aData) }
-  assayData(object) <- aData
-  return(object)
+  return(aData)
 }
 
 ##' Load a GenoSet from a RData file
