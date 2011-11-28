@@ -1,8 +1,7 @@
 \name{convertToBigMatrix}
 \alias{convertToBigMatrix}
 \title{Make standard matrices in a GenoSet filebacked bigmatrix objects...}
-\usage{convertToBigMatrix(object, prefix="bigmat", path="bigmat")
-}
+\usage{convertToBigMatrix(object, prefix="bigmat", path="bigmat")}
 \description{Make standard matrices in a GenoSet filebacked bigmatrix objects}
 \details{Make standard matrices in a GenoSet filebacked bigmatrix objects. Something like a
 factor can be obtained using integer assayDataElements with a "levels" attribute. The
@@ -15,7 +14,5 @@ for a GenoSet called "ds" with a factor-like element called "geno".}
 \author{Peter M. Haverty \email{phaverty@gene.com}}
 \arguments{\item{object}{GenoSet}
 \item{prefix}{character, prefix for all bigmatrix related files}
-\item{path}{character, directory to be created for all bigmatrix files, can be pre-existing.}
-}
+\item{path}{character, directory to be created for all bigmatrix files, can be pre-existing.}}
 \examples{\dontrun{ ds = convertToBigMatrix(ds) }}
-

@@ -1,8 +1,7 @@
 \name{baf2mbaf}
 \alias{baf2mbaf}
 \title{Calculate mBAF from BAF...}
-\usage{baf2mbaf(baf, hom.cutoff=0.95, calls, call.pairs)
-}
+\usage{baf2mbaf(baf, hom.cutoff=0.95, calls, call.pairs)}
 \description{Calculate mBAF from BAF}
 \details{Calculate Mirrored B-Allele Frequence (mBAF) from B-Allele Frequency (BAF) as in
 Staaf et al., Genome Biology, 2008.  BAF is converted to mBAF by folding around 0.5 so
@@ -15,11 +14,9 @@ argument 'call.pairs' is used to match columns in 'calls' to columns in 'baf'.}
 \arguments{\item{baf}{numeric matrix of BAF values}
 \item{hom.cutoff}{numeric, values above this cutoff to be made NA (considered HOM)}
 \item{calls}{matrix of NA, CT, AG, etc. genotypes to select HETs (in normals). Dimnames must match baf matrix.}
-\item{call.pairs}{list, names represent target samples for HOMs to set to NA. Values represent columns in "calls" matrix.}
-}
+\item{call.pairs}{list, names represent target samples for HOMs to set to NA. Values represent columns in "calls" matrix.}}
 \examples{data(genoset)
 mbaf = baf2mbaf( baf(baf.ds), hom.cutoff=0.9 )
 calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(baf.ds) * 2),replace=TRUE),ncol=2,dimnames=list(featureNames(baf.ds),c("K","L")))
 mbaf = baf2mbaf( baf(baf.ds), hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
 assayDataElement(baf.ds,"mbaf") = baf2mbaf( baf(baf.ds), hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element}
-

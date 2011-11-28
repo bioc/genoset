@@ -1,16 +1,13 @@
 \name{segs2RleDataFrame}
 \alias{segs2RleDataFrame}
 \title{CBS segments to probe matrix}
-\usage{segs2RleDataFrame(seg.list, locs)
-}
+\usage{segs2RleDataFrame(seg.list, locs)}
 \description{Given segments, make a DataFrame of Rle objects for each sample}
 \details{Take table of segments from CBS, convert DataTable of Rle objects for each sample.}
 \value{DataFrame of Rle objects with nrows same as locs and one column for each sample}
 \author{Peter Haverty}
 \arguments{\item{seg.list}{list, list of data frames, one per sample, each is result from CBS}
-\item{locs}{locData from a GenoSet object}
-}
+\item{locs}{locData from a GenoSet object}}
 \examples{data(genoset)
 seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
 segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list}
-

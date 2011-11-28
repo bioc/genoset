@@ -1,8 +1,6 @@
 \name{runCBS}
-\alias{runCBS}
 \title{Run CBS Segmentation}
-\usage{runCBS(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001)
-}
+\usage{runCBS(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001)}
 \description{Utility function to run CBS's three functions on one or more samples}
 \details{Takes care of running CBS segmentation on one or more samples. Makes appropriate
 input, smooths outliers, and segment}
@@ -17,8 +15,7 @@ input, smooths outliers, and segment}
 \item{outlier.SD.scale}{number of SD single points must exceed smooth.region to be considered an outlier}
 \item{smooth.SD.scale}{floor used to reset single point outliers}
 \item{trim}{fraction of sample to smooth}
-\item{alpha}{pvalue cutoff for calling a breakpoint}
-}
+\item{alpha}{pvalue cutoff for calling a breakpoint}}
 \examples{sample.names = paste("a",1:2,sep="")
 probe.names =  paste("p",1:30,sep="")
 ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
@@ -32,4 +29,3 @@ a2 = data.frame( ID=rep("a2",3), chrom=factor(c("chr1","chr1","chr2")), loc.star
 
 runCBS(ds,locs)  # Should give seg.rle.result
 runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result}
-

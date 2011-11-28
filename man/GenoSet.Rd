@@ -1,8 +1,7 @@
 \name{GenoSet}
 \alias{GenoSet}
 \title{Create a GenoSet object...}
-\usage{GenoSet(locData, pData, annotation="", universe, ...)
-}
+\usage{GenoSet(locData, pData, annotation="", universe, ...)}
 \description{Create a GenoSet object}
 \details{This function is the preferred method for creating a new GenoSet object. Users are
 generally discouraged from calling "new" directly. Any "..." arguments will
@@ -19,8 +18,7 @@ locations. Rownames are required to match featureNames.}
 \item{pData}{A data frame with rownames matching all data matrices}
 \item{annotation}{character, string to specify chip/platform type}
 \item{universe}{character, a string to specify the genome universe for locData}
-\item{...}{More matrix or DataFrame objects to include in assayData}
-}
+\item{...}{More matrix or DataFrame objects to include in assayData}}
 \examples{test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 gs = GenoSet(
@@ -29,4 +27,3 @@ cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 annotation="SNP6"
 )}
-

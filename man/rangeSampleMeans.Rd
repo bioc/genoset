@@ -1,8 +1,7 @@
 \name{rangeSampleMeans}
 \alias{rangeSampleMeans}
 \title{Average features in ranges per sample...}
-\usage{rangeSampleMeans(query.rd, subject, assay.element)
-}
+\usage{rangeSampleMeans(query.rd, subject, assay.element)}
 \description{Average features in ranges per sample}
 \details{This function takes per-feature genomic data and returns averages for each of a set of genomic ranges.
 The most obvious application is determining the copy number of a set of genes. The features
@@ -17,9 +16,7 @@ performed by the boundingIndices function.}
 \author{Peter M. Haverty}
 \arguments{\item{query.rd}{RangedData object representing genomic regions (genes) to be averaged.}
 \item{subject}{A GenoSet object or derivative}
-\item{assay.element}{character, name of element in assayData to use to extract data}
-}
+\item{assay.element}{character, name of element in assayData to use to extract data}}
 \examples{data(genoset)
 my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
 rangeSampleMeans( my.genes, baf.ds, "lrr" )}
-

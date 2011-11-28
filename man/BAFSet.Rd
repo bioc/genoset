@@ -1,8 +1,7 @@
 \name{BAFSet}
 \alias{BAFSet}
 \title{Create a BAFSet object...}
-\usage{BAFSet(locData, lrr, baf, pData, annotation="", universe, ...)
-}
+\usage{BAFSet(locData, lrr, baf, pData, annotation="", universe, ...)}
 \description{Create a BAFSet object}
 \details{This function is the preferred method for creating a new BAFSet object. Users are
 generally discouraged from calling "new" directly. This BAFSet function enforces
@@ -25,8 +24,7 @@ matching sampleNames and colnames matching sampleNames}
 \item{pData}{A data frame with rownames matching all data matrices}
 \item{annotation}{character, string to specify chip/platform type}
 \item{universe}{character, a string to specify the genome universe for locData}
-\item{...}{More matrix or DataFrame objects to include in assayData slot}
-}
+\item{...}{More matrix or DataFrame objects to include in assayData slot}}
 \examples{test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 locData.rd = RangedData(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")
@@ -37,4 +35,3 @@ baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 annotation="SNP6"
 )}
-

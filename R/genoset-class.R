@@ -870,6 +870,7 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' @rdname genoset-methods
 ##' @author Peter M. Haverty
 setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
+
 ##' @rdname genoset-methods
 setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
           function(object,expand=1e6,bsgenome) {
@@ -896,7 +897,6 @@ setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgeno
   locData(object) = ds
   return(object)
 })
-
 
 ##' Correct copy number for GC content
 ##'
@@ -1045,15 +1045,6 @@ segs2RangedData <- function(segs) {
 ##'   segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
 ##' @author Peter M. Haverty
 setGeneric("segTable", function(object,...) standardGeneric("segTable"))
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @param object 
-##' @param locs 
-##' @param sample.name 
-##' @return 
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
   # All the time goes into start and end.  Maybe faster looping by chr?
   # Tried various ways to do by chr, one df by chr especially slow
@@ -1120,7 +1111,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
 ##'     runCBS(ds,locs)  # Should give seg.rle.result
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 ##' @author Peter M. Haverty
-runCBS <- function(data, locs, return.segs=FALSE, n.cores=getOption("cores"), smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
+runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
   loc.pos = as.numeric(pos(locs))
@@ -1426,168 +1417,3 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
             return(ds)
           })
-
-#############################
-### Working with data on disk
-#############################
-
-##' Attach on-disk matrices into assayData
-##'
-##' GenoSet objects can hold big.matrix objects in their assayData slot environment.
-##' After re-loading the GenoSet from disk, these objects will each need to be re-attached
-##' to their on-disk component using their resource locators stored in their "desc"
-##' attributes. This function checks each assayDataElement to see if it is an un-attached
-##' big.matrix object, re-attaching if necessary. All other assayDataElements are left
-##' untouched. In later releases this function will also handle other on-disk types,
-##' like HDF5-based matrices.
-##' @param assayData, list, environment, or lockedEnvironment
-##' @return assayData, in storage mode of input assayData
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-attachAssayDataElements <- function(aData) {
-  # Most of the time goes into "dget", which reads and parses the description from file.  Could cache those ...
-  storage.mode <- storageMode(aData)
-  if (storage.mode == "lockedEnvironment") {
-    aData <- copyEnv(aData)
-  }
-  
-  for( ad.name in assayDataElementNames(aData)) {
-    if ( is.big.matrix( aData[[ad.name]] ) && is.nil( aData[[ad.name]]@address ) ) {
-      if (is.null(attr(aData[[ad.name]],"desc"))) {
-        stop("Failed to attach assayDataElement",ad.name,". No 'desc' attribute.")
-      } else {
-        aData[[ad.name]]@address = attach.big.matrix( attr(aData[[ad.name]],"desc") )@address
-      }
-    }
-  }
-
-  if (storage.mode == "lockedEnvironment") { Biobase:::assayDataEnvLock(aData) }
-  return(aData)
-}
-
-##' Load a GenoSet from a RData file
-##'
-##' Given a RData file with one object (a GenoSet or related object), load it, attach bigmatrix
-##' objects as necessary, and return.
-##' @param path character, path to RData file
-##' @return GenoSet or related object (only object in RData file)
-##' @examples
-##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-readGenoSet <- function(path) {
-  object = get(load(path)[1])
-  if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
-  return( attachAssayDataElements(object) )
-}
-
-##' Make standard matrices in a GenoSet filebacked bigmatrix objects
-##'
-##' Make standard matrices in a GenoSet filebacked bigmatrix objects. Something like a
-##' factor can be obtained using integer assayDataElements with a "levels" attribute. The
-##' levels attribute will be maintained. Such objects will be stored as char on disk if
-##' there are < 128 levels, and integer otherwise. "nlevels" and "levels" will work on
-##' these objects as they only require the levels attribute. The "as.character" functionality
-##' of a factor can be obtained like this: levels(assayDataElement(ds,"geno"))[ ds[1:5,1:5,"geno"] ]
-##' for a GenoSet called "ds" with a factor-like element called "geno".
-##' @param object GenoSet
-##' @param prefix character, prefix for all bigmatrix related files
-##' @param path character, directory to be created for all bigmatrix files, can be pre-existing.
-##' @return GenoSet or related, updated copy of "object"
-##' @examples
-##' \dontrun{ ds = convertToBigMatrix(ds) }
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-convertToBigMatrix <- function(object,prefix="bigmat",path="bigmat") {
-  orig.umask = Sys.umask()
-  Sys.umask("002")
-  dir.create(path,showWarnings=FALSE)
-  path = normalizePath(path)
-  for( ad.name in assayDataElementNames(object)) {
-
-    if (is.matrix( assayDataElement(object,ad.name) ) ) {
-      back.file = paste(prefix,ad.name,"bin",sep=".")
-      desc.file = paste(prefix,ad.name,"desc",sep=".")
-
-      if (is.integer( assayDataElement(object,ad.name))) {
-        if (nlevels( assayDataElement(object,ad.name)) > 0) {  # Incoming "factor" from asFactorMatrix
-          options(bigmemory.typecast.warning=FALSE)
-
-          if ( nlevels(assayDataElement(object,ad.name)) > 127 ) {
-            mat.type = "integer"
-          } else {
-            mat.type = "char"
-          }
-        } else {
-          mat.type = "integer"
-        }
-      } else if (is.double( assayDataElement(object,ad.name))) {
-        mat.type = "double"
-      } else {
-        # Other types not handled yet
-        ### character matrices probably too big to unique, need to handle conversion to factor with asFactorMatrix
-        next;
-      }
-
-      cat("Converting", ad.name, "to big.matrix ...\n")
-      new.matrix = as.big.matrix(assayDataElement(object,ad.name),
-        type=mat.type,
-        backingfile=back.file,
-        descriptorfile=desc.file,
-        backingpath=path)
-      attr(new.matrix,"desc") = file.path(path,desc.file)
-      if (nlevels(assayDataElement(object,ad.name)) > 0) {
-        attr( new.matrix, "levels") = levels(assayDataElement(object,ad.name))
-        options(bigmemory.typecast.warning=TRUE)
-      }
-      assayDataElement(object,ad.name) = new.matrix
-    }
-  }
-  Sys.umask(orig.umask)
-  return(object)
-}
-
-##' Make factor matrix from character matrix
-##'
-##' Make factor matrix from character matrix for use with convertToBigMatrix.
-##' Makes an integer matrix with levels since as.big.matrix would make a
-##' factor matrix into a 1D object for some reason. Character matrices should
-##' be converted to factors with explicit levels as huge matrices are likely
-##' too big to unique.
-##'
-##' Caution: use asFactorMatrix on matrices already in an eSet.  The eSet constructor will
-##' apparently wipe out the levels.
-##'
-##' @param object matrix of characters
-##' @param levels character
-##' @return factor with dimensions matching object
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-asFactorMatrix <- function(object, levels) {
-  big.factor = as.integer(factor(object,levels=levels))
-  attributes(big.factor) = attributes(object)
-  levels(big.factor) = levels
-  return(big.factor)
-}
-
-#geno.levels = paste( c(rep("A",4),rep("C",4),rep("G",4),rep("T",4)), rep(c("A","C","G","T"),4), sep="")
-#ab.levels = c("AA","AB","BB")
-
-##' Update "desc" attributes for big.matrix assayDataElement to new location
-##'
-##' Update "desc" attributes for big.matrix assayDataElement to new location. Assumes files have already
-##' been moved on the filesystem. Assumes names of description and data files are the same.
-##' 
-##' @param ds eSet
-##' @param new.bigmat.dir character, path to directory holding desc and data files
-##' @return eSet
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-relocateAssayData <- function(ds, new.bigmat.dir) {
-  for (ad.name in assayDataElementNames(ds)) {
-    if (is.big.matrix( assayDataElement(ds,ad.name) )) {
-      attr( assayDataElement(ds,ad.name), "desc" ) = file.path( new.bigmat.dir, basename( attr(assayDataElement(ds,ad.name),"desc") ) )
-    }
-  }
-  return(ds)
-}

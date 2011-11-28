@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.3.3
+Version: 1.4.0
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -13,4 +13,4 @@ Imports: methods, BiocGenerics, Biobase, DNAcopy, graphics, IRanges, stats, Geno
 Suggests: RUnit
 Enhances: multicore, BSgenome.Hsapiens.UCSC.hg19
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP, CopyNumberVariants
-Collate: 'DataFrame-methods.R' 'genoset-class.R' 'cnset-class.R' 'bafset-class.R'
+Collate: 'DataFrame-methods.R' 'genoset-class.R' 'cnset-class.R' 'bafset-class.R' 'bigmat.R'
