@@ -1,39 +1,83 @@
 \name{boundingIndices}
 \alias{boundingIndices}
-\title{Find indices of features bounding a set of chromsome ranges/genes...}
-\usage{boundingIndices(starts, stops, positions, valid.indices=TRUE, all.indices=FALSE, offset=0)}
-\description{Find indices of features bounding a set of chromsome ranges/genes}
-\details{This function is similar to findOverlaps but it guarantees at least two features will be
-covered. This is useful in the case of finding features corresponding to a set of genes.
-Some genes will fall entirely between two features and thus would not return any ranges
-with findOverlaps. Specifically, this function will find the indices of the features
-(first and last) bounding the ends of a range/gene (start and stop) such that
-first <= start < stop <= last. Equality is necessary so that multiple conversions between
-indices and genomic positions will not expand with each conversion. Ranges/genes that are
-outside the range of feature positions will be given the indices of the corresponding
-first or last index rather than 0 or n + 1 so that genes can always be connected to some data.
+\title{Find indices of features bounding a set of chromsome ranges/genes}
+\usage{
+  boundingIndices(starts, stops, positions,
+    valid.indices = TRUE, all.indices = FALSE, offset = 0)
+}
+\arguments{
+  \item{starts}{integer vector of first base position of
+  each query range}
 
-This function uses some tricks from findIntervals, where is for k queries and n features it
-is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
-faster for sets of query genes that are sorted by start position within each chromosome.
-The index of the stop position for each gene is found using the left bound from the start
-of the gene reducing the search space for the stop position somewhat. This function has
-important differences from intervalBound, which uses findInterval: boundingIndices does not
-check for NAs or unsorted data in the subject positions. Also, the positions are
-kept as integer, where intervalBound (and findInterval) convert them to doubles. These
-three once-per-call differences account for much of the speed improvement in boundingIndices.
-These three differences are meant for position info coming from GenoSet objects
-and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
-does not check that the positions are ordered. The starts and stops need not be sorted, but
-it will be much faster if they are.}
-\value{integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)}
-\seealso{boundingIndices2}
-\author{Peter M. Haverty \email{phaverty@gene.com}}
-\arguments{\item{starts}{integer vector of first base position of each query range}
-\item{stops}{integer vector of last base position of each query range}
-\item{positions}{Base positions in which to search}
-\item{valid.indices}{logical, TRUE assures that the returned indices don't go off either end of the array, i.e. 0 becomes 1 and n+1 becomes n}
-\item{offset}{integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)}
-\item{all.indices}{logical, return a list containing full sequence of indices for each query}}
-\examples{starts = seq(10,100,10)
-boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )}
+  \item{stops}{integer vector of last base position of each
+  query range}
+
+  \item{positions}{Base positions in which to search}
+
+  \item{valid.indices}{logical, TRUE assures that the
+  returned indices don't go off either end of the array,
+  i.e. 0 becomes 1 and n+1 becomes n}
+
+  \item{offset}{integer, value to add to all returned
+  indices. For the case where positions represents a
+  portion of some larger array (e.g. a chr in a genome)}
+
+  \item{all.indices}{logical, return a list containing full
+  sequence of indices for each query}
+}
+\value{
+  integer matrix of 2 columms for start and stop index of
+  range in data or a list of full sequences of indices for
+  each query (see all.indices argument)
+}
+\description{
+  This function is similar to findOverlaps but it
+  guarantees at least two features will be covered. This is
+  useful in the case of finding features corresponding to a
+  set of genes. Some genes will fall entirely between two
+  features and thus would not return any ranges with
+  findOverlaps. Specifically, this function will find the
+  indices of the features (first and last) bounding the
+  ends of a range/gene (start and stop) such that first <=
+  start < stop <= last. Equality is necessary so that
+  multiple conversions between indices and genomic
+  positions will not expand with each conversion.
+  Ranges/genes that are outside the range of feature
+  positions will be given the indices of the corresponding
+  first or last index rather than 0 or n + 1 so that genes
+  can always be connected to some data.
+}
+\details{
+  This function uses some tricks from findIntervals, where
+  is for k queries and n features it is O(k * log(n))
+  generally and ~O(k) for sorted queries. Therefore will be
+  dramatically faster for sets of query genes that are
+  sorted by start position within each chromosome. The
+  index of the stop position for each gene is found using
+  the left bound from the start of the gene reducing the
+  search space for the stop position somewhat. This
+  function has important differences from intervalBound,
+  which uses findInterval: boundingIndices does not check
+  for NAs or unsorted data in the subject positions. Also,
+  the positions are kept as integer, where intervalBound
+  (and findInterval) convert them to doubles. These three
+  once-per-call differences account for much of the speed
+  improvement in boundingIndices. These three differences
+  are meant for position info coming from GenoSet objects
+  and boundingIndices2 is safer for general use.
+  boundingIndices works on integer postions and does not
+  check that the positions are ordered. The starts and
+  stops need not be sorted, but it will be much faster if
+  they are.
+}
+\examples{
+starts = seq(10,100,10)
+  boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
+}
+\author{
+  Peter M. Haverty \email{phaverty@gene.com}
+}
+\seealso{
+  boundingIndices2
+}
+

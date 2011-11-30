@@ -2,6 +2,13 @@
 ### Working with data on disk
 #############################
 
+##' @include genoset-class.R
+
+# Allow eSet constructor to make featureNames from a big.matrix as if it were a matrix
+setMethod("annotatedDataFrameFrom",
+          signature(object="big.matrix"),
+          Biobase:::annotatedDataFrameFromMatrix)
+
 ##' Get assayDataElement, attaching on-disk resource if necessary
 ##'
 ##' Get assayDataElement, attaching on-disk resource if necessary

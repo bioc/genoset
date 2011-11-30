@@ -1,24 +1,28 @@
-\name{chrIndices-methods}
-\alias{chrIndices-methods}
+\name{chrIndices}
 \alias{chrIndices}
-\title{Get a matrix of first and last index of features in each chromosome...}
-\description{Get a matrix of first and last index of features in each chromosome}
-\details{\code{chrIndices-methods}: Sometimes it is handy to know the first and last index for each chr.
-This is like chrInfo but for feature indices rather than chromosome
-locations. If chr is specified, the function will return a sequence
-of integers representing the row indices of features on that chromosome.
+\title{Get a matrix of first and last index of features in each chromosome}
+\arguments{
+  \item{object}{GenoSet or RangedData}
 
+  \item{chr}{character, specific chromosome name}
 }
-\value{\code{chrIndices-methods}: data.frame with "first" and "last" columns
-
+\value{
+  data.frame with "first" and "last" columns
 }
-\author{Peter M. Haverty}
-\arguments{\item{object}{GenoSet or RangedData}
-\item{chr}{character, specific chromosome name}
+\description{
+  Sometimes it is handy to know the first and last index
+  for each chr. This is like chrInfo but for feature
+  indices rather than chromosome locations. If chr is
+  specified, the function will return a sequence of
+  integers representing the row indices of features on that
+  chromosome.
 }
-\examples{data(genoset)
-chrIndices(genoset.ds)
-chrIndices(locData(genoset.ds))  # The same}
-\alias{chrIndices,-method}
-\alias{chrIndices}
+\examples{
+data(genoset)
+  chrIndices(genoset.ds)
+  chrIndices(locData(genoset.ds))  # The same
+}
+\author{
+  Peter M. Haverty
+}
 

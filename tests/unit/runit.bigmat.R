@@ -13,6 +13,7 @@ test.assayData <-function() {
   bm.ds = convertToBigMatrix(ds,path=tempdir())
 
   checkException( assayDataElement(bm.ds,"lrr") <- "FOO", silent=TRUE )
+  checkEquals( bm.ds[,,"lrr"][,], ds[,,"lrr"], "Failing to modify lrr in above test should not modify lrr" )
   rdata.file = file.path(tempdir(),"bm.RData")
   save(bm.ds,file=rdata.file)
   loaded.ds = readGenoSet(rdata.file)

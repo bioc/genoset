@@ -32,7 +32,6 @@
 ##'
 ##' @importFrom bigmemory as.big.matrix attach.big.matrix is.nil is.big.matrix
 ##' 
-##' @include DataFrame-methods.R
 ##' @useDynLib genoset
 
 
@@ -385,7 +384,7 @@ setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locD
 ##' @param x GenoSet
 ##' @param i character, RangedData, RangesList, logical, integer
 ##' @param j character, RangedData, RangesList, logical, integer
-##' @param k chracter or integer
+##' @param k character or integer
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
 ##' @examples
