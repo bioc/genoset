@@ -230,17 +230,18 @@ test.gcCorrect <- function() {
   input.vector = c(rep(0.05,50),rep(0.08,50))
   gc = input.vector
   output.vector = rep(0,100)
-  checkEquals( gcCorrect(input.vector, gc ), output.vector )
+  checkEquals( gcCorrect(input.vector, gc, retain.mean=FALSE ), output.vector )
+  checkEquals( gcCorrect(input.vector, gc, retain.mean=TRUE ), output.vector + mean(input.vector) )
 
   input.matrix = matrix(c(input.vector,input.vector),ncol=2)
   output.matrix = matrix(c(output.vector,output.vector),ncol=2)
-  checkEquals( gcCorrect(input.matrix, gc ), output.matrix )
-  
+  checkEquals( gcCorrect(input.matrix, gc, retain.mean=FALSE ), output.matrix )
+
   gc.w.na = gc
   is.na(gc.w.na) = c(25,75)
   output.matrix.w.na = output.matrix
   output.matrix.w.na[ c(25,75), ] = NA
-  checkEquals( gcCorrect(input.matrix, gc.w.na ), output.matrix.w.na )
+  checkEquals( gcCorrect(input.matrix, gc.w.na, retain.mean=FALSE ), output.matrix.w.na )
 
 }
 

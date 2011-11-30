@@ -53,9 +53,9 @@ test.baf2mbaf <- function() {
   checkEquals( baf2mbaf( baf.ds, hom.cutoff=0.8                                        ), low.cutoff.mbaf.ds, checkNames=FALSE )
   checkEquals( baf2mbaf( baf.ds, hom.cutoff=0.95                                       ), high.cutoff.mbaf.ds, checkNames=FALSE )
   checkEquals( baf2mbaf( baf.ds, calls=ok.calls, call.pairs=all.call.pairs             ), calls.used.mbaf.ds, checkNames=FALSE )
-  checkEquals( baf2mbaf( baf.ds, calls=rowsmissing.calls, call.pairs=all.call.pairs    ), rowsmissing.calls.used.mbaf.ds, checkNames=FALSE )
-  checkEquals( baf2mbaf( baf.ds, calls=extrarows.calls, call.pairs=all.call.pairs      ), calls.used.mbaf.ds, checkNames=FALSE )
   checkEquals( baf2mbaf( baf.ds, calls=ok.calls, call.pairs=some.call.pairs, hom.cutoff = 0.95  ), some.calls.used.mbaf.ds, checkNames=FALSE )
+  checkException( baf2mbaf( baf.ds, calls=rowsmissing.calls, call.pairs=all.call.pairs    ), silent=TRUE )
+  checkException( baf2mbaf( baf.ds, calls=extrarows.calls, call.pairs=all.call.pairs      ), silent=TRUE )
   checkException( baf2mbaf(baf.ds, calls=bad.colnames.calls, call.pairs=all.call.pairs ), silent=TRUE )
   
 }

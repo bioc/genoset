@@ -4,6 +4,7 @@
 
 suppressMessages(library(genoset))
 suppressMessages(library(RUnit))
+suppressMessages(library(bigmemory))
 
 options(warn=1)
 RUnit = options("RUnit")$RUnit

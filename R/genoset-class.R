@@ -31,6 +31,8 @@
 ##' @importFrom GenomicRanges seqlengths
 ##'
 ##' @importFrom bigmemory as.big.matrix attach.big.matrix is.nil is.big.matrix
+##'
+##' @import BiocGenerics
 ##' 
 ##' @useDynLib genoset
 

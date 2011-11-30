@@ -211,6 +211,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
   is.na(mbaf) <- mbaf > hom.cutoff
   
   if (!is.null(calls) && !is.null(call.pairs)) {
+
     # Use genotypes for/from samples specified by call.pairs to NA some HOMs
     if (! all(names(call.pairs) %in% colnames(baf)) ) {
       stop("call.pairs names and baf colnames mismatch\n")
@@ -218,7 +219,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
     if (! all(call.pairs %in% colnames(calls)) ) {
       stop("call.pairs values and calls colnames mismatch\n")
     }
-    if ( ! all.equal( rownames(calls), rownames(baf)) ) {
+    if ( ! identical( rownames(calls), rownames(baf) ) ) {
       stop("featureNames mismatch between calls and baf.")
     }
     
