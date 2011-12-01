@@ -1062,9 +1062,9 @@ setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=
   loc.start = start(locs)[loc.start.indices] # unlist here is the big time waster
 
   if (is.null(sample.name)) {
-    sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
+    sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
   } else {
-    sample.seg = data.frame(ID = sample.name, chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL)
+    sample.seg = data.frame(ID = sample.name, chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
   }
   return(sample.seg)
 })

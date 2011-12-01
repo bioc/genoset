@@ -11,21 +11,29 @@ basic.rle.df = DataFrame(
     row.names=rownames(locData.rd))
 
 basic.segs = list(
-  K = data.frame( ID = "K", chrom = c("chr1","chr3","chrX"), loc.start = c(1,1,1), loc.end = c(10,10,10), num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2) ),
-  L = data.frame( ID = "L", chrom = c("chr1","chr1","chr3","chrX","chrX"), loc.start = c(1,3,1,1,5), loc.end = c(2,10,10,4,10), num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5) ),
-  M = data.frame( ID = "M", chrom = c("chr1","chr1","chr3","chr3","chrX"), loc.start = c(1,3,4,5,1), loc.end = c(2,10,5,6,10), num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3) )
+  K = data.frame( ID = "K", chrom = factor(c("chr1","chr3","chrX"),levels=names(locData.rd)), loc.start = c(1,1,1), loc.end = c(10,10,10),
+    num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2), stringsAsFactors=FALSE ),
+  L = data.frame( ID = "L", chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=names(locData.rd)), loc.start = c(1,3,1,1,5), loc.end = c(2,10,10,4,10),
+    num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5), stringsAsFactors=FALSE ),
+  M = data.frame( ID = "M", chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)), loc.start = c(1,3,4,5,1), loc.end = c(2,10,5,6,10),
+    num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3), stringsAsFactors=FALSE )
   )
 
 basic.segs.after = list(
-  K = data.frame( ID = "K", chrom = c("chr1","chr3","chrX"), loc.start = c(1,4,2), loc.end = c(7,6,8), num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2) ),
-  L = data.frame( ID = "L", chrom = c("chr1","chr1","chr3","chrX","chrX"), loc.start = c(1,3,4,2,6), loc.end = c(1,7,6,4,8), num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5) ),
-  M = data.frame( ID = "M", chrom = c("chr1","chr1","chr3","chr3","chrX"), loc.start = c(1,3,4,6,2), loc.end = c(1,7,4,6,8), num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3) )
+  K = data.frame( ID = "K", chrom = factor(c("chr1","chr3","chrX"),levels=names(locData.rd)),
+    loc.start = c(1,4,2), loc.end = c(7,6,8), num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2), stringsAsFactors=FALSE ),
+  L = data.frame( ID = "L", chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=names(locData.rd)),
+    loc.start = c(1,3,4,2,6), loc.end = c(1,7,6,4,8), num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5), stringsAsFactors=FALSE ),
+  M = data.frame( ID = "M", chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)),
+    loc.start = c(1,3,4,6,2), loc.end = c(1,7,4,6,8), num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3), stringsAsFactors=FALSE )
   )
 
 basic.rds.after = list(
-  K = RangedData( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),space = c("chr1","chr3","chrX"),  score = c(5.3,2.3,1.2), num.mark = c(4,2,4) ),
-  L = RangedData( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), space = c("chr1","chr1","chr3","chrX","chrX"), score = c(1.1,1.4,2.2,3.3,0.5), num.mark = c(1,3,2,2,2)),
-  M = RangedData( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), space = c("chr1","chr1","chr3","chr3","chrX"), score = c(3.3,4.3,4.3,6.3,7.3), num.mark = c(1,3,1,1,4))
+  K = RangedData( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),space = factor(c("chr1","chr3","chrX"),levels=names(locData.rd)),  score = c(5.3,2.3,1.2), num.mark = c(4,2,4) ),
+  L = RangedData( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), space = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=names(locData.rd)),
+    score = c(1.1,1.4,2.2,3.3,0.5), num.mark = c(1,3,2,2,2)),
+  M = RangedData( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), space = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)),
+    score = c(3.3,4.3,4.3,6.3,7.3), num.mark = c(1,3,1,1,4))
   )
 
 test.segs2RangedData <- function() {
