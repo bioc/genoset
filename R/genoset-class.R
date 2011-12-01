@@ -1385,9 +1385,6 @@ isGenomeOrder <- function(ds, strict=FALSE) {
   return(TRUE)
 }
 
-##' @rdname genomeorder
-setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
-
 ##' Get indices to set a RangedData or GenoSet to genome order
 ##'
 ##' Returns a vector of idices to use in re-ordering a RangedData or
@@ -1403,7 +1400,11 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 ##'   toGenomeOrder( baf.ds )
 ##'   toGenomeOrder( locData(baf.ds) )
 ##' @author Peter M. Haverty
-##' @rdname genomeorder
+##' @rdname toGenomeOrder-methods
+setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
+
+##' @rdname toGenomeOrder-methods
+##' @aliases toGenomeOrder,RangedData-method
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=FALSE) {
             if (strict == TRUE) {
@@ -1412,7 +1413,8 @@ setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
             return( ds[order(as.integer(space(ds)),start(ds)),,drop=FALSE] )
           }
         )
-##' @rdname genomeorder
+##' @rdname toGenomeOrder-methods
+##' @aliases toGenomeOrder,GenoSet-method
 setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
           function(ds,strict=TRUE) {
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds

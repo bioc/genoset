@@ -1,5 +1,7 @@
 \name{toGenomeOrder}
 \alias{toGenomeOrder}
+\alias{toGenomeOrder,GenoSet-method}
+\alias{toGenomeOrder,RangedData-method}
 \title{Get indices to set a RangedData or GenoSet to genome order}
 \arguments{
   \item{ds}{RangedData or GenoSet}
