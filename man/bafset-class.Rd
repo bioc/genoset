@@ -10,7 +10,6 @@
 \alias{lrr,BAFSet-method}
 \alias{baf<-,BAFSet,matrix-method}
 \alias{lrr<-,BAFSet,matrix-method}
-\alias{genoPlot,BAFSet,ANY-method}
   
 % Coercion:
 \alias{coerce,CNSet,BAFSet-method}

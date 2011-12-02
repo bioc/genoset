@@ -8,7 +8,6 @@
 
 \alias{cn,CNSet-method}
 \alias{cn<-,CNSet,matrix-method}
-\alias{genoPlot,CNSet,ANY-method}
 
 % Coercion:
 \alias{coerce,ExpressionSet,CNSet-method}

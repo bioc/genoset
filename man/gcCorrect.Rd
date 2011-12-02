@@ -36,4 +36,8 @@ gc = runif(n=100, min=1, max=100)
 \author{
   Peter M. Haverty
 }
+\seealso{
+  Other "gc content": \code{\link{loadGC}},
+  \code{\link{loadGC}}, \code{\link{loadGC}}
+}
 

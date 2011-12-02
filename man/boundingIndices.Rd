@@ -56,10 +56,10 @@
   index of the stop position for each gene is found using
   the left bound from the start of the gene reducing the
   search space for the stop position somewhat. This
-  function has important differences from intervalBound,
+  function has important differences from boundingIndices2,
   which uses findInterval: boundingIndices does not check
   for NAs or unsorted data in the subject positions. Also,
-  the positions are kept as integer, where intervalBound
+  the positions are kept as integer, where boundingIndices2
   (and findInterval) convert them to doubles. These three
   once-per-call differences account for much of the speed
   improvement in boundingIndices. These three differences
@@ -78,6 +78,8 @@ starts = seq(10,100,10)
   Peter M. Haverty \email{phaverty@gene.com}
 }
 \seealso{
-  boundingIndices2
+  Other "range summaries": \code{\link{boundingIndices2}},
+  \code{\link{rangeColMeans}},
+  \code{\link{rangeSampleMeans}}
 }
 

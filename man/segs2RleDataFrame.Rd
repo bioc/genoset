@@ -30,4 +30,10 @@ data(genoset)
 \author{
   Peter Haverty
 }
+\seealso{
+  Other "segmented data": \code{\link{runCBS}},
+  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
+  \code{\link{segTable}}, \code{\link{segTable}},
+  \code{\link{segTable}}
+}
 

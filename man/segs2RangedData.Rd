@@ -20,4 +20,10 @@
 \author{
   Peter M. Haverty \email{phaverty@gene.com}
 }
+\seealso{
+  Other "segmented data": \code{\link{runCBS}},
+  \code{\link{segs2Rle}}, \code{\link{segs2RleDataFrame}},
+  \code{\link{segTable}}, \code{\link{segTable}},
+  \code{\link{segTable}}
+}
 

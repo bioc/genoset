@@ -21,4 +21,9 @@ chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX
 \author{
   Peter M. Haverty
 }
+\seealso{
+  Other "genome ordering": \code{\link{isGenomeOrder}},
+  \code{\link{toGenomeOrder}}, \code{\link{toGenomeOrder}},
+  \code{\link{toGenomeOrder}}
+}
 

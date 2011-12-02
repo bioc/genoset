@@ -37,4 +37,10 @@ data(genoset)
 \author{
   Peter M. Haverty
 }
+\seealso{
+  Other "genome plots": \code{\link{genoPlot}},
+  \code{\link{genoPlot}}, \code{\link{genoPlot}},
+  \code{\link{genoPlot}}, \code{\link{genoPlot}},
+  \code{\link{genoPlot}}
+}
 

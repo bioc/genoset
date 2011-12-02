@@ -1,3 +1,4 @@
+\docType{methods}
 \name{toGenomeOrder}
 \alias{toGenomeOrder}
 \alias{toGenomeOrder,GenoSet-method}
@@ -25,5 +26,9 @@ data(genoset)
 }
 \author{
   Peter M. Haverty
+}
+\seealso{
+  Other "genome ordering": \code{\link{chrOrder}},
+  \code{\link{isGenomeOrder}}
 }
 

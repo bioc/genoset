@@ -42,6 +42,8 @@ data(genoset)
   Peter M. Haverty
 }
 \seealso{
-  boundingIndices intervalBound
+  Other "range summaries": \code{\link{boundingIndices}},
+  \code{\link{boundingIndices2}},
+  \code{\link{rangeColMeans}}
 }
 

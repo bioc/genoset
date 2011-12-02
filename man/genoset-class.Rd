@@ -22,8 +22,6 @@
 \alias{names,GenoSet-method}
 \alias{ranges,GenoSet-method}
 \alias{elementLengths,GenoSet-method}
-\alias{loadGC,GenoSet,numeric,BSgenome-method}
-\alias{loadGC,RangedData,numeric,BSgenome-method}
 
 % Subsetting
 \alias{[,GenoSet,ANY,ANY,ANY-method}
@@ -42,16 +40,8 @@
 \alias{chrInfo,RangedDataOrGenoSet-method}
 \alias{genoPos,RangedDataOrGenoSet-method}
 
-% Plotting
-\alias{genoPlot,GenoSet,ANY-method}
-\alias{genoPlot,numeric,Rle-method}
-\alias{genoPlot,numeric,numeric-method}
-
 % DataFrame and extensions:
 \alias{colMeans,DataFrame-method}
-\alias{segTable,Rle-method}
-\alias{segTable,DataFrame-method}
-
 
 \title{GenoSet class}
 
