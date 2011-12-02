@@ -667,9 +667,9 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
             return(genopos)
           })
 
-#######
-# Plots
-#######
+###########
+## Plots ##
+###########
 
 ##' Plot data along the genome
 ##'
@@ -699,14 +699,18 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' @return nothing
 ##' @author Peter M. Haverty
 ##' @export genoPlot
+##' @family "genome plots"
+##' @docType methods
 ##' @examples
 ##'   data(genoset)
 ##'   genoPlot( baf.ds,1,element="lrr")
 ##'   genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
 ##'   genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
-##' @rdname genoPlot
+##' @rdname genoPlot-methods
 setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
-##' @rdname genoPlot
+
+##' @rdname genoPlot-methods
+##' @aliases genoPlot,numeric,numeric-method
 setMethod("genoPlot",c(x="numeric",y="numeric"),
           function(x, y, add=FALSE, xlab="", ylab="", col="black", locs=NULL, ...) {
             if (add == FALSE) {
@@ -718,7 +722,8 @@ setMethod("genoPlot",c(x="numeric",y="numeric"),
             return(invisible())
           })
 
-##' @rdname genoPlot
+##' @rdname genoPlot-methods
+##' @aliases genoPlot,numeric,Rle-method
 setMethod("genoPlot", c(x="numeric",y="Rle"),
           function(x, y, add=FALSE, xlab="", ylab="", col="red", locs=NULL, lwd=2, ...) {
             if (add == FALSE) {
@@ -736,7 +741,8 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
             return(invisible())
           })
 
-##' @rdname genoPlot
+##' @rdname genoPlot-methods
+##' @aliases genoPlot,GenoSet,ANY-method
 setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
 
   # Get position info, subset by chr if necessary
@@ -759,6 +765,53 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
   }
   genoPlot(positions,element.values,locs=locs,add=add,xlab=xlab,ylab=ylab,pch=pch,...)
 })
+
+##' Label an axis with base positions
+##'
+##' Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
+##'
+##' @title Label axis with base pair units
+##' @param locs RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
+##' @param side integer side of plot to put axis
+##' @param log logical Is axis logged?
+##' @param do.other.side logical, label non-genome side with data values at tick marks?
+##' @return nothing
+##' @export genomeAxis
+##' @family "genome plots"
+##' @examples
+##'   data(genoset)
+##'   genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
+##'   genomeAxis( locs=locData(baf.ds) )  # Add chromsome names and boundaries to a plot assuming genome along x-axis
+##'   genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
+##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
+##' @author Peter M. Haverty
+genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
+  if (is.null(locs)) {
+    label.positions = axTicks(side=side,log=log)
+    if ( max(label.positions) > 1e9 ) {
+      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e9),"Gb",sep="")}))
+    } else if ( max(label.positions) > 1e6 ) {
+      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e6),"Mb",sep="")}))
+    } else if ( max(label.positions) > 1e3 ) {
+      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e3),"kb",sep="")}))
+    } else {
+      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.0f",x),"bp",sep="")}))
+    }
+  } else {
+    chr.info = chrInfo(locs)
+    abline(v=chr.info[-1,"start"])
+    chr.labels = rownames(chr.info)
+    mtext(side=rep(c(3,1),len=length(chr.labels)), text=chr.labels, line=0, at=rowMeans(chr.info[,c("start","stop"),drop=FALSE]))
+  }
+  box()
+  if (do.other.side == TRUE) {
+    if (side == 1) {
+      axis(side=2)
+    } else if (side == 2) {
+      axis(side=1)
+    }
+  }
+}
 
 ###########
 # Functions
@@ -808,52 +861,6 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
   }
 }
 
-##' Label an axis with base positions
-##'
-##' Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
-##'
-##' @title Label axis with base pair units
-##' @param locs RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
-##' @param side integer side of plot to put axis
-##' @param log logical Is axis logged?
-##' @param do.other.side logical, label non-genome side with data values at tick marks?
-##' @return nothing
-##' @export genomeAxis
-##' @examples
-##'   data(genoset)
-##'   genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
-##'   genomeAxis( locs=locData(baf.ds) )  # Add chromsome names and boundaries to a plot assuming genome along x-axis
-##'   genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
-##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
-##' @author Peter M. Haverty
-genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
-  if (is.null(locs)) {
-    label.positions = axTicks(side=side,log=log)
-    if ( max(label.positions) > 1e9 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e9),"Gb",sep="")}))
-    } else if ( max(label.positions) > 1e6 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e6),"Mb",sep="")}))
-    } else if ( max(label.positions) > 1e3 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e3),"kb",sep="")}))
-    } else {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.0f",x),"bp",sep="")}))
-    }
-  } else {
-    chr.info = chrInfo(locs)
-    abline(v=chr.info[-1,"start"])
-    chr.labels = rownames(chr.info)
-    mtext(side=rep(c(3,1),len=length(chr.labels)), text=chr.labels, line=0, at=rowMeans(chr.info[,c("start","stop"),drop=FALSE]))
-  }
-  box()
-  if (do.other.side == TRUE) {
-    if (side == 1) {
-      axis(side=2)
-    } else if (side == 2) {
-      axis(side=1)
-    }
-  }
-}
-
 ##' Load local GC percentage around features
 ##'
 ##' Local GC content  can be used to remove GC artifacts from copynumber data
@@ -868,11 +875,14 @@ genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
 ##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)
 ##' @return An updated object, with GC percentage information added to the locData slot.
 ##' @export loadGC
-##' @rdname genoset-methods
+##' @family "gc content"
+##' @docType methods
+##' @rdname loadGC-methods
 ##' @author Peter M. Haverty
 setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
 
-##' @rdname genoset-methods
+##' @rdname loadGC-methods
+##' @aliases loadGC,RangedData,numeric,BSgenome-method
 setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
           function(object,expand=1e6,bsgenome) {
             expanded.ranges = ranges(object) + expand # Zoom
@@ -891,7 +901,8 @@ setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsg
             return(object)
           })
 
-##' @rdname genoset-methods
+##' @rdname loadGC-methods
+##' @aliases loadGC,GenoSet,numeric,BSgenome-method
 setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand=1e6,bsgenome) {
   # Load gc into locData of GenoSet object
   ds = loadGC( locData(object),expand,bsgenome )
@@ -913,6 +924,7 @@ setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgeno
 ##' @param retain.mean logical, center on zero or keep same mean?
 ##' @return numeric matrix, residuals of ds regressed on gc
 ##' @export gcCorrect
+##' @family "gc content"
 ##' @examples
 ##'   gc = runif(n=100, min=1, max=100)
 ##'   ds = rnorm(100) + (0.1 * gc)
@@ -971,6 +983,7 @@ modeCenter <- function(ds) {
 ##' @param locs RangedData, like locData slot of a GenoSet
 ##' @return Rle with run lengths and run values covering all features in the data set.
 ##' @export
+##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
 ##'   segs = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
@@ -997,6 +1010,7 @@ segs2Rle <- function(segs, locs) {
 ##' @param locs locData from a GenoSet object
 ##' @return DataFrame of Rle objects with nrows same as locs and one column for each sample
 ##' @export segs2RleDataFrame
+##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
 ##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
@@ -1014,6 +1028,7 @@ segs2RleDataFrame <- function(seg.list, locs) {
 ##' so it can easily be made into various genome browser formats using rtracklayer.
 ##' @param segs data.frame, like from segment in DNAcopy or segTable
 ##' @return RangedData
+##' @family "segmented data"
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2RangedData <- function(segs) {
@@ -1036,6 +1051,7 @@ segs2RangedData <- function(segs) {
 ##' @param sample.name character for single Rle optionally include "ID" column with this sample name
 ##' @return one or a list of data.frames with columns ID, chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
+##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
 ##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
@@ -1045,7 +1061,12 @@ segs2RangedData <- function(segs) {
 ##'   segTable( assayDataElement(baf.ds,"lrr.segs"), locData(baf.ds) )
 ##'   segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
 ##' @author Peter M. Haverty
+##' @docType methods
+##' @rdname segTable-methods
 setGeneric("segTable", function(object,...) standardGeneric("segTable"))
+
+##' @rdname segTable-methods
+##' @aliases segTable,Rle-method
 setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
   # All the time goes into start and end.  Maybe faster looping by chr?
   # Tried various ways to do by chr, one df by chr especially slow
@@ -1069,6 +1090,8 @@ setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=
   return(sample.seg)
 })
 
+##' @rdname segTable-methods
+##' @aliases segTable,DataFrame-method
 setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
   segs = sapply( names(object),
     function(x) {
@@ -1096,6 +1119,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
 ##' @param trim fraction of sample to smooth
 ##' @param alpha pvalue cutoff for calling a breakpoint
 ##' @return data frame of segments from CBS
+##' @family "segmented data"
 ##' @export runCBS
 ##' @examples
 ##'     sample.names = paste("a",1:2,sep="")
@@ -1170,6 +1194,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
 ##' @param positions Base positions in which to search
 ##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
 ##' @return integer matrix of 2 columms for start and stop index of range in data
+##' @family "range summaries"
 ##' @export boundingIndices2
 ##' @examples
 ##'   starts = seq(10,100,10)
@@ -1208,9 +1233,9 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' faster for sets of query genes that are sorted by start position within each chromosome.
 ##' The index of the stop position for each gene is found using the left bound from the start
 ##' of the gene reducing the search space for the stop position somewhat. This function has
-##' important differences from intervalBound, which uses findInterval: boundingIndices does not
+##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
 ##' check for NAs or unsorted data in the subject positions. Also, the positions are
-##' kept as integer, where intervalBound (and findInterval) convert them to doubles. These
+##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles. These
 ##' three once-per-call differences account for much of the speed improvement in boundingIndices.
 ##' These three differences are meant for position info coming from GenoSet objects
 ##' and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
@@ -1224,7 +1249,7 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
 ##' @param all.indices logical, return a list containing full sequence of indices for each query
 ##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
-##' @seealso boundingIndices2
+##' @family "range summaries"
 ##' @export boundingIndices
 ##' @examples
 ##'   starts = seq(10,100,10)
@@ -1262,7 +1287,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' @param subject A GenoSet object or derivative
 ##' @param assay.element character, name of element in assayData to use to extract data
 ##' @return numeric matrix of features in each range averaged by sample
-##' @seealso boundingIndices intervalBound
+##' @family "range summaries"
 ##' @export rangeSampleMeans
 ##' @examples
 ##'   data(genoset)
@@ -1323,7 +1348,8 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
 ##' @return A numeric matrix or vector, matching the form of x. One row for
 ##' each row in bounds, one col for each col of x and appropriate dimnames.
 ##' If x is a vector, just a vector with names from the rownames of bounds.
-##' @export 
+##' @export
+##' @family "range summaries"
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 rangeColMeans <- function( bounds, x ) {
   if (! is.matrix(bounds) && ncol(bounds) == 2) {
@@ -1346,6 +1372,7 @@ rangeColMeans <- function( bounds, x ) {
 ##' @param chr.names character, vector of unique chromosome names
 ##' @return character vector of chromosome names in proper order
 ##' @export chrOrder
+##' @family "genome ordering"
 ##' @examples
 ##'    chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX","chrY")
 ##' @author Peter M. Haverty
@@ -1367,6 +1394,7 @@ chrOrder <- function(chr.names) {
 ##' @param strict logical, should space/chromosome order be identical to that from chrOrder?
 ##' @return logical
 ##' @export isGenomeOrder
+##' @family "genome ordering"
 ##' @examples
 ##'   data(genoset)
 ##'   isGenomeOrder( locData(genoset.ds) )
@@ -1400,6 +1428,8 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 ##'   toGenomeOrder( baf.ds )
 ##'   toGenomeOrder( locData(baf.ds) )
 ##' @author Peter M. Haverty
+##' @docType methods
+##' @family "genome ordering"
 ##' @rdname toGenomeOrder-methods
 setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 

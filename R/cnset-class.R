@@ -104,7 +104,8 @@ setAs("ExpressionSet","CNSet", def=
 #######
 
 ##' @author Peter M. Haverty
-##' @rdname genoPlot
+##' @rdname genoPlot-methods
+##' @aliases genoPlot,CNSet,ANY-method
 setMethod("genoPlot", signature(x="CNSet", y="ANY"),
           function(x, y, element="cn", chr=NULL, add=FALSE, ...) {
             # Plot copynumber

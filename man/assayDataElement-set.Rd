@@ -2,7 +2,7 @@
 \alias{assayDataElement<-}
 \title{Set assayDataElement, attaching on-disk resource if necessary}
 \usage{
-  assayDataElement(object, elt, value) <- value
+  assayDataElement(object, elt) <- value
 }
 \arguments{
   \item{object}{eSet}

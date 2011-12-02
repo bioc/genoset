@@ -33,6 +33,7 @@ assayDataElement <- function(object, elt) {
 ##' @param value input data to assayDataElement
 ##' @return eSet
 ##' @export 'assayDataElement<-'
+##' @usage assayDataElement(object, elt) <- value
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 'assayDataElement<-' <- function(object, elt, value) {
   if ( is.big.matrix( assayData(object)[[elt]] ) ) {

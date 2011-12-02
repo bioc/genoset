@@ -166,7 +166,8 @@ BAFSet.to.ExpressionSets <- function(bs) {
 # Plots
 #######
 
-##' @rdname genoPlot
+##' @rdname genoPlot-methods
+##' @aliases genoPlot,BAFSet,ANY-method
 setMethod("genoPlot", signature(x="BAFSet",y="ANY"),
           function(x, y, element="lrr", chr=NULL, add=FALSE, ...) {
 

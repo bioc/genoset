@@ -10,12 +10,12 @@
 % GenoSet methods
 \alias{locData,GenoSet-method}
 \alias{locData<-,GenoSet,RangedData-method}
-\alias{universe,GenoSet-method}
-\alias{universe<-,GenoSet-method}
 \alias{show,GenoSet-method}
 \alias{featureNames<-,GenoSet-method}
 
-% Shared API for GenoSet and RangedData
+% RangedData API added to GenoSet
+\alias{universe,GenoSet-method}
+\alias{universe<-,GenoSet-method}
 \alias{space,GenoSet-method}
 \alias{start,GenoSet-method}
 \alias{end,GenoSet-method}
