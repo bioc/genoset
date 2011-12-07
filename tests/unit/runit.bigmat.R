@@ -12,7 +12,10 @@ test.assayData <-function() {
     )
   bm.ds = convertToBigMatrix(ds,path=tempdir())
 
-  checkException( assayDataElement(bm.ds,"lrr") <- "FOO", silent=TRUE )
+  assayDataElement(bm.ds,"baf") <- ds[,,"baf"]
+  checkEquals( ds[,,"baf"], bm.ds[,,"baf"], "Replace writeable big.matrix OK" )
+  Sys.chmod(attr(bm.ds[,,"lrr"],"desc"),"0444")
+  checkException( assayDataElement(bm.ds,"lrr") <- ds[,,"lrr"], silent=TRUE, "Replacing non-writeable big.matrix not OK" )
   checkEquals( bm.ds[,,"lrr"][,], ds[,,"lrr"], "Failing to modify lrr in above test should not modify lrr" )
   rdata.file = file.path(tempdir(),"bm.RData")
   save(bm.ds,file=rdata.file)

@@ -37,7 +37,9 @@ assayDataElement <- function(object, elt) {
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 'assayDataElement<-' <- function(object, elt, value) {
   if ( is.big.matrix( assayData(object)[[elt]] ) ) {
-    stop("AssayData elements of class 'big.matrix' are read only until 'bigmemory' implements OS-level permissions.")
+    if ( file.access(attr(object[,,elt],"desc"),2) < 0 ) {
+      stop("You do not have write permission on the 'desc' file for this big.matrix class assayDataElement")
+    }
   }
   return(assayDataElementReplace(object, elt, value))
 }
