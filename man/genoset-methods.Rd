@@ -1,5 +1,6 @@
 \name{space}
 \alias{[}
+\alias{[<-}
 \alias{elementLengths}
 \alias{end}
 \alias{names}
