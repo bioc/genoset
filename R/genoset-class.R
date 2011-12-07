@@ -102,6 +102,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   }
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
+    clean.loc.rownames = rownames(locData)
   }
 
  # Create assayData
@@ -110,15 +111,31 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   if ( ! all(featureNames(ad) == clean.featureNames) ) {
     featureNames(ad) = clean.featureNames
   }
+  if (nrow(locData) != length(clean.featureNames)) {
+    stop("Row number mismatch for assayData and locData")
+  }
+    
+  # Set row order to match locData, already know all ad elements have same row names
+  if ( ! all(clean.loc.rownames == clean.featureNames) ) {
+    if (! setequal(clean.loc.rownames, clean.featureNames)) {
+      stop("Row name set mismatch for locData and assayData")
+    } else {
+      for (  ad.name in assayDataElementNames(ad) ) {
+        ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]        
+      }
+    }
+  }
 
   # Check colnames of all data matrices identical and set to same order if necessary
+  # AssayDataValidMembers does not do this for some reason
   first.name = assayDataElementNames(ad)[1]
   for (mat.name in assayDataElementNames(ad)[-1]) {
-    if (! setequal(colnames(ad[[mat.name]]), colnames(ad[[first.name]]) ) ) {
-      stop(paste("Mismatch between rownames of first data matrix and", mat.name))
-    }
-    if ( any( colnames(ad[[mat.name]]) != colnames(ad[[first.name]])) ) {
-      ad[[mat.name]] == ad[[mat.name]][,colnames(ad[[first.name]])]
+    if ( ! all( colnames(ad[[mat.name]]) == colnames(ad[[first.name]])) ) {
+      if (! setequal(colnames(ad[[mat.name]]), colnames(ad[[first.name]]) ) ) {
+        stop(paste("Mismatch between rownames of first data matrix and", mat.name))
+      } else {
+        ad[[mat.name]] == ad[[mat.name]][,colnames(ad[[first.name]])]
+      }
     }
   }
 
@@ -126,16 +143,6 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   clean.sampleNames = make.names(sampleNames(ad),unique=TRUE)
   if ( ! all(sampleNames(ad) == clean.sampleNames) ) {
     sampleNames(ad) = clean.sampleNames
-  }
-  
-  # Set row order to match locData
-  for (  ad.name in assayDataElementNames(ad) ) {
-    if (! setequal(rownames(ad[[ad.name]]), rownames(locData)) ) {
-      stop(paste("Mismatch between rownames of data matrix", ad.name, "and probe location info 'locData'"))
-    }
-    if ( any( rownames(ad[[ad.name]]) != rownames(locData) ) ) {
-      ad[[ad.name]] = ad[[ad.name]][rownames(locData),]
-    }
   }
 
   # Done editing assayData members, lock

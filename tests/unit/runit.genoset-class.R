@@ -51,6 +51,25 @@ test.creation <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
+
+  cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+  misordered.genoset = GenoSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=cn[ rev(probe.names), ],
+    foo=cn[ rev(probe.names),],
+    pData=pData[rev(test.sample.names),],
+    annotation="SNP6"
+    )
+
+  bad.locData=RangedData(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),space=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)),universe="hg18")
+  bad.locData.genoset = GenoSet(
+    locData=bad.locData,
+    cn=cn,
+    foo=cn,
+    pData=pData,
+    annotation="SNP6"
+    )
   
   checkTrue(validObject(bob),"Regular BAFSet")
   checkTrue(validObject(ted),"BAFSet with out of genome order locData")
@@ -58,6 +77,11 @@ test.creation <- function() {
   checkTrue(validObject(tom),"GenoSet with out of genome order locData")
   checkTrue(validObject(rle.bafset),"BAFSet with Rle data")
   checkTrue(validObject(rle.cnset),"CNSet with Rle-based data")
+  checkTrue(validObject(misordered.genoset),"Starting with some sample name and feature name misordering")
+  checkTrue( identical(misordered.genoset[,,"cn"],cn) && identical(misordered.genoset[,,"foo"],cn))
+  checkIdentical( pData, pData(misordered.genoset), "Misordered pData gets fixed" )
+  checkTrue(validObject(bad.locData.genoset), "Can fix locData not in strict genome order")
+  checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
 }
 
 test.sampleNames <- function() {
