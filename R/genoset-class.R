@@ -1165,8 +1165,8 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       CNA.object <- CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
       smoothed.CNA.object <- smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
       segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=0, alpha=alpha)
+      segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=names(locs))
       if (return.segs == TRUE) {
-        levels(segment.smoothed.CNA.object$output$chrom) = names(locs)
         return(segment.smoothed.CNA.object$output)
       } else {
         return(segs2Rle(segment.smoothed.CNA.object$output,locs))
