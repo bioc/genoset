@@ -247,6 +247,25 @@ test.subset <- function() {
   checkEquals( test.ds[ranges(test.rd),], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
+
+  # Replace
+  ds = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  ds[,,"baf"] = ds[,,"lrr"]
+  checkEquals(ds[,,"baf"],ds[,,"lrr"],"Replace whole element")
+  lrr.mat = ds[,,"lrr"]
+  lrr.mat[1:2,1:2] = 5
+  ds[1:2,1:2,"lrr"] = 5
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with integer indices")
+  lrr.mat[6:8,2] = 3
+  ds[locData(ds)[6:8,],2,"lrr"] = 3
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
 }
 
 test.gcCorrect <- function() {
