@@ -3,6 +3,7 @@
 #############################
 
 ##' @include genoset-class.R
+{}
 
 # Allow eSet constructor to make featureNames from a big.matrix as if it were a matrix
 setMethod("annotatedDataFrameFrom",

@@ -35,6 +35,28 @@ test.creation <- function() {
     annotation="SNP6"
     )
 
+  cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  gs.from.ad = GenoSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    assayData=assayDataNew(storage.mode="environment",cn=cn),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
+  cnset.from.ad = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    assayData=assayDataNew(storage.mode="environment",cn=cn),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  
+  bafset.from.ad = BAFSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    assayData=assayDataNew(storage.mode="environment",lrr=cn,baf=cn),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+
   # Test making a BAFSet with Rle-based data
   rle.bafset = BAFSet(
     locData=locData.rd,
@@ -75,6 +97,9 @@ test.creation <- function() {
   checkTrue(validObject(ted),"BAFSet with out of genome order locData")
   checkTrue(validObject(joe),"CNSet with out of genome order locData")
   checkTrue(validObject(tom),"GenoSet with out of genome order locData")
+  checkTrue(validObject(gs.from.ad),"GenoSet with out of genome order locData with provided assayData")
+  checkTrue(validObject(cnset.from.ad),"CNSet with out of genome order locData with provided assayData")
+  checkTrue(validObject(bafset.from.ad),"BAFSet with out of genome order locData with provided assayData")
   checkTrue(validObject(rle.bafset),"BAFSet with Rle data")
   checkTrue(validObject(rle.cnset),"CNSet with Rle-based data")
   checkTrue(validObject(misordered.genoset),"Starting with some sample name and feature name misordering")

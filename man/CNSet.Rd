@@ -2,8 +2,8 @@
 \alias{CNSet}
 \title{Create a CNSet object}
 \usage{
-  CNSet(locData, cn, pData = NULL, annotation = "",
-    universe = NULL, ...)
+  CNSet(locData, cn = NULL, pData = NULL, annotation = "",
+    universe = NULL, assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A RangedData object specifying feature
@@ -22,6 +22,8 @@
 
   \item{universe}{character, string to specify genome
   universe for locData}
+
+  \item{assayData}{assayData, usually an environment}
 
   \item{...}{More matrix or DataFrame objects to include in
   assayData}

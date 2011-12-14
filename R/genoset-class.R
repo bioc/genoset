@@ -68,6 +68,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe
 ##' for locData
+##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object or derivative as specified by "type" arg
 ##' @examples 
@@ -80,7 +81,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 ##'      annotation="SNP6"
 ##'   )
 ##' @author Peter M. Haverty
-initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL, ...) {
+initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
   # Function to clean up items for slots and call new for GenoSet and its children
   # ... will be the matrices that end up in assayData
   # all dimnames "fixed" with make names because eSet is inconsistent about that
@@ -96,17 +97,20 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   }
   
   # Check/set genome order of locData
+  if ( ! isGenomeOrder(locData, strict=TRUE) ) {
+    locData = toGenomeOrder(locData, strict=TRUE )
+  }
   clean.loc.rownames = make.names(rownames(locData),unique=TRUE)
   if ( ! all(rownames(locData) == clean.loc.rownames) ) {
     rownames(locData) = clean.loc.rownames
   }
-  if ( ! isGenomeOrder(locData, strict=TRUE) ) {
-    locData = toGenomeOrder(locData, strict=TRUE )
-    clean.loc.rownames = rownames(locData)
-  }
 
  # Create assayData
-  ad = assayDataNew(storage.mode="environment",...)
+  if (is.null(assayData)) {
+    ad = assayDataNew(storage.mode="environment",...)
+  } else {
+    ad = assayData
+  }
   clean.featureNames = make.names(featureNames(ad),unique=TRUE)
   if ( ! all(featureNames(ad) == clean.featureNames) ) {
     featureNames(ad) = clean.featureNames
@@ -183,6 +187,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe for locData
+##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object
 ##' @examples
@@ -196,8 +201,8 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
 ##' )
 ##' @export GenoSet
 ##' @author Peter M. Haverty
-GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, ...) {
-  object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, universe=universe, ...)
+GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+  object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData,...)
   return(object)
 }
 

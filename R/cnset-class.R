@@ -31,6 +31,7 @@ setValidity("CNSet", function(object) {
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, string to specify genome universe for locData
+##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A CNSet object
 ##' @export
@@ -44,8 +45,15 @@ setValidity("CNSet", function(object) {
 ##'    annotation="SNP6"
 ##'    )
 ##' @author Peter M. Haverty
-CNSet <- function(locData, cn, pData=NULL, annotation="", universe=NULL, ...) {
-  object = initGenoSet(type="CNSet", locData=locData, pData=pData, annotation=annotation, universe=universe, cn=cn, ...)
+CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+  if (!is.null(assayData)) {
+    if (! "cn" %in% assayDataElementNames(assayData)) {
+      stop("If assayData is specified, it must contain an element called 'cn'.")
+    }
+    object = initGenoSet(type="CNSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData, ...)
+  } else {
+    object = initGenoSet(type="CNSet", locData=locData, pData=pData, annotation=annotation, universe=universe, cn=cn, ...)
+  }
   return(object)
 }
 

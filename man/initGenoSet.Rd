@@ -3,7 +3,7 @@
 \title{Create a GenoSet or derivative object}
 \usage{
   initGenoSet(type, locData, pData = NULL, annotation = "",
-    universe = NULL, ...)
+    universe = NULL, assayData = NULL, ...)
 }
 \arguments{
   \item{type}{character, the type of object (e.g. GenoSet,
@@ -21,6 +21,8 @@
 
   \item{universe}{character, a string to specify the genome
   universe for locData}
+
+  \item{assayData}{assayData, usually an environment}
 
   \item{...}{More matrix or DataFrame objects to include in
   assayData}

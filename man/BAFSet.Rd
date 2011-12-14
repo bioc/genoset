@@ -2,8 +2,9 @@
 \alias{BAFSet}
 \title{Create a BAFSet object}
 \usage{
-  BAFSet(locData, lrr, baf, pData = NULL, annotation = "",
-    universe = NULL, ...)
+  BAFSet(locData, lrr = NULL, baf = NULL, pData = NULL,
+    annotation = "", universe = NULL, assayData = NULL,
+    ...)
 }
 \arguments{
   \item{locData}{A RangedData object specifying feature
@@ -26,6 +27,8 @@
 
   \item{universe}{character, a string to specify the genome
   universe for locData}
+
+  \item{assayData}{assayData, usually an environment}
 
   \item{...}{More matrix or DataFrame objects to include in
   assayData slot}
