@@ -89,8 +89,8 @@ attachAssayDataElements <- function(object) {
 
 ##' Load a GenoSet from a RData file
 ##'
-##' Given a RData file with one object (a GenoSet or related object), load it, attach bigmatrix
-##' objects as necessary, and return.
+##' Given a RData file with one object (a GenoSet or related object), load it,
+##' and return.
 ##' @param path character, path to RData file
 ##' @return GenoSet or related object (only object in RData file)
 ##' @examples
@@ -100,7 +100,6 @@ attachAssayDataElements <- function(object) {
 readGenoSet <- function(path) {
   object = get(load(path)[1])
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
-  attachAssayDataElements(object)
   return( object )
 }
 

@@ -12,8 +12,7 @@
 }
 \description{
   Given a RData file with one object (a GenoSet or related
-  object), load it, attach bigmatrix objects as necessary,
-  and return.
+  object), load it, and return.
 }
 \examples{
 \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }

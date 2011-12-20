@@ -1,4 +1,5 @@
 \name{space}
+\alias{"[<-",Genoset,ANY,ANY,ANY}
 \alias{[}
 \alias{[<-}
 \alias{elementLengths}
