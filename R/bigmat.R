@@ -100,6 +100,7 @@ attachAssayDataElements <- function(object) {
 readGenoSet <- function(path) {
   object = get(load(path)[1])
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
+  attachAssayDataElements(object)
   return( object )
 }
 

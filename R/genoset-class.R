@@ -452,7 +452,7 @@ setMethod("[", signature=signature(x="GenoSet", i="RangesList", j="ANY"),
           })
 
 ##' @rdname genoset-methods
-##' @aliases "[<-",Genoset,ANY,ANY,ANY
+##' @aliases [<-,GenoSet,ANY,ANY,ANY-method
 setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),          
           function(x,i,j,k,value) {
             if ( missing(k)) {

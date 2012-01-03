@@ -1,7 +1,7 @@
 \name{space}
-\alias{"[<-",Genoset,ANY,ANY,ANY}
 \alias{[}
 \alias{[<-}
+\alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \alias{elementLengths}
 \alias{end}
 \alias{names}
