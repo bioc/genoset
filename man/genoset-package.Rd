@@ -16,6 +16,6 @@
   data.
 }
 \seealso{
-  genoset-datasets
+  genoset-datasets GenoSet CNSet BAFSet
 }
 
