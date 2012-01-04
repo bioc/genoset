@@ -19,7 +19,8 @@
 ##' @docType package
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
-##'
+##' @seealso genoset-datasets GenoSet CNSet BAFSet
+##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom methods ANY character matrix numeric
@@ -1376,7 +1377,7 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   data.matrix = assayDataElement(subject,assay.element)
 
   if (class(data.matrix) == "DataFrame") {
-    sample.vals = sapply( colnames(data.matrix), function(x) { rangeColMeans( all.indices, as.numeric(data.matrix[,x] )) }, USE.NAMES=TRUE, simplify=FALSE)
+    sample.vals = lapply( data.matrix, function(x) { rangeColMeans( all.indices, as.numeric(x)) })
     range.means = do.call(cbind,sample.vals)
   } else {
     range.means = rangeColMeans( all.indices, data.matrix )

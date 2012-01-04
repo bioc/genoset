@@ -15,4 +15,7 @@
   for processing of copy number and B-Allele Frequency
   data.
 }
+\seealso{
+  genoset-datasets
+}
 
