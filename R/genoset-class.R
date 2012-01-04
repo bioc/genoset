@@ -5,6 +5,21 @@
 ######   Intended to be subset by other classes to add one or more data matrices to
 ######   the assayData slot.
 
+##' GenoSet: An eSet for data with genome locations
+##' 
+##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
+##' extends eSet by adding a "locData" slot for a RangedData object from the
+##' IRanges package. This object contains feature genome location data and
+##' provides for simple subsetting on genome location. CNSet and BAFSet extend
+##' GenoSet and require assayData matrices for Copy Number (cn) or Log-R Ratio
+##' (lrr) and B-Allele Frequency (baf) data. Implements and provides
+##' convenience functions for processing of copy number and B-Allele Frequency
+##' data.
+##'
+##' @docType package
+##' @name genoset-package
+##' @aliases genoset genoset-package
+##'
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom methods ANY character matrix numeric
@@ -35,7 +50,7 @@
 ##' @import BiocGenerics
 ##' 
 ##' @useDynLib genoset
-
+NULL
 
 ###############
 # Class GenoSet

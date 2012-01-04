@@ -10,7 +10,8 @@ test.assayData <-function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  bm.ds = convertToBigMatrix(ds,path=tempdir())
+  bigmat.dir = file.path(tempdir(),"test.assayData")
+  bm.ds = convertToBigMatrix(ds,path=bigmat.dir)
 
   assayDataElement(bm.ds,"baf") <- ds[,,"baf"]
   checkEquals( ds[,,"baf"], bm.ds[,,"baf"], "Replace writeable big.matrix OK" )
@@ -21,4 +22,6 @@ test.assayData <-function() {
   save(bm.ds,file=rdata.file)
   loaded.ds = readGenoSet(rdata.file)
   checkTrue( is.big.matrix(assayDataElement(loaded.ds,"lrr")) & !is.nil(assayDataElement(loaded.ds,"lrr")@address))
+  rm.results = try(unlink(bigmat.dir,recursive=TRUE),silent=TRUE)
+  checkTrue( !inherits(rm.results,"try-error") )
 }

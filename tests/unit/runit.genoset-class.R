@@ -246,7 +246,8 @@ test.subset <- function() {
 
   gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
 
-  bm.ds = convertToBigMatrix(ds,path=tempdir())
+  bigmat.dir = file.path(tempdir(),"bigmat")
+  bm.ds = convertToBigMatrix(ds,path=bigmat.dir)
   
   # Subsetting whole object
   checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
@@ -265,7 +266,8 @@ test.subset <- function() {
   checkEquals( bm.ds[ , 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[,1:2], "Extract cols from big.matrix" )
   checkEquals( bm.ds[ 1:2, , "lrr"], assayDataElement(bm.ds,"lrr")[1:2,], "Extract rows from big.matrix" )
   checkEquals( bm.ds[ 1:2, 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[1:2,1:2], "Extract rectangle from big.matrix" )
-  
+  rm.results = try(unlink(bigmat.dir,recursive=TRUE),silent=TRUE)
+  checkTrue( !inherits(rm.results,"try-error") )
   
   # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
@@ -350,8 +352,4 @@ test.genomeOrder <- function() {
   checkTrue(!isGenomeOrder(bad.ds))
   checkEquals( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs" )
   checkEquals( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs, disordered chrs" )
-}
-
-test.loadGC <- function() {
-
 }

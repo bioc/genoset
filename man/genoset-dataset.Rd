@@ -1,6 +1,6 @@
-\name{genoset}
+\name{genoset-datasets}
 \docType{data}
-\alias{genoset}
+\alias{genoset-datasets}
 \alias{fake.lrr}
 \alias{fake.baf}
 \alias{fake.pData}
