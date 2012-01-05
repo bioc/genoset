@@ -54,6 +54,12 @@ test.rangeSampleMeans <- function() {
   means = matrix(c(32,42,52,33,43,53,37,47,57,38,48,58)+0.5,ncol=nrow(query.rd),nrow=ncol(subject),dimnames=list(sampleNames(subject),rownames(query.rd)))
   means = t(means)
   checkEquals( rangeSampleMeans( query.rd, subject, "cn" ), means)
+
+  bigmat.dir = file.path(tempdir(),"bigmat")
+  bm.ds = convertToBigMatrix(subject,path=bigmat.dir)
+  checkEquals( rangeSampleMeans( query.rd, bm.ds, "cn" ), means)
+  rm.results = try(unlink(bigmat.dir,recursive=TRUE),silent=TRUE)
+  checkTrue( !inherits(rm.results,"try-error") )
   
   rle.cnset = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
@@ -61,8 +67,8 @@ test.rangeSampleMeans <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.rd), ncol=ncol(rle.cnset), dimnames=list(rownames(query.rd),sampleNames(rle.cnset)))
-  checkEquals( rangeSampleMeans( query.rd, rle.cnset, "cn" ), means, "DataFrame of Rle")
+  rle.means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.rd), ncol=ncol(rle.cnset), dimnames=list(rownames(query.rd),sampleNames(rle.cnset)))
+  checkEquals( rangeSampleMeans( query.rd, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
 }
 
 test.rangeColMeans <- function() {
@@ -79,5 +85,4 @@ test.rangeColMeans <- function() {
   colnames(means) = colnames(x)
   checkEquals( rangeColMeans( bounds, x), means, "Matrix with dimnames")
   checkEquals( rangeColMeans( bounds, x[,1]), means[,1], "Vector without dimnames")
-  
 }

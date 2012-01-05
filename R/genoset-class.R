@@ -1115,16 +1115,23 @@ setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,Rle-method
+##' @param object 
+##' @param locs 
+##' @param sample.name 
 setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
   # All the time goes into start and end.  Maybe faster looping by chr?
   # Tried various ways to do by chr, one df by chr especially slow
+  # Maybe mapply over num.mark, start(ranges(locs)), end(ranges(locs)? Nope, slower even with byte compilation
+  # Maybe optionally pass in chr.ind, start and stop rather than locs for case where looping over DataFrame of Rle
+  # Or, write new start, stop, (might as well do space too) methods to use pre-existing rbinded version withing loc object if exists
   
   chr.ind = chrIndices(locs)
   num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"])
   chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(locs))
+
   num.mark = unlist(num.mark)
   seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"]))
-  
+
   loc.end.indices = cumsum(num.mark)
   loc.end = end(locs)[loc.end.indices]  # unlist here is the big time waster
   loc.start.indices = (loc.end.indices - num.mark) + 1L
@@ -1379,8 +1386,13 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   if (class(data.matrix) == "DataFrame") {
     sample.vals = lapply( data.matrix, function(x) { rangeColMeans( all.indices, as.numeric(x)) })
     range.means = do.call(cbind,sample.vals)
-  } else {
+  } else if (is.matrix(data.matrix)) {
     range.means = rangeColMeans( all.indices, data.matrix )
+  } else {
+    range.means = matrix(ncol=ncol(data.matrix),nrow=nrow(all.indices),dimnames=list(rownames(all.indices),colnames(data.matrix)))
+    for (i in seq.int(length.out=ncol(data.matrix))) {
+      range.means[,i] = rangeColMeans( all.indices, data.matrix[,i] )
+    }
   }
   return(range.means)
 }
