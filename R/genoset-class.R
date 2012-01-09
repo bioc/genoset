@@ -1473,12 +1473,14 @@ isGenomeOrder <- function(ds, strict=FALSE) {
       return(FALSE)
     }
   }
-  for (chr.name in names(ds)) { # Check each chr for ordered start
-    if ( is.unsorted(start(ranges(ds))[[chr.name]]) ) {
-      return(FALSE)
+  # Check each chr for ordered start
+  return.val = TRUE
+  sorted.results = lapply( start(ranges(ds)), function(x) {
+    if ( is.unsorted(x) ) {
+      return.val <<- FALSE
     }
-  }
-  return(TRUE)
+  })
+  return(return.val)
 }
 
 ##' Get indices to set a RangedData or GenoSet to genome order
