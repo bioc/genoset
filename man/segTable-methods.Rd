@@ -10,11 +10,11 @@
   \item{locs}{RangedData with rows corresponding to rows of
   df}
 
-  \item{sample.name}{character for single Rle optionally
-  include "ID" column with this sample name}
+  \item{stack}{logical, rbind list of segment tables for
+  each sample and add "Sample" column?}
 }
 \value{
-  one or a list of data.frames with columns ID, chrom,
+  one or a list of data.frames with columns chrom,
   loc.start, loc.end, num.mark, seg.mean
 }
 \description{
@@ -24,7 +24,10 @@
   data.frames each like the result of CBS's segment.  Note
   the loc.start and loc.stop will correspond exactly to
   probe locations in locData and the input to
-  segs2RleDataFrame are not necessarily so.
+  segs2RleDataFrame are not necessarily so. For a
+  DataFrame, the argument \code{stack} combines all of the
+  individual data.frames into one large data.frame and adds
+  a "Sample" column of sample ids.
 }
 \examples{
 data(genoset)

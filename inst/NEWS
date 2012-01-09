@@ -41,3 +41,6 @@ Added support for big.matrix objects from bigmemory as assayDataElements
 
 1.1.12
 assayDataElements can be integer matrices with levels that will serve as factors for now.  Please see the help for convertToBigMatrix.
+
+1.4.9
+*** API Changes *** segTable on a DataFrame of Rle now has a "stack" argument to rbind the resulting list of data.frames of per-sample segments into on giant data.frame.  A "Sample" column will be added to separate samples.  The list of individual data.frames no longer has an "ID" column.  Also, some refactoring to speed up this method.

@@ -37,7 +37,11 @@ test.boundingIndices <- function() {
   checkEquals( boundingIndices2(gene.starts, gene.stops, probes), valid.bounds)
   
 }
-
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @return 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
 test.rangeSampleMeans <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]

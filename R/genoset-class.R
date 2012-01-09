@@ -1092,12 +1092,13 @@ segs2RangedData <- function(segs) {
 ##' and make a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
 ##' exactly to probe locations in locData and the input to
-##' segs2RleDataFrame are not necessarily so.
+##' segs2RleDataFrame are not necessarily so. For a DataFrame, the
+##' argument \code{stack} combines all of the individual data.frames
+##' into one large data.frame and adds a "Sample" column of sample ids.
 ##'
 ##' @param object Rle or list/DataFrame of Rle vectors
 ##' @param locs RangedData with rows corresponding to rows of df
-##' @param sample.name character for single Rle optionally include "ID" column with this sample name
-##' @return one or a list of data.frames with columns ID, chrom, loc.start, loc.end, num.mark, seg.mean
+##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
 ##' @family "segmented data"
 ##' @examples
@@ -1115,16 +1116,13 @@ setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,Rle-method
-##' @param object 
-##' @param locs 
-##' @param sample.name 
-setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=NULL) {
+setMethod("segTable", signature(object="Rle"), function(object,locs) {
   # All the time goes into start and end.  Maybe faster looping by chr?
   # Tried various ways to do by chr, one df by chr especially slow
   # Maybe mapply over num.mark, start(ranges(locs)), end(ranges(locs)? Nope, slower even with byte compilation
   # Maybe optionally pass in chr.ind, start and stop rather than locs for case where looping over DataFrame of Rle
   # Or, write new start, stop, (might as well do space too) methods to use pre-existing rbinded version withing loc object if exists
-  
+
   chr.ind = chrIndices(locs)
   num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"])
   chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(locs))
@@ -1137,24 +1135,25 @@ setMethod("segTable", signature(object="Rle"), function(object,locs,sample.name=
   loc.start.indices = (loc.end.indices - num.mark) + 1L
   loc.start = start(locs)[loc.start.indices] # unlist here is the big time waster
 
-  if (is.null(sample.name)) {
-    sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
-  } else {
-    sample.seg = data.frame(ID = sample.name, chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
-  }
+  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
   return(sample.seg)
 })
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,DataFrame-method
-setMethod("segTable", signature(object="DataFrame"), function(object,locs) {
-  segs = sapply( names(object),
+##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
+setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=FALSE) {
+  segs = lapply( object,
     function(x) {
-      temp.rle = object[[x]]
-      sample.seg = segTable(temp.rle,locs,sample.name=x)
-      return(sample.seg)
-    },simplify=FALSE, USE.NAMES=TRUE)
-  return(segs)
+      return(segTable(x,locs))
+    })
+  if (stack == FALSE) {
+    return(segs)
+  } else {
+    segs.df = do.call(rbind,segs)
+    segs.df$Sample = rep(names(segs),sapply(segs,nrow))
+    return(segs.df)
+  }
 })
 
 ##' Utility function to run CBS's three functions on one or more samples
