@@ -44,3 +44,6 @@ assayDataElements can be integer matrices with levels that will serve as factors
 
 1.4.9
 *** API Changes *** segTable on a DataFrame of Rle now has a "stack" argument to rbind the resulting list of data.frames of per-sample segments into on giant data.frame.  A "Sample" column will be added to separate samples.  The list of individual data.frames no longer has an "ID" column.  Also, some refactoring to speed up this method.
+
+1.4.10
+segTable for Rle now optionally takes chrIndices table, start and stop from locData for speed. segTable for DataFrame uses this trick. Much faster.  About 95% time reduction for a large dataset on a large chip.
