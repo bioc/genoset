@@ -62,9 +62,14 @@ test.segs2RleDataFrame <- function() {
 }
 
 test.segTable <- function() {
+  chr.ind = chrIndices(locData.rd)
+  start = start(locData.rd)
+  end = end(locData.rd)
+  
   checkEquals( segTable( basic.rle.df[["K"]], locData.rd), basic.segs.after[["K"]], checkNames=FALSE )
   checkEquals( segTable( basic.rle.df[["L"]], locData.rd), basic.segs.after[["L"]], checkNames=FALSE )
   checkEquals( segTable( basic.rle.df[["M"]], locData.rd), basic.segs.after[["M"]], checkNames=FALSE )
+  checkEquals( segTable( basic.rle.df[["M"]], chr.ind=chr.ind, start=start, end=end), basic.segs.after[["M"]], checkNames=FALSE, "segTable on Rle providing chr.ind, start, end" )
   checkEquals( segTable( basic.rle.df, locData.rd ), basic.segs.after, checkNames=FALSE )
   checkEquals( segTable( basic.rle.df, locData.rd, stack=TRUE ), stacked.basic.segs.after, checkNames=FALSE )
 }

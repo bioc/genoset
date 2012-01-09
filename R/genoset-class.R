@@ -1116,26 +1116,30 @@ setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,Rle-method
-setMethod("segTable", signature(object="Rle"), function(object,locs) {
-  # All the time goes into start and end.  Maybe faster looping by chr?
-  # Tried various ways to do by chr, one df by chr especially slow
-  # Maybe mapply over num.mark, start(ranges(locs)), end(ranges(locs)? Nope, slower even with byte compilation
-  # Maybe optionally pass in chr.ind, start and stop rather than locs for case where looping over DataFrame of Rle
-  # Or, write new start, stop, (might as well do space too) methods to use pre-existing rbinded version withing loc object if exists
+setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL) {
 
-  chr.ind = chrIndices(locs)
-  num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"])
-  chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(locs))
+  if (!is.null(locs)) {
+    chr.ind = chrIndices(locs)
+    start = start(locs)
+    end = end(locs)
+  } else {
+    if (is.null(chr.ind) || is.null(start) || is.null(end)) {
+      stop("If locs arg is not provided then chr.ind, start, and end must be provided.")
+    }
+  }
+
+  num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"],simplify=FALSE)
+  chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(num.mark))
 
   num.mark = unlist(num.mark)
-  seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"]))
+  seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"],simplify=FALSE))
 
   loc.end.indices = cumsum(num.mark)
-  loc.end = end(locs)[loc.end.indices]  # unlist here is the big time waster
+  loc.end = end[loc.end.indices]
   loc.start.indices = (loc.end.indices - num.mark) + 1L
-  loc.start = start(locs)[loc.start.indices] # unlist here is the big time waster
+  loc.start = start[loc.start.indices]
 
-  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE)
+  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
   return(sample.seg)
 })
 
@@ -1143,9 +1147,13 @@ setMethod("segTable", signature(object="Rle"), function(object,locs) {
 ##' @aliases segTable,DataFrame-method
 ##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
 setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=FALSE) {
+  chr.ind = chrIndices(locs)
+  start = start(locs)
+  end = end(locs)
+  
   segs = lapply( object,
     function(x) {
-      return(segTable(x,locs))
+      return(segTable(x,chr.ind=chr.ind, start=start, end=end))
     })
   if (stack == FALSE) {
     return(segs)
