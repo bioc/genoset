@@ -10,6 +10,12 @@
   \item{locs}{RangedData with rows corresponding to rows of
   df}
 
+  \item{chr.ind}{matrix, like from chrIndices method}
+
+  \item{start}{integer, vector of feature start positions}
+
+  \item{end}{integer, vector of feature end positions}
+
   \item{stack}{logical, rbind list of segment tables for
   each sample and add "Sample" column?}
 }
@@ -28,6 +34,12 @@
   DataFrame, the argument \code{stack} combines all of the
   individual data.frames into one large data.frame and adds
   a "Sample" column of sample ids.
+}
+\details{
+  For a Rle, the user can provide \code{locs} or
+  \code{chr.ind}, \code{start} and \code{stop}.  The latter
+  is surprisingly much faster and this is used in the
+  DataFrame version.
 }
 \examples{
 data(genoset)

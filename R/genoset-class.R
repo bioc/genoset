@@ -1096,8 +1096,15 @@ segs2RangedData <- function(segs) {
 ##' argument \code{stack} combines all of the individual data.frames
 ##' into one large data.frame and adds a "Sample" column of sample ids.
 ##'
+##' For a Rle, the user can provide \code{locs} or \code{chr.ind},
+##' \code{start} and \code{stop}.  The latter is surprisingly much faster
+##' and this is used in the DataFrame version.
+##'
 ##' @param object Rle or list/DataFrame of Rle vectors
 ##' @param locs RangedData with rows corresponding to rows of df
+##' @param chr.ind matrix, like from chrIndices method
+##' @param start integer, vector of feature start positions
+##' @param end integer, vector of feature end positions
 ##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
 ##' @family "segmented data"
@@ -1174,7 +1181,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
 ##' @param data numeric matrix with continuous data in one or more columns
 ##' @param locs RangeData, like locData slot of GenoSet
 ##' @param return.segs logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.
-##' @param n.cores numeric, number of cores to ask multicore to use
+##' @param n.cores numeric, number of cores to ask mclapply to use
 ##' @param smooth.region number of positions to left and right of individual positions to consider when smoothing single point outliers
 ##' @param outlier.SD.scale number of SD single points must exceed smooth.region to be considered an outlier
 ##' @param smooth.SD.scale floor used to reset single point outliers
@@ -1205,8 +1212,8 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   loc.chr = chr(locs)
   
   # mclapply over samples. cbs can loop over the columns of data, but want to use multiple forks
-  if (n.cores > 1 && is.loaded("mc_fork", PACKAGE="multicore")) {
-    mcLapply <- get('mclapply', envir=getNamespace('multicore'))
+  if (n.cores > 1 && is.loaded("mc_fork", PACKAGE="parallel")) {
+    mcLapply <- get('mclapply', envir=getNamespace('parallel'))
     loopFunc = function(...) { mcLapply(...,mc.cores=n.cores, mc.preschedule=FALSE) }
     cat("Using mclapply for segmentation ...\n")
   } else {

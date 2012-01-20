@@ -16,7 +16,7 @@
   data.frames return, otherwise a DataFrame of Rle vectors.
   One Rle per sample.}
 
-  \item{n.cores}{numeric, number of cores to ask multicore
+  \item{n.cores}{numeric, number of cores to ask mclapply
   to use}
 
   \item{smooth.region}{number of positions to left and
