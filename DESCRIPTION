@@ -44,4 +44,5 @@ Collate:
     'bafset-class.R'
     'DataFrame-methods.R'
     'bigmat.R'
+    'test_genoset_package.R'
 ByteCompile: TRUE
