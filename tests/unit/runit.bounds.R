@@ -1,6 +1,6 @@
 # Tests for functions utilizing boundingIndices
 
-test.boundingIndices <- function() {
+test_boundingIndices <- function() {
 
   # Test with exact matches
   gene.starts = seq( 0, 42, 2)
@@ -42,7 +42,7 @@ test.boundingIndices <- function() {
 ##' .. content for \details{} ..
 ##' @return 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-test.rangeSampleMeans <- function() {
+test_rangeSampleMeans <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
  
@@ -75,7 +75,7 @@ test.rangeSampleMeans <- function() {
   checkEquals( rangeSampleMeans( query.rd, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
 }
 
-test.rangeColMeans <- function() {
+test_rangeColMeans <- function() {
   bounds = matrix(c(2,3,3,5,7,8,9,10),ncol=2,byrow=TRUE)
   x = matrix(31:60,nrow=10,ncol=3)
   means = matrix(c(32.5,34,37.5,39.5,42.5,44,47.5,49.5,52.5,54,57.5,59.5),nrow=nrow(bounds),ncol=ncol(x))

@@ -1,4 +1,4 @@
-test.assayData <-function() {
+test_assayData <-function() {
   
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]

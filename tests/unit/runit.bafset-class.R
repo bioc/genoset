@@ -2,7 +2,7 @@
 # Tests for functions and methods on BAFSet class
 #################################################
 
-test.baf2mbaf <- function() {
+test_baf2mbaf <- function() {
 
   baf.ds = matrix(
     c(1, 0.8, 0.2, 0.3,  0.75, 0.99, 0.5, 0.1,  0.20, 0.1, 0.4, 0.15),

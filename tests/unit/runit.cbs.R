@@ -45,23 +45,23 @@ basic.rds.after = list(
     score = c(3.3,4.3,4.3,6.3,7.3), num.mark = c(1,3,1,1,4))
   )
 
-test.segs2RangedData <- function() {
+test_segs2RangedData <- function() {
   checkEquals( segs2RangedData(basic.segs.after$K), basic.rds.after$K )
   checkEquals( segs2RangedData(basic.segs.after$L), basic.rds.after$L )
   checkEquals( segs2RangedData(basic.segs.after$M), basic.rds.after$M )
 }
 
-test.segs2Rle <- function() {
+test_segs2Rle <- function() {
   checkEquals( segs2Rle( basic.segs[[1]], locData.rd ), basic.rle.df[[1]], checkNames=FALSE )
   checkEquals( segs2Rle( basic.segs[[2]], locData.rd ), basic.rle.df[[2]], checkNames=FALSE )
   checkEquals( segs2Rle( basic.segs[[3]], locData.rd ), basic.rle.df[[3]], checkNames=FALSE )
 }
 
-test.segs2RleDataFrame <- function() {
+test_segs2RleDataFrame <- function() {
   checkEquals( segs2RleDataFrame( basic.segs, locData.rd ), basic.rle.df, checkNames=FALSE )
 }
 
-test.segTable <- function() {
+test_segTable <- function() {
   chr.ind = chrIndices(locData.rd)
   start = start(locData.rd)
   end = end(locData.rd)
@@ -75,7 +75,7 @@ test.segTable <- function() {
 }
 
 
-test.runCBS <- function() {
+test_runCBS <- function() {
   sample.names = paste("a",1:2,sep="")
   probe.names =  paste("p",1:30,sep="")
   ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))

@@ -1,7 +1,7 @@
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 
-test.creation <- function() {
+test_creation <- function() {
 
   bob = BAFSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
@@ -109,7 +109,7 @@ test.creation <- function() {
   checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
 }
 
-test.sampleNames <- function() {
+test_sampleNames <- function() {
   ds = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
@@ -122,7 +122,7 @@ test.sampleNames <- function() {
   checkEquals( sampleNames(ds), c("K.fed","X.FOO","X.FOO.1") )
 }
 
-test.featureNames <- function() {
+test_featureNames <- function() {
   ds = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
@@ -135,7 +135,7 @@ test.featureNames <- function() {
   checkEquals( featureNames(ds), c("a.","b..","X.foo",letters[4:9],"b...1"))
 }
 
-test.locData <- function() {
+test_locData <- function() {
   ld = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
   ds = CNSet(
     locData=ld,
@@ -158,7 +158,7 @@ test.locData <- function() {
   checkException( eval(parse(text="locData(ds) = ld.bad")) )
 }
 
-test.rd.gs.shared.api.and.getting.genome.info <- function() {
+test_rd.gs.shared.api.and.getting.genome.info <- function() {
   point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
   point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe="hg19")
   wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
@@ -192,7 +192,7 @@ test.rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
 }
 
-test.subset <- function() {
+test_subset <- function() {
   
   test.rd = RangedData(ranges=IRanges(start=8:14,width=1),names=letters[8:14],space=rep("chrX",7))
     
@@ -295,7 +295,7 @@ test.subset <- function() {
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
 }
 
-test.gcCorrect <- function() {
+test_gcCorrect <- function() {
 
   input.vector = c(rep(0.05,50),rep(0.08,50))
   gc = input.vector
@@ -315,7 +315,7 @@ test.gcCorrect <- function() {
 
 }
 
-test.genomeOrder <- function() {
+test_genomeOrder <- function() {
   chr.names = c(rep("chr1",3),rep("chr2",3),rep("chr10",4))
 
   ok.locs = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
