@@ -197,7 +197,7 @@ cn.ds[ gene.rd, 1:2, "cn" ]
 \subsection{Genome Order}
 GenoSet and RangedData objects can be set to and checked for genome
 order. Weak genome order requires that features be ordered within each
-chromsome. Strong genome order requires a certain order of chromosomes
+chromosome. Strong genome order requires a certain order of chromosomes
 as well. Features must be ordered so that features from the same
 chromosome are in contiguous blocks.
 
@@ -262,7 +262,7 @@ rangeSampleMeans(gene.rd, baf.ds, "lrr")
 Segmentation is the process of identifying blocks of the genome in
 each sample that have the same copynumber value. It is a smoothing
 method that attempts to replicate the biological reality where chunks
-of chromsome have been deleted or amplified.
+of chromosome have been deleted or amplified.
 
 Genoset contains a convenience function for segmenting data for each sample/chr using the
 DNACopy package (CBS).  GenoSet adds features to split jobs among

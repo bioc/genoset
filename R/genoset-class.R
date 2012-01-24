@@ -339,7 +339,7 @@ setMethod("universe<-", signature(x="GenoSet"),
 
 ##' Get space factor for GenoSet
 ##'
-##' locData slot holds a RangedData, which keeps the chromsome of each
+##' locData slot holds a RangedData, which keeps the chromosome of each
 ##' feature in a factor names 'space'.
 ##' @param x GenoSet
 ##' @return factor
@@ -504,7 +504,7 @@ setMethod("show","GenoSet",
 # Get genome information
 ########################
 
-##' Chromsome name for each feature
+##' Chromosome name for each feature
 ##'
 ##' Get chromosome name for each feature.  Returns character, not the factor 'space'.
 ##' @title Look up chromosome for each feature 
@@ -532,7 +532,7 @@ setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(ob
 
 ##' Chromosome position of features
 ##'
-##' Get chromsome position of features/ranges. Defined as floor of mean of start and end.
+##' Get chromosome position of features/ranges. Defined as floor of mean of start and end.
 ##' @title Positions for features
 ##' @param object RangedData or GenoSet
 ##' @return numeric vector of feature positions within a chromosome
@@ -829,7 +829,7 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
 ##' @examples
 ##'   data(genoset)
 ##'   genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
-##'   genomeAxis( locs=locData(baf.ds) )  # Add chromsome names and boundaries to a plot assuming genome along x-axis
+##'   genomeAxis( locs=locData(baf.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
 ##'   genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
 ##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 ##' @author Peter M. Haverty
@@ -1242,7 +1242,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   }
 }
 
-##' Find indices of features bounding a set of chromsome ranges/genes
+##' Find indices of features bounding a set of chromosome ranges/genes
 ##'
 ##' This function is similar to findOverlaps but it guarantees at least two features will be
 ##' covered. This is useful in the case of finding features corresponding to a set of genes.
@@ -1286,7 +1286,7 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 }
 
 
-##' Find indices of features bounding a set of chromsome ranges/genes
+##' Find indices of features bounding a set of chromosome ranges/genes
 ##'
 ##' This function is similar to findOverlaps but it guarantees at least two features will be
 ##' covered. This is useful in the case of finding features corresponding to a set of genes.
@@ -1462,7 +1462,7 @@ chrOrder <- function(chr.names) {
 
 ##' Check if a RangedData or GenoSet is in genome order
 ##'
-##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromsomes
+##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromosomes
 ##' must be in order specified by chrOrder.
 ##' 
 ##' @param ds RangedData or GenoSet
@@ -1492,8 +1492,8 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 
 ##' Get indices to set a RangedData or GenoSet to genome order
 ##'
-##' Returns a vector of idices to use in re-ordering a RangedData or
-##' GenoSet to genome order. If strict=TRUE, then chromsomes must be in order specified by chrOrder.
+##' Returns a vector of indices to use in re-ordering a RangedData or
+##' GenoSet to genome order. If strict=TRUE, then chromosomes must be in order specified by chrOrder.
 ##' 
 ##' @param ds RangedData or GenoSet
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
