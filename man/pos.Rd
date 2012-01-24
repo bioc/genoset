@@ -11,7 +11,7 @@
   Chromosome position of features
 }
 \details{
-  Get chromsome position of features/ranges. Defined as
+  Get chromosome position of features/ranges. Defined as
   floor of mean of start and end.
 }
 \examples{

@@ -8,7 +8,7 @@
   character vector of chromosome positions for each feature
 }
 \description{
-  Chromsome name for each feature
+  Chromosome name for each feature
 }
 \details{
   Get chromosome name for each feature.  Returns character,

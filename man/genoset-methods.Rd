@@ -51,7 +51,7 @@
 }
 \description{
   locData slot holds a RangedData, which keeps the
-  chromsome of each feature in a factor names 'space'.
+  chromosome of each feature in a factor names 'space'.
 
   locData slot holds a RangedData.
 

@@ -1497,7 +1497,7 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 ##' 
 ##' @param ds RangedData or GenoSet
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
-##' @return numeric vector of indices for re-ordering
+##' @return re-ordered RangedData or GenoSet
 ##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)

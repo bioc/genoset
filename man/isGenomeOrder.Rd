@@ -15,7 +15,7 @@
 }
 \description{
   Checks that rows in each chr are ordered by start.  If
-  strict=TRUE, then chromsomes must be in order specified
+  strict=TRUE, then chromosomes must be in order specified
   by chrOrder.
 }
 \examples{

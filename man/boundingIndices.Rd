@@ -1,6 +1,6 @@
 \name{boundingIndices}
 \alias{boundingIndices}
-\title{Find indices of features bounding a set of chromsome ranges/genes}
+\title{Find indices of features bounding a set of chromosome ranges/genes}
 \usage{
   boundingIndices(starts, stops, positions,
     valid.indices = TRUE, all.indices = FALSE, offset = 0)
