@@ -66,6 +66,7 @@ setValidity("GenoSet", function(object) {
 
 # Create class union of GenoSet and RangedData so method signatures can be set for either
 setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
+setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 ##' Create a GenoSet or derivative object
 ##'
