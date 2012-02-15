@@ -25,6 +25,7 @@
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom methods ANY character matrix numeric
 ##' @importClassesFrom BSgenome BSgenome
+##' @importClassesFrom GenomicRanges GRanges
 ##' @importFrom Biostrings getSeq letterFrequency
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
@@ -1342,6 +1343,74 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
   
 }
 
+##' Find indices of features bounding a set of chromosome ranges/genes, across chromosomes
+##'
+##' Finds subject ranges corresponding to a set of genes (query ranges), taking chromosome
+##' into account. Specifically, this function will find the indices of the features
+##' (first and last) bounding the ends of a range/gene (start and stop) such that
+##' first <= start < stop <= last. Equality is necessary so that multiple conversions between
+##' indices and genomic positions will not expand with each conversion. Ranges/genes that are
+##' outside the range of feature positions will be given the indices of the corresponding
+##' first or last index on that chromosome, rather than 0 or n + 1 so that genes can always be
+##' connected to some data. Checking the left and right bound for equality will tell you when
+##' a query is off the end of a chromosome.
+##' 
+##' This function uses some tricks from findIntervals, where is for k queries and n features it
+##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
+##' faster for sets of query genes that are sorted by start position within each chromosome.
+##' The index of the stop position for each gene is found using the left bound from the start
+##' of the gene reducing the search space for the stop position somewhat. This function has
+##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
+##' check for NAs or unsorted data in the subject positions. Also, the positions are
+##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles. These
+##' three once-per-call differences account for much of the speed improvement in boundingIndices.
+##' These three differences are meant for position info coming from GenoSet objects
+##' and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
+##' does not check that the positions are ordered. The starts and stops need not be sorted, but
+##' it will be much faster if they are.
+##'
+##' This function differs from boundingIndices in that 1. it uses both start and end positions for
+##' the subject, and 2. query and subject start and end positions are processed in blocks corresponding
+##' to chromosomes.
+##' 
+##' @param query RangedData or GRanges (with genes). GRanges coerced to RangedData for now.
+##' @param subject RangedData
+##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
+##' @export boundingIndicesByChr
+##' @family "range summaries"
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+boundingIndicesByChr <-function(query, subject) {
+  # Convert GRanges to RangedData until genome order, chr, and chrIndices ready for Granges
+  if (is(query,"GRanges")) {
+    query = as(query,"RangedData")
+  }
+
+  # Subject must have features ordered by start within chromsome. Query need not, but it's faster.  Chromosome order doesn't matter.
+  if (! isGenomeOrder(subject,strict=FALSE) ) {
+    stop("subject must be in genome order.\n")
+  }
+    
+  if (! isGenomeOrder(query,strict=FALSE) ) {
+    cat("Setting query to genome order.\n")
+    query = toGenomeOrder(query)
+  }
+  query.chr.indices = chrIndices(query)
+  subject.chr.indices = chrIndices(subject)
+  ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
+  query.chr.indices = query.chr.indices[ok.chrs,,drop=FALSE]
+  subject.chr.indices = subject.chr.indices[ok.chrs,,drop=FALSE]
+  if ( length(ok.chrs) != length(query) ) {
+    nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3]))
+  } else {
+    nquery = nrow(query)
+  }
+  query.start = start(query)
+  query.end = end(query)
+  query.names = unlist(lapply(ranges(query), names))  # optimization, much faster than rownames
+  subject.start = start(subject)
+  subject.end = end(subject)
+  return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))
+}
 
 ##' Average features in ranges per sample 
 ##'
@@ -1367,33 +1436,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' @author Peter M. Haverty
 rangeSampleMeans <- function(query.rd, subject, assay.element) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
-
-  if (! isGenomeOrder(locData(subject),strict=FALSE) ) {
-    cat("Setting subject to genome order.")
-    subject = toGenomeOrder(subject)
-  }
-  if (! isGenomeOrder(query.rd,strict=FALSE) ) {
-    cat("Setting query to genome order.")
-    query.rd = toGenomeOrder(query.rd)
-  }
-
-  chr.names = intersect( names(query.rd), names(locData(subject)) )  # All chrs in both sets
-  chr.indices = chrIndices(subject)  # Bounds of each chr
-
-  # Foreach chr
-  subject.ranges = ranges(subject)
-  subject.starts = start(subject.ranges)
-  subject.stops = end(subject.ranges)
-  query.ranges = ranges(query.rd)
-  query.starts = start(query.ranges)
-  query.stops = end(query.ranges)
-  
-  ranges.by.chr = lapply( chr.names, function(x) {  # lapply here so I can switch to mclapply later
-    indices = boundingIndices( starts=query.starts[[x]], stops=query.stops[[x]], positions=subject.starts[[x]], offset=chr.indices[x,"offset"] ) # Find bounds of query in this chr
-    rownames(indices) = names(query.ranges[[x]])
-    return(indices)
-  })
-  all.indices = do.call(rbind,ranges.by.chr)
+  all.indices = boundingIndicesByChr(query.rd, subject)
 
   # Temporary hack for DataFrame of Rle
   data.matrix = assayDataElement(subject,assay.element)

@@ -29,6 +29,7 @@
 \seealso{
   Other "range summaries": \code{\link{boundingIndices}},
   \code{\link{boundingIndices2}},
+  \code{\link{boundingIndicesByChr}},
   \code{\link{rangeSampleMeans}}
 }
 

@@ -54,6 +54,7 @@ starts = seq(10,100,10)
 }
 \seealso{
   Other "range summaries": \code{\link{boundingIndices}},
+  \code{\link{boundingIndicesByChr}},
   \code{\link{rangeColMeans}},
   \code{\link{rangeSampleMeans}}
 }

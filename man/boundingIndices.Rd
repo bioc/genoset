@@ -79,6 +79,7 @@ starts = seq(10,100,10)
 }
 \seealso{
   Other "range summaries": \code{\link{boundingIndices2}},
+  \code{\link{boundingIndicesByChr}},
   \code{\link{rangeColMeans}},
   \code{\link{rangeSampleMeans}}
 }
