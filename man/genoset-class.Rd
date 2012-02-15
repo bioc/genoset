@@ -37,7 +37,7 @@
 \alias{pos,RangedData-method}
 \alias{uniqueChrs,RangedDataOrGenoSet-method}
 \alias{orderedChrs,RangedDataOrGenoSet-method}
-\alias{chrIndices,RangedDataOrGenoSet-method}
+\alias{chrIndices,RangedDataOrGenoSetOrGRanges-method}
 \alias{chrInfo,RangedDataOrGenoSet-method}
 \alias{genoPos,RangedDataOrGenoSet-method}
 
