@@ -22,6 +22,7 @@
 \alias{names,GenoSet-method}
 \alias{ranges,GenoSet-method}
 \alias{elementLengths,GenoSet-method}
+\alias{elementLengths,GRanges-method}
 
 % Subsetting
 \alias{[,GenoSet,ANY,ANY,ANY-method}

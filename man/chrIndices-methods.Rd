@@ -2,7 +2,7 @@
 \alias{chrIndices}
 \title{Get a matrix of first and last index of features in each chromosome}
 \arguments{
-  \item{object}{GenoSet or RangedData}
+  \item{object}{GenoSet, RangedData, or GRanges}
 
   \item{chr}{character, specific chromosome name}
 }

@@ -26,6 +26,8 @@
 ##' @importClassesFrom methods ANY character matrix numeric
 ##' @importClassesFrom BSgenome BSgenome
 ##' @importClassesFrom GenomicRanges GRanges
+##' @importFrom GenomicRanges GRanges
+##' @importMethodsFrom GenomicRanges seqnames seqlevels
 ##' @importFrom Biostrings getSeq letterFrequency
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
@@ -383,6 +385,7 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 ##' @return character
 ##' @author Peter Haverty
 ##' @exportMethod names
+##' 
 ##' @rdname genoset-methods
 setMethod("names", "GenoSet", function(x) { return( names(locData(x)) ) } )
 
@@ -407,6 +410,10 @@ setMethod("ranges", "GenoSet", function(x) { return( ranges(locData(x)) ) } )
 ##' @exportMethod elementLengths
 ##' @rdname genoset-methods
 setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
+setMethod("elementLengths", "GRanges", function(x) {
+  if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GRanges not ordered by chromosome.") }
+  return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )
+})
 
 #############
 # Sub-setters
@@ -659,7 +666,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSet"),
 ##' locations. If chr is specified, the function will return a sequence
 ##' of integers representing the row indices of features on that chromosome.
 ##' 
-##' @param object GenoSet or RangedData
+##' @param object GenoSet, RangedData, or GRanges
 ##' @param chr character, specific chromosome name
 ##' @return data.frame with "first" and "last" columns
 ##' @author Peter M. Haverty
@@ -671,18 +678,21 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSet"),
 ##' @rdname chrIndices-methods
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 ##' @rdname chrIndices-methods
-setMethod("chrIndices", signature(object="RangedDataOrGenoSet"),
+setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
           function(object,chr=NULL) {
-            chr.names = names(object)
-            chr.info = matrix(ncol=3,nrow=length(chr.names), dimnames=list(chr.names,c("first","last","offset")))
-            chr.info[,"last"] = cumsum( elementLengths(object) )
-            chr.info[,"first"] = c(1,chr.info[- nrow(chr.info),"last"] + 1)
+            object.lengths = elementLengths(object)
+            object.lengths = object.lengths[ object.lengths > 0 ]
+            chr.last = cumsum(object.lengths)
+            chr.last = chr.last[ chr.last > 0 ]
+            chr.names = names(chr.last)
+            chr.first = c(1,chr.last[- length(chr.last)] + 1)
+            chr.info = matrix(c(chr.first,chr.last, chr.first-1), ncol=3,nrow=length(chr.names), dimnames=list(chr.names,c("first","last","offset")))
             if (!is.null(chr)) {
-              if (! chr %in% names(object)) { stop("Must specify a valid chromosome name in chrIndices.\n") }
+              if (! chr %in% rownames(chr.info)) { stop("Must specify a valid chromosome name in chrIndices.\n") }
               return( seq.int( chr.info[chr,"first"], chr.info[chr,"last"]) )
+            } else {
+              return(chr.info)
             }
-            chr.info[,"offset"] = chr.info[,"first"] -1
-            return(chr.info)
         })
 
 ##' Get base positions of features in genome-scale units
@@ -1558,7 +1568,7 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=FALSE) {
             if (strict == TRUE) {
-              if (!all(chrOrder(names(ds)) == names(ds))) {
+              if (isTRUE(all.equal(chrOrder(names(ds)), names(ds)))) {
                 ds = ds[ chrOrder(names(ds)) ]
               }
             }

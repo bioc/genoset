@@ -159,7 +159,11 @@ test_locData <- function() {
 }
 
 test_rd.gs.shared.api.and.getting.genome.info <- function() {
+  test.sample.names = LETTERS[11:13]
+  probe.names = letters[1:10]
+
   point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
+  point.locData.gr = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
   point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe="hg19")
   wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
   gs = GenoSet(
@@ -180,14 +184,17 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( names( point.locData ), names( gs ) )
   checkEquals( ranges( point.locData ), ranges( gs ) )
   checkEquals( elementLengths( point.locData ), elementLengths( gs ) )
+  checkEquals( elementLengths( point.locData ), elementLengths( point.locData.gr ) )
   checkEquals( orderedChrs( point.bad.chr.order.locData ), c("chr3","chr5","chrX") )
   checkEquals( orderedChrs( point.locData ), orderedChrs( gs ) )
   checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
   checkEquals( chrInfo( point.locData ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
   checkEquals( chrIndices( point.locData, "chr3"), c(5,6) )
-  checkException( chrIndices( point.locData, "chrFOO") )
+  checkException( chrIndices( point.locData, "chrFOO"), silent=TRUE )
   checkEquals( chrIndices( point.locData ), chrIndices( gs ) )
   checkEquals( chrIndices( point.locData ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
+  checkEquals( chrIndices( point.locData ), chrIndices(point.locData.gr) )
+  checkEquals( chrIndices( point.locData[1:6,] ), chrIndices(point.locData.gr)[1:2,], "Empty levels ignored" )
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
 }
