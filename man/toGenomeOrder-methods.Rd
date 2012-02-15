@@ -17,6 +17,10 @@
   Returns a vector of indices to use in re-ordering a
   RangedData or GenoSet to genome order. If strict=TRUE,
   then chromosomes must be in order specified by chrOrder.
+  If ds is already ordered, no re-ordering is done.
+  Therefore, checking order with isGenomeOrder, is
+  unnecessary if order will be corrected if isGenomeOrder
+  is FALSE.
 }
 \examples{
 data(genoset)

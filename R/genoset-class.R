@@ -1389,11 +1389,8 @@ boundingIndicesByChr <-function(query, subject) {
   if (! isGenomeOrder(subject,strict=FALSE) ) {
     stop("subject must be in genome order.\n")
   }
-    
-  if (! isGenomeOrder(query,strict=FALSE) ) {
-    cat("Setting query to genome order.\n")
-    query = toGenomeOrder(query)
-  }
+  query = toGenomeOrder(query,strict=FALSE)
+
   query.chr.indices = chrIndices(query)
   subject.chr.indices = chrIndices(subject)
   ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
@@ -1538,6 +1535,8 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 ##'
 ##' Returns a vector of indices to use in re-ordering a RangedData or
 ##' GenoSet to genome order. If strict=TRUE, then chromosomes must be in order specified by chrOrder.
+##' If ds is already ordered, no re-ordering is done. Therefore, checking order with isGenomeOrder,
+##' is unnecessary if order will be corrected if isGenomeOrder is FALSE.
 ##' 
 ##' @param ds RangedData or GenoSet
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
@@ -1559,11 +1558,19 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=FALSE) {
             if (strict == TRUE) {
-              ds = ds[ chrOrder(names(ds)) ]
+              if (!all(chrOrder(names(ds)) == names(ds))) {
+                ds = ds[ chrOrder(names(ds)) ]
+              }
             }
-            return( ds[order(as.integer(space(ds)),start(ds)),,drop=FALSE] )
+            row.order = order(as.integer(space(ds)),start(ds))
+            if (is.unsorted(row.order)) {
+              return( ds[row.order,,drop=FALSE] )
+            } else {
+              return( ds )
+            }
           }
         )
+
 ##' @rdname toGenomeOrder-methods
 ##' @aliases toGenomeOrder,GenoSet-method
 setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
