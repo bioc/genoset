@@ -1390,6 +1390,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' @family "range summaries"
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 boundingIndicesByChr <-function(query, subject) {
+  # TODO: make the whole thing work for GRanges, do coersion of GenoSet or RangedData to GRanges
   # Convert GRanges to RangedData until genome order, chr, and chrIndices ready for Granges
   if (is(query,"GRanges")) {
     query = as(query,"RangedData")
@@ -1413,7 +1414,7 @@ boundingIndicesByChr <-function(query, subject) {
   }
   query.start = start(query)
   query.end = end(query)
-  query.names = unlist(lapply(ranges(query), names))  # optimization, much faster than rownames
+  query.names = unlist(lapply(ranges(query), names))  # optimization, much faster than rownames.  Not OK for GRanges, will eventually need if/else or little method that dispatches here (featureNames?)
   subject.start = start(subject)
   subject.end = end(subject)
   return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))
@@ -1543,14 +1544,14 @@ isGenomeOrder <- function(ds, strict=FALSE) {
 
 ##' Get indices to set a RangedData or GenoSet to genome order
 ##'
-##' Returns a vector of indices to use in re-ordering a RangedData or
+##' Returns a vector of indices to use in re-ordering a GRanges, RangedData or
 ##' GenoSet to genome order. If strict=TRUE, then chromosomes must be in order specified by chrOrder.
 ##' If ds is already ordered, no re-ordering is done. Therefore, checking order with isGenomeOrder,
 ##' is unnecessary if order will be corrected if isGenomeOrder is FALSE.
 ##' 
-##' @param ds RangedData or GenoSet
+##' @param ds GenoSet, GRanges, or RangedData
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
-##' @return re-ordered RangedData or GenoSet
+##' @return re-ordered ds
 ##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)
@@ -1568,7 +1569,7 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=FALSE) {
             if (strict == TRUE) {
-              if (isTRUE(all.equal(chrOrder(names(ds)), names(ds)))) {
+              if (!isTRUE(all.equal(chrOrder(names(ds)), names(ds)))) {
                 ds = ds[ chrOrder(names(ds)) ]
               }
             }
@@ -1578,8 +1579,23 @@ setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
             } else {
               return( ds )
             }
-          }
-        )
+          })
+
+##' @rdname toGenomeOrder-methods
+##' @aliases toGenomeOrder,GRanges-method
+setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
+          function(ds, strict=FALSE) {
+            if (strict == TRUE) {
+              if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
+                seqlevels(ds) = chrOrder(seqlevels(ds))
+              }
+            }
+            row.order = order(as.integer(seqnames(ds)),start(ds))
+            if (is.unsorted(row.order)) {
+              ds = ds[row.order,,drop=FALSE]
+            }
+            return(ds)
+          })
 
 ##' @rdname toGenomeOrder-methods
 ##' @aliases toGenomeOrder,GenoSet-method

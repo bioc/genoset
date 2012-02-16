@@ -107,6 +107,17 @@ test_creation <- function() {
   checkIdentical( pData, pData(misordered.genoset), "Misordered pData gets fixed" )
   checkTrue(validObject(bad.locData.genoset), "Can fix locData not in strict genome order")
   checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
+
+  rd1 = RangedData(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
+  rd2 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
+  rd3 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","B","C")))
+  gr1 = GRanges(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),seqnames=Rle(factor(c("A","B","C","C","B","A"),levels=c("A","C","B"))))
+  gr2 = GRanges(ranges=IRanges(start=c(2,9,4,5,1,6),width=1,names=LETTERS[c(2,9,4,5,1,6)]),seqnames=Rle(factor(c("A","A","C","C","B","B"),levels=c("A","C","B"))))
+  gr3 = GRanges(ranges=IRanges(start=c(2,9,1,6,4,5),width=1,names=LETTERS[c(2,9,1,6,4,5)]),seqnames=Rle(factor(c("A","A","B","B","C","C"),levels=c("A","B","C"))))
+  checkIdentical(toGenomeOrder(rd1,strict=FALSE),rd2,"RangedData with mis-ordered chromosomes, without strict")
+  checkIdentical(toGenomeOrder(rd1,strict=TRUE),rd3,"RangedData with mis-ordered chromosomes, with strict")
+  checkIdentical(toGenomeOrder(gr1,strict=FALSE),gr2,"GRanges with mis-ordered chromosomes, without strict")
+  checkIdentical(toGenomeOrder(gr1,strict=TRUE),gr3,"GRanges with mis-ordered chromosomes, with strict")
 }
 
 test_sampleNames <- function() {

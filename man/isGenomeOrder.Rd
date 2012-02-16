@@ -28,6 +28,6 @@ data(genoset)
 \seealso{
   Other "genome ordering": \code{\link{chrOrder}},
   \code{\link{toGenomeOrder}}, \code{\link{toGenomeOrder}},
-  \code{\link{toGenomeOrder}}
+  \code{\link{toGenomeOrder}}, \code{\link{toGenomeOrder}}
 }
 
