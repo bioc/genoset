@@ -172,7 +172,7 @@ test_locData <- function() {
   checkEquals(ds,ds.new,check.attributes=FALSE)
   ld.bad = ld.new
   rownames(ld.bad)[1] = "FOO"
-  checkException( eval(parse(text="locData(ds) = ld.bad")) )
+  checkException( eval(parse(text="locData(ds) = ld.bad")),silent=TRUE )
 }
 
 test_rd.gs.shared.api.and.getting.genome.info <- function() {

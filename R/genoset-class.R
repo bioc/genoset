@@ -1512,10 +1512,12 @@ chrOrder <- function(chr.names) {
   return(all.names)
 }
 
-##' Check if a RangedData or GenoSet is in genome order
+##' Check if a GRanges, GenoSet or RangedData is in genome order
 ##'
 ##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromosomes
-##' must be in order specified by chrOrder.
+##' must be in order specified by chrOrder. isGenomeOrder for GRanges differs from order
+##' in that it orders by chromsome and start position only,
+##' rather than chromsome, strand, start, and width.
 ##' 
 ##' @param ds GenoSet, GRanges, or RangedData
 ##' @param strict logical, should space/chromosome order be identical to that from chrOrder?
@@ -1566,12 +1568,15 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
             }
           })
 
-##' Get indices to set a RangedData or GenoSet to genome order
+##' Set a GRanges, GenoSet, or RangedData to genome order
 ##'
-##' Returns a vector of indices to use in re-ordering a GRanges, RangedData or
-##' GenoSet to genome order. If strict=TRUE, then chromosomes must be in order specified by chrOrder.
+##' Returns a re-ordered object sorted by chromosome and start position. If strict=TRUE, then
+##' chromosomes must be in order specified by chrOrder.
 ##' If ds is already ordered, no re-ordering is done. Therefore, checking order with isGenomeOrder,
 ##' is unnecessary if order will be corrected if isGenomeOrder is FALSE.
+##'
+##' toGenomeOrder for GRanges differs from sort in that it orders by chromsome and start position only,
+##' rather than chromsome, strand, start, and width.
 ##' 
 ##' @param ds GenoSet, GRanges, or RangedData
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
