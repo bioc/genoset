@@ -79,7 +79,7 @@ Converting baf to big.matrix ...
 Converting lrr to big.matrix ...
 
 
-RUNIT TEST PROTOCOL -- Thu Feb 16 09:30:29 2012 
+RUNIT TEST PROTOCOL -- Thu Feb 16 10:51:07 2012 
 *********************************************** 
 Number of test functions: 20 
 Number of errors: 0 
@@ -91,7 +91,18 @@ genoset RUnit Tests - 20 test functions, 0 errors, 0 failures
 Number of test functions: 20 
 Number of errors: 0 
 Number of failures: 0 
+Warning messages:
+1: In newGRanges("GRanges", seqnames = seqnames, ranges = ranges, strand = strand,  :
+  missing values in strand converted to "*"
+2: In newGRanges("GRanges", seqnames = seqnames, ranges = ranges, strand = strand,  :
+  missing values in strand converted to "*"
+3: In newGRanges("GRanges", seqnames = seqnames, ranges = ranges, strand = strand,  :
+  missing values in strand converted to "*"
+4: In newGRanges("GRanges", seqnames = seqnames, ranges = ranges, strand = strand,  :
+  missing values in strand converted to "*"
+5: In newGRanges("GRanges", seqnames = seqnames, ranges = ranges, strand = strand,  :
+  missing values in strand converted to "*"
 > 
 > proc.time()
    user  system elapsed 
- 17.477   0.152  18.463 
+ 17.849   0.672  19.265 
