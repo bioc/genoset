@@ -1537,31 +1537,22 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
               }
             }
             # Check each chr for ordered start
-            return.val = TRUE
-            sorted.results = lapply( start(ranges(ds)), function(x) {
-              if ( is.unsorted(x) ) {
-                return.val <<- FALSE
-              }
-            })
-            return(return.val)
+            chr.ind = chrIndices(ds)
+            return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
           })
 
 ##' @aliases isGenomeOrder,GRanges-method
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=FALSE) {
-            if ( any(duplicated(runValue(seqnames(ds)))) ) {  stop("GRanges not ordered by chromosome.") }
+            if ( any(duplicated(runValue(seqnames(ds)))) ) { stop("GRanges not in blocks by chromosome.") }
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
                 return(FALSE)
               }
             }
-            row.order = order(as.integer(seqnames(ds)),start(ds))
-            if (is.unsorted(row.order)) {
-              return(FALSE)
-            } else {
-              return(TRUE)
-            }
+            chr.ind = chrIndices(ds)
+            return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
           })
 
 ##' Set a GRanges, GenoSet, or RangedData to genome order
