@@ -34,6 +34,7 @@ data(genoset)
 }
 \seealso{
   Other "genome ordering": \code{\link{chrOrder}},
+  \code{\link{isGenomeOrder}}, \code{\link{isGenomeOrder}},
   \code{\link{isGenomeOrder}}
 }
 

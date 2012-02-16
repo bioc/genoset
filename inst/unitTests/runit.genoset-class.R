@@ -116,8 +116,14 @@ test_creation <- function() {
   gr3 = GRanges(ranges=IRanges(start=c(2,9,1,6,4,5),width=1,names=LETTERS[c(2,9,1,6,4,5)]),seqnames=Rle(factor(c("A","A","B","B","C","C"),levels=c("A","B","C"))))
   checkIdentical(toGenomeOrder(rd1,strict=FALSE),rd2,"RangedData with mis-ordered chromosomes, without strict")
   checkIdentical(toGenomeOrder(rd1,strict=TRUE),rd3,"RangedData with mis-ordered chromosomes, with strict")
+  checkTrue(isGenomeOrder(rd2,strict=FALSE))
+  checkTrue(isGenomeOrder(rd3,strict=TRUE))
+  checkTrue(!isGenomeOrder(rd2,strict=TRUE))
   checkIdentical(toGenomeOrder(gr1,strict=FALSE),gr2,"GRanges with mis-ordered chromosomes, without strict")
   checkIdentical(toGenomeOrder(gr1,strict=TRUE),gr3,"GRanges with mis-ordered chromosomes, with strict")
+  checkTrue(isGenomeOrder(gr2,strict=FALSE))
+  checkTrue(isGenomeOrder(gr3,strict=TRUE))
+  checkTrue(!isGenomeOrder(gr2,strict=TRUE))
 }
 
 test_sampleNames <- function() {

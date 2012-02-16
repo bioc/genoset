@@ -1517,7 +1517,7 @@ chrOrder <- function(chr.names) {
 ##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromosomes
 ##' must be in order specified by chrOrder.
 ##' 
-##' @param ds RangedData or GenoSet
+##' @param ds GenoSet, GRanges, or RangedData
 ##' @param strict logical, should space/chromosome order be identical to that from chrOrder?
 ##' @return logical
 ##' @export isGenomeOrder
@@ -1526,21 +1526,45 @@ chrOrder <- function(chr.names) {
 ##'   data(genoset)
 ##'   isGenomeOrder( locData(genoset.ds) )
 ##' @author Peter M. Haverty
-isGenomeOrder <- function(ds, strict=FALSE) {
-  if (strict) {
-    if ( ! all( names(ds) == chrOrder(names(ds) ) ) ) {
-      return(FALSE)
-    }
-  }
-  # Check each chr for ordered start
-  return.val = TRUE
-  sorted.results = lapply( start(ranges(ds)), function(x) {
-    if ( is.unsorted(x) ) {
-      return.val <<- FALSE
-    }
-  })
-  return(return.val)
-}
+##' @rdname isGenomeOrder-methods
+setGeneric("isGenomeOrder", function(ds,...) standardGeneric("isGenomeOrder"))
+
+##' @aliases isGenomeOrder,RangedDataOrGenoSet-method
+##' @rdname isGenomeOrder-methods
+setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
+          function(ds, strict=FALSE) {
+            if (strict) {
+              if ( ! all( names(ds) == chrOrder(names(ds) ) ) ) {
+                return(FALSE)
+              }
+            }
+            # Check each chr for ordered start
+            return.val = TRUE
+            sorted.results = lapply( start(ranges(ds)), function(x) {
+              if ( is.unsorted(x) ) {
+                return.val <<- FALSE
+              }
+            })
+            return(return.val)
+          })
+
+##' @aliases isGenomeOrder,GRanges-method
+##' @rdname isGenomeOrder-methods
+setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
+          function(ds, strict=FALSE) {
+            if ( any(duplicated(runValue(seqnames(ds)))) ) {  stop("GRanges not ordered by chromosome.") }
+            if (strict == TRUE) {
+              if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
+                return(FALSE)
+              }
+            }
+            row.order = order(as.integer(seqnames(ds)),start(ds))
+            if (is.unsorted(row.order)) {
+              return(FALSE)
+            } else {
+              return(TRUE)
+            }
+          })
 
 ##' Get indices to set a RangedData or GenoSet to genome order
 ##'
