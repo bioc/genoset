@@ -20,7 +20,9 @@ Depends:
     methods,
     BiocGenerics (>= 0.1.0),
     Biobase (>= 2.15.1),
-    IRanges (>= 1.13.5)
+    IRanges (>= 1.13.5),
+    bigmemory,
+    GenomicRanges
 Imports:
     methods,
     BiocGenerics,

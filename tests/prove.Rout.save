@@ -1,6 +1,6 @@
 
-R version 2.14.0 (2011-10-31)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R Under development (unstable) (2012-01-29 r58223)
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
@@ -34,18 +34,19 @@ The following object(s) are masked from 'package:base':
     sapply, setdiff, table, tapply, union, unique
 
 Loading required package: Biobase
-
-    Welcome to Bioconductor
+Welcome to Bioconductor
 
     Vignettes contain introductory material; view with
     'browseVignettes()'. To cite Bioconductor, see
     'citation("Biobase")', and for packages 'citation("pkgname")'.
 
 Loading required package: IRanges
+Loading required package: bigmemory
 
 bigmemory >= 4.0 is a major revision since 3.1.2; please see package
 biganalytics and http://www.bigmemory.org for more information.
 
+Loading required package: GenomicRanges
 
 **************************************************************************
    The plan to change the data format for CNA object has been postponed   
@@ -61,18 +62,36 @@ The following object(s) are masked from 'package:Biobase':
 
 [1] TRUE
 > genoset:::.test()
+Converting baf to big.matrix ...
+Converting lrr to big.matrix ...
+Converting cn to big.matrix ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Converting baf to big.matrix ...
+Converting lrr to big.matrix ...
 
 
-RUNIT TEST PROTOCOL -- Fri Jan 20 19:40:18 2012 
+RUNIT TEST PROTOCOL -- Thu Feb 16 09:30:29 2012 
 *********************************************** 
-Number of test functions: 0 
+Number of test functions: 20 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-genoset RUnit Tests - 0 test functions, 0 errors, 0 failures
-Number of test functions: 0 
+genoset RUnit Tests - 20 test functions, 0 errors, 0 failures
+Number of test functions: 20 
 Number of errors: 0 
 Number of failures: 0 
 > 
+> proc.time()
+   user  system elapsed 
+ 17.477   0.152  18.463 
