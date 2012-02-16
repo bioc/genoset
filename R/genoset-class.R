@@ -1383,7 +1383,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' the subject, and 2. query and subject start and end positions are processed in blocks corresponding
 ##' to chromosomes.
 ##' 
-##' @param query RangedData or GRanges (with genes). GRanges coerced to RangedData for now.
+##' @param query GRanges or something coercible to GRanges
 ##' @param subject RangedData
 ##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
 ##' @export boundingIndicesByChr
@@ -1392,8 +1392,8 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 boundingIndicesByChr <-function(query, subject) {
   # TODO: make the whole thing work for GRanges, do coersion of GenoSet or RangedData to GRanges
   # Convert GRanges to RangedData until genome order, chr, and chrIndices ready for Granges
-  if (is(query,"GRanges")) {
-    query = as(query,"RangedData")
+  if (!is(query,"GRanges")) {
+    tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
   }
 
   # Subject must have features ordered by start within chromsome. Query need not, but it's faster.  Chromosome order doesn't matter.
@@ -1401,20 +1401,16 @@ boundingIndicesByChr <-function(query, subject) {
     stop("subject must be in genome order.\n")
   }
   query = toGenomeOrder(query,strict=FALSE)
-
   query.chr.indices = chrIndices(query)
   subject.chr.indices = chrIndices(subject)
   ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
   query.chr.indices = query.chr.indices[ok.chrs,,drop=FALSE]
   subject.chr.indices = subject.chr.indices[ok.chrs,,drop=FALSE]
-  if ( length(ok.chrs) != length(query) ) {
-    nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3]))
-  } else {
-    nquery = nrow(query)
-  }
+  nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3])) # !!!
   query.start = start(query)
   query.end = end(query)
-  query.names = unlist(lapply(ranges(query), names))  # optimization, much faster than rownames.  Not OK for GRanges, will eventually need if/else or little method that dispatches here (featureNames?)
+  query.names = names(query)
+  if (is.null(query.names)) { query.names = as.character(seq.int(from=1,to=nquery)) }
   subject.start = start(subject)
   subject.end = end(subject)
   return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))

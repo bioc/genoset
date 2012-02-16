@@ -5,8 +5,7 @@
   boundingIndicesByChr(query, subject)
 }
 \arguments{
-  \item{query}{RangedData or GRanges (with genes). GRanges
-  coerced to RangedData for now.}
+  \item{query}{GRanges or something coercible to GRanges}
 
   \item{subject}{RangedData}
 }
