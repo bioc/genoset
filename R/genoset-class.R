@@ -1,4 +1,4 @@
-######  Class definition for GenoSet, which will extend eSet
+#####  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
 ######   by location.
@@ -39,7 +39,7 @@
 ##'
 ##' @importFrom DNAcopy CNA segment smooth.CNA
 ##'
-##' @importFrom graphics abline axis axTicks box mtext plot plot.new plot.window points segments
+##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##'
 ##' @importFrom IRanges DataFrame IRanges RangedData
 ##'
