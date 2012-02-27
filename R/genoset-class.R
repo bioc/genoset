@@ -377,6 +377,15 @@ setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 ##' @rdname genoset-methods
 setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
+##' Get width of location for each feature
+##'
+##' locData slot holds a RangedData.
+##' @param x GenoSet
+##' @return integer
+##' @author Peter M. Haverty
+##' @rdname genoset-methods
+setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
+
 ##' Get chromosome names
 ##'
 ##' Get chromosome names, which are the names of the locData slot.
@@ -543,7 +552,7 @@ setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(ob
 ##'
 ##' Get chromosome position of features/ranges. Defined as floor of mean of start and end.
 ##' @title Positions for features
-##' @param object RangedData or GenoSet
+##' @param object GRanges, RangedData or GenoSet
 ##' @return numeric vector of feature positions within a chromosome
 ##' @author Peter Haverty
 ##' @export pos
@@ -561,9 +570,8 @@ setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(ob
 ##' @rdname pos
 setGeneric("pos", function(object) standardGeneric("pos"))
 ##' @rdname pos
-setMethod("pos", "RangedData", function(object) { return( (start(object) + end(object)) %/% 2L ) } )
-##' @rdname pos
-setMethod("pos", "GenoSet",    function(object) { return( (start(locData(object)) + end(locData(object))) %/% 2L ) } )
+setMethod("pos", "RangedDataOrGenoSetOrGRanges",
+          function(object) { return( start(object) + (width(object) - 1L) %/% 2L) } )
 
 ##' Get list of unique chromosome names
 ##'

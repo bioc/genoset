@@ -189,12 +189,17 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
+  gr = as(point.locData,"GRanges")
 
+  checkEquals( start( point.locData ), start( gs ) )
+  checkEquals( width( point.locData ), width( gs ) )
+  checkEquals( end( point.locData ), end( gs ) )
   checkEquals( chr(point.locData), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
   checkEquals( chr( point.locData ), chr( gs ) )
   checkEquals( pos(point.locData), 1L:10L )
   checkEquals( pos(wide.locData), seq(from=2L, length=10, by=3L ) )
   checkEquals( pos( point.locData ), pos( gs ) )
+  checkEquals( pos( point.locData ), pos( gr ) )
   checkEquals( uniqueChrs( point.locData ), c("chr1","chr3","chrX") )
   checkEquals( uniqueChrs( point.locData ), uniqueChrs( gs ) )
   checkEquals( names( point.locData ), c("chr1","chr3","chrX") )
