@@ -2,7 +2,7 @@
 \alias{pos}
 \title{Positions for features}
 \arguments{
-  \item{object}{RangedData or GenoSet}
+  \item{object}{GRanges, RangedData or GenoSet}
 }
 \value{
   numeric vector of feature positions within a chromosome

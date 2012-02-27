@@ -526,7 +526,7 @@ setMethod("show","GenoSet",
 ##'
 ##' Get chromosome name for each feature.  Returns character, not the factor 'space'.
 ##' @title Look up chromosome for each feature 
-##' @param object RangedData or GenoSet
+##' @param object GRanges, RangedData or GenoSet
 ##' @return character vector of chromosome positions for each feature
 ##' @examples
 ##'   test.sample.names = LETTERS[11:13]
@@ -547,6 +547,8 @@ setGeneric("chr", function(object) standardGeneric("chr"))
 setMethod("chr", "RangedData", function(object) { return(as.character(space(object))) } )
 ##' @rdname chr-methods
 setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(object,"locData")))) } )
+##' @rdname chr-methods
+setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(object))) })
 
 ##' Chromosome position of features
 ##'
@@ -599,7 +601,6 @@ setMethod("uniqueChrs", signature(object="RangedDataOrGenoSet"),
           function(object) {
             names(object)
           })
-
 
 ##' Get chromosome names in genome order
 ##' 

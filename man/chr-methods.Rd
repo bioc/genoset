@@ -2,7 +2,7 @@
 \alias{chr}
 \title{Look up chromosome for each feature}
 \arguments{
-  \item{object}{RangedData or GenoSet}
+  \item{object}{GRanges, RangedData or GenoSet}
 }
 \value{
   character vector of chromosome positions for each feature

@@ -8,8 +8,11 @@
 \alias{ranges}
 \alias{space}
 \alias{start}
+\alias{width}
 \title{Get space factor for GenoSet}
 \arguments{
+  \item{x}{GenoSet}
+
   \item{x}{GenoSet}
 
   \item{x}{GenoSet}
@@ -43,6 +46,8 @@
 
   integer
 
+  integer
+
   character
 
   character
@@ -52,6 +57,8 @@
 \description{
   locData slot holds a RangedData, which keeps the
   chromosome of each feature in a factor names 'space'.
+
+  locData slot holds a RangedData.
 
   locData slot holds a RangedData.
 
@@ -86,6 +93,8 @@ data(genoset)
   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 }
 \author{
+  Peter M. Haverty
+
   Peter M. Haverty
 
   Peter M. Haverty

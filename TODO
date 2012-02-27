@@ -94,4 +94,10 @@ gcCorrect should now NA rows of the matrix corresponding to NA gc values. subset
 
 
 # Wed 07-20-2011 - 09:30
-boundingIndices should make it's return matrix internall and put dimnames on it.  Will do when I make a .Call version.
+boundingIndices should make it's return matrix internal and put dimnames on it.  Will do when I make a .Call version.
+Done
+
+
+# Mon 02-27-2012 - 11:25
+Allow GRanges as locData.  Will require chr, pos, chrIndices, chrInfo, asGenomeOrder, isGenomeOrder, elementLengths, uniqueChrs probably others for GRanges.
+Will need to get rid of "names" methods as GRanges and RangedData use this for different things. Could use existing uniqueChrs, maybe just chrNames?
