@@ -124,16 +124,14 @@ chromosome and position information
 for each feature. ``genoPos'' is like ``pos'', but it
 returns the base positions counting from the first base in the genome, with the
 chromosomes in order by number and then alphabetically for the letter
-chromosomes. ``orderedChrs'' returns this ordered vector of unique chromosome
-names. ``chrInfo'' returns the genoPos of the first and last feature on each chromosome in
+chromosomes. ``chrInfo'' returns the genoPos of the first and last feature on each chromosome in
 addition to the offset of the first feature from the start of the genome. ``chrInfo'' results are
 used for drawing chromosome boundaries on genome-scale plots. ``pos''
 and ``genoPos'' are defined as the floor of the average of each
 features start and end positions.
 
 <<accessgenomeinfo>>=
-names(genoset.ds)
-orderedChrs(genoset.ds)
+chrNames(genoset.ds)
 chrOrder(c("chr12","chr12","chrX","chr8","chr7","chrY"))
 chrInfo(genoset.ds)
 chrIndices(genoset.ds)

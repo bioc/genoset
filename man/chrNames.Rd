@@ -8,8 +8,7 @@
   character vector with names of chromosomes
 }
 \description{
-  Get list of unique chromosome names. A synonym for
-  names().
+  Get list of unique chromosome names
 }
 \examples{
 test.sample.names = LETTERS[11:13]

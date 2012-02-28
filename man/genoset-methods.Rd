@@ -83,7 +83,7 @@ data(genoset)
 space(genoset.ds)
 start(genoset.ds)
 end(genoset.ds)
-names(genoset.ds)
+chrNames(genoset.ds)
 ranges(genoset.ds) # Returns a RangesList
 elementLengths(genoset.ds) # Returns the number of probes per chromosome
 data(genoset)

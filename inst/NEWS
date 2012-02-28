@@ -47,3 +47,7 @@ assayDataElements can be integer matrices with levels that will serve as factors
 
 1.4.10
 segTable for Rle now optionally takes chrIndices table, start and stop from locData for speed. segTable for DataFrame uses this trick. Much faster.  About 95% time reduction for a large dataset on a large chip.
+
+1.4.19
+*Minor API change*  Rarely used (by me) method, orderedChrs, gone.  It's just chrOrder(chrNames(x)) anyway. 'names' on GenoSet depricated.  chrNames gives universal way to get chromosome names (i.e. names, seqlevels) for GenoSet, RangedData, GRanges.
+

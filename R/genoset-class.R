@@ -354,7 +354,7 @@ setMethod("universe<-", signature(x="GenoSet"),
 ##' space(genoset.ds)
 ##' start(genoset.ds)
 ##' end(genoset.ds)
-##' names(genoset.ds)
+##' chrNames(genoset.ds)
 ##' ranges(genoset.ds) # Returns a RangesList
 ##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
 setMethod("space", "GenoSet", function(x) { return(space(locData(x))) } )
@@ -396,7 +396,10 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @exportMethod names
 ##' 
 ##' @rdname genoset-methods
-setMethod("names", "GenoSet", function(x) { return( names(locData(x)) ) } )
+setMethod("names", "GenoSet", function(x) {
+  warning("The names method on a GenoSet is depricated. Please use chrNames.")
+  return( chrNames(locData(x)) )
+} )
 
 ##' Get ranges from locData slot
 ##'
@@ -577,7 +580,7 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 
 ##' Get list of unique chromosome names
 ##'
-##' Get list of unique chromosome names. A synonym for names().
+##' Get list of unique chromosome names
 ##' 
 ##' @param object RangedData or GenoSet
 ##' @return character vector with names of chromosomes
@@ -597,43 +600,17 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##' @rdname chrNames
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 ##' @rdname chrNames
-setMethod("chrNames", signature(object="RangedDataOrGenoSet"),
+setMethod("chrNames", signature(object="GenoSet"),
+          function(object) {
+            chrNames(locData(object))
+          })
+setMethod("chrNames", signature(object="RangedData"),
           function(object) {
             names(object)
           })
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             seqlevels(object)
-          })
-
-##' Get chromosome names in genome order
-##' 
-##' Get chromosome names from locData data in a GenoSet.  Order numerically, for
-##' numeric chromosomes, then lexically for the rest.
-##' 
-##' @param object GenoSet or RangedData
-##' @return character vector with chrs in genome order
-##' @examples
-##'   test.sample.names = LETTERS[11:13]
-##'   probe.names = letters[1:10]
-##'   gs = GenoSet(
-##'      locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chrX",2),rep("chr3",4)),universe="hg18"),
-##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'      annotation="SNP6"
-##'   )
-##'   orderedChrs(gs) # c("chr1","chr3","chrX")
-##'   orderedChrs(locData(gs))  # The same       
-##' @author Peter M. Haverty
-##' @export orderedChrs
-##' @rdname orderedChrs
-setGeneric("orderedChrs", function(object) standardGeneric("orderedChrs") )
-##' @rdname orderedChrs
-setMethod("orderedChrs", signature(object="RangedDataOrGenoSet"),
-          function(object) {
-            chr.names = names(object)
-            chr.names = chrOrder(chr.names)
-            return(chr.names)
           })
 
 ##' Get chromosome start and stop positions
@@ -729,7 +706,7 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
           function(object) {
 
             # For single chr objects, just return pos
-            if ( length(names(object)) == 1 ) {
+            if ( length(chrNames(object)) == 1 ) {
               return(pos(object))
             }
             
@@ -1252,7 +1229,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       CNA.object <- CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
       smoothed.CNA.object <- smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
       segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=0, alpha=alpha)
-      segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=names(locs))
+      segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=chrNames(locs))
       if (return.segs == TRUE) {
         return(segment.smoothed.CNA.object$output)
       } else {
