@@ -211,6 +211,7 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( orderedChrs( point.bad.chr.order.locData ), c("chr3","chr5","chrX") )
   checkEquals( orderedChrs( point.locData ), orderedChrs( gs ) )
   checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
+  checkEquals( chrInfo( point.locData ), chrInfo( gr ) )
   checkEquals( chrInfo( point.locData ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
   checkEquals( chrIndices( point.locData, "chr3"), c(5,6) )
   checkException( chrIndices( point.locData, "chrFOO"), silent=TRUE )

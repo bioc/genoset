@@ -99,5 +99,10 @@ Done
 
 
 # Mon 02-27-2012 - 11:25
-Allow GRanges as locData.  Will require chr, pos, chrIndices, chrInfo, asGenomeOrder, isGenomeOrder, elementLengths, uniqueChrs probably others for GRanges.
+Allow GRanges as locData.  Will require chr, pos, chrIndices, chrInfo, asGenomeOrder, isGenomeOrder, elementLengths, uniqueChrs, orderedChrs probably others for GRanges.
 Will need to get rid of "names" methods as GRanges and RangedData use this for different things. Could use existing uniqueChrs, maybe just chrNames?
+chrInfo for GRanges would need to use its own genome info if available, otherwise max by chr as with RangedData.  Maybe chrLengths for each type then single chrInfo uses that?
+Maybe seqlengths for RangedData (GenoSet calls to its locData?)  Maybe then use seqnames rather than names for RangedData and GenoSet?
+Maybe rather than seqnames and ordered seqnames, just seqnames and the chrOrder function?  (should've called it orderChrNames) Ah, I meant seqlevels.  They're not levels ... 
+
+chrLengths, uniqueChrs, chrInfo still necessary, others done

@@ -582,7 +582,7 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##' @param object RangedData or GenoSet
 ##' @return character vector with names of chromosomes
 ##' @author Peter M. Haverty
-##' @export uniqueChrs
+##' @export chrNames
 ##' @examples
 ##'   test.sample.names = LETTERS[11:13]
 ##'   probe.names = letters[1:10]
@@ -592,14 +592,18 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'      annotation="SNP6"
 ##'   )
-##'   uniqueChrs(gs) # c("chr1","chr3","chrX")
-##'   uniqueChrs(locData(gs))  # The same
-##' @rdname uniqueChrs
-setGeneric("uniqueChrs", function(object) standardGeneric("uniqueChrs") )
-##' @rdname uniqueChrs
-setMethod("uniqueChrs", signature(object="RangedDataOrGenoSet"),
+##'   chrNames(gs) # c("chr1","chr3","chrX")
+##'   chrNames(locData(gs))  # The same
+##' @rdname chrNames
+setGeneric("chrNames", function(object) standardGeneric("chrNames") )
+##' @rdname chrNames
+setMethod("chrNames", signature(object="RangedDataOrGenoSet"),
           function(object) {
             names(object)
+          })
+setMethod("chrNames", signature(object="GRanges"),
+          function(object) {
+            seqlevels(object)
           })
 
 ##' Get chromosome names in genome order
@@ -648,16 +652,16 @@ setMethod("orderedChrs", signature(object="RangedDataOrGenoSet"),
 ##' @rdname chrInfo
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 ##' @rdname chrInfo
-setMethod("chrInfo", signature(object="RangedDataOrGenoSet"),
+setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
           function(object) {
             # Get max end value for each chr
-            max.val = as.list(max(end(ranges(object))))
-            
-            # Alternatively, get from R library storing chr info for this genome
-            #library(org.Hs.eg.db)
-            #max.val = as.list(org.Hs.egCHRLENGTHS)
-            
-            max.val = max.val[ orderedChrs(object) ]
+            if (class(object) == "GRanges" && !any(is.na(seqlengths(object)))) {
+              max.val = seqlengths(object)
+            } else {
+              chr.ind=chrIndices(object)
+              max.val = aggregate(end(object), start=chr.ind[,1], end=chr.ind[,2], FUN=max)
+            }
+            max.val = max.val[ chrOrder(chrNames(object)) ]
             
             chr.info = matrix(ncol=3,nrow=length(max.val), dimnames=list(names(max.val),c("start","stop","offset")))
             chr.info[,"stop"]    = cumsum(max.val)
@@ -826,7 +830,7 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
   } else {
     element.values = assayDataElement(x,element)[,y]
     positions = genoPos(x)
-    if (length(uniqueChrs(x)) > 1) {
+    if (length(chrNames(x)) > 1) {
       locs = locData(x)
     } else {
       locs = NULL
