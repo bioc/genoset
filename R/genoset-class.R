@@ -641,7 +641,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
             max.val = max.val[ chrOrder(chrNames(object)) ]
             
             chr.info = matrix(ncol=3,nrow=length(max.val), dimnames=list(names(max.val),c("start","stop","offset")))
-            chr.info[,"stop"]    = cumsum(max.val)
+            chr.info[,"stop"]    = cumsum(as.numeric(max.val))
             chr.info[,"offset"]  = c(0, chr.info[- nrow(chr.info),"stop"])
             chr.info[,"start"]   = chr.info[,"offset"] + 1
             

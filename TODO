@@ -105,5 +105,7 @@ chrInfo for GRanges would need to use its own genome info if available, otherwis
 Maybe seqlengths for RangedData (GenoSet calls to its locData?)  Maybe then use seqnames rather than names for RangedData and GenoSet?
 Maybe rather than seqnames and ordered seqnames, just seqnames and the chrOrder function?  (should've called it orderChrNames) Ah, I meant seqlevels.  They're not levels ... 
 
-chrLengths, uniqueChrs, chrInfo still necessary, others done
+chr info getters done
+Need chrNames setter?
+Need rownames and x[i,] for GRanges
 loadGC will need to be fixed to work on GRanges too
