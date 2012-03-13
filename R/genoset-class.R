@@ -394,7 +394,6 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @return character
 ##' @author Peter Haverty
 ##' @exportMethod names
-##' 
 ##' @rdname genoset-methods
 setMethod("names", "GenoSet", function(x) {
   warning("The names method on a GenoSet is depricated. Please use chrNames.")

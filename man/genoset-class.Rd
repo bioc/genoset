@@ -33,13 +33,17 @@
 % Genome info from GenoSet or RangedData
 \alias{chr,GenoSet-method}
 \alias{chr,RangedData-method}
-\alias{pos,GenoSet-method}
-\alias{pos,RangedData-method}
+\alias{chr,GRanges-method}
+\alias{pos,RangedDataOrGenoSetOrGRanges-method}
 \alias{uniqueChrs,RangedDataOrGenoSet-method}
 \alias{orderedChrs,RangedDataOrGenoSet-method}
 \alias{chrIndices,RangedDataOrGenoSetOrGRanges-method}
-\alias{chrInfo,RangedDataOrGenoSet-method}
+\alias{chrIndices,RangedDataOrGenoSetOrGRanges-method}
+\alias{chrInfo,RangedDataOrGenoSetOrGRanges-method}
 \alias{genoPos,RangedDataOrGenoSet-method}
+\alias{chrNames,GenoSet-method}
+\alias{chrNames,RangedData-method}
+\alias{chrNames,GRanges-method}
 
 % DataFrame and extensions:
 \alias{colMeans,DataFrame-method}

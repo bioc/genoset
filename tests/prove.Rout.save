@@ -29,9 +29,9 @@ The following object(s) are masked from 'package:stats':
 The following object(s) are masked from 'package:base':
 
     Filter, Find, Map, Position, Reduce, anyDuplicated, cbind,
-    colnames, duplicated, eval, intersect, lapply, mapply, order,
-    paste, pmax, pmax.int, pmin, pmin.int, rbind, rep.int, rownames,
-    sapply, setdiff, table, tapply, union, unique
+    colnames, duplicated, eval, get, intersect, lapply, mapply, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, rbind, rep.int,
+    rownames, sapply, setdiff, table, tapply, union, unique
 
 Loading required package: Biobase
 Welcome to Bioconductor
@@ -48,6 +48,13 @@ biganalytics and http://www.bigmemory.org for more information.
 
 Loading required package: GenomicRanges
 
+Attaching package: 'GenomicRanges'
+
+The following object(s) are masked from 'package:BiocGenerics':
+
+    strand, strand<-
+
+
 **************************************************************************
    The plan to change the data format for CNA object has been postponed   
  in order to ensure backward compatibility with older versions of DNAcopy 
@@ -61,6 +68,13 @@ The following object(s) are masked from 'package:Biobase':
     assayDataElement, assayDataElement<-
 
 [1] TRUE
+Warning messages:
+1: multiple methods tables found for 'strand' 
+2: multiple methods tables found for 'strand<-' 
+3: replacing previous import 'density' when loading 'stats' 
+4: replacing previous import 'residuals' when loading 'stats' 
+5: replacing previous import 'strand' when loading 'GenomicRanges' 
+6: replacing previous import 'strand<-' when loading 'GenomicRanges' 
 > genoset:::.test()
 Converting baf to big.matrix ...
 Converting lrr to big.matrix ...
@@ -79,7 +93,7 @@ Converting baf to big.matrix ...
 Converting lrr to big.matrix ...
 
 
-RUNIT TEST PROTOCOL -- Tue Feb 28 11:50:00 2012 
+RUNIT TEST PROTOCOL -- Tue Mar 13 13:51:49 2012 
 *********************************************** 
 Number of test functions: 20 
 Number of errors: 0 
@@ -95,4 +109,4 @@ There were 27 warnings (use warnings() to see them)
 > 
 > proc.time()
    user  system elapsed 
- 21.789   0.356  22.446 
+ 16.369   0.144  16.860 
