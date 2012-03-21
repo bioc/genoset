@@ -637,7 +637,11 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
               chr.ind=chrIndices(object)
               max.val = aggregate(end(object), start=chr.ind[,1], end=chr.ind[,2], FUN=max)
             }
-            max.val = max.val[ chrOrder(chrNames(object)) ]
+            if (length(max.val) == 1) {
+              names(max.val) = chrNames(object)
+            } else {
+              max.val = max.val[ chrOrder(chrNames(object)) ]
+            }
             
             chr.info = matrix(ncol=3,nrow=length(max.val), dimnames=list(names(max.val),c("start","stop","offset")))
             chr.info[,"stop"]    = cumsum(as.numeric(max.val))
