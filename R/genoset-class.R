@@ -1151,7 +1151,9 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 ##' @author Peter M. Haverty
 runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
-  require(DNAcopy)
+  if (!requireNamespace("DNAcopy",quietly=TRUE)) {
+    stop("Failed to require DNAcopy package.\n")
+  }
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
   loc.pos = as.numeric(pos(locs))
