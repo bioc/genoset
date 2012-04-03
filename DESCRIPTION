@@ -17,22 +17,20 @@ License: Artistic-2.0
 LazyLoad: yes
 Depends:
     R (>= 2.10),
-    methods,
     BiocGenerics (>= 0.1.6),
     Biobase (>= 2.15.1),
     IRanges (>= 1.13.5),
     bigmemory,
     GenomicRanges
 Imports:
+    methods,
     graphics,
-    GenomicRanges,
-    BSgenome
+    GenomicRanges
 Suggests:
     RUnit,
     DNAcopy,
-    stats,
-    Biostrings
-Enhances: parallel, BSgenome.Hsapiens.UCSC.hg19
+    stats
+Enhances: parallel
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariants
 Collate:

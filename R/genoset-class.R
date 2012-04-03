@@ -23,7 +23,6 @@
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
-##' @importClassesFrom BSgenome BSgenome
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels
@@ -901,57 +900,6 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
     return(aData)
   }
 }
-
-##' Load local GC percentage around features
-##'
-##' Local GC content  can be used to remove GC artifacts from copynumber data
-##' see Diskin, 2008). GC% column will be added to the feature data.  The dataset
-##' may be truncated to remove positions without GC information.  GC data are
-##' accessible with locData(). Uses a cool BSgenome trick from Michael Lawrence.
-##' This takes 5.6 hours for 2Mb windows on 2.5M probes, so look for some custom C
-##' in future releases.
-##' 
-##' @param object A GenoSet object or derivative
-##' @param expand numeric, expand each feature location by this many bases on each side
-##' @param bsgenome, sequence db object from BSgenome (e.g. Hsapiens)
-##' @return An updated object, with GC percentage information added to the locData slot.
-##' @export loadGC
-##' @family "gc content"
-##' @docType methods
-##' @rdname loadGC-methods
-##' @author Peter M. Haverty
-setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
-
-##' @rdname loadGC-methods
-##' @aliases loadGC,RangedData,numeric,BSgenome-method
-setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
-          function(object,expand=1e6,bsgenome) {
-            require(BSgenome)
-            require(Biostrings)
-            expanded.ranges = ranges(object) + expand # Zoom
-            # Check chr name matches
-            if ( ! all( grepl("^chr",names(expanded.ranges)))) {
-              names(expanded.ranges) = gsub("^chr","",names(expanded.ranges)) # Get rid of any chr prefixes that may exist
-              names(expanded.ranges) = paste("chr",names(expanded.ranges),sep="") # Add chr prefix to all
-            }
-            # Check and fix zooming off of the chr ends
-            expanded.ranges = restrict(expanded.ranges, start=1L,
-              end=seqlengths(bsgenome)[ as.character(space(expanded.ranges)) ],
-              keep.all.ranges=TRUE)
-            # Get seqs and get GC content
-            allSeqs = Biostrings::getSeq(bsgenome, expanded.ranges, as.character=FALSE)
-            object$gc = Biostrings::letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
-            return(object)
-          })
-
-##' @rdname loadGC-methods
-##' @aliases loadGC,GenoSet,numeric,BSgenome-method
-setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgenome="BSgenome"), function(object,expand=1e6,bsgenome) {
-  # Load gc into locData of GenoSet object
-  ds = loadGC( locData(object),expand,bsgenome )
-  locData(object) = ds
-  return(object)
-})
 
 ##' Correct copy number for GC content
 ##'
