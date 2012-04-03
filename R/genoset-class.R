@@ -23,34 +23,22 @@
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
-##' @importClassesFrom methods ANY character matrix numeric
 ##' @importClassesFrom BSgenome BSgenome
 ##' @importClassesFrom GenomicRanges GRanges
-##' @importFrom GenomicRanges GRanges
+##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels
-##' @importFrom Biostrings getSeq letterFrequency
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start universe "universe<-" unlist
-##' @importMethodsFrom methods coerce show
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
-##'
-##' @importFrom DNAcopy CNA segment smooth.CNA
-##'
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
-##'
 ##' @importFrom IRanges DataFrame IRanges RangedData
-##'
-##' @importFrom methods slot "slot<-" callNextMethod is new
-##'
-##' @importFrom stats density lm residuals
-##'
-##' @importFrom GenomicRanges seqlengths
-##'
+##' @importFrom GenomicRanges seqlengths GRanges
 ##' @importFrom bigmemory as.big.matrix attach.big.matrix is.nil is.big.matrix
 ##'
+##' @import methods
 ##' @import BiocGenerics
 ##' 
 ##' @useDynLib genoset
@@ -938,6 +926,8 @@ setGeneric("loadGC", function(object,expand,bsgenome) standardGeneric("loadGC"))
 ##' @aliases loadGC,RangedData,numeric,BSgenome-method
 setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsgenome="BSgenome"),
           function(object,expand=1e6,bsgenome) {
+            require(BSgenome)
+            require(Biostrings)
             expanded.ranges = ranges(object) + expand # Zoom
             # Check chr name matches
             if ( ! all( grepl("^chr",names(expanded.ranges)))) {
@@ -949,8 +939,8 @@ setMethod("loadGC", signature=signature(object="RangedData",expand="numeric",bsg
               end=seqlengths(bsgenome)[ as.character(space(expanded.ranges)) ],
               keep.all.ranges=TRUE)
             # Get seqs and get GC content
-            allSeqs = getSeq(bsgenome, expanded.ranges, as.character=FALSE)
-            object$gc = letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
+            allSeqs = Biostrings::getSeq(bsgenome, expanded.ranges, as.character=FALSE)
+            object$gc = Biostrings::letterFrequency(allSeqs,letters=c("GC"),as.prob=TRUE)[,1]
             return(object)
           })
 
@@ -984,8 +974,9 @@ setMethod("loadGC", signature=signature(object="GenoSet",expand="numeric",bsgeno
 ##'   gcCorrect(ds, gc)
 ##' @author Peter M. Haverty
 gcCorrect <- function(ds, gc, retain.mean=TRUE) {
-  fit = lm( ds ~ gc, na.action=na.exclude )
-  ds.fixed = residuals(fit)
+  require(stats)
+  fit = stats::lm( ds ~ gc, na.action=na.exclude )
+  ds.fixed = stats::residuals(fit)
   if (retain.mean == TRUE) {
     if (is.null(dim(ds))) {
       ds.fixed = ds.fixed + mean(ds,na.rm=TRUE)
@@ -1015,8 +1006,9 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
 ##' @examples
 ##'   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
 modeCenter <- function(ds) {
+  require(stats)
   column.modes = apply(ds,2, function(x) { 
-    l2r.density = density(x,na.rm=TRUE)
+    l2r.density = stats::density(x,na.rm=TRUE)
     density.max.index = which.max(l2r.density$y)
     return(l2r.density$x[density.max.index])
   })
@@ -1211,6 +1203,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 ##' @author Peter M. Haverty
 runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
+  require(DNAcopy)
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
   loc.pos = as.numeric(pos(locs))
@@ -1229,9 +1222,9 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       writeLines(paste("Working on segmentation for sample number",match(sample.name,sample.name.list),":",sample.name))
       temp.data = as.numeric(data[,sample.name,drop=TRUE])
       ok.indices = !is.na(temp.data)
-      CNA.object <- CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
-      smoothed.CNA.object <- smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
-      segment.smoothed.CNA.object <- segment(smoothed.CNA.object, verbose=0, alpha=alpha)
+      CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
+      smoothed.CNA.object <- DNAcopy::smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
+      segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)
       segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=chrNames(locs))
       if (return.segs == TRUE) {
         return(segment.smoothed.CNA.object$output)

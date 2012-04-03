@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.7.0
+Version: 1.7.1
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -24,19 +24,14 @@ Depends:
     bigmemory,
     GenomicRanges
 Imports:
-    methods,
-    BiocGenerics,
-    Biobase,
-    DNAcopy,
     graphics,
-    IRanges,
-    stats,
     GenomicRanges,
-    Biostrings,
-    BSgenome,
-    bigmemory
+    BSgenome
 Suggests:
-    RUnit
+    RUnit,
+    DNAcopy,
+    stats,
+    Biostrings
 Enhances: parallel, BSgenome.Hsapiens.UCSC.hg19
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariants
