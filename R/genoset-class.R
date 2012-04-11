@@ -922,7 +922,9 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
 ##'   gcCorrect(ds, gc)
 ##' @author Peter M. Haverty
 gcCorrect <- function(ds, gc, retain.mean=TRUE) {
-  require(stats)
+  if (!requireNamespace("stats",quietly=TRUE)) {
+    stop("Failed to require stats package.\n")
+  }
   fit = stats::lm( ds ~ gc, na.action=na.exclude )
   ds.fixed = stats::residuals(fit)
   if (retain.mean == TRUE) {
@@ -954,7 +956,9 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
 ##' @examples
 ##'   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
 modeCenter <- function(ds) {
-  require(stats)
+  if (!requireNamespace("stats",quietly=TRUE)) {
+    stop("Failed to require stats package.\n")
+  }
   column.modes = apply(ds,2, function(x) { 
     l2r.density = stats::density(x,na.rm=TRUE)
     density.max.index = which.max(l2r.density$y)
