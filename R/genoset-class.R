@@ -237,6 +237,7 @@ setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
 ##' @return A new object of the class of supplied object
 ##' @exportMethod "featureNames<-"
 ##' @author Peter M. Haverty
+##' @aliases featureNames<-,GenoSet-method
 setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
                  function(object, value) {
@@ -431,7 +432,8 @@ setMethod("elementLengths", "GRanges", function(x) {
 ##'   genoset.ds[ , "K"]  # Sample called K
 ##'   rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
 ##'   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-##'  @rdname genoset-methods
+##' @rdname genoset-methods
+##' @aliases [,GenoSet,ANY,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
@@ -453,6 +455,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
             callNextMethod(x,i,j,...,drop=drop)
           })
 ##' @rdname genoset-methods
+##' @aliases [,GenoSet,character,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             if ( ! missing(i) ) {
@@ -462,6 +465,7 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           })
 
 ##' @rdname genoset-methods
+##' @aliases [,GenoSet,RangedData,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet", i="RangedData", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %in% i)
@@ -469,6 +473,7 @@ setMethod("[", signature=signature(x="GenoSet", i="RangedData", j="ANY"),
           })
 
 ##' @rdname genoset-methods
+##' @aliases [,GenoSet,RangesList,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet", i="RangesList", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %in% i)
@@ -500,6 +505,8 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
 #######
 
 ##' @exportMethod show
+##' @rdname genoset-methods
+##' @aliases show,GenoSet-method
 setMethod("show","GenoSet",
           function(object) {
             callNextMethod(object)

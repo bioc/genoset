@@ -1,5 +1,6 @@
 \name{featureNames<-}
 \alias{featureNames<-}
+\alias{featureNames<-,GenoSet-method}
 \title{Set featureNames}
 \arguments{
   \item{object}{GenoSet}
