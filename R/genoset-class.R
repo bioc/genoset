@@ -294,6 +294,10 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
                    return(object)
                    })
 
+###########################################
+# Shared API between GenoSet and RangedData
+###########################################
+
 ##' Genome universe for locData
 ##'
 ##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used.
@@ -303,11 +307,12 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
 ##' @return character, e.g. hg19
 ##' @author Peter M. Haverty
 ##' @exportMethod universe
-##' @rdname universe
+##' @rdname genoset-methods
 ##' @examples
 ##'   data(genoset)
 ##'   universe(genoset.ds)
 ##'   universe(genoset.ds) = "hg19"
+##' @aliases universe,GenoSet-method
 setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
 
 ##' Set genome universe
@@ -319,16 +324,13 @@ setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
 ##' @return A GenoSet object
 ##' @author Peter Haverty
 ##' @exportMethod "universe<-"
-##' @rdname universe
+##' @rdname genoset-methods
+##' @aliases universe<-,GenoSet-method
 setMethod("universe<-", signature(x="GenoSet"),
                  function(x,value) {
                    universe(x@locData) = value
                    return(x)
                    })
-
-###########################################
-# Shared API between GenoSet and RangedData
-###########################################
 
 ##' Get space factor for GenoSet
 ##'
@@ -346,6 +348,7 @@ setMethod("universe<-", signature(x="GenoSet"),
 ##' chrNames(genoset.ds)
 ##' ranges(genoset.ds) # Returns a RangesList
 ##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
+##' @aliases space,GenoSet-method
 setMethod("space", "GenoSet", function(x) { return(space(locData(x))) } )
 
 ##' Get start of location for each feature
@@ -355,6 +358,7 @@ setMethod("space", "GenoSet", function(x) { return(space(locData(x))) } )
 ##' @return integer
 ##' @author Peter M. Haverty
 ##' @rdname genoset-methods
+##' @aliases start,GenoSet-method
 setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 
 ##' Get space factor for GenoSet
@@ -364,6 +368,7 @@ setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 ##' @return integer
 ##' @author Peter M. Haverty
 ##' @rdname genoset-methods
+##' @aliases end,GenoSet-method
 setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
 ##' Get width of location for each feature
@@ -384,6 +389,7 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @author Peter Haverty
 ##' @exportMethod names
 ##' @rdname genoset-methods
+##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
   warning("The names method on a GenoSet is depricated. Please use chrNames.")
   return( chrNames(locData(x)) )
@@ -398,6 +404,7 @@ setMethod("names", "GenoSet", function(x) {
 ##' @author Peter Haverty
 ##' @exportMethod ranges
 ##' @rdname genoset-methods
+##' @aliases ranges,GenoSet-method
 setMethod("ranges", "GenoSet", function(x) { return( ranges(locData(x)) ) } )
 
 ##' Get elementLengths from locData slot
@@ -409,7 +416,10 @@ setMethod("ranges", "GenoSet", function(x) { return( ranges(locData(x)) ) } )
 ##' @author Peter Haverty
 ##' @exportMethod elementLengths
 ##' @rdname genoset-methods
+##' @aliases elementLengths,GenoSet-method
 setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
+##' @rdname genoset-methods
+##' @aliases elementLengths,GRanges-method
 setMethod("elementLengths", "GRanges", function(x) {
   if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GRanges not ordered by chromosome.") }
   return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )

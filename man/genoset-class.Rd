@@ -7,17 +7,6 @@
 \section{Slots}{\describe{\item{\code{locData}:}{(\code{\link{RangedData}}) Contains a RangedData that holds probe locations}}}
 \section{Extends}{\code{\linkS4class{eSet}}}
 
-% RangedData API added to GenoSet
-\alias{universe,GenoSet-method}
-\alias{universe<-,GenoSet-method}
-\alias{space,GenoSet-method}
-\alias{start,GenoSet-method}
-\alias{end,GenoSet-method}
-\alias{names,GenoSet-method}
-\alias{ranges,GenoSet-method}
-\alias{elementLengths,GenoSet-method}
-\alias{elementLengths,GRanges-method}
-
 % Genome info from GenoSet or RangedData
 \alias{chr,GenoSet-method}
 \alias{chr,RangedData-method}

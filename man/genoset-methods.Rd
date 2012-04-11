@@ -1,4 +1,4 @@
-\name{space}
+\name{universe}
 \alias{[}
 \alias{[,GenoSet,ANY,ANY,ANY-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
@@ -7,16 +7,33 @@
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \alias{elementLengths}
+\alias{elementLengths,GenoSet-method}
+\alias{elementLengths,GRanges-method}
 \alias{end}
+\alias{end,GenoSet-method}
 \alias{names}
+\alias{names,GenoSet-method}
 \alias{ranges}
+\alias{ranges,GenoSet-method}
 \alias{show}
 \alias{show,GenoSet-method}
 \alias{space}
+\alias{space,GenoSet-method}
 \alias{start}
+\alias{start,GenoSet-method}
+\alias{universe}
+\alias{universe,GenoSet-method}
+\alias{universe<-}
+\alias{universe<-,GenoSet-method}
 \alias{width}
-\title{Get space factor for GenoSet}
+\title{Get and set the genome universe annotation.}
 \arguments{
+  \item{x}{GenoSet}
+
+  \item{x}{GenoSet}
+
+  \item{value}{character, new universe string, e.g. hg19}
+
   \item{x}{GenoSet}
 
   \item{x}{GenoSet}
@@ -46,6 +63,10 @@
   \item{...}{additional subsetting args}
 }
 \value{
+  character, e.g. hg19
+
+  A GenoSet object
+
   factor
 
   integer
@@ -61,6 +82,10 @@
   character
 }
 \description{
+  Genome universe for locData
+
+  Set genome universe
+
   locData slot holds a RangedData, which keeps the
   chromosome of each feature in a factor names 'space'.
 
@@ -77,6 +102,9 @@
   Get elementLengths from locData slot
 }
 \details{
+  The genome positions of the features in locData. The UCSC
+  notation (e.g. hg18, hg19, etc.) should be used.
+
   Get chromosome names, which are the names of the locData
   slot.
 
@@ -85,6 +113,9 @@
   Get elementLengths from locData slot
 }
 \examples{
+data(genoset)
+  universe(genoset.ds)
+  universe(genoset.ds) = "hg19"
 data(genoset)
 space(genoset.ds)
 start(genoset.ds)
@@ -99,6 +130,10 @@ data(genoset)
   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 }
 \author{
+  Peter M. Haverty
+
+  Peter Haverty
+
   Peter M. Haverty
 
   Peter M. Haverty
