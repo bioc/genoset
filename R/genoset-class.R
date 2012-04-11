@@ -262,12 +262,12 @@ setMethod("featureNames<-",
 ##'   rd = locData(genoset.ds)
 ##'   locData(genoset.ds) = rd
 setGeneric("locData", function(object) standardGeneric("locData"))
+##' @aliases locData,GenoSet-method
 ##' @rdname locData
 setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
 
 ##' @rdname locData
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-
 ##' Set locData
 ##'
 ##' Set locData
@@ -278,6 +278,7 @@ setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 ##' @author Peter Haverty
 ##' @export "locData<-"
 ##' @rdname locData
+##' @aliases locData<-,GenoSet,RangedData-method
 setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
                  function(object,value) {
                    if (! all( rownames(value) %in% featureNames(object))) {
@@ -734,7 +735,7 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' @param ylab character, label for y-axis of plot
 ##' @param col character, color to plot lines or points
 ##' @param lwd numeric, line width for segment plots from an Rle
-##' @param pch character or numeric, printing charactater, see points
+##' @param pch character or numeric, printing character, see points
 ##' @param ... Additional plotting args
 ##' @return nothing
 ##' @author Peter M. Haverty

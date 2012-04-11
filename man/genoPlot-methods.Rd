@@ -40,8 +40,8 @@
   \item{lwd}{numeric, line width for segment plots from an
   Rle}
 
-  \item{pch}{character or numeric, printing charactater,
-  see points}
+  \item{pch}{character or numeric, printing character, see
+  points}
 
   \item{...}{Additional plotting args}
 }

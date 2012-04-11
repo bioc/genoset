@@ -1,5 +1,6 @@
 \name{colMeans}
 \alias{colMeans}
+\alias{colMeans,DataFrame-method}
 \title{Means of columns}
 \arguments{
   \item{x}{DataFrame}

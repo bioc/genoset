@@ -18,6 +18,7 @@
 ##' @rdname colMeans
 setGeneric("colMeans", function(x,na.rm=TRUE,dims=1L) standardGeneric("colMeans") )
 ##' @rdname colMeans
+##' @aliases colMeans,DataFrame-method
 setMethod("colMeans", signature(x="DataFrame"), function(x,na.rm=TRUE,dims=1L) { return( sapply(x,mean,na.rm=na.rm) ) } )
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix

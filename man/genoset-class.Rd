@@ -8,8 +8,6 @@
 \section{Extends}{\code{\linkS4class{eSet}}}
 
 % GenoSet methods
-\alias{locData,GenoSet-method}
-\alias{locData<-,GenoSet,RangedData-method}
 \alias{show,GenoSet-method}
 \alias{featureNames<-,GenoSet-method}
 
@@ -44,9 +42,6 @@
 \alias{chrNames,GenoSet-method}
 \alias{chrNames,RangedData-method}
 \alias{chrNames,GRanges-method}
-
-% DataFrame and extensions:
-\alias{colMeans,DataFrame-method}
 
 \title{GenoSet class}
 

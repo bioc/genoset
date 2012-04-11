@@ -1,6 +1,8 @@
 \name{locData}
 \alias{locData}
+\alias{locData,GenoSet-method}
 \alias{locData<-}
+\alias{locData<-,GenoSet,RangedData-method}
 \title{Get and set probe set info}
 \arguments{
   \item{object}{GenoSet}
