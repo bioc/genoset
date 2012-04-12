@@ -6,16 +6,12 @@
 
 \section{Extends}{\code{\linkS4class{GenoSet}}}
 
-\alias{cn,CNSet-method}
-\alias{cn<-,CNSet,matrix-method}
-
-% Coercion:
-\alias{coerce,ExpressionSet,CNSet-method}
-
 \title{CNSet class}
 \description{A CNSet is an extension of GenoSet that requires a 'cn'
   assayData element.
 }
+
+\alias{coerce,ExpressionSet,CNSet-method}
 
 \author{Peter M. Haverty}
 

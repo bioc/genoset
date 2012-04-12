@@ -1,7 +1,9 @@
 \name{lrr}
 \alias{lrr}
+\alias{lrr,BAFSet-method}
 \alias{lrr<-}
-\title{Get or Set the lrr assayData slot}
+\alias{lrr<-,BAFSet,matrix-method}
+\title{Get lrr data}
 \arguments{
   \item{object}{A BAFset object}
 }
@@ -9,6 +11,9 @@
   matrix
 }
 \description{
+  Get or Set the lrr assayData slot
+}
+\details{
   Get or Set the lrr assayData slot
 }
 \examples{

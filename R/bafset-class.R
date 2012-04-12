@@ -75,7 +75,8 @@ BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", unive
 ##' Get or Set the baf assayData slot
 ##'
 ##' Get or Set the baf assayData slot
-##' 
+##'
+##' @title Get baf data
 ##' @param object A BAFset object
 ##' @return matrix
 ##' @author Peter M. Haverty
@@ -87,12 +88,14 @@ BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", unive
 ##' @rdname baf
 setGeneric("baf", function(object) standardGeneric("baf"))
 ##' @rdname baf
+##' @aliases baf,BAFSet-method
 setMethod("baf", "BAFSet", function(object) { return(object@assayData$baf) } )
 
 ##' Get or Set the lrr assayData slot
 ##'
 ##' Get or Set the lrr assayData slot
-##' 
+##'
+##' @title Get lrr data
 ##' @param object A BAFset object
 ##' @return matrix
 ##' @author Peter M. Haverty
@@ -104,12 +107,14 @@ setMethod("baf", "BAFSet", function(object) { return(object@assayData$baf) } )
 ##'   lrr(baf.ds) <- lrr(baf.ds) + 0.1
 setGeneric("lrr", function(object) standardGeneric("lrr"))
 ##' @rdname lrr
+##' @aliases lrr,BAFSet-method
 setMethod("lrr", "BAFSet", function(object) { return(object@assayData$lrr) } )
 
 ##' @export "baf<-"
 ##' @rdname baf
 setGeneric("baf<-", function(object,value) standardGeneric("baf<-") )
 ##' @rdname baf
+##' @aliases baf<-,BAFSet,matrix-method
 setMethod("baf<-", signature(object="BAFSet", value="matrix"),
                  function(object,value) assayDataElementReplace(object, "baf", value))
 
@@ -117,6 +122,7 @@ setMethod("baf<-", signature(object="BAFSet", value="matrix"),
 ##' @rdname lrr
 setGeneric("lrr<-", function(object,value) standardGeneric("lrr<-") )
 ##' @rdname lrr
+##' @aliases lrr<-,BAFSet,matrix-method
 setMethod("lrr<-", signature(object="BAFSet", value="matrix"),
                  function(object,value) assayDataElementReplace(object, "lrr", value))
 
@@ -128,7 +134,6 @@ setAs("BAFSet","CNSet", def=
         new(to, cn=lrr(from), phenoData=phenoData(from), locData=locData(from),
             experimentData=experimentData(from), annotation=annotation(from))
       })
-
 setAs("BAFSet","ExpressionSet", def=
       function(from, to) {
         features = as.data.frame(locData(from))

@@ -1,5 +1,8 @@
 \name{chr}
 \alias{chr}
+\alias{chr,GenoSet-method}
+\alias{chr,GRanges-method}
+\alias{chr,RangedData-method}
 \title{Look up chromosome for each feature}
 \arguments{
   \item{object}{GRanges, RangedData or GenoSet}

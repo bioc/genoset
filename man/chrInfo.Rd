@@ -1,5 +1,6 @@
 \name{chrInfo}
 \alias{chrInfo}
+\alias{chrInfo,RangedDataOrGenoSetOrGRanges-method}
 \title{Chromosome Information}
 \arguments{
   \item{object}{A GenoSet object or similar}

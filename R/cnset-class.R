@@ -81,12 +81,14 @@ CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe=NULL, as
 ##' @rdname cn
 setGeneric("cn", function(object) standardGeneric("cn"))
 ##' @rdname cn
+##' @aliases cn,CNSet-method
 setMethod("cn", "CNSet", function(object) { return(object@assayData$cn) } )
 
 ##' @export "cn<-"
 ##' @rdname cn
 setGeneric("cn<-", function(object,value) standardGeneric("cn<-") )
 ##' @rdname cn
+##' @aliases cn<-,CNSet,matrix-method
 setMethod("cn<-", signature(object="CNSet", value="matrix"),
                  function(object,value) assayDataElementReplace(object, "cn", value))
 

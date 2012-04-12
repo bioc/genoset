@@ -551,10 +551,13 @@ setMethod("show","GenoSet",
 ##' @rdname chr-methods
 setGeneric("chr", function(object) standardGeneric("chr"))
 ##' @rdname chr-methods
+##' @aliases chr,RangedData-method
 setMethod("chr", "RangedData", function(object) { return(as.character(space(object))) } )
 ##' @rdname chr-methods
+##' @aliases chr,GenoSet-method
 setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(object,"locData")))) } )
 ##' @rdname chr-methods
+##' @aliases chr,GRanges-method
 setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(object))) })
 
 ##' Chromosome position of features
@@ -577,6 +580,7 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##'   pos(gs)  # 1:10
 ##'   pos(locData(gs))  # The same
 ##' @rdname pos
+##' @aliases pos,RangedDataOrGenoSetOrGRanges-method
 setGeneric("pos", function(object) standardGeneric("pos"))
 ##' @rdname pos
 setMethod("pos", "RangedDataOrGenoSetOrGRanges",
@@ -604,14 +608,19 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##' @rdname chrNames
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 ##' @rdname chrNames
+##' @aliases chrNames,GenoSet-method
 setMethod("chrNames", signature(object="GenoSet"),
           function(object) {
             chrNames(locData(object))
           })
+##' @rdname chrNames
+##' @aliases chrNames,RangedData-method
 setMethod("chrNames", signature(object="RangedData"),
           function(object) {
             names(object)
           })
+##' @rdname chrNames
+##' @aliases chrNames,GRanges-method
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             seqlevels(object)
@@ -633,6 +642,7 @@ setMethod("chrNames", signature(object="GRanges"),
 ##' @rdname chrInfo
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 ##' @rdname chrInfo
+##' @aliases chrInfo,RangedDataOrGenoSetOrGRanges-method
 setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
           function(object) {
             # Get max end value for each chr
@@ -676,6 +686,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' @rdname chrIndices-methods
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 ##' @rdname chrIndices-methods
+##' @aliases chrIndices,RangedDataOrGenoSetOrGRanges-method
 setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
           function(object,chr=NULL) {
             object.lengths = elementLengths(object)
@@ -710,6 +721,7 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' @rdname genoPos-methods
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
 ##' @rdname genoPos-methods
+##' @aliases genoPos,RangedDataOrGenoSet-method
 setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
           function(object) {
 

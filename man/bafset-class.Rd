@@ -6,21 +6,15 @@
 
 \section{Extends}{\code{\linkS4class{GenoSet}}}
 
-\alias{baf,BAFSet-method}
-\alias{lrr,BAFSet-method}
-\alias{baf<-,BAFSet,matrix-method}
-\alias{lrr<-,BAFSet,matrix-method}
-  
-% Coercion:
-\alias{coerce,CNSet,BAFSet-method}
-\alias{coerce,ExpressionSet,BAFSet-method}
-
 \title{BAFSet class}
 \description{A BAFSet is and extension of GenoSet that requires 'baf'
   and 'lrr' assayData element
 }
 
 \author{Peter M. Haverty}
+
+\alias{coerce,CNSet,BAFSet-method}
+\alias{coerce,ExpressionSet,BAFSet-method}
 
 \seealso{
   \link{bafset-class},

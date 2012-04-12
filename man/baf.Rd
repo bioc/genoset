@@ -1,7 +1,9 @@
 \name{baf}
 \alias{baf}
+\alias{baf,BAFSet-method}
 \alias{baf<-}
-\title{Get or Set the baf assayData slot}
+\alias{baf<-,BAFSet,matrix-method}
+\title{Get baf data}
 \arguments{
   \item{object}{A BAFset object}
 }
@@ -9,6 +11,9 @@
   matrix
 }
 \description{
+  Get or Set the baf assayData slot
+}
+\details{
   Get or Set the baf assayData slot
 }
 \examples{

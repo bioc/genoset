@@ -1,5 +1,6 @@
 \name{genoPos}
 \alias{genoPos}
+\alias{genoPos,RangedDataOrGenoSet-method}
 \title{Convert chromosome positions to positions from start of genome}
 \arguments{
   \item{object}{A GenoSet object or a RangedData object}

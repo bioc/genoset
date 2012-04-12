@@ -1,5 +1,8 @@
 \name{chrNames}
 \alias{chrNames}
+\alias{chrNames,GenoSet-method}
+\alias{chrNames,GRanges-method}
+\alias{chrNames,RangedData-method}
 \title{Get list of unique chromosome names}
 \arguments{
   \item{object}{RangedData or GenoSet}
