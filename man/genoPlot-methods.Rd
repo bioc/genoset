@@ -8,21 +8,15 @@
 \alias{genoPlot,numeric,Rle-method}
 \title{Plot data along the genome}
 \arguments{
-  \item{sample}{A index or sampleName to plot}
-
-  \item{element}{character, name of element in assayData to
-  plot}
-
   \item{x}{GenoSet (or descendant) or numeric with
-  chromosome or genome positions}
+  chromosome or genome positions. See Details.}
 
-  \item{y}{numeric or Rle, values to be used for
-  y-dimension, run start and stop indices or numeric with
-  all values mapped to values in x for x-dimension or index
-  of sample to be plotted if x is a GenoSet.}
+  \item{y}{numeric or Rle, or single integer. See Details.}
 
-  \item{element}{character, when x is a GenoSet, the name
-  of the assayDataElement to plot from.}
+  \item{element}{character, when x is a GenoSet, the y-th
+  column of this assayDataElement is used for the y-axis
+  data. The "cn" element is the default for a CNSet.  For a
+  BAFSet, it is "lrr".}
 
   \item{locs}{RangedData, like locData slot of GenoSet}
 
@@ -61,15 +55,24 @@
   from the specified assayData element and sample, lines
   are plotted representing segments.
 }
+\details{
+  genoPlot has two modes.  When x and y are simple data,
+  data in y is plotted against locations in x. If location
+  information is provided in the "locs" argument,
+  chromosome bounds and genome scale x-axis tick labels
+  will be added.  When x is a Genoset-derived object,
+  genome location info is extracted for the x-values and
+  the y values come from the y-th column in the
+  assayDataElement listed in the "element" argument (i.e.
+  x[ , y, element]).
+}
 \examples{
 data(genoset)
-  genoPlot( baf.ds,1,element="lrr")
-  genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
-  genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
+genoPlot( baf.ds,1,element="lrr")
+genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
+genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 }
 \author{
-  Peter M. Haverty
-
   Peter M. Haverty
 }
 \seealso{

@@ -113,7 +113,6 @@ setAs("ExpressionSet","CNSet", def=
 # Plots
 #######
 
-##' @author Peter M. Haverty
 ##' @rdname genoPlot-methods
 ##' @aliases genoPlot,CNSet,ANY-method
 setMethod("genoPlot", signature(x="CNSet", y="ANY"),
