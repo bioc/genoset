@@ -121,7 +121,7 @@ SEXP rangeColMeans( SEXP bounds, SEXP x ) {
   double *means_data = REAL(means);
 
   double sum;
-  int num_na;
+  int num_na, num_to_sum;
   int col_offset = 0;
   int mean_index = 0;
   for (int col_index = 0; col_index < num_cols; col_index++) {
@@ -131,6 +131,7 @@ SEXP rangeColMeans( SEXP bounds, SEXP x ) {
       mean_index = (col_index * num_bounds) + bound_index;
       left = bounds_data[bound_index] + col_offset;
       right = bounds_data[bound_index + num_bounds] + col_offset;
+      num_to_sum = (right - left) + 1;
       for (int i = left-1; i < right; i++) {
 	if (! R_FINITE(x_data[i]) ) {
 	  num_na += 1;
@@ -138,7 +139,11 @@ SEXP rangeColMeans( SEXP bounds, SEXP x ) {
 	  sum += x_data[i];
 	}
       }
-      means_data[ mean_index ] = sum / (((right - left)+1)-num_na);
+      if (num_na == num_to_sum) {
+	means_data[ mean_index ] = NA_REAL;
+      } else {
+	means_data[ mean_index ] = sum / (num_to_sum - num_na);
+      }
     }
     col_offset += num_rows;
   }

@@ -86,11 +86,11 @@ test_rangeColMeans <- function() {
   checkEquals( rangeColMeans( bounds, x), means, "Matrix with dimnames")
   checkEquals( rangeColMeans( bounds, x[,1]), means[,1], "Vector without dimnames")
 
-  na.cells = matrix(c(3,1,4,2,8,1,8,3),ncol=2,byrow=TRUE)
+  na.cells = matrix(c(3,1,4,2,8,1,8,3,2,3,3,3),ncol=2,byrow=TRUE)
   x.w.na = x
   x.w.na[ na.cells ] = NA
   x.w.na[ 8,3 ] = NaN
-  means.w.na = matrix(c(32,34.5,37,39.5, 42.5,44,47.5,49.5, 52.5,54,57,59.5),nrow=nrow(bounds),ncol=ncol(x),dimnames=dimnames(means))
+  means.w.na = matrix(c(32,34.5,37,39.5, 42.5,44,47.5,49.5, NA,54.5,57,59.5),nrow=nrow(bounds),ncol=ncol(x),dimnames=dimnames(means))
   checkEquals( rangeColMeans( bounds, x.w.na), means.w.na, "Matrix with dimnames and NAs")
 }
 
