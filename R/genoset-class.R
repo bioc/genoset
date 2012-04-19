@@ -819,7 +819,7 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
 ##' @rdname genoPlot-methods
 ##' @aliases genoPlot,GenoSet,ANY-method
 setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
-
+  ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
   # Get position info, subset by chr if necessary
   if (! element %in% assayDataElementNames(x)) {
     stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
