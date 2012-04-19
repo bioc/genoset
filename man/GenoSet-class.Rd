@@ -2,24 +2,6 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{GenoSet-class}
-\alias{[,GenoSet,ANY,ANY,ANY-method}
-\alias{[,GenoSet,character,ANY,ANY-method}
-\alias{[,GenoSet,RangedData,ANY,ANY-method}
-\alias{[,GenoSet,RangesList,ANY,ANY-method}
-\alias{[<-,GenoSet,ANY,ANY,ANY-method}
-\alias{chr,GenoSet-method}
-\alias{chrNames,GenoSet-method}
-\alias{elementLengths,GenoSet-method}
-\alias{featureNames<-,GenoSet-method}
-\alias{genoPlot,GenoSet,ANY-method}
-\alias{locData,GenoSet-method}
-\alias{locData<-,GenoSet,RangedData-method}
-\alias{names,GenoSet-method}
-\alias{ranges,GenoSet-method}
-\alias{show,GenoSet-method}
-\alias{toGenomeOrder,GenoSet-method}
-\alias{universe,GenoSet-method}
-\alias{universe<-,GenoSet-method}
 
 \title{Class \code{"GenoSet"}}
 \description{

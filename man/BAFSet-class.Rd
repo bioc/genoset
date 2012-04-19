@@ -2,11 +2,6 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{BAFSet-class}
-\alias{baf,BAFSet-method}
-\alias{baf<-,BAFSet,matrix-method}
-\alias{genoPlot,BAFSet,ANY-method}
-\alias{lrr,BAFSet-method}
-\alias{lrr<-,BAFSet,matrix-method}
 
 \title{Class \code{"BAFSet"}}
 \description{A BAFSet is and extension of GenoSet that requires 'baf' and 'lrr' assayData element}

@@ -2,9 +2,6 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{CNSet-class}
-\alias{cn,CNSet-method}
-\alias{cn<-,CNSet,matrix-method}
-\alias{genoPlot,CNSet,ANY-method}
 
 \title{Class \code{"CNSet"}}
 \description{A CNSet is an extension of GenoSet that requires a 'cn' assayData element.}
