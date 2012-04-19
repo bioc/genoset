@@ -27,10 +27,6 @@ However, as per BioConductor standard practice the object creation function \cod
 \section{Extends}{
 Class \code{"\linkS4class{GenoSet}"}, directly.
 Class \code{"\linkS4class{eSet}"}, by class "GenoSet", distance 2.
-Class \code{"\linkS4class{RangedDataOrGenoSet}"}, by class "GenoSet", distance 2.
-Class \code{"\linkS4class{RangedDataOrGenoSetOrGRanges}"}, by class "GenoSet", distance 2.
-Class \code{"\linkS4class{VersionedBiobase}"}, by class "GenoSet", distance 3.
-Class \code{"\linkS4class{Versioned}"}, by class "GenoSet", distance 4.
 }
 \section{Methods}{
   \describe{
