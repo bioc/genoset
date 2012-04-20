@@ -1,14 +1,12 @@
+\docType{methods}
 \name{locData}
 \alias{locData}
+\alias{locData-methods}
 \alias{locData,GenoSet-method}
 \alias{locData<-}
 \alias{locData<-,GenoSet,RangedData-method}
-\title{Get and set probe set info}
+\title{Access the feature genome position info}
 \arguments{
-  \item{object}{GenoSet}
-
-  \item{object}{A GenoSet object}
-
   \item{object}{GenoSet}
 
   \item{value}{RangedData describing features}
@@ -17,16 +15,9 @@
   A GenoSet object
 }
 \description{
-  Access the feature genome position info
-
-  Set locData
-}
-\details{
   The position information for each probe/feature is stored
   as an IRanges RangedData object. The locData functions
   allow this data to be accessed or re-set.
-
-  Set locData
 }
 \examples{
 data(genoset)
@@ -35,7 +26,5 @@ data(genoset)
 }
 \author{
   Peter M. Haverty
-
-  Peter Haverty
 }
 

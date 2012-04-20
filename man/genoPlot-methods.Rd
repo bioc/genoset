@@ -1,6 +1,7 @@
 \docType{methods}
 \name{genoPlot}
 \alias{genoPlot}
+\alias{genoPlot-methods}
 \alias{genoPlot,BAFSet,ANY-method}
 \alias{genoPlot,CNSet,ANY-method}
 \alias{genoPlot,GenoSet,ANY-method}
@@ -65,6 +66,27 @@
   the y values come from the y-th column in the
   assayDataElement listed in the "element" argument (i.e.
   x[ , y, element]).
+}
+\section{Methods}{
+  \describe{
+
+  \item{\code{signature(x = "GenoSet", y = "ANY")}}{ Plot
+  feature locations and data from one sample. }
+
+  \item{\code{signature(x = "BAFSet", y = "ANY")}}{ Plot
+  feature locations and data from one sample. Defaults to
+  data from 'lrr' assayDataElement. }
+
+  \item{\code{signature(x = "CNSet", y = "ANY")}}{ Plot
+  feature locations and data from one sample. Defaults to
+  data from 'cn' assayDataElement. }
+
+  \item{\code{signature(x = "numeric", y = "numeric")}}{
+  Plot numeric location and a vector of numeric data. }
+
+  \item{\code{signature(x = "numeric", y = "Rle")}}{ Plot
+  numeric location and a vector of Rle data. Uses lines for
+  Rle runs. } }
 }
 \examples{
 data(genoset)

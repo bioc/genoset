@@ -31,7 +31,7 @@ Class \code{"\linkS4class{eSet}"}, by class "GenoSet", distance 2.
     \item{baf}{\code{signature(object = "BAFSet")}: Getter for 'baf' assayDataElement }
     \item{baf<-}{\code{signature(object = "BAFSet", value = "matrix")}: setter for 'baf' assayDataElement }
     \item{genoPlot}{\code{signature(x = "BAFSet", y = "ANY")}: Plot data
-      along the genome. Defaults to 'lrr' assayDataElement. }x
+      along the genome. Defaults to 'lrr' assayDataElement. }
     \item{lrr}{\code{signature(object = "BAFSet")}: Getter for 'lrr' assayDataElement }
     \item{lrr<-}{\code{signature(object = "BAFSet", value = "matrix")}: Setter for 'lrr' assayDataElement }
 	 }

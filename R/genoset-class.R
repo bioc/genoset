@@ -252,33 +252,27 @@ setMethod("featureNames<-",
 ##' The position information for each probe/feature is stored as an IRanges RangedData object.
 ##' The locData functions allow this data to be accessed or re-set.
 ##'
-##' @title Get and set probe set info
 ##' @param object GenoSet
+##' @param value RangedData describing features
 ##' @export locData
 ##' @author Peter M. Haverty
-##' @param object A GenoSet object
-##' @rdname locData
+##' @rdname locData-methods
+##' @docType methods
 ##' @examples
 ##'   data(genoset)
 ##'   rd = locData(genoset.ds)
 ##'   locData(genoset.ds) = rd
+##' @aliases locData-methods
 setGeneric("locData", function(object) standardGeneric("locData"))
 ##' @aliases locData,GenoSet-method
-##' @rdname locData
+##' @rdname locData-methods
 setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
 
-##' @rdname locData
-setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-##' Set locData
-##'
-##' Set locData
-##' @title Set position info
-##' @param object GenoSet
-##' @param value RangedData describing features
-##' @return A GenoSet object
-##' @author Peter Haverty
 ##' @export "locData<-"
-##' @rdname locData
+##' @rdname locData-methods
+##' @return A GenoSet object
+setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
+##' @rdname locData-methods
 ##' @aliases locData<-,GenoSet,RangedData-method
 setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
                  function(object,value) {
@@ -758,6 +752,30 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' object, genome location info is extracted for the x-values and the y values come from
 ##' the y-th column in the assayDataElement listed in the "element" argument
 ##' (i.e. x[ , y, element]).
+##'
+##' @section Methods:
+##' \describe{
+##' 
+##' \item{\code{signature(x = "GenoSet", y = "ANY")}}{
+##' Plot feature locations and data from one sample.
+##' }
+##' 
+##' \item{\code{signature(x = "BAFSet", y = "ANY")}}{
+##' Plot feature locations and data from one sample. Defaults to data from 'lrr' assayDataElement.
+##' }
+##' 
+##' \item{\code{signature(x = "CNSet", y = "ANY")}}{
+##' Plot feature locations and data from one sample. Defaults to data from 'cn' assayDataElement.
+##' }
+##' 
+##' \item{\code{signature(x = "numeric", y = "numeric")}}{
+##' Plot numeric location and a vector of numeric data.
+##' }
+##' 
+##' \item{\code{signature(x = "numeric", y = "Rle")}}{
+##' Plot numeric location and a vector of Rle data. Uses lines for Rle runs.
+##' }
+##' }
 ##' 
 ##' @param x GenoSet (or descendant) or numeric with chromosome or genome positions. See Details.
 ##' @param y numeric or Rle, or single integer. See Details.
@@ -775,13 +793,14 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' @author Peter M. Haverty
 ##' @export genoPlot
 ##' @family "genome plots"
-##' @docType methods
 ##' @examples
 ##' data(genoset)
 ##' genoPlot( baf.ds,1,element="lrr")
 ##' genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
+##' @docType methods
 ##' @rdname genoPlot-methods
+##' @aliases genoPlot-methods
 setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
 
 ##' @rdname genoPlot-methods
