@@ -338,8 +338,8 @@ png(file="genoset-plotgenome.png",width=12,height=5,res=150,units="in")
 @ 
 
 <<plotgenome, echo=TRUE>>=
-genoPlot(cn.ds, 1)
-genoPlot(cn.ds, 1, element="cn.segs", add=TRUE, col="red")
+genoPlot(cn.ds, cn.ds[ , 1, "cn"])
+genoPlot(cn.ds, cn.ds[, 1, "cn.segs"], add=TRUE, col="red")
 @ 
 
 <<fig=FALSE, echo=FALSE>>=
@@ -360,8 +360,8 @@ png(file="genoset-plotchr.png",width=12,height=5,res=150,units="in")
 @ 
 
 <<plotchr, echo=TRUE>>=
-genoPlot(cn.ds,1,chr="chr12")
-genoPlot(cn.ds,1,chr="chr12",element="cn.segs",add=TRUE, col="red")
+genoPlot(cn.ds,cn.ds[,1,"cn"],chr="chr12")
+genoPlot(cn.ds,cn.ds[,1,"cn.segs"],chr="chr12",add=TRUE, col="red")
 @ 
 
 <<fig=FALSE, echo=FALSE>>=
@@ -436,15 +436,12 @@ assayDataElement(baf.ds,"lrr.segs") = runCBS( lrr(baf.ds), locData(baf.ds) )
 
 \subsection{Plots}
 
-BAFSets (and GenoSets) have a genoPlot function as well that additionally requires a ``element'' argument, which
-can be ``lrr'' or ``baf'' or any other element you happen to have put in ``assayData''.
-
 <<fig=FALSE, echo=FALSE>>=
 png(file="genoset-plotlrr.png",width=7,height=4,res=150,units="in")
 @ 
 <<plotlrr>>=
-genoPlot(baf.ds,1,chr="chr12",element="lrr",main="LRR of chr12")
-genoPlot(baf.ds,1,chr="chr12",element="lrr.segs",add=TRUE,col="red")
+genoPlot(baf.ds,baf.ds[,1,"lrr"],chr="chr12",main="LRR of chr12")
+genoPlot(baf.ds,baf.ds[,1,"lrr.segs"],chr="chr12",add=TRUE,col="red")
 @
 <<fig=FALSE, echo=FALSE>>=
 invisible(dev.off())
@@ -465,9 +462,9 @@ png(file="genoset-plotbaf.png",width=7,height=8,res=150,units="in")
 @ 
 <<plotbaf, echo=TRUE>>=
 par(mfrow=c(2,1))
-genoPlot(baf.ds,1,chr="chr12",element="baf", main="BAF of chr12")
-genoPlot(baf.ds,1,chr="chr12",element="mbaf", main="mBAF of chr12")
-genoPlot(baf.ds,1,chr="chr12",element="baf.segs", add=TRUE,col="red")
+genoPlot(baf.ds,baf.ds[,1,"baf"],chr="chr12", main="BAF of chr12")
+genoPlot(baf.ds,baf.ds[,1,"mbaf"],chr="chr12", main="mBAF of chr12")
+genoPlot(baf.ds,baf.ds[,1,"baf.segs"],chr="chr12", add=TRUE,col="red")
 @ 
 <<fig=FALSE, echo=FALSE>>=
 invisible(dev.off())

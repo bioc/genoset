@@ -51,3 +51,8 @@ segTable for Rle now optionally takes chrIndices table, start and stop from locD
 1.4.19
 *Minor API change*  Rarely used (by me) method, orderedChrs, gone.  It's just chrOrder(chrNames(x)) anyway. 'names' on GenoSet depricated.  chrNames gives universal way to get chromosome names (i.e. names, seqlevels) for GenoSet, RangedData, GRanges.
 
+1.7.7
+genoPlot supports fast zooming into a chromosome with the 'xlim' arg.  Subsets before plotting, which is much faster. Bugfix for odd issues with ... args and genoPlot on an Rle.
+
+1.7.8
+*Minor API change* genoPlot now takes numeric or Rle data as "y" rather than an index into the assayDataElement named in "element".  Backwards compatible with a warning about the old usage being deprecated. RangedData or GRanges also now valid as "x".

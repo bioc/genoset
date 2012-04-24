@@ -4,20 +4,18 @@
 \alias{genoPlot-methods}
 \alias{genoPlot,BAFSet,ANY-method}
 \alias{genoPlot,CNSet,ANY-method}
-\alias{genoPlot,GenoSet,ANY-method}
 \alias{genoPlot,numeric,numeric-method}
 \alias{genoPlot,numeric,Rle-method}
+\alias{genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method}
 \title{Plot data along the genome}
 \arguments{
-  \item{x}{GenoSet (or descendant) or numeric with
-  chromosome or genome positions. See Details.}
+  \item{x}{GenoSet (or descendant), RangedData, or GRanges}
 
-  \item{y}{numeric or Rle, or single integer. See Details.}
+  \item{y}{numeric or Rle}
 
-  \item{element}{character, when x is a GenoSet, the y-th
-  column of this assayDataElement is used for the y-axis
-  data. The "cn" element is the default for a CNSet.  For a
-  BAFSet, it is "lrr".}
+  \item{element}{character, Deprecated. when x is a
+  GenoSet, the y-th column of this assayDataElement is used
+  for the y-axis data.}
 
   \item{locs}{RangedData, like locData slot of GenoSet}
 
@@ -48,42 +46,25 @@
   nothing
 }
 \description{
-  For a GenoSet object, data for a specified sample in a
-  specified assayDataElement can be plotted along the
-  genome.  One chromosome can be specified if desired. If
-  more than one chromosome is present, the chromosome
+  Plot location data and chromosome boundaries from a
+  GenoSet, RangedData, or GRanges object against data from
+  a numeric or Rle. Specifying a chromosome name and
+  optionally a 'xlim' will zoom into one chromosome region.
+  If more than one chromosome is present, the chromosome
   boundaries will be marked. Alternatively, for a numeric x
   and a numeric or Rle y, data in y can be plotted at
-  genome positions y. In this case, chromosome boundaries
+  genome positions x. In this case, chromosome boundaries
   can be taken from the argument locs. If data for y-axis
-  comes from a Rle, either specified directly or coming
-  from the specified assayData element and sample, lines
-  are plotted representing segments.
-}
-\details{
-  genoPlot has two modes.  When x and y are simple data,
-  data in y is plotted against locations in x. If location
-  information is provided in the "locs" argument,
-  chromosome bounds and genome scale x-axis tick labels
-  will be added.  When x is a Genoset-derived object,
-  genome location info is extracted for the x-values and
-  the y values come from the y-th column in the
-  assayDataElement listed in the "element" argument (i.e.
-  x[ , y, element]).
+  comes from a Rle lines are plotted representing segments.
+  X-axis tickmarks will be labeled with genome positions in
+  the most appropriate units.
 }
 \section{Methods}{
   \describe{
 
-  \item{\code{signature(x = "GenoSet", y = "ANY")}}{ Plot
-  feature locations and data from one sample. }
-
-  \item{\code{signature(x = "BAFSet", y = "ANY")}}{ Plot
-  feature locations and data from one sample. Defaults to
-  data from 'lrr' assayDataElement. }
-
-  \item{\code{signature(x = "CNSet", y = "ANY")}}{ Plot
-  feature locations and data from one sample. Defaults to
-  data from 'cn' assayDataElement. }
+  \item{\code{signature(x = "RangedDataOrGenoSetOrGRanges",
+  y = "ANY")}}{ Plot feature locations and data from one
+  sample. }
 
   \item{\code{signature(x = "numeric", y = "numeric")}}{
   Plot numeric location and a vector of numeric data. }

@@ -741,35 +741,20 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 
 ##' Plot data along the genome
 ##'
-##' For a GenoSet object, data for a specified sample in a specified assayDataElement
-##' can be plotted along the genome.  One chromosome can be specified if desired. If
-##' more than one chromosome is present, the chromosome boundaries will be marked.
-##' Alternatively, for a numeric x and a
-##' numeric or Rle y, data in y can be plotted at genome positions y. In this case,
+##' Plot location data and chromosome boundaries from a GenoSet, RangedData, or GRanges object
+##' against data from a numeric or Rle. Specifying a chromosome name and optionally a 'xlim'
+##' will zoom into one chromosome region. If more than one chromosome is present, the
+##' chromosome boundaries will be marked. Alternatively, for a numeric x and a
+##' numeric or Rle y, data in y can be plotted at genome positions x. In this case,
 ##' chromosome boundaries can be taken from the argument locs. If data for y-axis comes
-##' from a Rle, either specified directly or coming from the specified assayData
-##' element and sample, lines are plotted representing segments.
-##'
-##' genoPlot has two modes.  When x and y are simple data, data in y is plotted against
-##' locations in x. If location information is provided in the "locs" argument, chromosome
-##' bounds and genome scale x-axis tick labels will be added.  When x is a Genoset-derived
-##' object, genome location info is extracted for the x-values and the y values come from
-##' the y-th column in the assayDataElement listed in the "element" argument
-##' (i.e. x[ , y, element]).
+##' from a Rle lines are plotted representing segments. X-axis tickmarks will be labeled
+##' with genome positions in the most appropriate units.
 ##'
 ##' @section Methods:
 ##' \describe{
 ##' 
-##' \item{\code{signature(x = "GenoSet", y = "ANY")}}{
+##' \item{\code{signature(x = "RangedDataOrGenoSetOrGRanges", y = "ANY")}}{
 ##' Plot feature locations and data from one sample.
-##' }
-##' 
-##' \item{\code{signature(x = "BAFSet", y = "ANY")}}{
-##' Plot feature locations and data from one sample. Defaults to data from 'lrr' assayDataElement.
-##' }
-##' 
-##' \item{\code{signature(x = "CNSet", y = "ANY")}}{
-##' Plot feature locations and data from one sample. Defaults to data from 'cn' assayDataElement.
 ##' }
 ##' 
 ##' \item{\code{signature(x = "numeric", y = "numeric")}}{
@@ -781,9 +766,9 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' }
 ##' }
 ##' 
-##' @param x GenoSet (or descendant) or numeric with chromosome or genome positions. See Details.
-##' @param y numeric or Rle, or single integer. See Details.
-##' @param element character, when x is a GenoSet, the y-th column of this assayDataElement is used for the y-axis data. The "cn" element is the default for a CNSet.  For a BAFSet, it is "lrr".
+##' @param x GenoSet (or descendant), RangedData, or GRanges
+##' @param y numeric or Rle
+##' @param element character, Deprecated. when x is a GenoSet, the y-th column of this assayDataElement is used for the y-axis data.
 ##' @param locs RangedData, like locData slot of GenoSet
 ##' @param chr Chromosome to plot, NULL by default for full genome
 ##' @param add Add plot to existing plot
@@ -843,12 +828,16 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
           })
 
 ##' @rdname genoPlot-methods
-##' @aliases genoPlot,GenoSet,ANY-method
-setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
+##' @aliases genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method
+setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), function(x, y, element=NULL, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
   ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
   # Get position info, subset by chr if necessary
-  if (! element %in% assayDataElementNames(x)) {
-    stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
+  if (!is.null(element)) {
+    warning("The 'element' arg is deprecated. Please switch to genoPlot( RangedDataOrGenoSetOrGRanges, Rle or numeric ), e.g. genoPlot(genoset, genoset[,i,'cn']) .\n")
+    if (! element %in% assayDataElementNames(x)) {
+      stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
+    }
+    y = x[ , y, element]
   }
   dot.args = list(...)
   if ( !is.null(chr) ) {
@@ -856,14 +845,13 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
       xlim = dot.args[["xlim"]]
       zoom.gr = GRanges(ranges=IRanges(start=xlim[1],end=xlim[2]),seqnames=chr)
       bounds = boundingIndicesByChr(zoom.gr, x)[1,]
-      bound.ind = bounds[1]:bounds[2]
-      element.values = assayDataElement(x,element)[bound.ind,y]
-      positions = start(x)[bound.ind]
+      indices = bounds[1]:bounds[2]
+      positions = start(x)[indices]
     } else {
       indices = chrIndices(x,chr)
-      element.values = assayDataElement(x,element)[indices,y]
       positions = start(x)[indices]
     }
+    y = y[indices]
     locs = NULL
   } else {
     element.values = assayDataElement(x,element)[,y]
@@ -874,7 +862,7 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
       locs = NULL
     }
   }
-  genoPlot(positions,element.values,locs=locs,add=add,xlab=xlab,ylab=ylab,pch=pch,...)
+  genoPlot(positions,y,locs=locs,add=add,xlab=xlab,ylab=ylab,pch=pch,...)
 })
 
 ##' Label an axis with base positions
