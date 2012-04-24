@@ -38,6 +38,10 @@
   \item{pch}{character or numeric, printing character, see
   points}
 
+  \item{xlim}{integer, length two, bounds for genome
+  positions. Used in conjunction with "chr" to subset data
+  for plotting.}
+
   \item{...}{Additional plotting args}
 }
 \value{

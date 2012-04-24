@@ -254,26 +254,30 @@ setMethod("featureNames<-",
 ##'
 ##' @param object GenoSet
 ##' @param value RangedData describing features
+##' @section Methods:
+##' \describe{
+##' \item{\code{signature(object = "GenoSet")}}{
+##' Get location data.
+##' }
+##' \item{\code{signature(object = "GenoSet", value = "RangedData")}}{
+##' Set location data.
+##' }}
 ##' @export locData
+##' @export "locData<-"
 ##' @author Peter M. Haverty
-##' @rdname locData-methods
 ##' @docType methods
 ##' @examples
 ##'   data(genoset)
 ##'   rd = locData(genoset.ds)
 ##'   locData(genoset.ds) = rd
 ##' @aliases locData-methods
-setGeneric("locData", function(object) standardGeneric("locData"))
 ##' @aliases locData,GenoSet-method
-##' @rdname locData-methods
-setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
-
-##' @export "locData<-"
-##' @rdname locData-methods
-##' @return A GenoSet object
-setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-##' @rdname locData-methods
 ##' @aliases locData<-,GenoSet,RangedData-method
+##' @return A GenoSet object
+##' @rdname locData-methods
+setGeneric("locData", function(object) standardGeneric("locData"))
+setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
+setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
                  function(object,value) {
                    if (! all( rownames(value) %in% featureNames(object))) {
@@ -788,6 +792,7 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' @param col character, color to plot lines or points
 ##' @param lwd numeric, line width for segment plots from an Rle
 ##' @param pch character or numeric, printing character, see points
+##' @param xlim integer, length two, bounds for genome positions. Used in conjunction with "chr" to subset data for plotting.
 ##' @param ... Additional plotting args
 ##' @return nothing
 ##' @author Peter M. Haverty
@@ -819,10 +824,12 @@ setMethod("genoPlot",c(x="numeric",y="numeric"),
 ##' @rdname genoPlot-methods
 ##' @aliases genoPlot,numeric,Rle-method
 setMethod("genoPlot", c(x="numeric",y="Rle"),
-          function(x, y, add=FALSE, xlab="", ylab="", col="red", locs=NULL, lwd=2, ...) {
+          function(x, y, add=FALSE, xlab="", ylab="", col="red", locs=NULL, lwd=2, xlim=NULL, ...) {
             if (add == FALSE) {
-              plot.new()
-              plot.window(range(x,na.rm=TRUE),range(y,na.rm=TRUE),xlab=xlab,ylab=ylab,xaxs="i",...)
+              if (is.null(xlim)) {
+                xlim=range(x,na.rm=TRUE)
+              }
+              plot(NA,type="n",xlim=xlim,ylim=range(y,na.rm=TRUE),xlab=xlab,ylab=ylab,xaxs="i",axes=FALSE,...)
               genomeAxis(locs=locs)
             }
             num.mark = runLength(y)
@@ -843,10 +850,20 @@ setMethod("genoPlot", signature(x="GenoSet",y="ANY"), function(x, y, element, ch
   if (! element %in% assayDataElementNames(x)) {
     stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
   }
+  dot.args = list(...)
   if ( !is.null(chr) ) {
-    indices = chrIndices(x,chr)
-    element.values = assayDataElement(x,element)[indices,y]
-    positions = start(x)[indices]
+    if ( "xlim" %in% names(dot.args) ) {
+      xlim = dot.args[["xlim"]]
+      zoom.gr = GRanges(ranges=IRanges(start=xlim[1],end=xlim[2]),seqnames=chr)
+      bounds = boundingIndicesByChr(zoom.gr, x)[1,]
+      bound.ind = bounds[1]:bounds[2]
+      element.values = assayDataElement(x,element)[bound.ind,y]
+      positions = start(x)[bound.ind]
+    } else {
+      indices = chrIndices(x,chr)
+      element.values = assayDataElement(x,element)[indices,y]
+      positions = start(x)[indices]
+    }
     locs = NULL
   } else {
     element.values = assayDataElement(x,element)[,y]
