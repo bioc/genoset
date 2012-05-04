@@ -28,9 +28,9 @@ setValidity("BAFSet", function(object) {
 ##' @param locData A RangedData object specifying feature chromosome
 ##' locations. Rownames are required to match featureNames.
 ##' @param lrr numeric matrix of copy number data with rownames
-##' matching sampleNames and colnames matching sampleNames
+##' matching featureNames and colnames matching sampleNames
 ##' @param baf numeric matrix of B-Allele Frequency data with rownames
-##' matching sampleNames and colnames matching sampleNames
+##' matching featureNames and colnames matching sampleNames
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe for locData
@@ -174,25 +174,6 @@ BAFSet.to.ExpressionSets <- function(bs) {
          featureData=features)
   return(esets)
 }
-
-#######
-# Plots
-#######
-
-##' @rdname genoPlot-methods
-##' @aliases genoPlot,BAFSet,ANY-method
-setMethod("genoPlot", signature(x="BAFSet",y="ANY"),
-          function(x, y, element="lrr", chr=NULL, add=FALSE, ...) {
-
-            if (element == "baf") {
-              callNextMethod(x, y, element, chr, add, ylim=c(0,1), ylab="B-Allele Frequency", ...)
-            } else if (element == "lrr") {
-              callNextMethod(x, y, element, chr, add, ylab="Log2 Ratio", ...)
-              abline(h=0,lwd=2,lty=2)
-            } else {
-              callNextMethod(x, y, element, chr, add, ...)
-            }
-          })
 
 ############
 # Processing

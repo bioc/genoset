@@ -2,8 +2,6 @@
 \name{genoPlot}
 \alias{genoPlot}
 \alias{genoPlot-methods}
-\alias{genoPlot,BAFSet,ANY-method}
-\alias{genoPlot,CNSet,ANY-method}
 \alias{genoPlot,numeric,numeric-method}
 \alias{genoPlot,numeric,Rle-method}
 \alias{genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method}
@@ -75,8 +73,8 @@
 }
 \examples{
 data(genoset)
-genoPlot( baf.ds,1,element="lrr")
-genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
+genoPlot( x=baf.ds,y=baf.ds[,1,"lrr"] )
+genoPlot( genoPos(baf.ds), baf.ds[,1,"lrr"], locs=locData(baf.ds) ) # The same
 genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 }
 \author{

@@ -27,7 +27,7 @@ setValidity("CNSet", function(object) {
 ##' @param locData A RangedData object specifying feature chromosome
 ##' locations. Rownames are required to match featureNames.
 ##' @param cn numeric matrix of copy number data with rownames
-##' matching sampleNames and colnames matching sampleNames
+##' matching featureNames and colnames matching sampleNames
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, string to specify genome universe for locData
@@ -108,24 +108,3 @@ setAs("ExpressionSet","CNSet", def=
             experimentData=experimentData(from), annotation=annotation(from))
       })
 
-
-#######
-# Plots
-#######
-
-##' @rdname genoPlot-methods
-##' @aliases genoPlot,CNSet,ANY-method
-setMethod("genoPlot", signature(x="CNSet", y="ANY"),
-          function(x, y, element="cn", chr=NULL, add=FALSE, ...) {
-            # Plot copynumber
-            if (element == "cn") {
-              callNextMethod(x, y, element, chr, add, ylab="Log2 Ratio", ...)
-              abline(h=0,lty=2,lwd=2)
-            } else {
-              callNextMethod(x, y, element, chr, add, ...)
-            }
-          } )
-
-############
-# Processing
-############

@@ -3,6 +3,8 @@
 \alias{locData}
 \alias{locData-methods}
 \alias{locData,GenoSet-method}
+\alias{locData<-}
+\alias{locData<--methods}
 \alias{locData<-,GenoSet,RangedData-method}
 \title{Access the feature genome position info}
 \arguments{
@@ -25,8 +27,8 @@
 }
 \examples{
 data(genoset)
-  rd = locData(genoset.ds)
-  locData(genoset.ds) = rd
+rd = locData(genoset.ds)
+locData(genoset.ds) = rd
 }
 \author{
   Peter M. Haverty

@@ -12,11 +12,11 @@
   featureNames.}
 
   \item{lrr}{numeric matrix of copy number data with
-  rownames matching sampleNames and colnames matching
+  rownames matching featureNames and colnames matching
   sampleNames}
 
   \item{baf}{numeric matrix of B-Allele Frequency data with
-  rownames matching sampleNames and colnames matching
+  rownames matching featureNames and colnames matching
   sampleNames}
 
   \item{pData}{A data frame with rownames matching all data

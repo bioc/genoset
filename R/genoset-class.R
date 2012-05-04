@@ -71,7 +71,7 @@ setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges")
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
 ##' @param locData A RangedData object specifying feature chromosome
 ##' locations. Rownames are required to match featureNames.
-##' @param pData A data frame with rownames matching all data matrices
+##' @param pData A data frame with rownames matching sampleNames (colnames of all assayDataElements)
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe
 ##' for locData
@@ -267,12 +267,15 @@ setMethod("featureNames<-",
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @examples
-##'   data(genoset)
-##'   rd = locData(genoset.ds)
-##'   locData(genoset.ds) = rd
+##' data(genoset)
+##' rd = locData(genoset.ds)
+##' locData(genoset.ds) = rd
 ##' @aliases locData-methods
+##' @aliases locData<--methods
 ##' @aliases locData,GenoSet-method
 ##' @aliases locData<-,GenoSet,RangedData-method
+##' @aliases locData
+##' @aliases locData<-
 ##' @return A GenoSet object
 ##' @rdname locData-methods
 setGeneric("locData", function(object) standardGeneric("locData"))
@@ -785,8 +788,8 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
 ##' @family "genome plots"
 ##' @examples
 ##' data(genoset)
-##' genoPlot( baf.ds,1,element="lrr")
-##' genoPlot( genoPos(baf.ds), assayDataElement(baf.ds,"lrr")[,1], locs=locData(baf.ds) ) # The same
+##' genoPlot( x=baf.ds,y=baf.ds[,1,"lrr"] )
+##' genoPlot( genoPos(baf.ds), baf.ds[,1,"lrr"], locs=locData(baf.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 ##' @docType methods
 ##' @rdname genoPlot-methods
@@ -854,7 +857,6 @@ setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), funct
     y = y[indices]
     locs = NULL
   } else {
-    element.values = assayDataElement(x,element)[,y]
     positions = genoPos(x)
     if (length(chrNames(x)) > 1) {
       locs = locData(x)

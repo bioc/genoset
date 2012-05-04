@@ -13,8 +13,8 @@
   chromosome locations. Rownames are required to match
   featureNames.}
 
-  \item{pData}{A data frame with rownames matching all data
-  matrices}
+  \item{pData}{A data frame with rownames matching
+  sampleNames (colnames of all assayDataElements)}
 
   \item{annotation}{character, string to specify
   chip/platform type}

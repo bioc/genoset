@@ -40,7 +40,6 @@ data(genoset)
 \seealso{
   Other "genome plots": \code{\link{genoPlot}},
   \code{\link{genoPlot}}, \code{\link{genoPlot}},
-  \code{\link{genoPlot}}, \code{\link{genoPlot}},
   \code{\link{genoPlot}}
 }
 
