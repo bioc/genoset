@@ -54,12 +54,6 @@ test_rangeSampleMeans <- function() {
   means = matrix(c(32,42,52,33,43,53,37,47,57,38,48,58)+0.5,ncol=nrow(query.rd),nrow=ncol(subject),dimnames=list(sampleNames(subject),rownames(query.rd)))
   means = t(means)
   checkEquals( rangeSampleMeans( query.rd, subject, "cn" ), means)
-
-  bigmat.dir = file.path(tempdir(),"bigmat")
-  bm.ds = convertToBigMatrix(subject,path=bigmat.dir)
-  checkEquals( rangeSampleMeans( query.rd, bm.ds, "cn" ), means)
-  rm.results = try(unlink(bigmat.dir,recursive=TRUE),silent=TRUE)
-  checkTrue( !inherits(rm.results,"try-error") )
   
   rle.cnset = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),

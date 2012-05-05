@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.7.8
+Version: 1.8.0
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -20,7 +20,6 @@ Depends:
     BiocGenerics (>= 0.1.6),
     Biobase (>= 2.15.1),
     IRanges (>= 1.13.5),
-    bigmemory,
     GenomicRanges
 Imports:
     methods,
@@ -38,6 +37,5 @@ Collate:
     'cnset-class.R'
     'bafset-class.R'
     'DataFrame-methods.R'
-    'bigmat.R'
     'test_genoset_package.R'
 ByteCompile: TRUE

@@ -35,7 +35,6 @@
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges DataFrame IRanges RangedData
 ##' @importFrom GenomicRanges seqlengths GRanges
-##' @importFrom bigmemory as.big.matrix attach.big.matrix is.nil is.big.matrix
 ##'
 ##' @import methods
 ##' @import BiocGenerics
@@ -1621,3 +1620,19 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
             return(ds)
           })
+
+##' Load a GenoSet from a RData file
+##'
+##' Given a RData file with one object (a GenoSet or related object), load it,
+##' and return.
+##' @param path character, path to RData file
+##' @return GenoSet or related object (only object in RData file)
+##' @examples
+##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
+##' @export 
+##' @author Peter M. Haverty \email{phaverty@@gene.com}
+readGenoSet <- function(path) {
+  object = get(load(path)[1])
+  if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
+  return( object )
+}

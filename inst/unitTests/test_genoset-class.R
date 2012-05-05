@@ -274,9 +274,6 @@ test_subset <- function() {
     )
 
   gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
-
-  bigmat.dir = file.path(tempdir(),"bigmat")
-  bm.ds = convertToBigMatrix(ds,path=bigmat.dir)
   
   # Subsetting whole object
   checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
@@ -290,13 +287,6 @@ test_subset <- function() {
   checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
   checkEquals( ds[ gene.rd, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
-  checkEquals( bm.ds[ 1:3, 1:3, "lrr"], assayDataElement(bm.ds,"lrr")[1:3,1:3], "Extract part of big.matrix" )
-  checkIdentical( bm.ds[ , , "lrr"], assayDataElement(bm.ds,"lrr"), "Extract whole big.matrix" )
-  checkEquals( bm.ds[ , 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[,1:2], "Extract cols from big.matrix" )
-  checkEquals( bm.ds[ 1:2, , "lrr"], assayDataElement(bm.ds,"lrr")[1:2,], "Extract rows from big.matrix" )
-  checkEquals( bm.ds[ 1:2, 1:2, "lrr"], assayDataElement(bm.ds,"lrr")[1:2,1:2], "Extract rectangle from big.matrix" )
-  rm.results = try(unlink(bigmat.dir,recursive=TRUE),silent=TRUE)
-  checkTrue( !inherits(rm.results,"try-error") )
   
   # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
