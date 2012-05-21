@@ -1098,7 +1098,7 @@ segs2RangedData <- function(segs) {
 ##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
 ##' Rle or a DataFrame with Rle
 ##' columns and the locData RangedData both from a GenoSet object
-##' and make a list of data.frames each like the result of CBS's
+##' and makes a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
 ##' exactly to probe locations in locData and the input to
 ##' segs2RleDataFrame are not necessarily so. For a DataFrame, the
@@ -1132,7 +1132,7 @@ setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,Rle-method
-setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL) {
+setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,other.rle=NULL) {
 
   if (!is.null(locs)) {
     chr.ind = chrIndices(locs)
@@ -1175,7 +1175,108 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
     return(segs)
   } else {
     segs.df = do.call(rbind,segs)
-    segs.df$Sample = rep(names(segs),sapply(segs,nrow))
+    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df)
+    return(segs.df)
+  }
+})
+
+
+##' Convert Rle objects to tables of segments
+##'
+##' Like segTable, but for two Rle objects. Takes a
+##' pair of Rle or DataFrames with Rle
+##' columns and makes one or more data.frames with bounds of each new 
+##' segment.  Rle objects are broken up so that each resulting segment 
+##' has one value from each Rle. For a DataFrame, the
+##' argument \code{stack} combines all of the individual data.frames
+##' into one large data.frame and adds a "Sample" column of sample ids.
+##'
+##' For a Rle, the user can provide \code{locs} or \code{chr.ind},
+##' \code{start} and \code{stop}.  The latter is surprisingly much faster
+##' and this is used in the DataFrame version.
+##'
+##' @param x Rle or list/DataFrame of Rle vectors
+##' @param y Rle or list/DataFrame of Rle vectors
+##' @param locs RangedData with rows corresponding to rows of df
+##' @param chr.ind matrix, like from chrIndices method
+##' @param start integer, vector of feature start positions
+##' @param end integer, vector of feature end positions
+##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
+##' @export segPairTable
+##' @family "segmented data"
+##' @examples
+##'   cn = Rle(c(3,4,5,6),rep(3,4))
+##'   loh = Rle(c(2,4,6,8,10,12),rep(2,6))
+##'   start = c(9:11,4:9,15:17)
+##'   end = start
+##'   locs = RangedData(IRanges(start=start,end=end),space=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+##'   segPairTable(cn,loh,locs)
+##' @author Peter M. Haverty
+##' @docType methods
+##' @rdname segPairTable-methods
+setGeneric("segPairTable", function(x,y,...) standardGeneric("segPairTable"))
+
+##' @rdname segPairTable-methods
+##' @aliases segPairTable,Rle,Rle-method
+setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr.ind=NULL,start=NULL,end=NULL) {
+  # Fill in missing args if locs given
+  if (!is.null(locs)) {
+    chr.ind = chrIndices(locs)
+    start = start(locs)
+    end = end(locs)
+  } else {
+    if (is.null(chr.ind) || is.null(start) || is.null(end)) {
+      stop("If locs arg is not provided then chr.ind, start, and end must be provided.")
+    }
+  }
+
+  # Get union of all breakpoints in two Rles and chromosomes
+  x.ends = cumsum(runLength(x))
+  y.ends = cumsum(runLength(y))
+  
+  all.ends = sort(unique(c(chr.ind[,2],x.ends,y.ends)))
+  all.starts = c(1L,all.ends[-length(all.ends)]+1L)
+  num.mark = (all.ends - all.starts) + 1L
+
+  # Look up runValue with binary search on cumsum runValue starts. Starts rather than ends because findInterval is < rather than <=.
+  x.starts = c(1L,x.ends[-length(x.ends)]+1L)
+  x.vals = runValue(x)[ findInterval( all.ends, x.starts ) ]
+  y.starts = c(1L,y.ends[-length(y.ends)]+1L)
+  y.vals = runValue(y)[ findInterval( all.ends, y.starts ) ]
+
+  # Assign chrom,start,stop to each segment
+  chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  loc.end = end[all.ends]
+  loc.start = start[all.starts]
+
+  # Make output object
+  sample.seg = data.frame(chrom=chrom,loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, x=x.vals, y=y.vals, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
+  #  sample.seg = GRanges(ranges=IRanges(start=loc.start, end=loc.end), seqnames=chrom,  num.mark = num.mark, x=x.vals, y=y.vals)
+  # Later, when incoming pinfo is a GRanges, will want to pass on chrlengths in new GRanges
+  return(sample.seg)
+})
+
+##' @rdname segPairTable-methods
+##' @aliases segPairTable,DataFrame,DataFrame-method
+##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
+setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,locs,stack=FALSE) {
+  chr.ind = chrIndices(locs)
+  start = start(locs)
+  end = end(locs)
+  
+  segs = mapply(
+    function(one,two) {
+      return(segPairTable(one,two,chr.ind=chr.ind, start=start, end=end))
+    },
+    x,y,
+    SIMPLIFY=FALSE
+    )
+
+  if (stack == FALSE) {
+    return(segs)
+  } else {
+    segs.df = do.call(rbind,segs)
+    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df)
     return(segs.df)
   }
 })

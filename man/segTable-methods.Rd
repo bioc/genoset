@@ -26,7 +26,7 @@
 \description{
   Like the inverse of segs2Rle and segs2RleDataFrame. Takes
   a Rle or a DataFrame with Rle columns and the locData
-  RangedData both from a GenoSet object and make a list of
+  RangedData both from a GenoSet object and makes a list of
   data.frames each like the result of CBS's segment.  Note
   the loc.start and loc.stop will correspond exactly to
   probe locations in locData and the input to
@@ -55,6 +55,8 @@ data(genoset)
 }
 \seealso{
   Other "segmented data": \code{\link{runCBS}},
+  \code{\link{segPairTable}}, \code{\link{segPairTable}},
+  \code{\link{segPairTable}},
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
   \code{\link{segs2RleDataFrame}}
 }

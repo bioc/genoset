@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2012-01-29 r58223)
+R version 2.15.0 (2012-03-30)
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
@@ -41,44 +41,16 @@ Welcome to Bioconductor
     'citation("Biobase")', and for packages 'citation("pkgname")'.
 
 Loading required package: IRanges
-Loading required package: bigmemory
-
-bigmemory >= 4.0 is a major revision since 3.1.2; please see package
-biganalytics and http://www.bigmemory.org for more information.
-
 Loading required package: GenomicRanges
-
-Attaching package: 'GenomicRanges'
-
-The following object(s) are masked from 'package:BiocGenerics':
-
-    strand, strand<-
-
+[1] TRUE
+> genoset:::.test()
+Loading required namespace: DNAcopy
 
 **************************************************************************
    The plan to change the data format for CNA object has been postponed   
  in order to ensure backward compatibility with older versions of DNAcopy 
 **************************************************************************
 
-
-Attaching package: 'genoset'
-
-The following object(s) are masked from 'package:Biobase':
-
-    assayDataElement, assayDataElement<-
-
-[1] TRUE
-Warning messages:
-1: multiple methods tables found for 'strand' 
-2: multiple methods tables found for 'strand<-' 
-3: replacing previous import 'density' when loading 'stats' 
-4: replacing previous import 'residuals' when loading 'stats' 
-5: replacing previous import 'strand' when loading 'GenomicRanges' 
-6: replacing previous import 'strand<-' when loading 'GenomicRanges' 
-> genoset:::.test()
-Converting baf to big.matrix ...
-Converting lrr to big.matrix ...
-Converting cn to big.matrix ...
 Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
 Working on segmentation for sample number 1 : a1
@@ -89,24 +61,22 @@ Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
 Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
-Converting baf to big.matrix ...
-Converting lrr to big.matrix ...
 
 
-RUNIT TEST PROTOCOL -- Tue Mar 13 13:51:49 2012 
+RUNIT TEST PROTOCOL -- Mon May 21 16:20:50 2012 
 *********************************************** 
-Number of test functions: 20 
+Number of test functions: 21 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-genoset RUnit Tests - 20 test functions, 0 errors, 0 failures
-Number of test functions: 20 
+genoset RUnit Tests - 21 test functions, 0 errors, 0 failures
+Number of test functions: 21 
 Number of errors: 0 
 Number of failures: 0 
-There were 27 warnings (use warnings() to see them)
+There were 26 warnings (use warnings() to see them)
 > 
 > proc.time()
    user  system elapsed 
- 16.369   0.144  16.860 
+ 15.256   0.172  15.662 

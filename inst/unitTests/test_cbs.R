@@ -29,11 +29,11 @@ basic.segs.after = list(
   )
 
 stacked.basic.segs.after = data.frame(
+  Sample=c(rep("K",3),rep("L",5),rep("M",5)),
   chrom = factor(c("chr1","chr3","chrX","chr1","chr1","chr3","chrX","chrX","chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)),
   loc.start = c(1,4,2,1,3,4,2,6,1,3,4,6,2), loc.end = c(7,6,8,1,7,6,4,8,1,7,4,6,8),
   num.mark = c(4,2,4,1,3,2,2,2,1,3,1,1,4),
   seg.mean = c(5.3,2.3,1.2,1.1,1.4,2.2,3.3,0.5,3.3,4.3,4.3,6.3,7.3),
-  Sample=c(rep("K",3),rep("L",5),rep("M",5)),
   row.names=c(paste(rep("K",3),1:3,sep="."),paste(rep("L",5),1:5,sep="."),paste(rep("M",5),1:5,sep=".")),
   stringsAsFactors=FALSE)
 
@@ -72,6 +72,44 @@ test_segTable <- function() {
   checkEquals( segTable( basic.rle.df[["M"]], chr.ind=chr.ind, start=start, end=end), basic.segs.after[["M"]], checkNames=FALSE, "segTable on Rle providing chr.ind, start, end" )
   checkEquals( segTable( basic.rle.df, locData.rd ), basic.segs.after, checkNames=FALSE )
   checkEquals( segTable( basic.rle.df, locData.rd, stack=TRUE ), stacked.basic.segs.after, checkNames=FALSE )
+}
+
+test_segPairTable <- function() {
+  cn = Rle(c(3,4,5,6),rep(3,4))
+  loh = Rle(c(2,4,6,8,10,12),rep(2,6))
+  start = c(9:11,4:9,15:17)
+  end = start
+  locs = RangedData(IRanges(start=start,end=end),space=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+  chr.ind = chrIndices(locs)
+  
+#  segs.gr = GRanges(
+#    ranges = IRanges(
+#      start = c(9, 11,4,5,7,9,15,16),
+#      end   = c(10,11,4,6,7,9,15,17)
+#      ),
+#    seqnames=c(rep("chr1",2),rep("chr2",4),rep("chr3",2)),
+##    seqlengths=list("chr1"=11,"chr2"=9,"chr3"=17),
+#    x  = c(3,3,4,4,5,5, 6,  6),
+#    y = c(2,4,4,6,8,10,10, 12)
+#    )
+#  checkIdentical(segs.gr, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
+  
+  segs.df = data.frame(
+    chrom=factor(c(rep("chr1",2),rep("chr2",4),rep("chr3",2)),levels=c("chr1","chr2","chr3")),
+    loc.start = c( 9,11,4,5,7,9,15,16),
+    loc.end   = c(10,11,4,6,8,9,15,17),
+    num.mark = c(2,1,1,2,2,1,1,2),
+    x  = c(3,3,4,4,5,5, 6,  6),
+    y = c(2,4,4,6,8,10,10, 12)
+    )
+  checkEquals(segs.df, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
+  
+  cn.df = DataFrame(a=cn,b=cn+1)
+  loh.df = DataFrame(a=loh,b=loh+1)
+  stacked.segs.df = do.call(rbind,list(a = segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end), b = segPairTable(cn+1,loh+1,chr.ind=chr.ind,start=start,end=end)))
+  stacked.segs.df = cbind(Sample = rep(c("a","b"),each=8),stacked.segs.df)
+  checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs,stack=TRUE))
+
 }
 
 test.fixSegNAs <- function() {

@@ -32,6 +32,8 @@ data(genoset)
 }
 \seealso{
   Other "segmented data": \code{\link{runCBS}},
+  \code{\link{segPairTable}}, \code{\link{segPairTable}},
+  \code{\link{segPairTable}},
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
   \code{\link{segTable}}, \code{\link{segTable}},
   \code{\link{segTable}}

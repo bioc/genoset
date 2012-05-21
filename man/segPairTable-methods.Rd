@@ -1,0 +1,61 @@
+\docType{methods}
+\name{segPairTable}
+\alias{segPairTable}
+\alias{segPairTable,DataFrame,DataFrame-method}
+\alias{segPairTable,Rle,Rle-method}
+\title{Convert Rle objects to tables of segments}
+\arguments{
+  \item{x}{Rle or list/DataFrame of Rle vectors}
+
+  \item{y}{Rle or list/DataFrame of Rle vectors}
+
+  \item{locs}{RangedData with rows corresponding to rows of
+  df}
+
+  \item{chr.ind}{matrix, like from chrIndices method}
+
+  \item{start}{integer, vector of feature start positions}
+
+  \item{end}{integer, vector of feature end positions}
+
+  \item{stack}{logical, rbind list of segment tables for
+  each sample and add "Sample" column?}
+}
+\value{
+  one or a list of data.frames with columns chrom,
+  loc.start, loc.end, num.mark, seg.mean
+}
+\description{
+  Like segTable, but for two Rle objects. Takes a pair of
+  Rle or DataFrames with Rle columns and makes one or more
+  data.frames with bounds of each new segment.  Rle objects
+  are broken up so that each resulting segment has one
+  value from each Rle. For a DataFrame, the argument
+  \code{stack} combines all of the individual data.frames
+  into one large data.frame and adds a "Sample" column of
+  sample ids.
+}
+\details{
+  For a Rle, the user can provide \code{locs} or
+  \code{chr.ind}, \code{start} and \code{stop}.  The latter
+  is surprisingly much faster and this is used in the
+  DataFrame version.
+}
+\examples{
+cn = Rle(c(3,4,5,6),rep(3,4))
+  loh = Rle(c(2,4,6,8,10,12),rep(2,6))
+  start = c(9:11,4:9,15:17)
+  end = start
+  locs = RangedData(IRanges(start=start,end=end),space=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+  segPairTable(cn,loh,locs)
+}
+\author{
+  Peter M. Haverty
+}
+\seealso{
+  Other "segmented data": \code{\link{runCBS}},
+  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
+  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
+  \code{\link{segTable}}, \code{\link{segTable}}
+}
+
