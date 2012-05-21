@@ -1144,18 +1144,23 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
     }
   }
 
-  num.mark = aggregate(object, FUN=runLength, start=chr.ind[,"first"], end=chr.ind[,"last"],simplify=FALSE)
-  chrom = factor(rep(names(num.mark),sapply(num.mark,length)),levels=names(num.mark))
+  # Get union of all breakpoints in Rle and chromosomes
+  object.ends = cumsum(runLength(object))
+  
+  all.ends = sort(unique(c(chr.ind[,2],object.ends)))
+  all.starts = c(1L,all.ends[-length(all.ends)]+1L)
+  num.mark = (all.ends - all.starts) + 1L
 
-  num.mark = unlist(num.mark)
-  seg.mean = unlist(aggregate(object, FUN=runValue, start=chr.ind[,"first"], end=chr.ind[,"last"],simplify=FALSE))
+  # Look up runValue with binary search on cumsum runValue starts. Starts rather than ends because findInterval is < rather than <=.
+  object.starts = c(1L,object.ends[-length(object.ends)]+1L)
+  object.vals = runValue(object)[ findInterval( all.ends, object.starts ) ]
 
-  loc.end.indices = cumsum(num.mark)
-  loc.end = end[loc.end.indices]
-  loc.start.indices = (loc.end.indices - num.mark) + 1L
-  loc.start = start[loc.start.indices]
+  # Assign chrom,start,stop to each segment
+  chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  loc.end = end[all.ends]
+  loc.start = start[all.starts]
 
-  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = seg.mean, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
+  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = object.vals, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
   return(sample.seg)
 })
 
