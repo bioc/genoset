@@ -1180,6 +1180,27 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
   }
 })
 
+##' Fix NA runs in a Rle
+##'
+##' Fix NA runs in a Rle when the adjacent runs have equal values
+##' @param x Rle to be fixed
+##' @param max.na.run integer, longest run of NAs that will be fixed
+##' @return Rle
+##' @export 
+##' @author Peter M. Haverty
+fixSegNAs <- function(x,max.na.run=3) {
+  if (is.na(runValue(x)[1]) & runLength(x)[1] <= max.na.run) {
+    runValue(x)[1] = runValue(x)[2]
+  }
+  if (is.na(runValue(x)[nrun(x)]) & runLength(x)[nrun(x)] <= max.na.run) {
+    runValue(x)[nrun(x)] = runValue(x)[nrun(x)-1]
+  }
+  bad = which(is.na(runValue(x)) & runLength(x) <= max.na.run)
+  bad = bad[ runValue(x)[bad-1] == runValue(x)[bad+1] ]
+  runValue(x)[bad] = runValue(x)[bad+1]
+  return(x)
+}
+
 ##' Utility function to run CBS's three functions on one or more samples
 ##' 
 ##' Takes care of running CBS segmentation on one or more samples. Makes appropriate

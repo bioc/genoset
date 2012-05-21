@@ -74,6 +74,23 @@ test_segTable <- function() {
   checkEquals( segTable( basic.rle.df, locData.rd, stack=TRUE ), stacked.basic.segs.after, checkNames=FALSE )
 }
 
+test.fixSegNAs <- function() {
+  x = Rle(c(1,NA,1,5,4,NA,4,2,NA,3), rep(1,10) )
+  x.fixed = Rle(c(1,5,4,2,NA,3), c(3,1,3,1,1,1))
+  checkIdentical( fixSegNAs(x), x.fixed, "Easy, no NAs on ends" )
+
+  x = Rle(c(1,NA,1,5,4,NA,4,2,NA), rep(1,9) )
+  x.fixed = Rle(c(1,5,4,2), c(3,1,3,2))
+  checkIdentical( fixSegNAs(x), x.fixed, "NA at end too" )
+
+  x = Rle(c(NA,1,5,4,NA,4,2,NA), rep(1,8) )
+  x.fixed = Rle(c(1,5,4,2), c(2,1,3,2))
+  checkIdentical( fixSegNAs(x), x.fixed, "NA at beginning too" )
+
+  x = Rle(c(NA,1,5,4,NA,4,2,NA,2), c(1,1,1,2,3,2,1,4,2) )
+  x.fixed = Rle(c(1,5,4,2,NA,2), c(2,1,7,1,4,2))
+  checkIdentical( fixSegNAs(x), x.fixed, "Longer NA runs" )
+}
 
 test_runCBS <- function() {
   sample.names = paste("a",1:2,sep="")
