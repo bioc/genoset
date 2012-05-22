@@ -2,8 +2,7 @@
 \alias{[}
 \alias{[,GenoSet,ANY,ANY,ANY-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
-\alias{[,GenoSet,RangedData,ANY,ANY-method}
-\alias{[,GenoSet,RangesList,ANY,ANY-method}
+\alias{[,GenoSet,RangedDataOrRangesListOrGRanges,ANY,ANY-method}
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \alias{elementLengths}

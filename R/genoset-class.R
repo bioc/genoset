@@ -55,7 +55,10 @@ setValidity("GenoSet", function(object) {
 
 # Create class union of GenoSet and RangedData so method signatures can be set for either
 setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
+setClassUnion("RangedDataOrGRanges",c("RangedData","GRanges"))
+setClassUnion("RangedDataOrRangesListOrGRanges",c("RangedData","RangesList","GRanges"))
 setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
+
 
 ##' Create a GenoSet or derivative object
 ##'
@@ -460,10 +463,11 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
             }
             if ( ! missing(i) ) {
               x@locData = x@locData[i,,drop=TRUE]
-              i = match(rownames(x@locData),featureNames(x)) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
+              i = match(featureNames(x@locData),featureNames(x)) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
             }
             callNextMethod(x,i,j,...,drop=drop)
           })
+
 ##' @rdname genoset-methods
 ##' @aliases [,GenoSet,character,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
@@ -475,16 +479,8 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           })
 
 ##' @rdname genoset-methods
-##' @aliases [,GenoSet,RangedData,ANY,ANY-method
-setMethod("[", signature=signature(x="GenoSet", i="RangedData", j="ANY"),
-          function(x,i,j,...,drop=FALSE) {
-            indices = unlist(x@locData %in% i)
-            callNextMethod(x,indices,j,...,drop=drop)
-          })
-
-##' @rdname genoset-methods
-##' @aliases [,GenoSet,RangesList,ANY,ANY-method
-setMethod("[", signature=signature(x="GenoSet", i="RangesList", j="ANY"),
+##' @aliases [,GenoSet,RangedDataOrRangesListOrGRanges,ANY,ANY-method
+setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrRangesListOrGRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %in% i)
             callNextMethod(x,indices,j,...,drop=drop)
@@ -501,11 +497,11 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               if (missing(i) && missing(j)) {
                 return(assayDataElementReplace(x,k,value))
               } else {
-                if (!missing(i) && (is(i,"RangedData") || is(i,"RangesList"))) {
-                  i = unlist(locData(x) %in% i)
-                }
-                assayDataElement(x,k)[i,j] = value
-                return(x)
+                if (!missing(i) && (is(i,"RangedData") || is(i,"GRanges") || is(i,"RangesList"))) {
+                i = unlist(locData(x) %in% i)
+              }
+              assayDataElement(x,k)[i,j] = value
+              return(x)
               }
             }
           })
@@ -624,6 +620,34 @@ setMethod("chrNames", signature(object="RangedData"),
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             seqlevels(object)
+          })
+
+##' Get rownames from RangedData, GRanges, or eSet
+##'
+##' Get rownames from RangedData, GRanges, or eSet
+##' 
+##' @param object GRanges, RangedData, or GenoSet
+##' @return character vector with names rows/features
+##' @author Peter M. Haverty
+##' @exportMethod featureNames
+##' @examples
+##'   data(genoset)
+##'   head(featureNames(locData.rd))
+##'   head(featureNames(as(locData.rd,"GRanges")))
+##'   head(featureNames(cn.ds))
+##' @exportMethod featureNames
+##' @rdname featureNames
+##' @aliases featureNames,GRanges-method
+setMethod("featureNames", signature(object="GRanges"),
+          function(object) {
+            names(object)
+          })
+
+##' @rdname featureNames
+##' @aliases featureNames,RangedData-method
+setMethod("featureNames", signature(object="RangedData"),
+          function(object) {
+            rownames(object)
           })
 
 ##' Get chromosome start and stop positions
