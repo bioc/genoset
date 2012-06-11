@@ -15,7 +15,7 @@ However, as per BioConductor standard practice the object creation function \cod
 }
 \section{Slots}{
   \describe{
-    \item{\code{locData}:}{Object of class \code{"RangedData"} Locations of features on the genome }
+    \item{\code{locData}:}{Object of class \code{"RangedDataOrGRanges"} Locations of features on the genome }
     \item{\code{assayData}:}{Object of class \code{"AssayData"} From eSet }
     \item{\code{phenoData}:}{Object of class \code{"AnnotatedDataFrame"} From eSet }
     \item{\code{featureData}:}{Object of class \code{"AnnotatedDataFrame"} From eSet }

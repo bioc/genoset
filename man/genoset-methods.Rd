@@ -96,7 +96,6 @@ space(genoset.ds)
 start(genoset.ds)
 end(genoset.ds)
 chrNames(genoset.ds)
-ranges(genoset.ds) # Returns a RangesList
 elementLengths(genoset.ds) # Returns the number of probes per chromosome
 data(genoset)
   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3

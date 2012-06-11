@@ -206,6 +206,7 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( chr(point.locData), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
   checkEquals( chr(gr), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
   checkEquals( chr( point.locData ), chr( gs ) )
+  checkEquals( chr( point.locData ), chr( gr ) )
   checkEquals( pos(point.locData), 1L:10L )
   checkEquals( pos(wide.locData), seq(from=2L, length=10, by=3L ) )
   checkEquals( pos( point.locData ), pos( gs ) )

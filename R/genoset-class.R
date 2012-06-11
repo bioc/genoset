@@ -1,4 +1,4 @@
-#####  Class definition for GenoSet, which will extend eSet
+####  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
 ######   by location.
@@ -8,9 +8,9 @@
 ##' GenoSet: An eSet for data with genome locations
 ##' 
 ##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
-##' extends eSet by adding a "locData" slot for a RangedData object from the
-##' IRanges package. This object contains feature genome location data and
-##' provides for simple subsetting on genome location. CNSet and BAFSet extend
+##' extends eSet by adding a "locData" slot for a GRanges or RangedData object.
+##' This object contains feature genome location data and
+##' provides for efficient subsetting on genome location. CNSet and BAFSet extend
 ##' GenoSet and require assayData matrices for Copy Number (cn) or Log-R Ratio
 ##' (lrr) and B-Allele Frequency (baf) data. Implements and provides
 ##' convenience functions for processing of copy number and B-Allele Frequency
@@ -47,17 +47,16 @@ NULL
 ###############
 
 ##' @exportClass GenoSet
-setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedData"))
+setClassUnion("RangedDataOrGRanges",c("RangedData","GRanges"))
+setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGRanges"))
+setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
+setClassUnion("RangedDataOrRangesListOrGRanges",c("RangedData","RangesList","GRanges"))
+setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 setValidity("GenoSet", function(object) {
   return( all( featureNames(locData(object)) == featureNames(object) ) )
 })
 
-# Create class union of GenoSet and RangedData so method signatures can be set for either
-setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
-setClassUnion("RangedDataOrGRanges",c("RangedData","GRanges"))
-setClassUnion("RangedDataOrRangesListOrGRanges",c("RangedData","RangesList","GRanges"))
-setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 
 ##' Create a GenoSet or derivative object
@@ -112,7 +111,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", assayData=NULL
   if ( ! all(featureNames(ad) == clean.featureNames) ) {
     featureNames(ad) = clean.featureNames
   }
-  if (nrow(locData) != length(clean.featureNames)) {
+  if (length(clean.loc.rownames) != length(clean.featureNames)) {
     stop("Row number mismatch for assayData and locData")
   }
     
@@ -302,28 +301,9 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
 # Shared API between GenoSet and RangedData
 ###########################################
 
-##' Get space factor for GenoSet
-##'
-##' locData slot holds a RangedData, which keeps the chromosome of each
-##' feature in a factor names 'space'.
-##' @param x GenoSet
-##' @return factor
-##' @author Peter M. Haverty
-##' @rdname genoset-methods
-##' @examples
-##' data(genoset)
-##' space(genoset.ds)
-##' start(genoset.ds)
-##' end(genoset.ds)
-##' chrNames(genoset.ds)
-##' ranges(genoset.ds) # Returns a RangesList
-##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
-##' @aliases space,GenoSet-method
-setMethod("space", "GenoSet", function(x) { return(space(locData(x))) } )
-
 ##' Get start of location for each feature
 ##'
-##' locData slot holds a RangedData.
+##' Get start of location for each feature
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
@@ -331,9 +311,9 @@ setMethod("space", "GenoSet", function(x) { return(space(locData(x))) } )
 ##' @aliases start,GenoSet-method
 setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 
-##' Get space factor for GenoSet
+##' Get end of location for each feature
 ##'
-##' locData slot holds a RangedData.
+##' Get end of location for each feature
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
@@ -343,7 +323,7 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
 ##' Get width of location for each feature
 ##'
-##' locData slot holds a RangedData.
+##' Get width of location for each feature
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
@@ -361,7 +341,7 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @rdname genoset-methods
 ##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
-  warning("The names method on a GenoSet is depricated. Please use chrNames.")
+  .Deprecated(old="names",new="chrNames",package="genoset",msg="The names method on a GenoSet is depricated. Please use chrNames.")
   return( chrNames(locData(x)) )
 } )
 
@@ -375,7 +355,32 @@ setMethod("names", "GenoSet", function(x) {
 ##' @exportMethod ranges
 ##' @rdname genoset-methods
 ##' @aliases ranges,GenoSet-method
-setMethod("ranges", "GenoSet", function(x) { return( ranges(locData(x)) ) } )
+setMethod("ranges", "GenoSet", function(x) {
+  .Deprecated(old="ranges",package="genoset")
+  return( ranges(locData(x)) )
+})
+
+
+##' Get space factor for GenoSet
+##'
+##' locData slot holds a RangedData, which keeps the chromosome of each
+##' feature in a factor names 'space'.
+##' @param x GenoSet
+##' @return factor
+##' @author Peter M. Haverty
+##' @rdname genoset-methods
+##' @examples
+##' data(genoset)
+##' chr(genoset.ds)
+##' start(genoset.ds)
+##' end(genoset.ds)
+##' chrNames(genoset.ds)
+##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
+##' @aliases space,GenoSet-method
+setMethod("space", "GenoSet", function(x) {
+  .Deprecated(old="space",package="genoset")
+  return(space(locData(x)))
+} )
 
 ##' Get elementLengths from locData slot
 ##'
@@ -517,7 +522,7 @@ setGeneric("chr", function(object) standardGeneric("chr"))
 setMethod("chr", "RangedData", function(object) { return(as.character(space(object))) } )
 ##' @rdname chr-methods
 ##' @aliases chr,GenoSet-method
-setMethod("chr", "GenoSet", function(object) { return(as.character(space(slot(object,"locData")))) } )
+setMethod("chr", "GenoSet", function(object) { return(chr(slot(object,"locData"))) } )
 ##' @rdname chr-methods
 ##' @aliases chr,GRanges-method
 setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(object))) })

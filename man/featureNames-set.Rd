@@ -14,7 +14,8 @@
   Set featureNames
 }
 \details{
-  Set featureNames including rownames of position info
+  Set featureNames of a GenoSet, GRanges, or RangedData
+  (rownames, names, or rownames respectively).
 }
 \author{
   Peter M. Haverty
