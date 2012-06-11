@@ -3,7 +3,7 @@
 \title{Create a GenoSet object}
 \usage{
   GenoSet(locData, pData = NULL, annotation = "",
-    universe = NULL, assayData = NULL, ...)
+    assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A RangedData object specifying feature
@@ -15,9 +15,6 @@
 
   \item{annotation}{character, string to specify
   chip/platform type}
-
-  \item{universe}{character, a string to specify the genome
-  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 

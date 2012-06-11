@@ -25,15 +25,14 @@ setValidity("BAFSet", function(object) {
 ##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
 ##' require it.
 ##' 
-##' @param locData A RangedData object specifying feature chromosome
-##' locations. Rownames are required to match featureNames.
+##' @param locData A GRanges or RangedData object specifying feature chromosome
+##' locations. featureNames (names or rownames) are required to match featureNames of assayData.
 ##' @param lrr numeric matrix of copy number data with rownames
 ##' matching featureNames and colnames matching sampleNames
 ##' @param baf numeric matrix of B-Allele Frequency data with rownames
 ##' matching featureNames and colnames matching sampleNames
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
-##' @param universe character, a string to specify the genome universe for locData
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData slot
 ##' @return A BAFSet object
@@ -51,14 +50,14 @@ setValidity("BAFSet", function(object) {
 ##'     annotation="SNP6"
 ##' )
 ##' @seealso bafset-class, genoset-class
-BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", assayData=NULL, ...) {
   if (!is.null(assayData)) {
     if (! all(c("lrr","baf") %in% assayDataElementNames(assayData))) {
       stop("If assayData is specified, it must contain elements called 'lrr' and 'baf'.")
     }
-    object = initGenoSet(type="BAFSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData, ...)
+    object = initGenoSet(type="BAFSet", locData=locData, pData=pData, annotation=annotation, assayData=assayData, ...)
   } else {
-    object = initGenoSet(type="BAFSet", locData=locData, pData=pData, annotation=annotation, universe=universe, lrr=lrr, baf=baf, ...)
+    object = initGenoSet(type="BAFSet", locData=locData, pData=pData, annotation=annotation, lrr=lrr, baf=baf, ...)
   }
   return(object)
 }

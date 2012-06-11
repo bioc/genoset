@@ -3,12 +3,13 @@
 \title{Create a CNSet object}
 \usage{
   CNSet(locData, cn = NULL, pData = NULL, annotation = "",
-    universe = NULL, assayData = NULL, ...)
+    assayData = NULL, ...)
 }
 \arguments{
-  \item{locData}{A RangedData object specifying feature
-  chromosome locations. Rownames are required to match
-  featureNames.}
+  \item{locData}{A GRanges or RangedData object specifying
+  feature chromosome locations. featureNames (names or
+  rownames) are required to match featureNames of
+  matrices.}
 
   \item{cn}{numeric matrix of copy number data with
   rownames matching featureNames and colnames matching
@@ -19,9 +20,6 @@
 
   \item{annotation}{character, string to specify
   chip/platform type}
-
-  \item{universe}{character, string to specify genome
-  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 

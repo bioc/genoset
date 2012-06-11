@@ -358,14 +358,14 @@ test_genomeOrder <- function() {
     locData=ok.locs,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(rownames(ok.locs),test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6", universe="hg19"
+    annotation="SNP6"
     )
   bad.ds = good.ds[ c(6,5,4,3,2,1,10:7),]
   bad.ds.bad.chrs = CNSet(
     locData=bad.locs.bad.chr,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(rownames(ok.locs),test.sample.names))[c(4,6,5,2,3,1,10:7),],
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6", universe="hg19"
+    annotation="SNP6"
     )
   checkTrue(isGenomeOrder(good.ds))
   checkTrue(!isGenomeOrder(bad.ds))

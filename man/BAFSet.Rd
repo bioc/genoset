@@ -3,13 +3,13 @@
 \title{Create a BAFSet object}
 \usage{
   BAFSet(locData, lrr = NULL, baf = NULL, pData = NULL,
-    annotation = "", universe = NULL, assayData = NULL,
-    ...)
+    annotation = "", assayData = NULL, ...)
 }
 \arguments{
-  \item{locData}{A RangedData object specifying feature
-  chromosome locations. Rownames are required to match
-  featureNames.}
+  \item{locData}{A GRanges or RangedData object specifying
+  feature chromosome locations. featureNames (names or
+  rownames) are required to match featureNames of
+  assayData.}
 
   \item{lrr}{numeric matrix of copy number data with
   rownames matching featureNames and colnames matching
@@ -24,9 +24,6 @@
 
   \item{annotation}{character, string to specify
   chip/platform type}
-
-  \item{universe}{character, a string to specify the genome
-  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 

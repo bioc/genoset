@@ -71,11 +71,11 @@ DataFrames with Rle columns.
 <<objectcreation>>=
 library(genoset)
 data(genoset)
-genoset.ds = GenoSet( locData=locData.rd, foo=fake.lrr, pData=fake.pData, annotation="SNP6", universe="hg19" )
+genoset.ds = GenoSet( locData=locData.rd, foo=fake.lrr, pData=fake.pData, annotation="SNP6" )
 
-baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6", universe="hg19" )
+baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
 
-cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6", universe="hg19" )
+cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6" )
 cn.ds
 
 rle.baf.ds = BAFSet( locData=locData.rd,
@@ -97,7 +97,6 @@ are in contiguous blocks, which provides a constraint on the ordering of the CNS
 slotNames(genoset.ds)
 phenoData(genoset.ds)
 pData(genoset.ds)
-universe(genoset.ds)
 annotation(genoset.ds)
 locData(genoset.ds)
 @ 

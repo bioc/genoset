@@ -3,24 +3,21 @@
 \title{Create a GenoSet or derivative object}
 \usage{
   initGenoSet(type, locData, pData = NULL, annotation = "",
-    universe = NULL, assayData = NULL, ...)
+    assayData = NULL, ...)
 }
 \arguments{
   \item{type}{character, the type of object (e.g. GenoSet,
   BAFSet, CNSet) to be created}
 
-  \item{locData}{A RangedData object specifying feature
-  chromosome locations. Rownames are required to match
-  featureNames.}
+  \item{locData}{A GRanges or RangedData object specifying
+  feature chromosome locations. featureNames (names or
+  rownames) are required to match featureNames.}
 
   \item{pData}{A data frame with rownames matching
   sampleNames (colnames of all assayDataElements)}
 
   \item{annotation}{character, string to specify
   chip/platform type}
-
-  \item{universe}{character, a string to specify the genome
-  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 
