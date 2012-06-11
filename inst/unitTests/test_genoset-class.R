@@ -150,6 +150,15 @@ test_featureNames <- function() {
   checkEquals( featureNames(ds), probe.names )
   featureNames(ds) = bad.featureNames
   checkEquals( featureNames(ds), c("a.","b..","X.foo",letters[4:9],"b...1"))
+  rd = locData(ds)
+  gr = as(rd,"GRanges")
+  checkEquals( featureNames(ds), featureNames(rd) )
+  checkEquals( featureNames(ds), featureNames(gr) )
+  new.fnames = paste("f",featureNames(ds),sep="")
+  featureNames(rd) = new.fnames
+  featureNames(gr) = new.fnames
+  checkEquals( featureNames(rd), new.fnames )
+  checkEquals( featureNames(gr), new.fnames )
 }
 
 test_locData <- function() {

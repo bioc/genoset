@@ -25,11 +25,11 @@
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
-##' @importMethodsFrom GenomicRanges seqnames seqlevels
+##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-"
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
-##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start universe "universe<-" unlist
+##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
@@ -97,9 +97,9 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", assayData=NULL
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
   }
-  clean.loc.rownames = make.names(rownames(locData),unique=TRUE)
-  if ( ! all(rownames(locData) == clean.loc.rownames) ) {
-    rownames(locData) = clean.loc.rownames
+  clean.loc.rownames = make.names(featureNames(locData),unique=TRUE)
+  if ( ! all(featureNames(locData) == clean.loc.rownames) ) {
+    featureNames(locData) = clean.loc.rownames
   }
 
  # Create assayData
@@ -221,7 +221,7 @@ setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
 ##'
 ##' Set featureNames including rownames of position info
 ##' @title Set featureNames
-##' @param object GenoSet 
+##' @param object GenoSet, RangedData, or GRanges
 ##' @param value ANY
 ##' @return A new object of the class of supplied object
 ##' @exportMethod "featureNames<-"
@@ -232,7 +232,21 @@ setMethod("featureNames<-",
                  function(object, value) {
                    value = make.names(value,unique=TRUE)
                    object = callNextMethod(object,value)
-                   rownames(slot(object,"locData")) = value
+                   featureNames(slot(object,"locData")) = value
+                   return(object)
+                 })
+setMethod("featureNames<-",
+                 signature=signature(object="GRanges", value="ANY"),
+                 function(object, value) {
+                   value = make.names(value,unique=TRUE)
+                   names(object) = value
+                   return(object)
+                 })
+setMethod("featureNames<-",
+                 signature=signature(object="RangedData", value="ANY"),
+                 function(object, value) {
+                   value = make.names(value,unique=TRUE)
+                   rownames(object) = value
                    return(object)
                  })
 

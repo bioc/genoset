@@ -3,7 +3,7 @@
 \alias{featureNames<-,GenoSet-method}
 \title{Set featureNames}
 \arguments{
-  \item{object}{GenoSet}
+  \item{object}{GenoSet, RangedData, or GRanges}
 
   \item{value}{ANY}
 }
