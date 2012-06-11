@@ -46,9 +46,7 @@ Class \code{"\linkS4class{eSet}"}, directly.
     \item{ranges}{\code{signature(x = "GenoSet")}: ... }
     \item{show}{\code{signature(object = "GenoSet")}: ... }
     \item{toGenomeOrder}{\code{signature(ds = "GenoSet")}: ... }
-    \item{universe}{\code{signature(x = "GenoSet")}: ... }
-    \item{universe<-}{\code{signature(x = "GenoSet")}: ... }
-	 }
+  }
 }
 \author{
 Peter M. Haverty \email{phaverty@gene.com}
