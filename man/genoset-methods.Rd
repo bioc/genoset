@@ -1,4 +1,4 @@
-\name{space}
+\name{start}
 \alias{[}
 \alias{[,GenoSet,ANY,ANY,ANY-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
@@ -21,7 +21,7 @@
 \alias{start}
 \alias{start,GenoSet-method}
 \alias{width}
-\title{Get space factor for GenoSet}
+\title{Get start of location for each feature}
 \arguments{
   \item{x}{GenoSet}
 
@@ -52,33 +52,33 @@
   \item{...}{additional subsetting args}
 }
 \value{
+  integer
+
+  integer
+
+  integer
+
+  character
+
+  character
+
   factor
-
-  integer
-
-  integer
-
-  integer
-
-  character
-
-  character
 
   character
 }
 \description{
-  locData slot holds a RangedData, which keeps the
-  chromosome of each feature in a factor names 'space'.
+  Get start of location for each feature
 
-  locData slot holds a RangedData.
+  Get end of location for each feature
 
-  locData slot holds a RangedData.
-
-  locData slot holds a RangedData.
+  Get width of location for each feature
 
   Get chromosome names
 
   Get ranges from locData slot
+
+  locData slot holds a RangedData, which keeps the
+  chromosome of each feature in a factor names 'space'.
 
   Get elementLengths from locData slot
 }
@@ -92,7 +92,7 @@
 }
 \examples{
 data(genoset)
-space(genoset.ds)
+chr(genoset.ds)
 start(genoset.ds)
 end(genoset.ds)
 chrNames(genoset.ds)
@@ -110,11 +110,11 @@ data(genoset)
 
   Peter M. Haverty
 
+  Peter Haverty
+
+  Peter Haverty
+
   Peter M. Haverty
-
-  Peter Haverty
-
-  Peter Haverty
 
   Peter Haverty
 }

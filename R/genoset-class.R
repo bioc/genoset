@@ -283,15 +283,15 @@ setMethod("featureNames<-",
 setGeneric("locData", function(object) standardGeneric("locData"))
 setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-setMethod("locData<-", signature(object="GenoSet", value="RangedData"),
+setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGRanges"),
                  function(object,value) {
-                   if (! all( rownames(value) %in% featureNames(object))) {
+                   if (! all( featureNames(value) %in% featureNames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")
                      }
                    slot(object,"locData") = value
-                   if (! all(rownames(value) == featureNames(object))) {
+                   if (! all(featureNames(value) == featureNames(object))) {
                      for (adname in assayDataElementNames(object)) {
-                       assayDataElement(object,adname) = assayDataElement(object,adname)[rownames(value),]
+                       assayDataElement(object,adname) = assayDataElement(object,adname)[featureNames(value),]
                      }
                    }
                    return(object)
@@ -1070,7 +1070,7 @@ segs2Rle <- function(segs, locs) {
 ##' @author Peter Haverty
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
-  rle.data.frame = DataFrame(rle.list, row.names=rownames(locs))
+  rle.data.frame = DataFrame(rle.list, row.names=featureNames(locs))
   return(rle.data.frame)
 }
 
@@ -1372,7 +1372,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   if (return.segs == TRUE) {
     return(segs)
   } else {
-    return( DataFrame(segs, row.names=rownames(locs) ) )
+    return( DataFrame(segs, row.names=featureNames(locs) ) )
   }
 }
 
