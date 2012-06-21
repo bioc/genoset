@@ -1046,10 +1046,10 @@ segs2Rle <- function(segs, locs) {
 #    return(Rle( segs[,"seg.mean"], segs[,"num.mark"]))
 #  } else {
     temp.rle = Rle(as.numeric(NA),nrow(locs))
-    seg.rd = RangedData( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
-      space=segs[,"chrom"], "Value"=segs[,"seg.mean"])
-    seg.overlap = as.matrix( findOverlaps(seg.rd, locs ) )
-    temp.rle[ seg.overlap[,2], drop=FALSE ] = seg.rd[ seg.overlap[,1], ]$Value
+    seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
+      seqnames=segs[,"chrom"], "Value"=segs[,"seg.mean"])
+    seg.overlap = as.matrix( findOverlaps(seg.gr, locs ) )  # Much faster with boundingIndicesByChr if I could put in the NAs
+    temp.rle[ seg.overlap[,2], drop=FALSE ] = values(seg.gr)[ seg.overlap[,1], "Value" ]
 #  }
   return(temp.rle)
 }
