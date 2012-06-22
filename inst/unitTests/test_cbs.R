@@ -55,6 +55,10 @@ test_segs2Rle <- function() {
   checkEquals( segs2Rle( basic.segs[[1]], locData.rd ), basic.rle.df[[1]], checkNames=FALSE )
   checkEquals( segs2Rle( basic.segs[[2]], locData.rd ), basic.rle.df[[2]], checkNames=FALSE )
   checkEquals( segs2Rle( basic.segs[[3]], locData.rd ), basic.rle.df[[3]], checkNames=FALSE )
+  na.df = data.frame( chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)),
+    loc.start = c(2,5,4,6,2), loc.end = c(3,7,4,6,6), num.mark = c(1,2,1,1,3), seg.mean = c(3.3,4.3,4.3,6.3,7.3), stringsAsFactors=FALSE )
+  na.rle = Rle( c(NA,3.3,4.3,6.3,7.3,NA), c(1,1,3,1,3,1) )
+  checkEquals( segs2Rle( na.df, locData.rd ), na.rle , checkNames=FALSE )
 }
 
 test_segs2RleDataFrame <- function() {
