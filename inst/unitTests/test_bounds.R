@@ -109,14 +109,21 @@ test_rangeColMeans <- function() {
 }
 
 test_boundingIndicesByChr <- function() {
-  subject= RangedData(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=2,names=as.character(1:12)),space=c(rep("1",4),rep("2",4),rep("3",4)))
+  subject= RangedData(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=2,names=as.character(1:12)),
+    space=c(rep("1",4),rep("2",4),rep("3",4)))
   query = RangedData(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1109,1139,1150),width=2,names=as.character(1:12)),space=c(rep("1",4),rep("2",4),rep("3",4)))
   res = matrix(as.integer(c(1,1, 1,1, 3,4, 4,4, 5,5, 5,5, 7,8, 8,8, 9,9, 9,9, 11,12, 12,12)),byrow=TRUE,ncol=2,dimnames=list(rownames(query),c("left","right")))
   checkIdentical(res, boundingIndicesByChr(query,subject))
 
-  subject2= RangedData(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=2,names=as.character(1:12)),space=c(rep("1",4),rep("2",4),rep("5",4)))
+  subject2= GRanges(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=2,names=as.character(1:12)),
+    seqnames=c(rep("1",4),rep("2",4),rep("5",4)))
   query2 = RangedData(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1109,1139,1150),width=2,names=as.character(1:12)),space=c(rep("1",4),rep("3",4),rep("5",4)))
   res2 = res[c(1:4,9:12),]
   checkIdentical(res2, boundingIndicesByChr(query2,subject2))
-
+  
+  subject3 = RangedData(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=1,names=as.character(1:12)),
+    space=c(rep("1",4),rep("2",4),rep("3",4)))
+  query3 = RangedData(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1110,1139,1150),width=c(rep(2,9),1,2,2),names=as.character(1:12)),space=c(rep("1",4),rep("2",4),rep("3",4)))
+  res3 = matrix(as.integer(c(1,1, 1,1, 3,4, 4,4, 5,5, 5,5, 7,8, 8,8, 9,9, 9,9, 11,12, 12,12)),byrow=TRUE,ncol=2,dimnames=list(rownames(query3),c("left","right")))
+  checkIdentical(res3, boundingIndicesByChr(query3,subject3))
 }
