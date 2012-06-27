@@ -34,9 +34,9 @@ data(genoset)
   Peter M. Haverty \email{phaverty@gene.com}
 }
 \seealso{
-  Other "segmented data": \code{\link{runCBS}},
+  Other "segmented data": \code{\link{bounds2Rle}},
+  \code{\link{runCBS}}, \code{\link{segPairTable}},
   \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}},
   \code{\link{segs2RangedData}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
   \code{\link{segTable}}, \code{\link{segTable}}

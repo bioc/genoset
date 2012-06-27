@@ -1071,6 +1071,69 @@ modeCenter <- function(ds) {
   return(ds)
 }
 
+##' Convert bounding indices into a Rle
+##'
+##' Given a matrix of first/last indices, like from boundingIndicesByChr, and values for
+##' each range, convert to a Rle.  This function takes the expected length of the Rle, n,
+##' so that any portion of the full length not covered by a first/last range will be a
+##' run with the value NA.  This is typical in the case where data is segmented with CBS
+##' and some of the data to be segmented is NA.
+##' @export 
+##' @param bounds matrix, two columns, with first and last index, like from boundingIndicesByChr
+##' @param values ANY, some value to be associated with each range, like segmented copy number.
+##' @param n integer, the expected length of the Rle, i.e. the number of features in the
+##' genome/target ranges processed by boundingIndicesByChr.
+##' @return Rle
+##' @family "segmented data"
+##' @author Peter M. Haverty
+##' 
+bounds2Rle <- function( bounds, values, n ) {
+  if ( length(values) != nrow(bounds) ) {
+    stop("must have one value for each bound")
+  }
+  if (n < length(values)) {
+    stop("n must be >= length(values)")
+  }
+  cap = bounds[1,1] - 1
+  tail = n - bounds[nrow(bounds),2]
+  extras = (cap > 0) + (tail > 0) + sum(bounds[-1,1] - bounds[-nrow(bounds),2] > 1)
+  if (extras == 0) {
+    return( Rle( values, (bounds[,2] - bounds[,1])+1 ) )
+  }
+  extras = extras + length(values)
+  # Maybe make them 2x + 1 initialized to 0 and NA, let Rle dump zeros that don't get replaced
+  run.length = rep(0L,extras)
+  run.value = rep(NA_real_,extras)
+  if (tail > 0) {
+    run.length[ length(run.length) ] = tail
+  }
+  widths = (bounds[,2] - bounds[,1]) + 1
+  if (cap > 0) {
+    run.length[1] = cap
+    run.value[2] = values[1]
+    run.length[2] = widths[1]
+    i = 3
+  } else {
+    run.length[1] = widths[1]
+    run.value[1] = values[1]
+    i = 2
+  }
+  j=2
+
+  while (i < length(run.value)) {
+    pre.width = bounds[j,1] - bounds[j-1,2]
+    if (pre.width > 1) {
+      run.length[i] = pre.width - 1
+      i = i + 1
+    }
+    run.length[i] = widths[j]
+    run.value[i] = values[j]
+    j = j + 1
+    i = i + 1
+  }
+  return( Rle( run.value, run.length ) )
+}
+
 ##' Make Rle from segments for one sample
 ##'
 ##' Take output of CBS, make Rle representing all features in 'locs' ranges. CBS output contains

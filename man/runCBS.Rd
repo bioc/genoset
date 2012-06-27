@@ -64,8 +64,9 @@ sample.names = paste("a",1:2,sep="")
   Peter M. Haverty
 }
 \seealso{
-  Other "segmented data": \code{\link{segPairTable}},
+  Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segPairTable}}, \code{\link{segPairTable}},
+  \code{\link{segPairTable}},
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
   \code{\link{segTable}}, \code{\link{segTable}}

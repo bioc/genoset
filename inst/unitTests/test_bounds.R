@@ -1,5 +1,25 @@
 # Tests for functions utilizing boundingIndices
 
+test_bounds2Rle <- function() {
+  locs = GRanges(IRanges(start=1:20,width=1),seqnames=c(rep("1",5),rep("2",5),rep("3",5),rep("4",5)))
+  
+  bounds1 = matrix(c(3,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
+  bounds2 = matrix( c(1,3, 4,5, 6,10, 11,15, 16,20), byrow=2, ncol=2)
+  bounds3 = matrix(c(1,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
+  
+  rle1 = Rle( c(NA,"A","B",NA,"C",NA,"D","E",NA), c(2,3,2,1,1,3,3,4,1) )
+  rle2 = Rle( LETTERS[1:5], c(3,2,5,5,5) )
+  rle3 = Rle( c("A","B",NA,"C",NA,"D","E",NA), c(5,2,1,1,3,3,4,1) )
+  
+  values1 = as.vector(na.omit(runValue(rle1)))
+  values2 = as.vector(na.omit(runValue(rle2)))
+  values3 = as.vector(na.omit(runValue(rle3)))
+  
+  checkIdentical( rle1, bounds2Rle( bounds1, values1, length(locs) ), "Gaps at beginning, end, middle" )
+  checkIdentical( rle2, bounds2Rle( bounds2, values2, length(locs) ), "No NA segments")
+  checkIdentical( rle3, bounds2Rle( bounds3, values3, length(locs) ), "Gaps in middle, end" )
+}
+  
 test_boundingIndices <- function() {
 
   # Test with exact matches

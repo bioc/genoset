@@ -53,9 +53,10 @@ cn = Rle(c(3,4,5,6),rep(3,4))
   Peter M. Haverty
 }
 \seealso{
-  Other "segmented data": \code{\link{runCBS}},
-  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
-  \code{\link{segTable}}, \code{\link{segTable}}
+  Other "segmented data": \code{\link{bounds2Rle}},
+  \code{\link{runCBS}}, \code{\link{segs2RangedData}},
+  \code{\link{segs2Rle}}, \code{\link{segs2RleDataFrame}},
+  \code{\link{segTable}}, \code{\link{segTable}},
+  \code{\link{segTable}}
 }
 
