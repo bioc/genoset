@@ -1086,7 +1086,6 @@ modeCenter <- function(ds) {
 ##' @return Rle
 ##' @family "segmented data"
 ##' @author Peter M. Haverty
-##' 
 bounds2Rle <- function( bounds, values, n ) {
   if ( length(values) != nrow(bounds) ) {
     stop("must have one value for each bound")
@@ -1158,7 +1157,7 @@ segs2Rle <- function(segs, locs) {
 #  } else {
     seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
       seqnames=segs[,"chrom"], "Value"=segs[,"seg.mean"])
-    temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])  # boundingIndicesByChr faster than match and gives ranges, not indices, but NAs tricky
+    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )
 #  }
   return(temp.rle)
 }
