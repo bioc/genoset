@@ -3,7 +3,7 @@
 \title{Create a CNSet object}
 \usage{
   CNSet(locData, cn = NULL, pData = NULL, annotation = "",
-    assayData = NULL, ...)
+    universe = NULL, assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A GRanges or RangedData object specifying
@@ -20,6 +20,9 @@
 
   \item{annotation}{character, string to specify
   chip/platform type}
+
+  \item{universe}{character, string to specify genome
+  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 

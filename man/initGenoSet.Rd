@@ -3,7 +3,7 @@
 \title{Create a GenoSet or derivative object}
 \usage{
   initGenoSet(type, locData, pData = NULL, annotation = "",
-    assayData = NULL, ...)
+    universe = NULL, assayData = NULL, ...)
 }
 \arguments{
   \item{type}{character, the type of object (e.g. GenoSet,
@@ -18,6 +18,9 @@
 
   \item{annotation}{character, string to specify
   chip/platform type}
+
+  \item{universe}{character, a string to specify the genome
+  universe for locData}
 
   \item{assayData}{assayData, usually an environment}
 
