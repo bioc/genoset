@@ -1,6 +1,8 @@
 \name{featureNames<-}
 \alias{featureNames<-}
 \alias{featureNames<-,GenoSet-method}
+\alias{featureNames<-,GRanges-method}
+\alias{featureNames<-,RangedData-method}
 \title{Set featureNames}
 \arguments{
   \item{object}{GenoSet, RangedData, or GRanges}

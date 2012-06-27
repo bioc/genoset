@@ -5,7 +5,7 @@
 \alias{locData,GenoSet-method}
 \alias{locData<-}
 \alias{locData<--methods}
-\alias{locData<-,GenoSet,RangedData-method}
+\alias{locData<-,GenoSet,RangedDataOrGRanges-method}
 \title{Access the feature genome position info}
 \arguments{
   \item{object}{GenoSet}

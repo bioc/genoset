@@ -265,6 +265,7 @@ setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
 ##' @return A new object of the class of supplied object
 ##' @exportMethod "featureNames<-"
 ##' @author Peter M. Haverty
+##' @rdname featureNames-set
 ##' @aliases featureNames<-,GenoSet-method
 setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
@@ -274,6 +275,8 @@ setMethod("featureNames<-",
                    featureNames(slot(object,"locData")) = value
                    return(object)
                  })
+##' @rdname featureNames-set
+##' @aliases featureNames<-,GRanges-method
 setMethod("featureNames<-",
                  signature=signature(object="GRanges", value="ANY"),
                  function(object, value) {
@@ -281,6 +284,8 @@ setMethod("featureNames<-",
                    names(object) = value
                    return(object)
                  })
+##' @rdname featureNames-set
+##' @aliases featureNames<-,RangedData-method
 setMethod("featureNames<-",
                  signature=signature(object="RangedData", value="ANY"),
                  function(object, value) {
@@ -315,7 +320,7 @@ setMethod("featureNames<-",
 ##' @aliases locData-methods
 ##' @aliases locData<--methods
 ##' @aliases locData,GenoSet-method
-##' @aliases locData<-,GenoSet,RangedData-method
+##' @aliases locData<-,GenoSet,RangedDataOrGRanges-method
 ##' @aliases locData
 ##' @aliases locData<-
 ##' @return A GenoSet object
@@ -459,6 +464,9 @@ setMethod("elementLengths", "GRanges", function(x) {
 ##'   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 ##' @rdname genoset-methods
 ##' @aliases [,GenoSet,ANY,ANY,ANY-method
+##' @aliases [,GenoSet,ANY-method
+##' @aliases [,GenoSet,RangedDataOrRangesListOrGRanges-method
+##' @aliases [,GenoSet,character-method
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {

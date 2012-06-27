@@ -1,7 +1,10 @@
 \name{universe}
 \alias{[}
+\alias{[,GenoSet,ANY-method}
 \alias{[,GenoSet,ANY,ANY,ANY-method}
+\alias{[,GenoSet,character-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
+\alias{[,GenoSet,RangedDataOrRangesListOrGRanges-method}
 \alias{[,GenoSet,RangedDataOrRangesListOrGRanges,ANY,ANY-method}
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
