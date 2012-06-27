@@ -243,6 +243,8 @@ SEXP binary_bound_by_chr(SEXP nquery, SEXP query_chr_indices, SEXP query_starts,
       }
       p_bounds[left_bound_index] = low;
 
+      /*  if (right == p_subject_ends[low]) { p_bounds[right_bound_index] = low;  next; } */  /* Hack for query range length 1 */
+
       /* Right bound */
       /* Right bound likely close to left bound, relative to length of positions, so expand exponentially, a la findInterval */
       for (jump=1; ; jump*=2) {
