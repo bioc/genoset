@@ -1157,8 +1157,9 @@ segs2Rle <- function(segs, locs) {
 #  } else {
     seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
       seqnames=segs[,"chrom"], "Value"=segs[,"seg.mean"])
-    bounds = boundingIndicesByChr( seg.gr, locs )
-    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )
+    temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])
+#    bounds = boundingIndicesByChr( seg.gr, locs )
+#    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )
 #  }
   return(temp.rle)
 }
