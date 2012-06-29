@@ -25,7 +25,7 @@
 ##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
-##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-"
+##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
@@ -444,6 +444,8 @@ setMethod("elementLengths", "GRanges", function(x) {
   if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GRanges not ordered by chromosome.") }
   return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )
 })
+
+setMethod("nrow", "GRanges", function(x) { length(x) })
 
 #############
 # Sub-setters

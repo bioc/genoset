@@ -37,25 +37,15 @@
   sorted by start position within each chromosome. The
   index of the stop position for each gene is found using
   the left bound from the start of the gene reducing the
-  search space for the stop position somewhat. This
-  function has important differences from boundingIndices2,
-  which uses findInterval: boundingIndices does not check
-  for NAs or unsorted data in the subject positions. Also,
-  the positions are kept as integer, where boundingIndices2
-  (and findInterval) convert them to doubles. These three
-  once-per-call differences account for much of the speed
-  improvement in boundingIndices. These three differences
-  are meant for position info coming from GenoSet objects
-  and boundingIndices2 is safer for general use.
-  boundingIndices works on integer postions and does not
-  check that the positions are ordered. The starts and
-  stops need not be sorted, but it will be much faster if
-  they are.
+  search space for the stop position somewhat.
 
   This function differs from boundingIndices in that 1. it
   uses both start and end positions for the subject, and 2.
   query and subject start and end positions are processed
   in blocks corresponding to chromosomes.
+
+  Both query and subject must be in at least weak genome
+  order (sorted by start within chromosome blocks).
 }
 \author{
   Peter M. Haverty \email{phaverty@gene.com}
