@@ -94,6 +94,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   # all dimnames "fixed" with make names because eSet is inconsistent about that
 
   if (! is.null(universe)) {
+    warning("The universe argument has been deprecated. Annotation of universe/genome has been delegated to whatever is in the locData slot.")
     universe(locData) = universe
   }
   
@@ -115,8 +116,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   clean.featureNames = make.names(featureNames(ad),unique=TRUE)
   if ( ! all(featureNames(ad) == clean.featureNames) ) {
     featureNames(ad) = clean.featureNames
-  }
-  if (nrow(locData) != length(clean.featureNames)) {
+  } else if (nrow(locData) != length(clean.featureNames)) {
     stop("Row number mismatch for assayData and locData")
   }
     
@@ -377,7 +377,7 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
 ##' Get chromosome names
 ##'
-##' Get chromosome names, which are the names of the locData slot.
+##' Get chromosome names, which are the names of the locData slot. The names method on a GenoSet is depricated. Please use chrNames.
 ##' @title Names for chromosome
 ##' @param x GenoSet
 ##' @return character
@@ -392,7 +392,7 @@ setMethod("names", "GenoSet", function(x) {
 
 ##' Get ranges from locData slot
 ##'
-##' Get ranges from locData slot
+##' Get ranges from locData slot. The ranges method on a GenoSet is depricated. Please use ranges(locData(x)).
 ##' @title Ranges for chromosome
 ##' @param x GenoSet
 ##' @return character
@@ -401,7 +401,7 @@ setMethod("names", "GenoSet", function(x) {
 ##' @rdname genoset-methods
 ##' @aliases ranges,GenoSet-method
 setMethod("ranges", "GenoSet", function(x) {
-  .Deprecated(old="ranges",package="genoset")
+  .Deprecated(old="ranges",package="genoset",msg="The ranges method on a GenoSet is depricated. Please use ranges(locData(x)).")
   return( ranges(locData(x)) )
 })
 
@@ -409,7 +409,7 @@ setMethod("ranges", "GenoSet", function(x) {
 ##' Get space factor for GenoSet
 ##'
 ##' locData slot holds a RangedData, which keeps the chromosome of each
-##' feature in a factor names 'space'.
+##' feature in a factor names 'space'. The ranges method on a GenoSet is depricated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.
 ##' @param x GenoSet
 ##' @return factor
 ##' @author Peter M. Haverty
@@ -423,7 +423,7 @@ setMethod("ranges", "GenoSet", function(x) {
 ##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
 ##' @aliases space,GenoSet-method
 setMethod("space", "GenoSet", function(x) {
-  .Deprecated(old="space",package="genoset")
+  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is depricated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
   return(space(locData(x)))
 } )
 

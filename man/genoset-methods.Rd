@@ -99,7 +99,10 @@
   Get ranges from locData slot
 
   locData slot holds a RangedData, which keeps the
-  chromosome of each feature in a factor names 'space'.
+  chromosome of each feature in a factor names 'space'. The
+  ranges method on a GenoSet is depricated. Please use
+  space(locData(x)) or seqnames(locData(x)) as appropriate
+  for RangedData or GRanges.
 
   Get elementLengths from locData slot
 }
@@ -108,9 +111,11 @@
   notation (e.g. hg18, hg19, etc.) should be used.
 
   Get chromosome names, which are the names of the locData
-  slot.
+  slot. The names method on a GenoSet is depricated. Please
+  use chrNames.
 
-  Get ranges from locData slot
+  Get ranges from locData slot. The ranges method on a
+  GenoSet is depricated. Please use ranges(locData(x)).
 
   Get elementLengths from locData slot
 }
