@@ -1156,7 +1156,8 @@ segs2Rle <- function(segs, locs) {
 #    return(Rle( segs[,"seg.mean"], segs[,"num.mark"]))
 #  } else {
     seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
-      seqnames=segs[,"chrom"], "Value"=segs[,"seg.mean"])
+      seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
+    seg.gr = toGenomeOrder(seg.gr)
     temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])
 #    bounds = boundingIndicesByChr( seg.gr, locs )
 #    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )
@@ -1601,19 +1602,13 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
 ##' faster for sets of query genes that are sorted by start position within each chromosome.
 ##' The index of the stop position for each gene is found using the left bound from the start
-##' of the gene reducing the search space for the stop position somewhat. This function has
-##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
-##' check for NAs or unsorted data in the subject positions. Also, the positions are
-##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles. These
-##' three once-per-call differences account for much of the speed improvement in boundingIndices.
-##' These three differences are meant for position info coming from GenoSet objects
-##' and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
-##' does not check that the positions are ordered. The starts and stops need not be sorted, but
-##' it will be much faster if they are.
-##'
+##' of the gene reducing the search space for the stop position somewhat.
+##' 
 ##' This function differs from boundingIndices in that 1. it uses both start and end positions for
 ##' the subject, and 2. query and subject start and end positions are processed in blocks corresponding
 ##' to chromosomes.
+##'
+##' Both query and subject must be in at least weak genome order (sorted by start within chromosome blocks).
 ##' 
 ##' @param query GRanges or something coercible to GRanges
 ##' @param subject RangedData
@@ -1628,11 +1623,13 @@ boundingIndicesByChr <-function(query, subject) {
     tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
   }
 
-  # Subject must have features ordered by start within chromsome. Query need not, but it's faster.  Chromosome order doesn't matter.
+  # Subject must have features ordered by start within chromosome. Query need not really, but it's faster.  Just checking query genome order to assure data are in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
   if (! isGenomeOrder(subject,strict=FALSE) ) {
     stop("subject must be in genome order.\n")
   }
-  query = toGenomeOrder(query,strict=FALSE)
+  if (! isGenomeOrder(query,strict=FALSE) ) {
+    stop("query must be in genome order.\n")
+  }
   query.chr.indices = chrIndices(query)
   subject.chr.indices = chrIndices(subject)
   ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
