@@ -29,7 +29,7 @@
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
-##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist
+##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-"
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
