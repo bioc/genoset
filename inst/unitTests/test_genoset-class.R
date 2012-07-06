@@ -322,6 +322,9 @@ test_subset <- function() {
   lrr.mat[6:8,2] = 3
   ds[locData(ds)[6:8,],2,"lrr"] = 3
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
+  ds[,3,"lrr"] = 3
+  lrr.mat[,3] = 3
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
 }
 
 test_gcCorrect <- function() {

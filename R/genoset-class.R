@@ -514,18 +514,24 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
           function(x,i,j,k,value) {
             if ( missing(k)) {
               stop("Must specify k to replace data in the GenoSet")
-            } else {
-              if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
-              if (missing(i) && missing(j)) {
-                return(assayDataElementReplace(x,k,value))
-              } else {
-                if (!missing(i) && (is(i,"RangedData") || is(i,"GRanges") || is(i,"RangesList"))) {
-                i = unlist(locData(x) %in% i)
-              }
-              assayDataElement(x,k)[i,j] = value
-              return(x)
-              }
             }
+            if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
+            if (missing(i) && missing(j)) {
+              return(assayDataElementReplace(x,k,value))
+            }
+            if (missing(i)) {
+              assayDataElement(x,k)[,j] = value
+              return(x)
+            }
+            if (is(i,"RangedData") || is(i,"GRanges") || is(i,"RangesList")) {
+              i = unlist(locData(x) %in% i)
+            }
+            if (missing(j)) {
+              assayDataElement(x,k)[i,] = value
+            } else {
+              assayDataElement(x,k)[i,j] = value
+            }
+            return(x)
           })
 
 #######
