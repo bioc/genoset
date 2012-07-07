@@ -1105,7 +1105,11 @@ bounds2Rle <- function( bounds, values, n ) {
   tail = n - bounds[nrow(bounds),2]
   extras = (cap > 0) + (tail > 0) + sum(bounds[-1,1] - bounds[-nrow(bounds),2] > 1)
   if (extras == 0) {
-    return( Rle( values, (bounds[,2] - bounds[,1])+1 ) )
+    rle = Rle( values, (bounds[,2] - bounds[,1])+1 )
+    if (length(rle) != n) {
+      stop("Rle is the wrong length. Look for double counted features in your bounds table.")
+    }
+    return(rle)
   }
   extras = extras + length(values)
   # Maybe make them 2x + 1 initialized to 0 and NA, let Rle dump zeros that don't get replaced
@@ -1137,6 +1141,9 @@ bounds2Rle <- function( bounds, values, n ) {
     run.value[i] = values[j]
     j = j + 1
     i = i + 1
+  }
+  if (sum(run.length) != n) {
+    stop("Rle is the wrong length. Look for double counted features in your bounds table.")
   }
   return( Rle( run.value, run.length ) )
 }

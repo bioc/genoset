@@ -6,7 +6,9 @@ test_bounds2Rle <- function() {
   bounds1 = matrix(c(3,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
   bounds2 = matrix( c(1,3, 4,5, 6,10, 11,15, 16,20), byrow=2, ncol=2)
   bounds3 = matrix(c(1,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
-  
+  bounds4 = matrix(c(1,5, 6,7, 7,10, 11,15, 16,20),ncol=2,byrow=TRUE)
+  bounds5 = matrix(c(1,5, 6,7, 7,9, 11,15, 16,20),ncol=2,byrow=TRUE)
+
   rle1 = Rle( c(NA,"A","B",NA,"C",NA,"D","E",NA), c(2,3,2,1,1,3,3,4,1) )
   rle2 = Rle( LETTERS[1:5], c(3,2,5,5,5) )
   rle3 = Rle( c("A","B",NA,"C",NA,"D","E",NA), c(5,2,1,1,3,3,4,1) )
@@ -14,10 +16,14 @@ test_bounds2Rle <- function() {
   values1 = as.vector(na.omit(runValue(rle1)))
   values2 = as.vector(na.omit(runValue(rle2)))
   values3 = as.vector(na.omit(runValue(rle3)))
+  values4 = LETTERS[1:5]
+  values5 = values4
   
   checkIdentical( rle1, bounds2Rle( bounds1, values1, length(locs) ), "Gaps at beginning, end, middle" )
   checkIdentical( rle2, bounds2Rle( bounds2, values2, length(locs) ), "No NA segments")
   checkIdentical( rle3, bounds2Rle( bounds3, values3, length(locs) ), "Gaps in middle, end" )
+  checkException( bounds2Rle( bounds4, values4, length(locs) ), "Exception when Rle too long, no NA" )
+  checkException( bounds2Rle( bounds5, values4, length(locs) ), "Exception when Rle too long, with NA" )
 }
   
 test_boundingIndices <- function() {
