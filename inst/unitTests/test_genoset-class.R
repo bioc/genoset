@@ -315,6 +315,10 @@ test_subset <- function() {
 
   ds[,,"baf"] = ds[,,"lrr"]
   checkEquals(ds[,,"baf"],ds[,,"lrr"],"Replace whole element")
+  bad.names.lrr = ds[,,"lrr"]
+  rownames(bad.names.lrr)[1] = "FOO"
+  colnames(bad.names.lrr)[1] = "FOO"
+  checkException({ds[,,"baf"] = bad.names.lrr}, "Incoming ad element must have dimnames that matches genoset.")
   lrr.mat = ds[,,"lrr"]
   lrr.mat[1:2,1:2] = 5
   ds[1:2,1:2,"lrr"] = 5

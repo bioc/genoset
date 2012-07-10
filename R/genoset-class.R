@@ -517,6 +517,9 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
             }
             if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
             if (missing(i) && missing(j)) {
+              if (! all( sampleNames(x) == colnames(value)) || ! all( featureNames(x) == rownames(value))) {
+                stop("Dimnames for incoming assayDataElement must match this genoset.\n")
+              }
               return(assayDataElementReplace(x,k,value))
             }
             if (missing(i)) {
