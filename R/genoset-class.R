@@ -1349,6 +1349,7 @@ setGeneric("segPairTable", function(x,y,...) standardGeneric("segPairTable"))
 ##' @aliases segPairTable,Rle,Rle-method
 setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr.ind=NULL,start=NULL,end=NULL) {
   # Fill in missing args if locs given
+  # Maybe use ... rather than x and y and get names from that to use in colnames
   if (!is.null(locs)) {
     chr.ind = chrIndices(locs)
     start = start(locs)

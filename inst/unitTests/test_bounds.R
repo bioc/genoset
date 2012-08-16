@@ -89,6 +89,13 @@ test_rangeSampleMeans <- function() {
     )
   rle.means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.rd), ncol=ncol(rle.cnset), dimnames=list(rownames(query.rd),sampleNames(rle.cnset)))
   checkEquals( rangeSampleMeans( query.rd, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
+
+  # With GRanges
+  query.gr = as(query.rd,"GRanges")
+  locData(subject) = as(locData(subject),"GRanges")
+  checkEquals( rangeSampleMeans( query.gr, subject, "cn" ), means)
+  locData(rle.cnset) = as(locData(rle.cnset),"GRanges")
+  checkEquals( rangeSampleMeans( query.gr, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
 }
 
 test_rangeColMeans <- function() {
