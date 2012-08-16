@@ -72,14 +72,13 @@ test_creation <- function() {
 
   # Test making a CNSet with Rle-based data
   rle.cnset = CNSet(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    locData=locData.rd,
     cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
 
   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
-  pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
   misordered.genoset = GenoSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=cn[ rev(probe.names), ],
@@ -109,6 +108,56 @@ test_creation <- function() {
   checkTrue(validObject(misordered.genoset),"Starting with some sample name and feature name misordering")
   checkTrue( identical(misordered.genoset[,,"cn"],cn) && identical(misordered.genoset[,,"foo"],cn))
   checkIdentical( pData, pData(misordered.genoset), "Misordered pData gets fixed" )
+  checkTrue(validObject(bad.locData.genoset), "Can fix locData not in strict genome order")
+  checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
+}
+
+test_creation_w_granges <- function() {
+  pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+  cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  locs=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
+  bad.locs=RangedData(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),seqnames=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)))  
+
+  tom = GenoSet( locData=locs, cn=cn, pData=pData )
+  ted = BAFSet( locData=locs, lrr=lrr, baf=baf, pData=pData )
+  joe = CNSet( locData=locs, cn=cn, pData=pData )
+
+  gs.from.ad = GenoSet( locData=locs, assayData=assayDataNew(storage.mode="environment",cn=cn), pData=pData )
+  cnset.from.ad = CNSet( locData=locs, assayData=assayDataNew(storage.mode="environment",cn=cn), pData=pData )
+  bafset.from.ad = BAFSet( locData=locs, assayData=assayDataNew(storage.mode="environment",lrr=cn,baf=cn), pData=pData )
+
+  rle.bafset = BAFSet(
+    locData=locs,
+    lrr=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
+    baf=DataFrame(K=Rle(31:40),L=Rle(41:50),M=Rle(51:60),row.names=probe.names),
+    pData=pData)
+
+  rle.cnset = CNSet(
+    locData=locData.rd,
+    cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
+    pData=pData)
+  
+  misordered.genoset = GenoSet( locData=locs, cn=cn[ rev(probe.names), ], foo=cn[ rev(probe.names),], pData=pData[rev(test.sample.names),] )
+
+  bad.locData.genoset = GenoSet( locData=bad.locs, cn=cn, foo=cn, pData=pData )
+
+  checkTrue(validObject(tom),"Regular GenoSet")
+  checkTrue(validObject(ted),"Regular BAFSet")
+  checkTrue(validObject(joe),"Regular CNSet")
+
+  checkTrue(validObject(gs.from.ad),"GenoSet with provided assayData")
+  checkTrue(validObject(cnset.from.ad),"CNSet with provided assayData")
+  checkTrue(validObject(bafset.from.ad),"BAFSet with provided assayData")
+
+  checkTrue(validObject(rle.bafset),"BAFSet with Rle data")
+  checkTrue(validObject(rle.cnset),"CNSet with Rle-based data")
+
+  checkTrue(validObject(misordered.genoset),"Starting with some sample name and feature name misordering")
+  checkTrue( identical(misordered.genoset[,,"cn"],cn) && identical(misordered.genoset[,,"foo"],cn))
+  checkIdentical( pData, pData(misordered.genoset), "Misordered pData gets fixed" )
+
   checkTrue(validObject(bad.locData.genoset), "Can fix locData not in strict genome order")
   checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
 }

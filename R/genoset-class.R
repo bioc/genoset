@@ -102,9 +102,9 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
   }
-  clean.loc.rownames = make.names(rownames(locData),unique=TRUE)
+  clean.loc.rownames = make.names(featureNames(locData),unique=TRUE)
   if ( ! all(rownames(locData) == clean.loc.rownames) ) {
-    rownames(locData) = clean.loc.rownames
+    featureNames(locData) = clean.loc.rownames
   }
 
  # Create assayData
