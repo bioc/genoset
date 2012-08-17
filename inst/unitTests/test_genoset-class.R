@@ -1,18 +1,18 @@
 ### TO DO
-# remove redundant genome order tests
-# GRanges tests for creation, subsetting
+# tidy up genome order tests
+# GRanges tests for subsetting
 
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 
 test_creation <- function() {
-
+  pData = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+  
   bob = BAFSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   locData.rd = RangedData(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")
@@ -21,44 +21,38 @@ test_creation <- function() {
     locData=locData.rd,
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   joe = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   tom = GenoSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   gs.from.ad = GenoSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     assayData=assayDataNew(storage.mode="environment",cn=cn),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   cnset.from.ad = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     assayData=assayDataNew(storage.mode="environment",cn=cn),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
   
   bafset.from.ad = BAFSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     assayData=assayDataNew(storage.mode="environment",lrr=cn,baf=cn),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   # Test making a BAFSet with Rle-based data
@@ -66,16 +60,14 @@ test_creation <- function() {
     locData=locData.rd,
     lrr=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
     baf=DataFrame(K=Rle(31:40),L=Rle(41:50),M=Rle(51:60),row.names=probe.names),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   # Test making a CNSet with Rle-based data
   rle.cnset = CNSet(
     locData=locData.rd,
     cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
+    pData=pData
     )
 
   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
@@ -83,8 +75,7 @@ test_creation <- function() {
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=cn[ rev(probe.names), ],
     foo=cn[ rev(probe.names),],
-    pData=pData[rev(test.sample.names),],
-    annotation="SNP6"
+    pData=pData[rev(test.sample.names),]
     )
 
   bad.locData=RangedData(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),space=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)),universe="hg18")
@@ -92,8 +83,7 @@ test_creation <- function() {
     locData=bad.locData,
     cn=cn,
     foo=cn,
-    pData=pData,
-    annotation="SNP6"
+    pData=pData
     )
   
   checkTrue(validObject(bob),"Regular BAFSet")
@@ -135,7 +125,7 @@ test_creation_w_granges <- function() {
     pData=pData)
 
   rle.cnset = CNSet(
-    locData=locData.rd,
+    locData=locs,
     cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
     pData=pData)
   
@@ -387,6 +377,102 @@ test_subset <- function() {
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
 }
 
+test_subset_w_granges <- function() {
+  test.sample.names = LETTERS[11:13]
+  probe.names = letters[1:10]
+  test.gr = GRanges(ranges=IRanges(start=8:14,width=1),names=letters[8:14],seqnames=rep("chrX",7))
+  lrr = matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  baf = matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
+  pData = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+  locs = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
+  test.ds = BAFSet(
+    locData=locs,
+    lrr=lrr,
+    baf=baf,
+    pData=pData
+    )
+  
+  expected.ds = BAFSet(
+    locData=locs[8:10,],
+    lrr=lrr[8:10,],
+    baf=baf[8:10,],
+    pData=pData
+    )
+  
+  chr3.ds = BAFSet(
+    locData=locs[5:6,],
+    lrr=matrix(c(5:6,15:16,25:26),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
+    baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
+    pData=pData
+    )
+  
+  ds = BAFSet(
+    locData=locs,
+    lrr=lrr,
+    baf=baf,
+    pData=pData
+    )
+
+  subset.rows.ds = BAFSet(
+    locData=locs[2:3,],
+    lrr=lrr[2:3,],
+    baf=baf[2:3,],
+    pData=pData
+    )
+  
+  subset.cols.ds = BAFSet(
+    locData=locs,
+    lrr=matrix(11:30,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
+    baf=matrix(41:60,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
+    pData=pData[2:3,]
+    )
+
+  gene.gr = GRanges(ranges=IRanges(start=2:3,width=1),seqnames=c("chr1","chr1"))
+  
+  # Subsetting whole object
+  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
+  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
+  checkEquals( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE)
+  
+  # Subsetting assayData / extracting
+  checkEquals( ds[ 4:6, 1:2, "lrr"], lrr(ds)[4:6,1:2])
+  checkEquals( ds[ 5, 3, "baf"], baf(ds)[5,3])
+  checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])
+  checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
+  checkEquals( ds[ gene.gr, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
+  checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
+  
+  # Test subsetting by location
+  checkEquals( test.ds[test.gr,], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
+
+  # Replace
+  ds = BAFSet(
+    locData=locs,
+    lrr=lrr,
+    baf=baf,
+    pData=pData
+    )
+
+  ds[,,"baf"] = ds[,,"lrr"]
+  checkEquals(ds[,,"baf"],ds[,,"lrr"],"Replace whole element")
+  bad.names.lrr = ds[,,"lrr"]
+  rownames(bad.names.lrr)[1] = "FOO"
+  colnames(bad.names.lrr)[1] = "FOO"
+  checkException({ds[,,"baf"] = bad.names.lrr}, "Incoming ad element must have dimnames that matches genoset.",silent=TRUE)
+  lrr.mat = ds[,,"lrr"]
+  lrr.mat[1:2,1:2] = 5
+  ds[1:2,1:2,"lrr"] = 5
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with integer indices")
+  lrr.mat[6:8,2] = 3
+  ds[locData(ds)[6:8,],2,"lrr"] = 3
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
+  ds[,3,"lrr"] = 3
+  lrr.mat[,3] = 3
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
+}
+
 test_gcCorrect <- function() {
 
   input.vector = c(rep(0.05,50),rep(0.08,50))
@@ -445,8 +531,6 @@ test_genomeOrder <- function() {
   checkEquals( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs" )
   checkEquals( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, "CNSet disordered within chrs, disordered chrs" )
 
-
-  ## Just RangedData and GRanges
   rd1 = RangedData(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
   rd2 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
   rd3 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","B","C")))

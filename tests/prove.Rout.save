@@ -61,22 +61,32 @@ Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
 Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
 
 
-RUNIT TEST PROTOCOL -- Mon May 21 16:20:50 2012 
+RUNIT TEST PROTOCOL -- Thu Aug 16 17:03:12 2012 
 *********************************************** 
-Number of test functions: 21 
+Number of test functions: 24 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-genoset RUnit Tests - 21 test functions, 0 errors, 0 failures
-Number of test functions: 21 
+genoset RUnit Tests - 24 test functions, 0 errors, 0 failures
+Number of test functions: 24 
 Number of errors: 0 
 Number of failures: 0 
-There were 26 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)
 > 
 > proc.time()
    user  system elapsed 
- 15.256   0.172  15.662 
+ 25.425   0.164  26.137 
