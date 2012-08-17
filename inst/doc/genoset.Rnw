@@ -306,19 +306,12 @@ slow ``waves'' along the genome (Diskin et al., NAR, 2008). The
 function ``gcCorrect'' can be used to remove this effect resulting in
 much clearer data and more accurate segmentation. GC content is best
 measured as the gc content in windows around each feature, about 2Mb
-in size. The function ``loadGC'' can calculate GC content in bins of a
-specified size using the genome sequence object from a package like
-BSgenome. Be careful to use a version of BSgenome that matches the
-``universe'', or mapping, of your data set. loadGC adds a ``gc''
-column to the locData slot.
+in size.
 
 <<GC, eval=FALSE>>=
 library(BSgenome.Hsapiens.UCSC.hg19)
-cn.ds2 = cn.ds
-cn.ds2 = loadGC(cn.ds2,expand=1e6,bsgenome=Hsapiens)
-head(locData(cn.ds2)$gc)
-genoPlot(genoPos(cn.ds),locData(cn.ds2)$gc,locs=locData(cn.ds))
-cn(cn.ds2) = gcCorrect(cn(cn.ds2),locData(cn.ds2)$gc)
+gc = rnorm(nrow(cn.ds))
+cn(cn.ds) = gcCorrect(cn(cn.ds),gc)
 @ 
 
 \subsection{Plots}

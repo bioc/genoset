@@ -1,6 +1,6 @@
 \name{gcCorrect}
 \alias{gcCorrect}
-\title{cgCorrect}
+\title{Correct copy number for GC content}
 \usage{
   gcCorrect(ds, gc, retain.mean = TRUE)
 }
@@ -18,9 +18,6 @@
   numeric matrix, residuals of ds regressed on gc
 }
 \description{
-  Correct copy number for GC content
-}
-\details{
   Copy number estimates from various platforms show
   "Genomic Waves" (Diskin et al., Nucleic Acids Research,
   2008) where copy number trends with local GC content.
