@@ -46,9 +46,9 @@ Peter M. Haverty \email{phaverty@gene.com}
 showClass("BAFSet")
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
-locData.rd = RangedData(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")
+locData.gr = GRanges(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
 bs = BAFSet(
-  locData=locData.rd,
+  locData=locData.gr,
   lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
   baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
   pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),

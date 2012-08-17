@@ -56,3 +56,6 @@ genoPlot supports fast zooming into a chromosome with the 'xlim' arg.  Subsets b
 
 1.7.8
 *Minor API change* genoPlot now takes numeric or Rle data as "y" rather than an index into the assayDataElement named in "element".  Backwards compatible with a warning about the old usage being deprecated. RangedData or GRanges also now valid as "x".
+
+1.9.8
+GRanges everywhere!  GenoSet now supports GRanges in the locData slot.  All functions that take RangedData now also take GRanges.  I have unified the API for GRanges, RangedData, and GenoSet to the point that GenoSet classes and the functions in the package are agnostic to the type of range object.  I have not, however, fixed the contentious issue of using the "$" operator with GRanges to access elementMetadata.

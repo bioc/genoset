@@ -162,7 +162,7 @@ setAs("BAFSet","ExpressionSet", def=
 ##' @author Peter M. Haverty
 BAFSet.to.ExpressionSets <- function(bs) {
   features = as.data.frame(locData(bs))
-  rownames(features) = features$names
+  rownames(features) = featureNames(bs)
   features = new("AnnotatedDataFrame",data=features)
   esets = list()
   esets[["lrr"]] = new("ExpressionSet", exprs=lrr(bs), phenoData=phenoData(bs),

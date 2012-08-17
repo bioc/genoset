@@ -227,8 +227,8 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, assayData
 ##' @rdname genoset-methods
 ##' @examples
 ##'   data(genoset)
-##'   universe(genoset.ds)
-##'   universe(genoset.ds) = "hg19"
+##'   universe(locData.rd)
+##'   universe(locData.rd) = "hg19"
 ##' @aliases universe,GenoSet-method
 setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
 
@@ -769,14 +769,14 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' @author Peter M. Haverty
 ##' @examples
 ##'   data(genoset)
-##'   genoPos(genoset.ds)
-##'   genoPos(locData(genoset.ds))  # The same
+##'   head(genoPos(genoset.ds))
+##'   head(genoPos(locData(genoset.ds)))  # The same
 ##' @export genoPos
 ##' @rdname genoPos-methods
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
 ##' @rdname genoPos-methods
-##' @aliases genoPos,RangedDataOrGenoSet-method
-setMethod("genoPos", signature(object="RangedDataOrGenoSet"),
+##' @aliases genoPos,RangedDataOrGenoSetOrGRanges-method
+setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGRanges"),
           function(object) {
 
             # For single chr objects, just return pos
@@ -1022,8 +1022,7 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
 ##' This function regresses copy number on GC percentage and removes the effect
 ##' (returns residuals). GC content should be smoothed along the genome in wide
 ##' windows >= 100kb.
-##' 
-##' @title cgCorrect
+##'
 ##' @param ds numeric matrix of copynumber or log2ratio values, samples in columns
 ##' @param gc numeric vector, GC percentage for each row of ds, must not have NAs
 ##' @param retain.mean logical, center on zero or keep same mean?
@@ -1780,7 +1779,7 @@ setGeneric("isGenomeOrder", function(ds,...) standardGeneric("isGenomeOrder"))
 setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
           function(ds, strict=FALSE) {
             if (strict) {
-              if ( ! all( names(ds) == chrOrder(names(ds) ) ) ) {
+              if ( ! all( chrNames(ds) == chrOrder(names(ds) ) ) ) {
                 return(FALSE)
               }
             }

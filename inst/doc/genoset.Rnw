@@ -40,7 +40,8 @@ The genoset package offers an extension of the BioConductor eSet object for geno
 arrays. The package offers three classes. The first class is the
 ``GenoSet'' class which can hold an arbitrary number of equal-sized
 matrices in its assayData slot. The principal addition of the GenoSet
-class is a ``locData'' slot that holds a RangedData object from the
+class is a ``locData'' slot that holds a GRanges object from the
+GenomicRanges package or a RangedData object from the
 IRanges package. The locData slot allows for quick subsetting by genome position.
 
 Two classes extend GenoSet: CNSet and BAFSet.  CNSet is the basic copy number object. It
@@ -89,8 +90,8 @@ rle.baf.ds = BAFSet( locData=locData.rd,
 Let's have look at what's inside these objects.   CNSets extend
 ExpressionSets and so have all of the same functions and slots, except 
 that the exprs slot and getter and setter functions have been replaced with ``cn''.  The locData slot has
-been added.  This slot holds a RangedData object that keeps track of the feature positions and
-allows for quick subsetting. The RangedData object is always sorted such that the chromosomes
+been added.  This slot holds a GRanges object or a RangedData object that keeps track of the feature positions and
+allows for quick subsetting. The RangedData is always sorted such that the chromosomes
 are in contiguous blocks, which provides a constraint on the ordering of the CNSet.
 
 <<<objectinspection>>= >>=
@@ -114,8 +115,8 @@ head( assayDataElement(genoset.ds,"foo") )
 
 \subsection{Accessing Genome Information}
 Now lets look at some special functions for accessing genome
-information from a genoset object. Methods for RangedData have also
-been added to give the same API. We can access per-probe information
+information from a genoset object. Methods for RangedData and GRanges have also
+been added to give them same API. We can access per-probe information
 as well as summaries of chromosome boundaries in base-pair or
 row-index units.   There are a number of functions for getting
 portions of the locData data. ``chr'' and ``pos'' return the
@@ -136,7 +137,6 @@ chrInfo(genoset.ds)
 chrIndices(genoset.ds)
 elementLengths(genoset.ds)
 
-head(ranges(genoset.ds))
 head(chr(genoset.ds))
 head(start(genoset.ds))
 head(end(genoset.ds))
@@ -159,9 +159,9 @@ chr12.ds
 
 Subset by a collection of gene locations
 <<subsetbygene>>=
-gene.rd = RangedData(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
-                       names=c("HER2","CMYC")), space=c("chr17","chr8"))
-gene.ds = cn.ds[ gene.rd, ]
+gene.gr = GRanges(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
+                       names=c("HER2","CMYC")), seqnames=c("chr17","chr8"))
+gene.ds = cn.ds[ gene.gr, ]
 gene.ds
 @ 
 
@@ -188,22 +188,21 @@ assayDataElement.
 <<subsetassaydata>>=
 all( cn.ds[ 1:4,1:2,"cn"] == cn(cn.ds)[1:4,1:2] )
 all( cn.ds[ 1:4,1:2,"cn"] == assayDataElement(cn.ds,"cn")[1:4,1:2] )
-cn.ds[ gene.rd, 1:2, "cn" ]
+cn.ds[ gene.gr, 1:2, "cn" ]
 @ 
 
 \subsection{Genome Order}
-GenoSet and RangedData objects can be set to and checked for genome
+GenoSet, GRanges, and RangedData objects can be set to and checked for genome
 order. Weak genome order requires that features be ordered within each
 chromosome. Strong genome order requires a certain order of chromosomes
 as well. Features must be ordered so that features from the same
 chromosome are in contiguous blocks.
 
 Certain methods on GenoSet objects expect the rows to be in genome
-order. In this package, the use of a RangedData object for feature
-location info (the locData slot) keeps data for each chromosome in a
-contiguous block of rows. Users are free to rearrange rows within
-chromosome as they please. The function ``isGenomeOrder'' can check if
-a RangedData object, like the locData slot, is in genome order. Here
+order. Users are free to rearrange rows within
+chromosome as they please, although if the locData is a RangedData,
+this RangedData will prohibit mixing rows from different chromosomes. The function ``isGenomeOrder'' can check if
+a RangedData or GRanges object, like the locData slot, is in genome order. Here
 ``genome order'' means that the rows within each chromosome are
 ordered by start position. ``Strict genome order'' requires that the
 chromosome be in a certain order too. The proper order of chromosomes
@@ -217,7 +216,7 @@ Methods, like those in the next section, that require genome order use
 keep track of whether or not they have changed the row order.
 
 <<genomeorder, eval=TRUE>>=
-chrOrder(names(genoset.ds))
+chrOrder(chrNames(genoset.ds))
 isGenomeOrder(genoset.ds, strict=FALSE)
 isGenomeOrder(genoset.ds, strict=TRUE)
 genoset.ds = toGenomeOrder(genoset.ds, strict=TRUE)
@@ -228,7 +227,7 @@ isGenomeOrder(genoset.ds, strict=TRUE)
 GenoSets contain feature level data. Often it is desirable to get
 summaries of assayData matrices over an arbitrary set of ranges, like
 genes or cytobands. The function ``rangeSampleMeans'' serves this
-purpose. Given a RangedData of arbitrary genome ranges, a
+purpose. Given a RangedData or GRanges of arbitrary genome ranges, a
 GenoSet-based object, and the name of a member of that objects
 assayData slot, ``rangeSampleMeans'' will return a matrix of values
 for each of those ranges and for each sample. For each range,
@@ -252,7 +251,7 @@ favorite genes from the subsetting example:
 Get the gene-level summary:
 <<genelevel, eval=TRUE>>=
 boundingIndices( c(127e6,127.5e6), c(127e6,128e6), start(chr12.ds) )
-rangeSampleMeans(gene.rd, baf.ds, "lrr")
+rangeSampleMeans(gene.gr, baf.ds, "lrr")
 @ 
 
 \section{Processing Data}

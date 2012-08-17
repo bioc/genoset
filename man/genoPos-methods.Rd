@@ -1,6 +1,6 @@
 \name{genoPos}
 \alias{genoPos}
-\alias{genoPos,RangedDataOrGenoSet-method}
+\alias{genoPos,RangedDataOrGenoSetOrGRanges-method}
 \title{Convert chromosome positions to positions from start of genome}
 \arguments{
   \item{object}{A GenoSet object or a RangedData object}
@@ -19,8 +19,8 @@
 }
 \examples{
 data(genoset)
-  genoPos(genoset.ds)
-  genoPos(locData(genoset.ds))  # The same
+  head(genoPos(genoset.ds))
+  head(genoPos(locData(genoset.ds)))  # The same
 }
 \author{
   Peter M. Haverty

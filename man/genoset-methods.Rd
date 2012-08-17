@@ -121,8 +121,8 @@
 }
 \examples{
 data(genoset)
-  universe(genoset.ds)
-  universe(genoset.ds) = "hg19"
+  universe(locData.rd)
+  universe(locData.rd) = "hg19"
 data(genoset)
 chr(genoset.ds)
 start(genoset.ds)
