@@ -1405,7 +1405,7 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
     return(segs)
   } else {
     segs.df = do.call(rbind,segs)
-    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df)
+    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df,stringsAsFactors=FALSE)
     return(segs.df)
   }
 })
