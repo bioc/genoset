@@ -494,26 +494,14 @@ intersection with gene locations.
 
 \section{Big Data and bigmemory}
 Genome-scale data can be huge and keeping everything in memory can get
-you into trouble quickly, especially if you like using multicore.
+you into trouble quickly, especially if you like using parallel's mclapply.
 
-GenoSet supports using big.matrix objects from the bigmemory package
-as assayDataElements.  GenoSet uses one minor modification of the
-big.matrix object to facilitate saving to and reloading from
-disk. Specifically, genoset places the path to the big.matrix
-``description'' file in an attribute of the object called ``desc''.
-This is handled by the convertToBigMatrix function.
+It is often convenient to use BigMatrix objects from the BigMatrix
+package as assayDataElements, rather than base matrices.  BigMatrix is
+based on the bigmemory package, which provides a matrix API to
+memory-mapped files of numeric data. This allows for data matrices
+larger than R's maximum size with just the tiniest footprint in
+RAM. The BigMatrix vignette has more details about using eSet-derived
+classes and BigMatrix objects.
 
-Additionally, the function readGenoSet takes care of re-attaching all
-big.matrix objects to their on-disk components. readGenoSet takes the
-path to a RData file as its argument. It assumes the RData file
-contains only only object, which is an object of class eSet or an
-object of a derived class.  readGenoSet works for any GenoSet, not
-just those that contain big.matrix matrices.
-
-<<bigmatrix, eval=FALSE>>=
-cn.ds = convertToBigMatrix(cn.ds)
-save(cn.ds,file="cn.RData")
-reloaded.cn.ds = readGenoSet("cn.RData")
-@ 
-  
 \end{document}
