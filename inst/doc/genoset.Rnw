@@ -28,8 +28,9 @@
 \date{\today}
 
 \begin{document}
-
 \maketitle
+\tableofcontents
+\newpage
 
 <<<options,echo=FALSE>>=
   options(width=90)
