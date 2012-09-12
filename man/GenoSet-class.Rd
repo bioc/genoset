@@ -33,7 +33,6 @@ Class \code{"\linkS4class{eSet}"}, directly.
     \item{[}{\code{signature(x = "GenoSet", i = "ANY", j = "ANY", drop = "ANY")}: ... }
     \item{[}{\code{signature(x = "GenoSet", i = "character", j = "ANY", drop = "ANY")}: ... }
     \item{[}{\code{signature(x = "GenoSet", i = "RangedData", j = "ANY", drop = "ANY")}: ... }
-    \item{[}{\code{signature(x = "GenoSet", i = "RangesList", j = "ANY", drop = "ANY")}: ... }
     \item{[<-}{\code{signature(x = "GenoSet", i = "ANY", j = "ANY", value = "ANY")}: ... }
     \item{chr}{\code{signature(object = "GenoSet")}: ... }
     \item{chrNames}{\code{signature(object = "GenoSet")}: ... }

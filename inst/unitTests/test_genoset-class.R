@@ -346,7 +346,7 @@ test_subset <- function() {
   
   # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[ranges(test.rd),], expected.ds, checkNames=FALSE )
+  checkEquals( test.ds[as(test.rd,"GRanges"),], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
   checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
 

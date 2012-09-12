@@ -4,8 +4,8 @@
 \alias{[,GenoSet,ANY,ANY,ANY-method}
 \alias{[,GenoSet,character-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
-\alias{[,GenoSet,RangedDataOrRangesListOrGRanges-method}
-\alias{[,GenoSet,RangedDataOrRangesListOrGRanges,ANY,ANY-method}
+\alias{[,GenoSet,RangedDataOrGRanges-method}
+\alias{[,GenoSet,RangedDataOrGRanges,ANY,ANY-method}
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \alias{elementLengths}
@@ -52,11 +52,9 @@
 
   \item{x}{GenoSet}
 
-  \item{i}{character, RangedData, RangesList, logical,
-  integer}
+  \item{i}{character, RangedData, logical, integer}
 
-  \item{j}{character, RangedData, RangesList, logical,
-  integer}
+  \item{j}{character, RangedData, logical, integer}
 
   \item{k}{character or integer}
 

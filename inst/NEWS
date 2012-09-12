@@ -59,3 +59,6 @@ genoPlot supports fast zooming into a chromosome with the 'xlim' arg.  Subsets b
 
 1.9.8
 GRanges everywhere!  GenoSet now supports GRanges in the locData slot.  All functions that take RangedData now also take GRanges.  I have unified the API for GRanges, RangedData, and GenoSet to the point that GenoSet classes and the functions in the package are agnostic to the type of range object.  I have not, however, fixed the contentious issue of using the "$" operator with GRanges to access elementMetadata.
+
+1.9.10
+Subsetting by location now only with GRanges and RangedData.  Dropped RangesList to avoid weird errors about the RangedDataOrRangesListOrGRanges class union.  Apparently the RangedDataOrGRanges class union is fine. I think RangesLists are not used often anyway.

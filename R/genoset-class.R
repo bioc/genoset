@@ -22,7 +22,7 @@
 ##' @seealso genoset-datasets GenoSet CNSet BAFSet
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
-##' @importClassesFrom IRanges DataFrame RangedData RangesList Rle
+##' @importClassesFrom IRanges DataFrame RangedData Rle
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length
@@ -50,7 +50,6 @@ NULL
 setClassUnion("RangedDataOrGRanges",c("RangedData","GRanges"))
 setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGRanges"))
 setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
-setClassUnion("RangedDataOrRangesListOrGRanges",c("RangedData","RangesList","GRanges"))
 setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 setValidity("GenoSet", function(object) {
@@ -453,8 +452,8 @@ setMethod("nrow", "GRanges", function(x) { length(x) })
 
 ##' @exportMethod "["
 ##' @param x GenoSet
-##' @param i character, RangedData, RangesList, logical, integer
-##' @param j character, RangedData, RangesList, logical, integer
+##' @param i character, RangedData, logical, integer
+##' @param j character, RangedData, logical, integer
 ##' @param k character or integer
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
@@ -467,7 +466,7 @@ setMethod("nrow", "GRanges", function(x) { length(x) })
 ##' @rdname genoset-methods
 ##' @aliases [,GenoSet,ANY,ANY,ANY-method
 ##' @aliases [,GenoSet,ANY-method
-##' @aliases [,GenoSet,RangedDataOrRangesListOrGRanges-method
+##' @aliases [,GenoSet,RangedDataOrGRanges-method
 ##' @aliases [,GenoSet,character-method
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
@@ -501,8 +500,8 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           })
 
 ##' @rdname genoset-methods
-##' @aliases [,GenoSet,RangedDataOrRangesListOrGRanges,ANY,ANY-method
-setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrRangesListOrGRanges", j="ANY"),
+##' @aliases [,GenoSet,RangedDataOrGRanges,ANY,ANY-method
+setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %in% i)
             callNextMethod(x,indices,j,...,drop=drop)
@@ -526,7 +525,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               assayDataElement(x,k)[,j] = value
               return(x)
             }
-            if (is(i,"RangedData") || is(i,"GRanges") || is(i,"RangesList")) {
+            if (is(i,"RangedData") || is(i,"GRanges")) {
               i = unlist(locData(x) %in% i)
             }
             if (missing(j)) {
@@ -1392,7 +1391,6 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
   chr.ind = chrIndices(locs)
   start = start(locs)
   end = end(locs)
-  
   segs = mapply(
     function(one,two) {
       return(segPairTable(one,two,chr.ind=chr.ind, start=start, end=end))
