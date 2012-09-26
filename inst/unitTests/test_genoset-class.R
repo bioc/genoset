@@ -172,19 +172,18 @@ test_featureNames <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  bad.featureNames = c("a.","b,,","-foo",letters[4:9],"b,,")
-  checkEquals( featureNames(ds), probe.names )
-  featureNames(ds) = bad.featureNames
-  checkEquals( featureNames(ds), c("a.","b..","X.foo",letters[4:9],"b...1"))
   rd = locData(ds)
   gr = as(rd,"GRanges")
-  checkEquals( featureNames(ds), featureNames(rd) )
-  checkEquals( featureNames(ds), featureNames(gr) )
+  checkEquals( featureNames(ds), probe.names, "Get featureNames from GenoSet" )
+  checkEquals( featureNames(ds), featureNames(rd), "Get featureNames from RangedData" )
+  checkEquals( featureNames(ds), featureNames(gr), "Get featureNames from GRanges" )
   new.fnames = paste("f",featureNames(ds),sep="")
+  featureNames(ds) = new.fnames
   featureNames(rd) = new.fnames
   featureNames(gr) = new.fnames
-  checkEquals( featureNames(rd), new.fnames )
-  checkEquals( featureNames(gr), new.fnames )
+  checkEquals( featureNames(ds), new.fnames, "Set featureNames in GenoSet")
+  checkEquals( featureNames(rd), new.fnames, "Set featureNames in RangedData")
+  checkEquals( featureNames(gr), new.fnames, "Set featureNames in GRanges")
 }
 
 test_locData <- function() {

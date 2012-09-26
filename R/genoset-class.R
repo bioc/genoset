@@ -101,21 +101,17 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
   }
-  clean.loc.rownames = make.names(featureNames(locData),unique=TRUE)
-  if ( ! all(rownames(locData) == clean.loc.rownames) ) {
-    featureNames(locData) = clean.loc.rownames
-  }
+  clean.loc.rownames = featureNames(locData)
 
- # Create assayData
+  # Create assayData
   if (is.null(assayData)) {
     ad = assayDataNew(storage.mode="environment",...)
   } else {
     ad = assayData
   }
-  clean.featureNames = make.names(featureNames(ad),unique=TRUE)
-  if ( ! all(featureNames(ad) == clean.featureNames) ) {
-    featureNames(ad) = clean.featureNames
-  } else if (nrow(locData) != length(clean.featureNames)) {
+  clean.featureNames = featureNames(ad)
+
+  if (nrow(locData) != nrow(ad)) {
     stop("Row number mismatch for assayData and locData")
   }
     
@@ -269,7 +265,6 @@ setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
 setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
                  function(object, value) {
-                   value = make.names(value,unique=TRUE)
                    object = callNextMethod(object,value)
                    featureNames(slot(object,"locData")) = value
                    return(object)
@@ -279,7 +274,6 @@ setMethod("featureNames<-",
 setMethod("featureNames<-",
                  signature=signature(object="GRanges", value="ANY"),
                  function(object, value) {
-                   value = make.names(value,unique=TRUE)
                    names(object) = value
                    return(object)
                  })
@@ -288,7 +282,6 @@ setMethod("featureNames<-",
 setMethod("featureNames<-",
                  signature=signature(object="RangedData", value="ANY"),
                  function(object, value) {
-                   value = make.names(value,unique=TRUE)
                    rownames(object) = value
                    return(object)
                  })
