@@ -62,3 +62,9 @@ GRanges everywhere!  GenoSet now supports GRanges in the locData slot.  All func
 
 1.9.10
 Subsetting by location now only with GRanges and RangedData.  Dropped RangesList to avoid weird errors about the RangedDataOrRangesListOrGRanges class union.  Apparently the RangedDataOrGRanges class union is fine. I think RangesLists are not used often anyway.
+
+1.9.11
+GenoSet creation and featureNames<- no longer do make.names.
+
+1.9.12
+GenoSet creation and sampleNames<- no longer do make.names.

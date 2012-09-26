@@ -152,19 +152,6 @@ test_creation_w_granges <- function() {
   checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
 }
 
-test_sampleNames <- function() {
-  ds = CNSet(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
-    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
-    )
-  bad.sampleNames = c("K-fed","&FOO","&FOO")
-  checkEquals( sampleNames(ds), test.sample.names )
-  sampleNames(ds) = bad.sampleNames
-  checkEquals( sampleNames(ds), c("K.fed","X.FOO","X.FOO.1") )
-}
-
 test_featureNames <- function() {
   ds = CNSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),

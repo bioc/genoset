@@ -111,7 +111,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
   }
   clean.featureNames = featureNames(ad)
 
-  if (nrow(locData) != nrow(ad)) {
+  if (length(clean.featureNames) != length(clean.loc.rownames)) {
     stop("Row number mismatch for assayData and locData")
   }
     
@@ -137,12 +137,6 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
         ad[[mat.name]] == ad[[mat.name]][,colnames(ad[[first.name]])]
       }
     }
-  }
-
-  # Check sampleNames are same as check.names
-  clean.sampleNames = make.names(sampleNames(ad),unique=TRUE)
-  if ( ! all(sampleNames(ad) == clean.sampleNames) ) {
-    sampleNames(ad) = clean.sampleNames
   }
 
   # Done editing assayData members, lock
@@ -243,13 +237,6 @@ setMethod("universe<-", signature(x="GenoSet"),
                    universe(x@locData) = value
                    return(x)
                    })
-
-setMethod("sampleNames<-", signature(object="GenoSet",value="ANY"),
-          function(object,value) {
-            value = make.names(value,unique=TRUE)
-            object = callNextMethod(object,value)
-            return(object)
-          })
 
 ##' Set featureNames
 ##'
