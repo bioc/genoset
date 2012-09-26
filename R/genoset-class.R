@@ -96,7 +96,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
     warning("The universe argument has been deprecated. Annotation of universe/genome has been delegated to whatever is in the locData slot.")
     universe(locData) = universe
   }
-  
+
   # Check/set genome order of locData
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
