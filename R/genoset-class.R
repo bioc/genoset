@@ -73,7 +73,7 @@ setValidity("GenoSet", function(object) {
 ##' locations. featureNames (names or rownames) are required to match featureNames.
 ##' @param pData A data frame with rownames matching sampleNames (colnames of all assayDataElements)
 ##' @param annotation character, string to specify chip/platform type
-##' @param universe character, a string to specify the genome universe for locData
+##' @param universe character, a string to specify the genome universe for locData, overrides universe/genome data in locData
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object or derivative as specified by "type" arg
@@ -87,13 +87,12 @@ setValidity("GenoSet", function(object) {
 ##'      annotation="SNP6"
 ##'   )
 ##' @author Peter M. Haverty
-initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   # Function to clean up items for slots and call new for GenoSet and its children
   # ... will be the matrices that end up in assayData
   # all dimnames "fixed" with make names because eSet is inconsistent about that
 
-  if (! is.null(universe)) {
-    warning("The universe argument has been deprecated. Annotation of universe/genome has been delegated to whatever is in the locData slot.")
+  if (! is.missing(universe)) {
     universe(locData) = universe
   }
 
@@ -191,7 +190,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe=NULL,
 ##' )
 ##' @export GenoSet
 ##' @author Peter M. Haverty
-GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData,...)
   return(object)
 }
@@ -206,10 +205,11 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, assayData
 
 ##' Genome universe for locData
 ##'
-##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used.
+##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used. For a
+##' GRanges, the first value is returned if there are multiple.
 ##'
 ##' @title Get and set the genome universe annotation.
-##' @param x GenoSet
+##' @param x GenoSet or GRanges
 ##' @return character, e.g. hg19
 ##' @author Peter M. Haverty
 ##' @exportMethod universe
@@ -219,25 +219,38 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe=NULL, assayData
 ##'   universe(locData.rd)
 ##'   universe(locData.rd) = "hg19"
 ##' @aliases universe,GenoSet-method
+##' @aliases universe,GRanges-method
 setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
+setMethod("universe", "GRanges", function(x) {
+  if (length(unique(genome(x))) != 1) {
+    warning("Taking first element of GRanges genome as universe.")
+  }
+  return(unname(genome(x)[1]))
+} )
 
 ##' Set genome universe
 ##'
 ##' Set genome universe
 ##' 
-##' @param x GenoSet
+##' @param x GenoSet or GRanges
 ##' @param value character, new universe string, e.g. hg19
-##' @return A GenoSet object
+##' @return updated copy of x
 ##' @author Peter Haverty
 ##' @exportMethod "universe<-"
 ##' @rdname genoset-methods
 ##' @aliases universe<-,GenoSet-method
+##' @aliases universe<-,GRanges-method
 setMethod("universe<-", signature(x="GenoSet"),
                  function(x,value) {
                    universe(x@locData) = value
                    return(x)
                    })
-
+setMethod("universe<-", signature(x="GRanges"),
+          function(x,value) {
+            genome(x) = value
+            return(x)
+          })
+  
 ##' Set featureNames
 ##'
 ##' Set featureNames of a GenoSet, GRanges, or RangedData (rownames, names, or rownames respectively).

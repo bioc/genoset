@@ -2,8 +2,8 @@
 \alias{GenoSet}
 \title{Create a GenoSet object}
 \usage{
-  GenoSet(locData, pData = NULL, annotation = "",
-    universe = NULL, assayData = NULL, ...)
+  GenoSet(locData, pData = NULL, annotation = "", universe,
+    assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A RangedData object specifying feature

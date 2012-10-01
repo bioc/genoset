@@ -25,14 +25,16 @@
 \alias{start,GenoSet-method}
 \alias{universe}
 \alias{universe,GenoSet-method}
+\alias{universe,GRanges-method}
 \alias{universe<-}
 \alias{universe<-,GenoSet-method}
+\alias{universe<-,GRanges-method}
 \alias{width}
 \title{Get and set the genome universe annotation.}
 \arguments{
-  \item{x}{GenoSet}
+  \item{x}{GenoSet or GRanges}
 
-  \item{x}{GenoSet}
+  \item{x}{GenoSet or GRanges}
 
   \item{value}{character, new universe string, e.g. hg19}
 
@@ -65,7 +67,7 @@
 \value{
   character, e.g. hg19
 
-  A GenoSet object
+  updated copy of x
 
   integer
 
@@ -106,7 +108,9 @@
 }
 \details{
   The genome positions of the features in locData. The UCSC
-  notation (e.g. hg18, hg19, etc.) should be used.
+  notation (e.g. hg18, hg19, etc.) should be used. For a
+  GRanges, the first value is returned if there are
+  multiple.
 
   Get chromosome names, which are the names of the locData
   slot. The names method on a GenoSet is depricated. Please

@@ -219,11 +219,11 @@ test_locData <- function() {
 test_rd.gs.shared.api.and.getting.genome.info <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
-
-  point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
+  uni = "hg19"
+  point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
   point.locData.gr = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe="hg19")
-  wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg19")
+  point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe=uni)
+  wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
   gs = GenoSet(
     locData=point.locData,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
@@ -261,6 +261,13 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( chrIndices( point.locData[1:6,] ), chrIndices(point.locData.gr)[1:2,], "Empty levels ignored" )
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
   checkEquals( genoPos( point.locData ), genoPos( gs ) )
+
+  # Universe
+  gr.uni = GRanges(IRanges(start=1:4,width=1),seqnames=c("chr1","chr2","chr3","chr4"))
+  genome(gr.uni) = c("hg18","hg19","hg19","hg19")
+  checkIdentical( "hg18", universe(gr.uni), "Two genomes" )
+  genome(gr.uni) = c("hg19")
+  checkIdentical( "hg19", universe(gr.uni), "Two genomes" )
 }
 
 test_subset <- function() {
