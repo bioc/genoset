@@ -33,7 +33,7 @@ setValidity("BAFSet", function(object) {
 ##' matching featureNames and colnames matching sampleNames
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
-##' @param universe character, a string to specify the genome universe for locData
+##' @param universe character, a string to specify the genome universe for locData. Overrides any universe/genome data in locData.
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData slot
 ##' @return A BAFSet object
@@ -51,7 +51,7 @@ setValidity("BAFSet", function(object) {
 ##'     annotation="SNP6"
 ##' )
 ##' @seealso bafset-class, genoset-class
-BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", universe=NULL, assayData=NULL, ...) {
+BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   if (!is.null(assayData)) {
     if (! all(c("lrr","baf") %in% assayDataElementNames(assayData))) {
       stop("If assayData is specified, it must contain elements called 'lrr' and 'baf'.")

@@ -92,7 +92,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   # ... will be the matrices that end up in assayData
   # all dimnames "fixed" with make names because eSet is inconsistent about that
 
-  if (! is.missing(universe)) {
+  if (! missing(universe)) {
     universe(locData) = universe
   }
 
@@ -143,7 +143,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   
   # Create or check phenoData
   if (is.null(pData)) {
-    pData = data.frame(Sample=sampleNames(ad),row.names=sampleNames(ad))
+    pData = data.frame(row.names=sampleNames(ad))
   } else {
     rownames(pData) = make.names(rownames(pData),unique=TRUE)
     if ( ! setequal( rownames(pData), sampleNames(ad) ) ) {

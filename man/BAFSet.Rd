@@ -3,8 +3,7 @@
 \title{Create a BAFSet object}
 \usage{
   BAFSet(locData, lrr = NULL, baf = NULL, pData = NULL,
-    annotation = "", universe = NULL, assayData = NULL,
-    ...)
+    annotation = "", universe, assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A GRanges or RangedData object specifying
@@ -27,7 +26,8 @@
   chip/platform type}
 
   \item{universe}{character, a string to specify the genome
-  universe for locData}
+  universe for locData. Overrides any universe/genome data
+  in locData.}
 
   \item{assayData}{assayData, usually an environment}
 
