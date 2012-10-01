@@ -250,7 +250,60 @@ setMethod("universe<-", signature(x="GRanges"),
             genome(x) = value
             return(x)
           })
-  
+
+##' Get rownames from RangedData, GRanges, or GenoSet
+##'
+##' Get rownames from RangedData, GRanges, or GenoSet
+##' 
+##' @param object GRanges, RangedData, or GenoSet
+##' @return character vector with names rows/features
+##' @author Peter M. Haverty
+##' @exportMethod featureNames
+##' @examples
+##'   data(genoset)
+##'   head(featureNames(locData.rd))
+##'   head(featureNames(as(locData.rd,"GRanges")))
+##'   head(featureNames(cn.ds))
+##' @exportMethod featureNames
+##' @rdname featureNames
+##' @aliases featureNames,GRanges-method
+setMethod("featureNames", signature(object="GRanges"),
+          function(object) {
+            names(object)
+          })
+
+##' @rdname featureNames
+##' @aliases featureNames,RangedData-method
+setMethod("featureNames", signature(object="RangedData"),
+          function(object) {
+            rownames(object)
+          })
+
+##' @rdname featureNames
+##' @aliases featureNames,GenoSet-method
+setMethod("featureNames", signature(object="GenoSet"),
+          function(object) {
+            return(unname(featureNames(locData(object))))
+          })
+
+##' Get sampleNames from a GenoSet
+##'
+##' Get sampleNames from a GenoSet
+##' 
+##' @param object GenoSet
+##' @return character vector with names of samples
+##' @exportMethod sampleNames
+##' @examples
+##'   data(genoset)
+##'   head(sampleNames(cn.ds))
+##' @exportMethod sampleNames
+##' @rdname sampleNames
+##' @aliases sampleNames,GenoSet-method
+setMethod("sampleNames", signature(object="GenoSet"),
+          function(object) {
+            rownames(pData(object))
+          })
+
 ##' Set featureNames
 ##'
 ##' Set featureNames of a GenoSet, GRanges, or RangedData (rownames, names, or rownames respectively).
@@ -437,7 +490,15 @@ setMethod("elementLengths", "GRanges", function(x) {
   return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )
 })
 
+##' @exportMethod nrow
+##' @rdname genoset-methods
+##' @aliases nrow,GRanges-method
 setMethod("nrow", "GRanges", function(x) { length(x) })
+
+##' @exportMethod dim
+##' @rdname genoset-methods
+##' @aliases dim,GenoSet-method
+setMethod("dim", "GenoSet", function(x) { c(nrow(locData(x)),nrow(pData(x))) })
 
 #############
 # Sub-setters
@@ -642,34 +703,6 @@ setMethod("chrNames", signature(object="RangedData"),
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             seqlevels(object)
-          })
-
-##' Get rownames from RangedData, GRanges, or eSet
-##'
-##' Get rownames from RangedData, GRanges, or eSet
-##' 
-##' @param object GRanges, RangedData, or GenoSet
-##' @return character vector with names rows/features
-##' @author Peter M. Haverty
-##' @exportMethod featureNames
-##' @examples
-##'   data(genoset)
-##'   head(featureNames(locData.rd))
-##'   head(featureNames(as(locData.rd,"GRanges")))
-##'   head(featureNames(cn.ds))
-##' @exportMethod featureNames
-##' @rdname featureNames
-##' @aliases featureNames,GRanges-method
-setMethod("featureNames", signature(object="GRanges"),
-          function(object) {
-            names(object)
-          })
-
-##' @rdname featureNames
-##' @aliases featureNames,RangedData-method
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            rownames(object)
           })
 
 ##' Get chromosome start and stop positions

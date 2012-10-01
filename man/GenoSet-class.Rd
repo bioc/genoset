@@ -37,7 +37,10 @@ Class \code{"\linkS4class{eSet}"}, directly.
     \item{chr}{\code{signature(object = "GenoSet")}: ... }
     \item{chrNames}{\code{signature(object = "GenoSet")}: ... }
     \item{elementLengths}{\code{signature(x = "GenoSet")}: ... }
+    \item{featureNames}{\code{signature(object = "GenoSet")}: ... }
     \item{featureNames<-}{\code{signature(object = "GenoSet")}: ... }
+    \item{sampleNames}{\code{signature(object = "GenoSet")}: ... }
+    \item{dim}{\code{signature(object = "GenoSet")}: ... }
     \item{genoPlot}{\code{signature(x = "GenoSet", y = "ANY")}: ... }
     \item{locData}{\code{signature(object = "GenoSet")}: ... }
     \item{locData<-}{\code{signature(object = "GenoSet", value = "RangedData")}: ... }

@@ -173,6 +173,16 @@ test_featureNames <- function() {
   checkEquals( featureNames(gr), new.fnames, "Set featureNames in GRanges")
 }
 
+test_sampleNames <- function() {
+  ds = CNSet(
+    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    annotation="SNP6"
+    )
+  checkIdentical( sampleNames(ds), test.sample.names )
+}
+
 test_locData <- function() {
   locs.rd = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
   ds = CNSet(
@@ -271,7 +281,6 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
 }
 
 test_subset <- function() {
-  
   test.rd = RangedData(ranges=IRanges(start=8:14,width=1),names=letters[8:14],space=rep("chrX",7))
     
   test.ds = new("BAFSet",
@@ -338,10 +347,10 @@ test_subset <- function() {
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
   
   # Test subsetting by location
-  checkEquals( test.ds[test.rd,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[as(test.rd,"GRanges"),], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
+  checkEquals( test.ds[test.rd,], expected.ds, check.attributes=FALSE )
+  checkEquals( test.ds[as(test.rd,"GRanges"),], expected.ds, check.attributes=FALSE )
+  checkEquals( test.ds[8:10,], expected.ds, check.attributes=FALSE)
+  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , check.attributes=FALSE )
 
   # Replace
   ds = BAFSet(
@@ -357,7 +366,7 @@ test_subset <- function() {
   bad.names.lrr = ds[,,"lrr"]
   rownames(bad.names.lrr)[1] = "FOO"
   colnames(bad.names.lrr)[1] = "FOO"
-  checkException({ds[,,"baf"] = bad.names.lrr}, "Incoming ad element must have dimnames that matches genoset.")
+  checkException({ds[,,"baf"] = bad.names.lrr}, "Incoming ad element must have dimnames that matches genoset.", silent=TRUE)
   lrr.mat = ds[,,"lrr"]
   lrr.mat[1:2,1:2] = 5
   ds[1:2,1:2,"lrr"] = 5
@@ -436,9 +445,9 @@ test_subset_w_granges <- function() {
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
   
   # Test subsetting by location
-  checkEquals( test.ds[test.gr,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[8:10,], expected.ds, checkNames=FALSE )
-  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , checkNames=FALSE)
+  checkEquals( test.ds[test.gr,], expected.ds, check.attributes=FALSE)
+  checkEquals( test.ds[8:10,], expected.ds, check.attributes=FALSE)
+  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds, check.attributes=FALSE)
 
   # Replace
   ds = BAFSet(

@@ -1,8 +1,9 @@
 \name{featureNames}
 \alias{featureNames}
+\alias{featureNames,GenoSet-method}
 \alias{featureNames,GRanges-method}
 \alias{featureNames,RangedData-method}
-\title{Get rownames from RangedData, GRanges, or eSet}
+\title{Get rownames from RangedData, GRanges, or GenoSet}
 \arguments{
   \item{object}{GRanges, RangedData, or GenoSet}
 }
@@ -10,7 +11,7 @@
   character vector with names rows/features
 }
 \description{
-  Get rownames from RangedData, GRanges, or eSet
+  Get rownames from RangedData, GRanges, or GenoSet
 }
 \examples{
 data(genoset)

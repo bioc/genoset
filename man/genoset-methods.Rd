@@ -8,6 +8,8 @@
 \alias{[,GenoSet,RangedDataOrGRanges,ANY,ANY-method}
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
+\alias{dim}
+\alias{dim,GenoSet-method}
 \alias{elementLengths}
 \alias{elementLengths,GenoSet-method}
 \alias{elementLengths,GRanges-method}
@@ -15,6 +17,8 @@
 \alias{end,GenoSet-method}
 \alias{names}
 \alias{names,GenoSet-method}
+\alias{nrow}
+\alias{nrow,GRanges-method}
 \alias{ranges}
 \alias{ranges,GenoSet-method}
 \alias{show}
