@@ -1328,7 +1328,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
     return(segs)
   } else {
     segs.df = do.call(rbind,segs)
-    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df)
+    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df,row.names=NULL)
     return(segs.df)
   }
 })
