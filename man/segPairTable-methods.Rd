@@ -18,6 +18,9 @@
 
   \item{end}{integer, vector of feature end positions}
 
+  \item{factor.chr}{scalar logical, make 'chrom' column a
+  factor?}
+
   \item{stack}{logical, rbind list of segment tables for
   each sample and add "Sample" column?}
 }

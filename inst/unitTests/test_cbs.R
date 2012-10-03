@@ -131,7 +131,7 @@ test_segPairTable <- function() {
   cn.df = DataFrame(a=cn,b=cn+1)
   loh.df = DataFrame(a=loh,b=loh+1)
   stacked.segs.df = do.call(rbind,list(a = segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end), b = segPairTable(cn+1,loh+1,chr.ind=chr.ind,start=start,end=end)))
-  stacked.segs.df = cbind(Sample = rep(c("a","b"),each=8),stacked.segs.df,stringsAsFactors=FALSE)
+  stacked.segs.df = cbind(Sample = rep(c("a","b"),each=8),stacked.segs.df,stringsAsFactors=FALSE,row.names=NULL)
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.rd,stack=TRUE))
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
 }
