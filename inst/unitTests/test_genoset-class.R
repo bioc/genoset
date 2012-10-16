@@ -334,8 +334,8 @@ test_subset <- function() {
   gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
   
   # Subsetting whole object
-  checkEquals( ds[ ,2:3], subset.cols.ds )
-  checkEquals( ds[ 2:3, ], subset.rows.ds )
+  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
+  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=TRUE)
   ds.two.rows = ds[ 2:3, ]
   checkEquals( featureNames(assayData(ds.two.rows)), featureNames(locData(ds.two.rows)), "featureNames from locData and assayData should be the same when rows subset.")
   checkEquals( ds[ gene.rd, ], subset.rows.ds )

@@ -53,7 +53,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 setValidity("GenoSet", function(object) {
-  return( all( featureNames(locData(object)) == featureNames(object) ) )
+  return( all( featureNames(locData(object)) == featureNames(assayData(object)) ) )
 })
 
 
