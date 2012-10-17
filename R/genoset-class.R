@@ -53,7 +53,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
 
 setValidity("GenoSet", function(object) {
-  return( all( featureNames(locData(object)) == featureNames(object) ) )
+  return( all( featureNames(locData(object)) == featureNames(assayData(object)) ) )
 })
 
 
@@ -538,7 +538,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
             }
             if ( ! missing(i) ) {
               x@locData = x@locData[i,,drop=TRUE]
-              i = match(featureNames(x@locData),featureNames(x)) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
+              i = match(featureNames(locData(x)),featureNames(assayData(x))) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
             }
             callNextMethod(x,i,j,...,drop=drop)
           })
@@ -1262,6 +1262,7 @@ segs2RangedData <- function(segs) {
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
 ##' @param end integer, vector of feature end positions
+##' @param factor.chr scalar logical, make 'chrom' column a factor?
 ##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
 ##' @family "segmented data"
@@ -1280,7 +1281,7 @@ setGeneric("segTable", function(object,...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
 ##' @aliases segTable,Rle-method
-setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,other.rle=NULL) {
+setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,factor.chr=TRUE) {
 
   if (!is.null(locs)) {
     chr.ind = chrIndices(locs)
@@ -1304,7 +1305,11 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
   object.vals = runValue(object)[ findInterval( all.ends, object.starts ) ]
 
   # Assign chrom,start,stop to each segment
-  chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  if (factor.chr == TRUE) {
+    chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  } else {
+    chrom = rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ]
+  }
   loc.end = end[all.ends]
   loc.start = start[all.starts]
 
@@ -1315,20 +1320,25 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
 ##' @rdname segTable-methods
 ##' @aliases segTable,DataFrame-method
 ##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
-setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=FALSE) {
+setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor.chr=TRUE,stack=FALSE) {
+  internal.factor.chr = ifelse(factor.chr == TRUE && stack == FALSE,TRUE,FALSE)
   chr.ind = chrIndices(locs)
   start = start(locs)
   end = end(locs)
   
   segs = lapply( object,
     function(x) {
-      return(segTable(x,chr.ind=chr.ind, start=start, end=end))
+      return(segTable(x,chr.ind=chr.ind, start=start, end=end,factor.chr=internal.factor.chr))
     })
   if (stack == FALSE) {
     return(segs)
   } else {
     segs.df = do.call(rbind,segs)
-    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df)
+    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df,row.names=NULL)
+    if (factor.chr == TRUE) {
+      chr.names = chrNames(locs)
+      segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
+    }
     return(segs.df)
   }
 })
@@ -1354,6 +1364,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,stack=
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
 ##' @param end integer, vector of feature end positions
+##' @param factor.chr scalar logical, make 'chrom' column a factor?
 ##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segPairTable
 ##' @family "segmented data"
@@ -1371,7 +1382,7 @@ setGeneric("segPairTable", function(x,y,...) standardGeneric("segPairTable"))
 
 ##' @rdname segPairTable-methods
 ##' @aliases segPairTable,Rle,Rle-method
-setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr.ind=NULL,start=NULL,end=NULL) {
+setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,factor.chr=TRUE) {
   # Fill in missing args if locs given
   # Maybe use ... rather than x and y and get names from that to use in colnames
   if (!is.null(locs)) {
@@ -1399,7 +1410,11 @@ setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr
   y.vals = runValue(y)[ findInterval( all.ends, y.starts ) ]
 
   # Assign chrom,start,stop to each segment
-  chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  if (factor.chr == TRUE) {
+    chrom = factor(rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ],levels=rownames(chr.ind))
+  } else {
+    chrom = rownames(chr.ind)[ findInterval(all.starts,chr.ind[,1]) ]
+  }
   loc.end = end[all.ends]
   loc.start = start[all.starts]
 
@@ -1413,23 +1428,27 @@ setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr
 ##' @rdname segPairTable-methods
 ##' @aliases segPairTable,DataFrame,DataFrame-method
 ##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
-setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,locs,stack=FALSE) {
+setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,locs,stack=FALSE,factor.chr=TRUE) {
+  internal.factor.chr = ifelse(factor.chr == TRUE && stack == FALSE,TRUE,FALSE)
   chr.ind = chrIndices(locs)
   start = start(locs)
   end = end(locs)
   segs = mapply(
     function(one,two) {
-      return(segPairTable(one,two,chr.ind=chr.ind, start=start, end=end))
+      return(segPairTable(one,two,chr.ind=chr.ind, start=start, end=end,factor.chr=internal.factor.chr))
     },
     x,y,
     SIMPLIFY=FALSE
     )
-
   if (stack == FALSE) {
     return(segs)
   } else {
     segs.df = do.call(rbind,segs)
-    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df,stringsAsFactors=FALSE)
+    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df,stringsAsFactors=FALSE,row.names=NULL,check.rows=FALSE)
+    if (factor.chr == TRUE) {
+      chr.names = chrNames(locs)
+      segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
+    }
     return(segs.df)
   }
 })

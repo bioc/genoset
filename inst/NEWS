@@ -68,3 +68,6 @@ GenoSet creation and featureNames<- no longer do make.names.
 
 1.9.12
 GenoSet creation and sampleNames<- no longer do make.names.
+
+1.10.1
+BUGFIX!  I introduced a nasty bug in the row subsetting method October 1 (I thought the release branching had already happened.)  locData was subset correctly, but assayData was subset to the 1:nrow(locData(x)) rows.  I have unit tests for this, but it looks like check.attributes=FALSE got me in trouble here.  I fixed and updated the tests to catch this bug if it reoccurs.

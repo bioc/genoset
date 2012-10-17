@@ -282,26 +282,28 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
 
 test_subset <- function() {
   test.rd = RangedData(ranges=IRanges(start=8:14,width=1),names=letters[8:14],space=rep("chrX",7))
-    
+  test.pdata = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])),stringsAsFactors=FALSE)
+  test.phenodata = phenoData=new("AnnotatedDataFrame",test.pdata)
+
   test.ds = new("BAFSet",
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    phenoData=test.phenodata
     )
   
   expected.ds = new("BAFSet",
     locData=RangedData(ranges=IRanges(start=8:10,width=1,names=probe.names[8:10]),space="chrX",universe="hg18"),
     lrr=matrix(c(8:10,18:20,28:30),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
     baf=matrix(c(38:40,48:50,58:60),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
-    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    phenoData=test.phenodata
     )
   
   chr3.ds = new("BAFSet",
     locData=RangedData(ranges=IRanges(start=5:6,width=1,names=probe.names[5:6]),space="chr3",universe="hg18"),
     lrr=matrix(c(5:6,15:16,25:26),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
-    phenoData=new("AnnotatedDataFrame",data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))))
+    phenoData=test.phenodata
     )
 
   test.sample.names = LETTERS[11:13]
@@ -311,7 +313,7 @@ test_subset <- function() {
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    pData=test.pdata,
     annotation="SNP6"
     )
 
@@ -319,7 +321,7 @@ test_subset <- function() {
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")[2:3,,drop=TRUE],
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
+    pData=test.pdata,
     annotation="SNP6"
     )
   
@@ -327,16 +329,18 @@ test_subset <- function() {
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     lrr=matrix(11:30,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
     baf=matrix(41:60,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))[2:3,]),
+    pData=test.pdata[2:3,],
     annotation="SNP6"
     )
 
   gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
   
   # Subsetting whole object
-  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
-  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
-  checkEquals( ds[ gene.rd, ], subset.rows.ds, check.attributes=FALSE)
+  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=TRUE)
+  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=TRUE)
+  ds.two.rows = ds[ 2:3, ]
+  checkEquals( featureNames(assayData(ds.two.rows)), featureNames(locData(ds.two.rows)), "featureNames from locData and assayData should be the same when rows subset.")
+  checkEquals( ds[ gene.rd, ], subset.rows.ds )
   
   # Subsetting assayData / extracting
   checkEquals( ds[ 4:6, 1:2, "lrr"], lrr(ds)[4:6,1:2])

@@ -35,7 +35,7 @@ stacked.basic.segs.after = data.frame(
   loc.start = c(1,4,2,1,3,4,2,6,1,3,4,6,2), loc.end = c(7,6,8,1,7,6,4,8,1,7,4,6,8),
   num.mark = c(4,2,4,1,3,2,2,2,1,3,1,1,4),
   seg.mean = c(5.3,2.3,1.2,1.1,1.4,2.2,3.3,0.5,3.3,4.3,4.3,6.3,7.3),
-  row.names=c(paste(rep("K",3),1:3,sep="."),paste(rep("L",5),1:5,sep="."),paste(rep("M",5),1:5,sep=".")),
+  row.names=NULL,
   stringsAsFactors=FALSE)
 
 basic.rds.after = list(
@@ -131,7 +131,7 @@ test_segPairTable <- function() {
   cn.df = DataFrame(a=cn,b=cn+1)
   loh.df = DataFrame(a=loh,b=loh+1)
   stacked.segs.df = do.call(rbind,list(a = segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end), b = segPairTable(cn+1,loh+1,chr.ind=chr.ind,start=start,end=end)))
-  stacked.segs.df = cbind(Sample = rep(c("a","b"),each=8),stacked.segs.df,stringsAsFactors=FALSE)
+  stacked.segs.df = cbind(Sample = rep(c("a","b"),each=8),stacked.segs.df,stringsAsFactors=FALSE,row.names=NULL)
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.rd,stack=TRUE))
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
 }
