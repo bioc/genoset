@@ -1514,7 +1514,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   }
   sample.name.list = colnames(data)
   names(sample.name.list) = sample.name.list
-  loc.pos = as.numeric(pos(locs))
+  loc.start = as.numeric(start(locs))
   loc.chr = chr(locs)
   
   # mclapply over samples. cbs can loop over the columns of data, but want to use multiple forks
@@ -1530,7 +1530,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       writeLines(paste("Working on segmentation for sample number",match(sample.name,sample.name.list),":",sample.name))
       temp.data = as.numeric(data[,sample.name,drop=TRUE])
       ok.indices = !is.na(temp.data)
-      CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.pos[ok.indices], data.type = "logratio", sampleid = sample.name)
+      CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.start[ok.indices], data.type = "logratio", sampleid = sample.name)
       smoothed.CNA.object <- DNAcopy::smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
       segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)
       segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=chrNames(locs))
