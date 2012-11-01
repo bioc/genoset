@@ -937,7 +937,7 @@ setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), funct
   } else {
     positions = genoPos(x)
     if (length(chrNames(x)) > 1) {
-      locs = locData(x)
+      locs = x
     } else {
       locs = NULL
     }
@@ -1611,12 +1611,8 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' of the gene reducing the search space for the stop position somewhat. This function has
 ##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
 ##' check for NAs or unsorted data in the subject positions. Also, the positions are
-##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles. These
-##' three once-per-call differences account for much of the speed improvement in boundingIndices.
-##' These three differences are meant for position info coming from GenoSet objects
-##' and boundingIndices2 is safer for general use. boundingIndices works on integer postions and
-##' does not check that the positions are ordered. The starts and stops need not be sorted, but
-##' it will be much faster if they are.
+##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles.
+##' These assumptions are safe for position info coming from a GenoSet, GRanges, or RangedData.
 ##'
 ##' @param starts integer vector of first base position of each query range
 ##' @param stops integer vector of last base position of each query range

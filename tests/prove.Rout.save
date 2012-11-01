@@ -1,5 +1,5 @@
 
-R version 2.15.0 (2012-03-30)
+R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
@@ -40,40 +40,53 @@ Welcome to Bioconductor
     'browseVignettes()'. To cite Bioconductor, see
     'citation("Biobase")', and for packages 'citation("pkgname")'.
 
+
+Attaching package: 'Biobase'
+
+The following object(s) are masked from 'package:BiocGenerics':
+
+    annotation, annotation<-
+
 Loading required package: IRanges
 Loading required package: GenomicRanges
 [1] TRUE
+Warning message:
+replacing previous import 'annotation' when loading 'Biobase' 
 > genoset:::.test()
 Loading required namespace: DNAcopy
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
+Using mclapply for segmentation ...
+Working on segmentation for sample number 1 : a1
+Working on segmentation for sample number 2 : a2
 
-**************************************************************************
-   The plan to change the data format for CNA object has been postponed   
- in order to ensure backward compatibility with older versions of DNAcopy 
-**************************************************************************
 
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-
-
-RUNIT TEST PROTOCOL -- Tue Oct  2 21:13:24 2012 
+RUNIT TEST PROTOCOL -- Thu Oct 25 19:26:26 2012 
 *********************************************** 
 Number of test functions: 24 
 Number of errors: 0 
@@ -85,8 +98,8 @@ genoset RUnit Tests - 24 test functions, 0 errors, 0 failures
 Number of test functions: 24 
 Number of errors: 0 
 Number of failures: 0 
-There were 50 or more warnings (use warnings() to see the first 50)
+There were 37 warnings (use warnings() to see them)
 > 
 > proc.time()
    user  system elapsed 
- 29.881   0.124  30.447 
+ 24.245   0.908  21.264 
