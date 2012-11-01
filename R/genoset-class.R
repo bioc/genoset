@@ -1816,7 +1816,7 @@ setGeneric("isGenomeOrder", function(ds,...) standardGeneric("isGenomeOrder"))
 ##' @aliases isGenomeOrder,RangedDataOrGenoSet-method
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
-          function(ds, strict=FALSE) {
+          function(ds, strict=TRUE) {
             if (strict) {
               if ( ! all( chrNames(ds) == chrOrder(names(ds) ) ) ) {
                 return(FALSE)
@@ -1830,7 +1830,7 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
 ##' @aliases isGenomeOrder,GRanges-method
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
-          function(ds, strict=FALSE) {
+          function(ds, strict=TRUE) {
             if ( any(duplicated(runValue(seqnames(ds)))) ) { stop("GRanges not in blocks by chromosome.") }
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
@@ -1857,8 +1857,8 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)
-##'   toGenomeOrder( baf.ds, strict=TRUE )
-##'   toGenomeOrder( baf.ds )
+##'   toGenomeOrder( baf.ds, strict )
+##'   toGenomeOrder( baf.ds, strict=FALSE )
 ##'   toGenomeOrder( locData(baf.ds) )
 ##' @author Peter M. Haverty
 ##' @docType methods
@@ -1869,7 +1869,7 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 ##' @rdname toGenomeOrder-methods
 ##' @aliases toGenomeOrder,RangedData-method
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
-          function(ds, strict=FALSE) {
+          function(ds, strict=TRUE) {
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(names(ds)), names(ds)))) {
                 ds = ds[ chrOrder(names(ds)) ]
@@ -1886,7 +1886,7 @@ setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
 ##' @rdname toGenomeOrder-methods
 ##' @aliases toGenomeOrder,GRanges-method
 setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
-          function(ds, strict=FALSE) {
+          function(ds, strict=TRUE) {
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
                 seqlevels(ds) = chrOrder(seqlevels(ds))
