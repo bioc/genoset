@@ -1,3 +1,4 @@
+
 ####  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
@@ -1516,6 +1517,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   names(sample.name.list) = sample.name.list
   loc.start = as.numeric(start(locs))
   loc.chr = chr(locs)
+  presorted = isGenomeOrder(locs,strict=TRUE)
   
   # mclapply over samples. cbs can loop over the columns of data, but want to use multiple forks
   if (n.cores > 1 && is.loaded("mc_fork", PACKAGE="parallel")) {
@@ -1530,7 +1532,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       writeLines(paste("Working on segmentation for sample number",match(sample.name,sample.name.list),":",sample.name))
       temp.data = as.numeric(data[,sample.name,drop=TRUE])
       ok.indices = !is.na(temp.data)
-      CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.start[ok.indices], data.type = "logratio", sampleid = sample.name)
+      CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.start[ok.indices], data.type = "logratio", sampleid = sample.name, presorted=presorted)
       smoothed.CNA.object <- DNAcopy::smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
       segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)
       segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=chrNames(locs))
