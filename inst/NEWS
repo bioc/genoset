@@ -71,3 +71,6 @@ GenoSet creation and sampleNames<- no longer do make.names.
 
 1.11.8
 toGenomeOrder and isGenomeOrder for GRanges and RangedData now strict=TRUE by default, like for GenoSet
+
+1.11.9
+No more make.names on sampleNames in object initialization

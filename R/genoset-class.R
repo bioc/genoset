@@ -91,7 +91,6 @@ setValidity("GenoSet", function(object) {
 initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   # Function to clean up items for slots and call new for GenoSet and its children
   # ... will be the matrices that end up in assayData
-  # all dimnames "fixed" with make names because eSet is inconsistent about that
 
   if (! missing(universe)) {
     universe(locData) = universe
@@ -144,9 +143,8 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   
   # Create or check phenoData
   if (is.null(pData)) {
-    pData = data.frame(row.names=sampleNames(ad))
+    pData = data.frame(row.names=sampleNames(ad),check.names=FALSE)
   } else {
-    rownames(pData) = make.names(rownames(pData),unique=TRUE)
     if ( ! setequal( rownames(pData), sampleNames(ad) ) ) {
       stop( "Mismatch between sampleNames and rownames of pData" )
     }
