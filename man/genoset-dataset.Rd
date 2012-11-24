@@ -17,6 +17,7 @@
 \format{
   \describe{
     \item{fake.lrr}{A matrix with some randomly generated LRR (log2ratio copynumber) data}
+    \item{fake.cn}{A matrix with some randomly generated LRR (log2ratio copynumber) data}
     \item{fake.baf}{A matrix with some randomly generated BAF (B-Allele
       Frequency) data}
     \item{fake.pData}{A data.frame of sample annotation to go with fake.lrr

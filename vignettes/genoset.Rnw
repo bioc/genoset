@@ -37,31 +37,15 @@
 @ 
 
 \section{Introduction}
-The genoset package offers an extension of the BioConductor eSet object for genome
-arrays. The package offers three classes. The first class is the
-``GenoSet'' class which can hold an arbitrary number of equal-sized
-matrices in its assayData slot. The principal addition of the GenoSet
-class is a ``locData'' slot that holds a GRanges object from the
-GenomicRanges package or a RangedData object from the
-IRanges package. The locData slot allows for quick subsetting by genome position.
-
-Two classes extend GenoSet: CNSet and BAFSet.  CNSet is the basic copy number object. It
-keeps its data in the ``cn'' slot, similar to the ``exprs'' slot of the ExpressionSet.
-BAFSet is intended to store ``LRR'' or Log-R Ratio and ``BAF'' or B-Allele Frequency data for
-SNP arrays.  LRR and BAF come from the terms coined by Illumina. LRR is copynumber data
-processed on a per-snp basis to remove some variability using the expected log-ratio of normal
-samples with the same genotype. BAF represents the fraction of signal coming from the ``B''
-allele, relative to the ``A'' allele, where A and B are arbitrarily assigned. BAF has the
-expected value of 0 or 1 for HOM alleles and 0.5 for HET alelles.  Deviation from these
-expected values can be interpreted as Allelic Imbalance, which is a sign of gain, loss, or
-copy-neutral LOH.
-
-I will use a CNSet to demonstrate the features that apply to both classes.  Some
-BAFSet-specific features will be handled later in the document.
+The genoset package offers an extension of the familiar Bioconductor eSet object for genome
+assays, the GenoSet object. The principal addition of the GenoSet
+class is the addition of location meta-data to the existing feature and phenotype meta-data. 
+This 'locData' allows for various queries, summarization, plotting and subsetting operations 
+by genome position.
 
 \subsection{Creating Objects}
 
-GenoSet, CNSet and BAFSet objects can be created using the functions
+In typical Biocondutor style, GenoSet objects can be created using the functions
 with the same name.  Let's load up some fake data to experiment
 with. Don't worry too much about how the fake data gets made.
 
@@ -73,27 +57,19 @@ DataFrames with Rle columns.
 <<objectcreation>>=
 library(genoset)
 data(genoset)
-genoset.ds = GenoSet( locData=locData.rd, foo=fake.lrr, pData=fake.pData, annotation="SNP6" )
+gs = GenoSet( locData=locData.rd, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
+gs
 
-baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
-
-cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6" )
-cn.ds
-
-rle.baf.ds = BAFSet( locData=locData.rd,
-  lrr=DataFrame(K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ), M=Rle(rep(1.1,1000)),row.names=rownames(fake.lrr)),
-  baf=DataFrame(K=Rle(c(rep(0.05,600),rep(0.5,400))),L=Rle( c(rep(0,700),rep(0.5,300)) ), M=Rle(rep(1,1000)),row.names=rownames(fake.baf)),
+rle.ds = GenoSet( locData=locData.rd,
+  cn.raw = fake.cn,
+  cn.segments=DataFrame(K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ), M=Rle(rep(1.1,1000)),row.names=rownames(fake.lrr)),
+  =DataFrame(K=Rle(c(rep(0.05,600),rep(0.5,400))),L=Rle( c(rep(0,700),rep(0.5,300)) ), M=Rle(rep(1,1000)),row.names=rownames(fake.baf)),
   pData=fake.pData,
   annotation="SNP6"
   )
 @ 
 
-Let's have look at what's inside these objects.   CNSets extend
-ExpressionSets and so have all of the same functions and slots, except 
-that the exprs slot and getter and setter functions have been replaced with ``cn''.  The locData slot has
-been added.  This slot holds a GRanges object or a RangedData object that keeps track of the feature positions and
-allows for quick subsetting. The RangedData is always sorted such that the chromosomes
-are in contiguous blocks, which provides a constraint on the ordering of the CNSet.
+Let's have look at what's inside these objects.
 
 <<<objectinspection>>= >>=
 slotNames(genoset.ds)
@@ -102,9 +78,9 @@ pData(genoset.ds)
 annotation(genoset.ds)
 locData(genoset.ds)
 @ 
+Note that locData supplements, but does not replace featureData.
 
 The assayData slot is a collection of equally sized matrix-like objects.
-Access to required elements can be done by special accessor functions. Others require more typing.
 
 <<objectassaydata>>=
 assayDataElementNames(baf.ds)
@@ -376,15 +352,29 @@ genoPlot(pos(chr12.ds),cn(chr12.ds)[,1],locs=locData(chr12.ds))  # Numeric data 
 genoPlot(pos(chr12.ds),assayDataElement(chr12.ds,"cn.segs")[,1],add=TRUE, col="red") # Rle data and numeric position
 @ 
 
-\section{BAFSet Objects}
-BAFSet objects are similar in most ways to CNSet objects, but require
-at least two types of data, LRR and BAF, in AssayData. ``BAF''
-represent the B-Allele Frequency or the fraction of array signal
-coming from one allele. BAF provides a measure of Loss of
-Heterozygosity (LOH).``LRR'' is the Log R Ratio, or log2(
-tumor/expected ), which is basically the traditional copynumber
-logratio by another name. Both terms come from Illumina and are
-discussed in Peiffer et al., 2008.
+\section{CNSet and BAFSet Objects}
+Two classes extend GenoSet: CNSet and BAFSet.  CNSet is the basic copy number object. It
+requires that one assayDataElement be called ``cn'' slot, similar to the ExpressionSet uses ``exprs''.
+BAFSet is intended to store ``LRR'' or Log-R Ratio and ``BAF'' or B-Allele Frequency data for
+SNP arrays.  LRR and BAF come from the terms coined by Illumina and are discussed in Peiffer 
+et al., 2008. LRR copy number data, basically log2(tumor/normal). BAF represents the fraction 
+of signal coming from the ``B''
+allele, relative to the ``A'' allele, where A and B are arbitrarily assigned. BAF has the
+expected value of 0 or 1 for HOM alleles and 0.5 for HET alelles.  Deviation from these
+expected values can be interpreted as Allelic Imbalance, which is a sign of gain, loss, or
+copy-neutral LOH.  BAFSets require 'lrr' and 'baf' matrices as assayDataElements and have getter/setter 
+methods for these elements.
+
+\subsection{Creating CNSet and BAFSet Objects}
+<<objectcreation>>=
+library(genoset)
+data(genoset)
+
+baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+baf.ds
+cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6" )
+cn.ds
+@
 
 \subsection{Processing Data}
 BAF data can be converted into the ``Modified BAF'' or mBAF metric, introduced by Staaf, et
@@ -472,7 +462,7 @@ The result is shown in Fig.~\ref{plotbaf}.
   \end{center}
 \end{figure}
 
-\subsection{Cross-sample summaries}
+\section{Cross-sample summaries}
 You can quickly calculate summaries across samples to identify regions
 with frequent alterations.  A bit more care is necessary to work one
 sample at a time if your data ``matrix'' is a DataFrame.
