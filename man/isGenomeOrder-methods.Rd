@@ -8,6 +8,10 @@
 
   \item{strict}{logical, should space/chromosome order be
   identical to that from chrOrder?}
+
+  \item{ds}{}
+
+  \item{strict}{}
 }
 \value{
   logical

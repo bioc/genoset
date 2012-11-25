@@ -1817,7 +1817,7 @@ setGeneric("isGenomeOrder", function(ds,...) standardGeneric("isGenomeOrder"))
 setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
           function(ds, strict=TRUE) {
             if (strict) {
-              if ( ! all( chrNames(ds) == chrOrder(names(ds) ) ) ) {
+              if ( ! all( chrNames(ds) == chrOrder( chrNames(ds) ) ) ) {
                 return(FALSE)
               }
             }
@@ -1828,6 +1828,8 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
 
 ##' @aliases isGenomeOrder,GRanges-method
 ##' @rdname isGenomeOrder-methods
+##' @param ds 
+##' @param strict 
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
             if ( any(duplicated(runValue(seqnames(ds)))) ) { stop("GRanges not in blocks by chromosome.") }
@@ -1856,7 +1858,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)
-##'   toGenomeOrder( baf.ds, strict )
+##'   toGenomeOrder( baf.ds, strict=TRUE )
 ##'   toGenomeOrder( baf.ds, strict=FALSE )
 ##'   toGenomeOrder( locData(baf.ds) )
 ##' @author Peter M. Haverty
@@ -1870,8 +1872,8 @@ setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=TRUE) {
             if (strict == TRUE) {
-              if (!isTRUE(all.equal(chrOrder(names(ds)), names(ds)))) {
-                ds = ds[ chrOrder(names(ds)) ]
+              if (!isTRUE(all.equal(chrOrder(chrNames(ds)), chrNames(ds)))) {
+                ds = ds[ chrOrder(chrNames(ds)) ]
               }
             }
             row.order = order(as.integer(space(ds)),start(ds))

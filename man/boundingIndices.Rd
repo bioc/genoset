@@ -60,15 +60,9 @@
   which uses findInterval: boundingIndices does not check
   for NAs or unsorted data in the subject positions. Also,
   the positions are kept as integer, where boundingIndices2
-  (and findInterval) convert them to doubles. These three
-  once-per-call differences account for much of the speed
-  improvement in boundingIndices. These three differences
-  are meant for position info coming from GenoSet objects
-  and boundingIndices2 is safer for general use.
-  boundingIndices works on integer postions and does not
-  check that the positions are ordered. The starts and
-  stops need not be sorted, but it will be much faster if
-  they are.
+  (and findInterval) convert them to doubles. These
+  assumptions are safe for position info coming from a
+  GenoSet, GRanges, or RangedData.
 }
 \examples{
 starts = seq(10,100,10)

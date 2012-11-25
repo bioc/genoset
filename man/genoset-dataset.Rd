@@ -3,6 +3,7 @@
 \alias{genoset-datasets}
 \alias{fake.lrr}
 \alias{fake.baf}
+\alias{fake.cn}
 \alias{fake.pData}
 \alias{genoset.ds}
 \alias{baf.ds}
@@ -11,7 +12,7 @@
 \alias{locData.gr}
 \title{Example GenoSet, BAFSet, and CNSet objects and the data to create them.}
 \description{Fake LRR, BAF, pData and location data were generated and saved as
-  fake.lrr, fake.baf, fake.pData and locData.rd. These were used to
+  fake.lrr, fake.cn, fake.baf, fake.pData and locData.rd. These were used to
   construct the objects genoset.ds, baf.ds, and cn.ds}
 \usage{data(genoset)}
 \format{

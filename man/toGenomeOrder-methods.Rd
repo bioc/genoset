@@ -30,7 +30,7 @@
 \examples{
 data(genoset)
   toGenomeOrder( baf.ds, strict=TRUE )
-  toGenomeOrder( baf.ds )
+  toGenomeOrder( baf.ds, strict=FALSE )
   toGenomeOrder( locData(baf.ds) )
 }
 \author{
