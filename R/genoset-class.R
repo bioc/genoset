@@ -1200,7 +1200,8 @@ segs2Rle <- function(segs, locs) {
       seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
     seg.gr = toGenomeOrder(seg.gr)
     bounds = boundingIndicesByChr( seg.gr, locs )
-    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )
+    temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])
+#    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
   }
   return(temp.rle)
 }

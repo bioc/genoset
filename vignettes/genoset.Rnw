@@ -165,7 +165,7 @@ features, just like an ExpressionSet, or a matrix for that matter.
 
 <<subsetsamples>>=
 gs[1:4,1:2]
-gs[ c("p1","p2"), c("E","F")]
+gs[ c("p1","p2"), c("K","L")]
 @ 
 
 eSet-derived classes tend to have special functions to get and set
@@ -252,6 +252,7 @@ a bit hard to predict.
 Having segmented the data for each sample, you may want to explore different 
 representations of the segments.
 
+
 \subsection{Gene Level Summaries}
 GenoSets contain feature level data. Often it is desirable to get
 summaries of assayData matrices over an arbitrary set of ranges, like
@@ -277,7 +278,7 @@ gene and sample takes ~9 seconds for a matrix of array data and ~30
 seconds for a DataFrame of compressed Rle objects.
 
 Generally, you will want to summarize segmented data and will be working with a 
-DataFrame of Rle, like that returned by \code{runCBS}.
+DataFrame of Rle, like that returned by \Rfunction{runCBS}.
 
 As an example, let's say you want to get the copynumber of your two
 favorite genes from the subsetting example:
@@ -346,7 +347,7 @@ The result is shown in Fig.~\ref{plotchr}.
 Plot data without a GenoSet object using numeric or Rle data:
 <<plotchrsimple, eval=FALSE>>=
 chr12.ds = cn.ds[chr(cn.ds) == "chr12",]
-genoPlot(pos(chr12.ds),chr12.ds)[,1,"cn"],locs=locData(chr12.ds))  # Numeric data and location
+genoPlot(pos(chr12.ds),chr12.ds[,1,"cn"],locs=locData(chr12.ds))  # Numeric data and location
 genoPlot(pos(chr12.ds),chr12.ds[,1,"cn.segs"],add=TRUE, col="red") # Rle data and numeric position
 @ 
 

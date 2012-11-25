@@ -22,8 +22,8 @@ test_bounds2Rle <- function() {
   checkIdentical( rle1, bounds2Rle( bounds1, values1, length(locs) ), "Gaps at beginning, end, middle" )
   checkIdentical( rle2, bounds2Rle( bounds2, values2, length(locs) ), "No NA segments")
   checkIdentical( rle3, bounds2Rle( bounds3, values3, length(locs) ), "Gaps in middle, end" )
-  checkException( bounds2Rle( bounds4, values4, length(locs) ), "Exception when Rle too long, no NA" )
-  checkException( bounds2Rle( bounds5, values4, length(locs) ), "Exception when Rle too long, with NA" )
+  checkException( bounds2Rle( bounds4, values4, length(locs) ), silent=TRUE, "Exception when Rle too long, no NA" )
+  checkException( bounds2Rle( bounds5, values4, length(locs) ), silent=TRUE, "Exception when Rle too long, with NA" )
 }
   
 test_boundingIndices <- function() {
