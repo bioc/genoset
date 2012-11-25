@@ -250,8 +250,43 @@ a bit hard to predict.
 
 \subsection{Segments as tables or runs}
 Having segmented the data for each sample, you may want to explore different 
-representations of the segments.
+representations of the segments. Genoset describes data in genome
+segments two ways: 1) as a table of segments, and 2) a
+Run-Length-Encoded vector. Tables of segments are useful for printing, overlap queries, 
+database storage, or for looking at fractions of the genome with certain properties.  Rle 
+representations can be used like regular vectors, plotted as segments (see genoPlot), and 
+stored efficiently. A collection of Rle objects, one for each sample, are often stored as 
+one DataFrame in a GenoSet.  Genoset provides functions to quickly flip back and forth 
+between table and Rle representations. You can use these functions on single samples, or 
+the whole collection of samples.
 
+<<segments>>=
+head( gs[,,"cn.segs"] )
+sapply( gs[,,"cn.segs"], class )
+
+segs = segTable( gs[,2,"cn.segs"], locData(gs) )
+list.of.segs = segTable( gs[,,"cn.segs"], locData(gs) )
+rbind.list.of.segs = segTable( gs[,,"cn.segs"], locData(gs), stack=TRUE )
+two.kinds.of.segs = segPairTable( gs[,2,"cn.segs"], gs[,3,"cn.segs"], locData(gs) )
+
+rle = segs2Rle( segs, locData(gs) )
+rle.df = segs2RleDataFrame( list.of.segs, locData(gs) )
+
+bounds = matrix( c(1,3,4,6,7,10),ncol=2,byrow=TRUE)
+cn = c(1,3,2)
+bounds2Rle( bounds, cn, 10 )
+
+@
+
+\Rfunction{segPairTable} summarizes two Rle objects into segments that have one unique 
+value for each Rle. This is useful for cases where you want genome regions with one 
+copy number state, and one LOH state, for example.
+
+\Rfunction{bounds2Rle} is convenient if you already know the genome feature indices corresponding 
+to the bounds of each segment.
+
+Currently we use data.frames for tables of segments. In the near future these will have colnames 
+that will make it easy to coerce these to GRanges.
 
 \subsection{Gene Level Summaries}
 GenoSets contain feature level data. Often it is desirable to get
