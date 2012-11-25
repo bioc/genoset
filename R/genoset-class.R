@@ -1199,8 +1199,8 @@ segs2Rle <- function(segs, locs) {
     seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
       seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
     seg.gr = toGenomeOrder(seg.gr)
-    bounds = boundingIndicesByChr( seg.gr, locs )
     temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])
+#    bounds = boundingIndicesByChr( seg.gr, locs )
 #    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
   }
   return(temp.rle)
@@ -1532,12 +1532,12 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       ok.indices = !is.na(temp.data)
       CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.start[ok.indices], data.type = "logratio", sampleid = sample.name, presorted=presorted)
       smoothed.CNA.object <- DNAcopy::smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
-      segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)
-      segment.smoothed.CNA.object$output$chrom = factor(as.character(segment.smoothed.CNA.object$output$chrom),levels=chrNames(locs))
+      segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)$output
+      segment.smoothed.CNA.object$chrom = factor(as.character(segment.smoothed.CNA.object$chrom),levels=chrNames(locs))
       if (return.segs == TRUE) {
-        return(segment.smoothed.CNA.object$output)
+        return(segment.smoothed.CNA.object)
       } else {
-        return(segs2Rle(segment.smoothed.CNA.object$output,locs))
+        return(segs2Rle(segment.smoothed.CNA.object,locs))
       }
     })
 
