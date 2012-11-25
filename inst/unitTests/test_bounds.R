@@ -8,7 +8,8 @@ test_bounds2Rle <- function() {
   bounds3 = matrix(c(1,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
   bounds4 = matrix(c(1,5, 6,7, 7,10, 11,15, 16,20),ncol=2,byrow=TRUE)
   bounds5 = matrix(c(1,5, 6,7, 7,9, 11,15, 16,20),ncol=2,byrow=TRUE)
-
+  bounds6 = matrix(c(1,2, 3,4, 5,5, 6,6, 7, 9), ncol=2, byrow=TRUE)
+  
   rle1 = Rle( c(NA,"A","B",NA,"C",NA,"D","E",NA), c(2,3,2,1,1,3,3,4,1) )
   rle2 = Rle( LETTERS[1:5], c(3,2,5,5,5) )
   rle3 = Rle( c("A","B",NA,"C",NA,"D","E",NA), c(5,2,1,1,3,3,4,1) )

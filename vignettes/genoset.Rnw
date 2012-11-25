@@ -286,7 +286,8 @@ copy number state, and one LOH state, for example.
 to the bounds of each segment.
 
 Currently we use data.frames for tables of segments. In the near future these will have colnames 
-that will make it easy to coerce these to GRanges.
+that will make it easy to coerce these to GRanges. Coercion to GRanges
+takes a while, so we don't do that by default.
 
 \subsection{Gene Level Summaries}
 GenoSets contain feature level data. Often it is desirable to get
