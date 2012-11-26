@@ -55,10 +55,10 @@ be BigMatrix or BigMatrixFactor objects (from bigmemoryExtras).
 <<objectcreation>>=
 library(genoset)
 data(genoset)
-gs = GenoSet( locData=locData.rd, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
+gs = GenoSet( locData=locData.gr, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
 gs
 
-rle.ds = GenoSet( locData=locData.rd,
+rle.ds = GenoSet( locData=locData.gr,
   cn = fake.cn,
   cn.segments=DataFrame(K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ), M=Rle(rep(1.1,1000)),row.names=rownames(fake.cn)),
   pData=fake.pData,
@@ -68,20 +68,10 @@ rle.ds = GenoSet( locData=locData.rd,
 
 Let's have look at what's inside these objects.
 
-<<<objectinspection>>= >>=
-slotNames(gs)
-phenoData(gs)
-pData(gs)
-annotation(gs)
-locData(gs)
-@ 
-Note that locData supplements, but does not replace featureData.
-
-The assayData slot is a collection of equally sized matrix-like objects.
-
 <<objectassaydata>>=
 assayDataElementNames(rle.ds)
 head( assayDataElement(rle.ds,"cn") )
+head( assayDataElement(rle.ds,"cn.segments") )
 @ 
 
 \subsection{Accessing Genome Information}
@@ -103,6 +93,7 @@ and ``genoPos'' are defined as the floor of the average of each
 features start and end positions.
 
 <<accessgenomeinfo>>=
+head( locData(gs) )
 chrNames(gs)
 chrOrder(c("chr12","chr12","chrX","chr8","chr7","chrY"))
 chrInfo(gs)
@@ -113,8 +104,7 @@ head(chr(gs))
 head(start(gs))
 head(end(gs))
 head(pos(gs))
-tail(pos(gs))
-tail(genoPos(gs))
+head(genoPos(gs))
 @ 
 
 \subsection{Genome Order}
@@ -134,8 +124,6 @@ The proper order of chromosomes is desirable for full-genome plots and is specif
 
 <<genomeorder, eval=TRUE>>=
 chrOrder(chrNames(gs))
-isGenomeOrder(gs, strict=FALSE)
-isGenomeOrder(gs, strict=TRUE)
 gs = toGenomeOrder(gs, strict=TRUE)
 isGenomeOrder(gs, strict=TRUE)
 @
@@ -149,7 +137,8 @@ a convenient way to get the indices needed to subset by chromosome.
 Subset by chromosome   
 <<subsetbychr>>=
 chr12.ds = gs[ chrIndices(gs,"chr12"), ]
-chr12.ds
+dim(chr12.ds)
+chrIndices(chr12.ds)
 @ 
 
 Subset by a collection of gene locations
@@ -157,7 +146,8 @@ Subset by a collection of gene locations
 gene.gr = GRanges(ranges=IRanges(start=c(35e6,127e6),end=c(35.5e6,129e6),                       
                        names=c("HER2","CMYC")), seqnames=c("chr17","chr8"))
 gene.ds = gs[ gene.gr, ]
-gene.ds
+dim(gene.ds)
+chrIndices(gene.ds)
 @ 
 
 GenoSet objects can also be subset by a group of samples and/or
@@ -165,7 +155,6 @@ features, just like an ExpressionSet, or a matrix for that matter.
 
 <<subsetsamples>>=
 gs[1:4,1:2]
-gs[ c("p1","p2"), c("K","L")]
 @ 
 
 eSet-derived classes tend to have special functions to get and set
@@ -207,7 +196,7 @@ method that attempts to replicate the biological reality where chunks
 of chromosome have been deleted or amplified.
 
 Genoset contains a convenience function for segmenting data for each sample/chr using the
-DNACopy package (CBS).  GenoSet adds features to split jobs among
+DNAcopy package (CBS).  GenoSet adds features to split jobs among
 processor cores. When the library ``parallel'' is loaded, the
 argument n.cores can control the number of processor cores
 utilized.
@@ -232,19 +221,17 @@ Or use the convenience function runCBS
 gs[,,"cn.segs"] = runCBS(gs[,,"cn"],locData(gs))
 @ 
 
-Try it with multicore
+Try it with parallel
 <<cbsmulticore,eval=FALSE>>=
-library(multicore)
+library(parallel)
 gs[,,"cn.segs"] = runCBS(cn(cn.ds),locData(cn.ds), n.cores=3)
 gs[,,"cn.segs"][1:5,1:3]
 segTable( gs[,,"cn.segs"], locData(gs) )
 @ 
 
-Other segmenting methods can also be used of course. See "segs2Rle",
-"segs2RleDataFrame", and "segs2RangedData" for ways to turn their
-results into a DataFrame of Rle.
+Other segmenting methods can also be used of course. 
 
-This function makes use of the multicore package to run things in
+This function makes use of the parallel package to run things in
 parallel, so plan ahead when picking ``n.cores''. Memory usage can be
 a bit hard to predict.
 
@@ -274,7 +261,7 @@ rle.df = segs2RleDataFrame( list.of.segs, locData(gs) )
 
 bounds = matrix( c(1,3,4,6,7,10),ncol=2,byrow=TRUE)
 cn = c(1,3,2)
-bounds2Rle( bounds, cn, 10 )
+rle = bounds2Rle( bounds, cn, 10 )
 
 @
 
@@ -293,13 +280,13 @@ takes a while, so we don't do that by default.
 GenoSets contain feature level data. Often it is desirable to get
 summaries of assayData matrices over an arbitrary set of ranges, like
 exons, genes or cytobands. The function ``rangeSampleMeans'' serves this
-purpose. Given a RangedData or GRanges of arbitrary genome ranges, a
+purpose. Given a RangedData or GRanges of arbitrary genome ranges and a
 GenoSet object, ``rangeSampleMeans'' will return a matrix of values
 with a row for each range. 
 
-``rangeSampleMeans'' uses ``boundingIndices'' to select the features 
+``rangeSampleMeans'' uses ``boundingIndicesByChr'' to select the features 
 bounding each range. The bounding features are the features with locations equal to or within the start
-and end of the range. If no feature exactly matches the ends of the range, the nearest features outside 
+and end of the range. If no feature exactly matches an end of the range, the nearest features outside 
 the range will be used. This bounding ensures that the full extent of the
 range is accounted for, and more importantly, at least two features
 are included for each gene, even if the range falls between two
@@ -321,8 +308,8 @@ favorite genes from the subsetting example:
 
 Get the gene-level summary:
 <<genelevel, eval=TRUE>>=
-boundingIndices( c(127e6,127.5e6), c(127e6,128e6), start(chr12.ds) )
-rangeSampleMeans(gene.gr, baf.ds, "lrr")
+boundingIndicesByChr( gene.gr, locData(gs) )
+rangeSampleMeans(gene.gr, gs, "cn.segs")
 @ 
 
 \section{Plots}
@@ -518,7 +505,7 @@ method for assessing significance of such summaries. You'll find
 find it convenient to load GISTIC output as a RangedData for 
 intersection with gene locations.
 
-\section{Big Data and bigmemory}
+\section{Big Data and bigmemoryExtras}
 Genome-scale data can be huge and keeping everything in memory can get
 you into trouble quickly, especially if you like using parallel's mclapply.
 
