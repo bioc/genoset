@@ -104,7 +104,15 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 
   # Create assayData
   if (is.null(assayData)) {
-    ad = assayDataNew(storage.mode="environment",...)
+    # Crib most of assayDataNew, skipping unnaming of dimnames to keep BigMatrix happy
+    ad = new.env(parent=emptyenv())
+    arglist <- list(...)
+    if ((length(arglist) > 0L) && ((is.null(names(arglist))) || any(names(arglist) == ""))) { stop("all arguments must be named") }
+    for (nm in names(arglist)) {
+      ad[[nm]] <- arglist[[nm]]
+    }
+    msg <- assayDataValidMembers(ad)
+    if (!is.logical(msg)) { stop(msg) }
   } else {
     ad = assayData
   }
@@ -113,7 +121,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   if (length(clean.featureNames) != length(clean.loc.rownames)) {
     stop("Row number mismatch for assayData and locData")
   }
-    
+
   # Set row order to match locData, already know all ad elements have same row names
   if ( ! all(clean.loc.rownames == clean.featureNames) ) {
     if (! setequal(clean.loc.rownames, clean.featureNames)) {
@@ -1533,8 +1541,8 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
       CNA.object <- DNAcopy::CNA(temp.data[ok.indices], loc.chr[ok.indices], loc.start[ok.indices], data.type = "logratio", sampleid = sample.name, presorted=presorted)
       smoothed.CNA.object <- DNAcopy::smooth.CNA(CNA.object, smooth.region=smooth.region, outlier.SD.scale=outlier.SD.scale, smooth.SD.scale=smooth.SD.scale, trim=trim)
       segment.smoothed.CNA.object <- DNAcopy::segment(smoothed.CNA.object, verbose=0, alpha=alpha)$output
-      segment.smoothed.CNA.object$chrom = factor(as.character(segment.smoothed.CNA.object$chrom),levels=chrNames(locs))
       if (return.segs == TRUE) {
+        segment.smoothed.CNA.object$chrom = factor(as.character(segment.smoothed.CNA.object$chrom),levels=chrNames(locs))
         return(segment.smoothed.CNA.object)
       } else {
         return(segs2Rle(segment.smoothed.CNA.object,locs))
@@ -1829,8 +1837,6 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
 
 ##' @aliases isGenomeOrder,GRanges-method
 ##' @rdname isGenomeOrder-methods
-##' @param ds 
-##' @param strict 
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
             if ( any(duplicated(runValue(seqnames(ds)))) ) { stop("GRanges not in blocks by chromosome.") }

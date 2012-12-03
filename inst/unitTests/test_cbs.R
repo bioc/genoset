@@ -51,11 +51,7 @@ test_segs2RangedData <- function() {
   checkEquals( segs2RangedData(basic.segs.after$L), basic.rds.after$L )
   checkEquals( segs2RangedData(basic.segs.after$M), basic.rds.after$M )
 }
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export 
-##' @return 
+
 test_segs2Rle <- function() {
   # With RangedData
   checkEquals( segs2Rle( basic.segs[[1]], locData.rd ), basic.rle.df[[1]], checkNames=FALSE )
