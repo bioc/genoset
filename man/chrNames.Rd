@@ -3,6 +3,10 @@
 \alias{chrNames,GenoSet-method}
 \alias{chrNames,GRanges-method}
 \alias{chrNames,RangedData-method}
+\alias{chrNames<-}
+\alias{chrNames<-,GenoSet-method}
+\alias{chrNames<-,GRanges-method}
+\alias{chrNames<-,RangedData-method}
 \title{Get list of unique chromosome names}
 \arguments{
   \item{object}{RangedData or GenoSet}
@@ -24,6 +28,7 @@ test.sample.names = LETTERS[11:13]
   )
   chrNames(gs) # c("chr1","chr3","chrX")
   chrNames(locData(gs))  # The same
+  chrNames(gs) = sub("^chr","",chrNames(gs))
 }
 \author{
   Peter M. Haverty

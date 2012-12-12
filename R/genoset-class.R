@@ -691,6 +691,7 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##'   )
 ##'   chrNames(gs) # c("chr1","chr3","chrX")
 ##'   chrNames(locData(gs))  # The same
+##'   chrNames(gs) = sub("^chr","",chrNames(gs))
 ##' @rdname chrNames
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 ##' @rdname chrNames
@@ -710,6 +711,30 @@ setMethod("chrNames", signature(object="RangedData"),
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             seqlevels(object)
+          })
+
+##' @rdname chrNames
+setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
+##' @rdname chrNames
+##' @aliases chrNames<-,GenoSet-method
+setMethod("chrNames<-", signature(object="GenoSet"),
+          function(object,value) {
+            chrNames(locData(object)) = value
+            return(object)
+          })
+##' @rdname chrNames
+##' @aliases chrNames<-,RangedData-method
+setMethod("chrNames<-", signature(object="RangedData"),
+          function(object,value) {
+            names(object) = value
+            return(object)
+          })
+##' @rdname chrNames
+##' @aliases chrNames<-,GRanges-method
+setMethod("chrNames<-", signature(object="GRanges"),
+          function(object,value) {
+            seqlevels(object) = value
+            return(object)
           })
 
 ##' Get chromosome start and stop positions
