@@ -1226,16 +1226,17 @@ bounds2Rle <- function( bounds, values, n ) {
 ##'   segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the RangedData locs
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2Rle <- function(segs, locs) {
-  if (sum(segs[,"num.mark"]) == nrow(locs)) {
-    return(Rle( segs[,"seg.mean"], segs[,"num.mark"]))
-  } else {
-    seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
-      seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
-    seg.gr = toGenomeOrder(seg.gr)
-#    temp.rle = Rle(values(seg.gr)$Value[match(locs, seg.gr)])
-    bounds = boundingIndicesByChr( seg.gr, locs )
-    temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
+  if ("num.mark" %in% colnames(segs)) {
+    if (sum(segs[,"num.mark"]) == nrow(locs)) {
+      return(Rle( segs[,"seg.mean"], segs[,"num.mark"]))
+    }
   }
+  seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
+    seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
+  seg.gr = toGenomeOrder(seg.gr)
+  temp.rle = Rle(seg.gr$Value[match(locs, seg.gr)])
+  #  bounds = boundingIndicesByChr( seg.gr, locs )
+  #  temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
   return(temp.rle)
 }
 
