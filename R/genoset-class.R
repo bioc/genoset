@@ -714,6 +714,7 @@ setMethod("chrNames", signature(object="GRanges"),
           })
 
 ##' @rdname chrNames
+##' @export "chrNames<-"
 setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
 ##' @rdname chrNames
 ##' @aliases chrNames<-,GenoSet-method
