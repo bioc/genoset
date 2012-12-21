@@ -710,7 +710,7 @@ setMethod("chrNames", signature(object="RangedData"),
 ##' @aliases chrNames,GRanges-method
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
-            seqlevels(object)
+            as.character(unique(seqnames(object)))
           })
 
 ##' @rdname chrNames
@@ -769,7 +769,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
             } else {
               max.val = max.val[ chrOrder(chrNames(object)) ]
             }
-            
+
             chr.info = matrix(ncol=3,nrow=length(max.val), dimnames=list(names(max.val),c("start","stop","offset")))
             chr.info[,"stop"]    = cumsum(as.numeric(max.val))
             chr.info[,"offset"]  = c(0, chr.info[- nrow(chr.info),"stop"])
@@ -841,7 +841,7 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGRanges"),
             if ( length(chrNames(object)) == 1 ) {
               return(pos(object))
             }
-            
+
             ### Add offset to pos by chr
             offset = chrInfo(object)[,"offset"]
             genopos = pos(object) + unlist(offset[chr(object)])

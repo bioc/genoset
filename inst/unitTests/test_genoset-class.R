@@ -255,6 +255,7 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( pos( point.locData ), pos( gr ) )
   checkEquals( chrNames( point.locData ), c("chr1","chr3","chrX") )
   checkEquals( chrNames( point.locData ), chrNames( gs ) )
+  checkEquals( chrNames( gr[1:3,] ), c("chr1"), "chrNames on GRanges with empty levels should give just unique values" )
   point.locData2 = point.locData
   chrNames(point.locData2) = sub("chr","",chrNames(point.locData2))
   checkEquals( chrNames( point.locData2 ), c("1","3","X") )
