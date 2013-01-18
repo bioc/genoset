@@ -429,7 +429,7 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
 ##' Get chromosome names
 ##'
-##' Get chromosome names, which are the names of the locData slot. The names method on a GenoSet is depricated. Please use chrNames.
+##' Get chromosome names, which are the names of the locData slot. The names method on a GenoSet is deprecated. Please use chrNames.
 ##' @title Names for chromosome
 ##' @param x GenoSet
 ##' @return character
@@ -438,13 +438,13 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @rdname genoset-methods
 ##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
-  .Deprecated(old="names",new="chrNames",package="genoset",msg="The names method on a GenoSet is depricated. Please use chrNames.")
+  .Deprecated(old="names",new="chrNames",package="genoset",msg="The names method on a GenoSet is deprecated. Please use chrNames.")
   return( chrNames(locData(x)) )
 } )
 
 ##' Get ranges from locData slot
 ##'
-##' Get ranges from locData slot. The ranges method on a GenoSet is depricated. Please use ranges(locData(x)).
+##' Get ranges from locData slot. The ranges method on a GenoSet is deprecated. Please use ranges(locData(x)).
 ##' @title Ranges for chromosome
 ##' @param x GenoSet
 ##' @return character
@@ -453,7 +453,7 @@ setMethod("names", "GenoSet", function(x) {
 ##' @rdname genoset-methods
 ##' @aliases ranges,GenoSet-method
 setMethod("ranges", "GenoSet", function(x) {
-  .Deprecated(old="ranges",package="genoset",msg="The ranges method on a GenoSet is depricated. Please use ranges(locData(x)).")
+  .Deprecated(old="ranges",package="genoset",msg="The ranges method on a GenoSet is deprecated. Please use ranges(locData(x)).")
   return( ranges(locData(x)) )
 })
 
@@ -461,7 +461,7 @@ setMethod("ranges", "GenoSet", function(x) {
 ##' Get space factor for GenoSet
 ##'
 ##' locData slot holds a RangedData, which keeps the chromosome of each
-##' feature in a factor names 'space'. The ranges method on a GenoSet is depricated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.
+##' feature in a factor names 'space'. The ranges method on a GenoSet is deprecated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.
 ##' @param x GenoSet
 ##' @return factor
 ##' @author Peter M. Haverty
@@ -475,7 +475,7 @@ setMethod("ranges", "GenoSet", function(x) {
 ##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
 ##' @aliases space,GenoSet-method
 setMethod("space", "GenoSet", function(x) {
-  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is depricated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
+  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is deprecated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
   return(space(locData(x)))
 } )
 
