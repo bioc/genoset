@@ -29,12 +29,12 @@
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
-##' @importMethodsFrom IRanges "%in%" intersect is.unsorted lapply levels match mean na.exclude nrow order paste ranges Rle rownames
+##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean na.exclude nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-"
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
-##' @importFrom IRanges DataFrame IRanges RangedData
+##' @importFrom IRanges DataFrame IRanges RangedData "%over%"
 ##' @importFrom GenomicRanges seqlengths GRanges
 ##'
 ##' @import methods
@@ -564,7 +564,7 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
 ##' @aliases [,GenoSet,RangedDataOrGRanges,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
-            indices = unlist(x@locData %in% i)
+            indices = unlist(x@locData %over% i)
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
@@ -587,7 +587,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               return(x)
             }
             if (is(i,"RangedData") || is(i,"GRanges")) {
-              i = unlist(locData(x) %in% i)
+              i = unlist(locData(x) %over% i)
             }
             if (missing(j)) {
               assayDataElement(x,k)[i,] = value
@@ -1235,7 +1235,7 @@ segs2Rle <- function(segs, locs) {
   seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
     seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
   seg.gr = toGenomeOrder(seg.gr)
-  temp.rle = Rle(seg.gr$Value[match(locs, seg.gr)])
+  temp.rle = Rle(seg.gr$Value[findOverlaps(locs, seg.gr, select="first")])
   #  bounds = boundingIndicesByChr( seg.gr, locs )
   #  temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
   return(temp.rle)
