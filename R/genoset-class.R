@@ -290,7 +290,7 @@ setMethod("featureNames", signature(object="RangedData"),
 ##' @aliases featureNames,GenoSet-method
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
-            return(unname(featureNames(locData(object))))
+            return(unname(featureNames(featureData(object))))
           })
 
 ##' Get sampleNames from a GenoSet
@@ -326,7 +326,7 @@ setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
                  function(object, value) {
                    object = callNextMethod(object,value)
-                   featureNames(slot(object,"locData")) = value
+                   featureNames(slot(object,"featureData")) = value
                    return(object)
                  })
 ##' @rdname featureNames-set

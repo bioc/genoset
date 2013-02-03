@@ -162,6 +162,8 @@ test_featureNames <- function() {
   rd = locData(ds)
   gr = as(rd,"GRanges")
   checkEquals( featureNames(ds), probe.names, "Get featureNames from GenoSet" )
+  checkEquals( featureNames(ds), featureNames(featureData(ds)), "GenoSet FeatureNames match featureData featureNames" )
+  checkEquals( featureNames(ds), rownames(fData(ds)), "GenoSet FeatureNames match fData rownames" )
   checkEquals( featureNames(ds), featureNames(rd), "Get featureNames from RangedData" )
   checkEquals( featureNames(ds), featureNames(gr), "Get featureNames from GRanges" )
   new.fnames = paste("f",featureNames(ds),sep="")
