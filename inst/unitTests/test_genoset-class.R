@@ -226,6 +226,8 @@ test_locData <- function() {
   checkEquals(locs.rd,locData(ds))
   checkEquals(ds,ds.new,check.attributes=FALSE)
   checkException( {locData(ds) = locs.rd.bad},silent=TRUE )
+  checkTrue({locData(ds) = locs.gr; is.null(names(ds@locData))}, "Setting locData makes locData GRanges names null")
+  checkEquals(featureNames(locData(ds)), names(locs.gr), "However, getting locData back out resets the GRanges names")
 }
 
 test_rd.gs.shared.api.and.getting.genome.info <- function() {

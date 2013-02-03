@@ -378,19 +378,24 @@ setMethod("featureNames<-",
 ##' @return A GenoSet object
 ##' @rdname locData-methods
 setGeneric("locData", function(object) standardGeneric("locData"))
-setMethod("locData", "GenoSet", function(object) { return(slot(object,"locData")) } )
+setMethod("locData", "GenoSet", function(object) {
+  locs = slot(object,"locData")
+  featureNames(locs) = featureNames(object)
+  return(locs)
+} )
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGRanges"),
                  function(object,value) {
                    if (! all( featureNames(value) %in% featureNames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")
                      }
-                   slot(object,"locData") = value
                    if (! all(featureNames(value) == featureNames(object))) {
                      for (adname in assayDataElementNames(object)) {
                        assayDataElement(object,adname) = assayDataElement(object,adname)[featureNames(value),]
                      }
                    }
+                   featureNames(value) = NULL
+                   slot(object,"locData") = value
                    return(object)
                    })
 
