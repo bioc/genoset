@@ -163,6 +163,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   pd = new("AnnotatedDataFrame",data=pData)
 
   # Create object
+  featureNames(locData) = NULL
   object = new(type, locData=locData, annotation=annotation, phenoData=pd, assayData=ad)
   return(object)
 }
