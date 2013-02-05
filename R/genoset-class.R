@@ -1,4 +1,3 @@
-
 ####  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
@@ -1950,16 +1949,23 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
 
 ##' Load a GenoSet from a RData file
 ##'
-##' Given a RData file with one object (a GenoSet or related object), load it,
+##' Given a rds file or a rda file with one object (a GenoSet or related object), load it,
 ##' and return.
-##' @param path character, path to RData file
+##' @param path character, path to rds or rda file
 ##' @return GenoSet or related object (only object in RData file)
 ##' @examples
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
+##' \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
+##' \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 readGenoSet <- function(path) {
-  object = get(load(path)[1])
+  header = readLines(path, 1)
+  if (grepl("^RD", header)[1] == TRUE) {
+    object = get(load(path)[1])    
+  } else {
+    object = readRDS(path)
+  }
   if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
   return( object )
 }
