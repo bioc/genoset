@@ -390,9 +390,7 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGRanges"),
                        stop("Can not replace locData using rownames not in this GenoSet")
                      }
                    if (! all(featureNames(value) == featureNames(object))) {
-                     for (adname in assayDataElementNames(object)) {
-                       assayDataElement(object,adname) = assayDataElement(object,adname)[featureNames(value),]
-                     }
+                     object = object[featureNames(value), ]
                    }
                    featureNames(value) = NULL
                    slot(object,"locData") = value
