@@ -508,7 +508,7 @@ setMethod("nrow", "GRanges", function(x) { length(x) })
 ##' @exportMethod dim
 ##' @rdname genoset-methods
 ##' @aliases dim,GenoSet-method
-setMethod("dim", "GenoSet", function(x) { c(nrow(locData(x)),nrow(pData(x))) })
+setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(unname(phenoData(x))))})
 
 #############
 # Sub-setters
