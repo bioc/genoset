@@ -547,8 +547,10 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               }
             }
             if ( ! missing(i) ) {
-              x@locData = x@locData[i,,drop=TRUE]
-              i = match(featureNames(locData(x)),featureNames(assayData(x))) # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
+              # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
+              locs = locData(x)[i,,drop=TRUE]
+              x@locData = locs
+              i = match(featureNames(locs),featureNames(featureData(x)))
             }
             callNextMethod(x,i,j,...,drop=drop)
           })

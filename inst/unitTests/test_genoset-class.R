@@ -100,7 +100,7 @@ test_creation <- function() {
   checkIdentical( pData, pData(misordered.genoset), "Misordered pData gets fixed" )
   checkTrue(validObject(bad.locData.genoset), "Can fix locData not in strict genome order")
   checkIdentical( toGenomeOrder(locData(bad.locData.genoset),strict=TRUE), locData(bad.locData.genoset), "badly ordered locData gets fixed" )
-  checkTrue( is.null(featureNames(tom@locData))), "FeatureNames of locData in GenoSet should be NULL")
+  checkTrue( is.null(featureNames(tom@locData)), "FeatureNames of locData in GenoSet should be NULL")
 }
 
 test_creation_w_granges <- function() {
