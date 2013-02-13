@@ -1,5 +1,6 @@
 \name{CNSet}
 \alias{CNSet}
+\alias{CNSet-deprecated}
 \title{Create a CNSet object}
 \usage{
   CNSet(locData, cn = NULL, pData = NULL, annotation = "",
@@ -46,6 +47,11 @@
   relevant slots and sets everything to genome order.
   Genome order can be disrupted by "[" or "[[" calls and
   will be checked by methods that require it.
+}
+\details{
+  The CNSet class is deprecated. Please use GenoSet. CNSet
+  only added the cn getter/setter functions, which are
+  redundant with x[, , 'cn'] now.
 }
 \examples{
 test.sample.names = LETTERS[11:13]

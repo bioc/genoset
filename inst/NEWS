@@ -74,3 +74,6 @@ toGenomeOrder and isGenomeOrder for GRanges and RangedData now strict=TRUE by de
 
 1.11.9
 No more make.names on sampleNames in object initialization
+
+1.11.22
+CNSet and BAFSet are deprecated.  See help("genoset-deprecated")

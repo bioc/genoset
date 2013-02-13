@@ -1,21 +1,20 @@
 \name{genoset-deprecated}
-\Rdversion{1.1}
 \alias{genoset-deprecated}
-
-\title{Functions deprecated in genoset}
+\title{Deprecated genoset features}
 \description{
-  Several functions have been deprecated in an effort to allow either a
-  GRanges or a RangedData in the locData slot. RangedData-specific
-  functions have been replaced with more generically named functions.
+  The CNSet and BAFSet classes have been deprecated.  They
+  only really added getter/setter methods for specific
+  assayDataElements, so they are now redundant with the
+  preferred method of using the assayDataElement name as
+  the third argument to bracket, e.g. \code{x[i, j,
+  "lrr"]}. Accordingly \code{BAFSet.to.ExpressionSets} is
+  also deprecated.
 }
-\section{Deprecated Functions}{
-  \describe{
-    \item{space}{space(locData(object)) or seqnames(locData(object)) will get you what you need for a RangedData or GRanges, respectively.}
-    \item{ranges}{Work on locData(object) directly with ranges(locData(object)).}
-    \item{names}{Please try chrNames.}
-  }
+\details{
+  Additionally, names, ranges, and space on a GenoSet are
+  also deprecated. In an effort to make a consistent API
+  for either RangedData or GRanges in the locData slot, we
+  recommend using \code{chrNames} for \code{names} and
+  \code{chr} for \code{space}.
 }
-\author{
-  Peter M. Haverty \email{phaverty@gene.com}
-}
-\keyword{deprecated}
+

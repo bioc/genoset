@@ -23,6 +23,8 @@ setValidity("CNSet", function(object) {
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
 ##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
 ##' require it.
+##'
+##' The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.
 ##' 
 ##' @param locData A GRanges or RangedData object specifying feature chromosome
 ##' locations. featureNames (names or rownames) are required to match featureNames of matrices.
@@ -45,6 +47,7 @@ setValidity("CNSet", function(object) {
 ##'    annotation="SNP6"
 ##'    )
 ##' @author Peter M. Haverty
+##' @aliases CNSet-deprecated
 CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
   if (!is.null(assayData)) {

@@ -1,5 +1,6 @@
 \name{BAFSet.to.ExpressionSets}
 \alias{BAFSet.to.ExpressionSets}
+\alias{BAFSet.to.ExpressionSets-deprecated}
 \title{Make a pair of ExpressionSets from a BAFSet}
 \usage{
   BAFSet.to.ExpressionSets(bs)
@@ -21,6 +22,10 @@
   lrr data in the exprs slot and the baf data as an
   additional member of assayData, use the standard coercion
   eset = as(bafset,"ExpressionSet").
+}
+\details{
+  BAFSEt.toExpressionSets has been deprecated. Please use
+  as(x, 'ExpressionSet').
 }
 \examples{
 data(genoset)

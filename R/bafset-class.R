@@ -24,6 +24,8 @@ setValidity("BAFSet", function(object) {
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
 ##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
 ##' require it.
+##'
+##' The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.
 ##' 
 ##' @param locData A GRanges or RangedData object specifying feature chromosome
 ##' locations. featureNames (names or rownames) are required to match featureNames of assayData.
@@ -39,6 +41,7 @@ setValidity("BAFSet", function(object) {
 ##' @return A BAFSet object
 ##' @export 
 ##' @author Peter M. Haverty
+##' @aliases BAFSet-deprecated
 ##' @examples
 ##'   test.sample.names = LETTERS[11:13]
 ##'   probe.names = letters[1:10]
@@ -151,6 +154,8 @@ setAs("BAFSet","ExpressionSet", def=
 ##' list of two ExpressionSets, one each for the baf and lrr data. To make a single
 ##' ExpressionSet, with the lrr data in the exprs slot and the baf data as an additional
 ##' member of assayData, use the standard coercion eset = as(bafset,"ExpressionSet").
+##'
+##' BAFSEt.toExpressionSets has been deprecated. Please use as(x, 'ExpressionSet').
 ##' 
 ##' @param bs A BAFset object
 ##' @return A list with one ExpressionSet each for the baf and lrr data in the BAFSet object
@@ -159,6 +164,7 @@ setAs("BAFSet","ExpressionSet", def=
 ##'   data(genoset)
 ##'   eset.list = BAFSet.to.ExpressionSets(baf.ds)
 ##' @author Peter M. Haverty
+##' @aliases BAFSet.to.ExpressionSets-deprecated
 BAFSet.to.ExpressionSets <- function(bs) {
   .Deprecated("as", msg="BAFSEt.toExpressionSets has been deprecated. Please use as(x, 'ExpressionSet').")
   features = data.frame(chr=chr(bs), start=start(bs), end=end(bs), row.names=featureNames(bs))
