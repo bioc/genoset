@@ -349,7 +349,8 @@ test_subset <- function() {
   
   # Subsetting whole object
   checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=TRUE)
-  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=TRUE)
+  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
+  checkEquals( ds[ 2:3, , "baf" ], subset.rows.ds[, , "baf"], check.attributes=TRUE)
   ds.two.rows = ds[ 2:3, ]
   checkEquals( featureNames(assayData(ds.two.rows)), featureNames(locData(ds.two.rows)), "featureNames from locData and assayData should be the same when rows subset.")
   checkEquals( ds[ gene.rd, ], subset.rows.ds )
