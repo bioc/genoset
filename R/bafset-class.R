@@ -52,6 +52,7 @@ setValidity("BAFSet", function(object) {
 ##' )
 ##' @seealso bafset-class, genoset-class
 BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
+  .Deprecated("GenoSet", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
   if (!is.null(assayData)) {
     if (! all(c("lrr","baf") %in% assayDataElementNames(assayData))) {
       stop("If assayData is specified, it must contain elements called 'lrr' and 'baf'.")
@@ -135,10 +136,8 @@ setAs("BAFSet","CNSet", def=
       })
 setAs("BAFSet","ExpressionSet", def=
       function(from, to) {
-        features = as.data.frame(locData(from))
-        rownames(features) = features$names
+        features = data.frame(chr=chr(from), start=start(from), end=end(from), row.names=featureNames(from))
         features = new("AnnotatedDataFrame",data=features)
-        esets = list()
         new("ExpressionSet", exprs=lrr(from), baf=baf(from), phenoData=phenoData(from),
             experimentData=experimentData(from), annotation=annotation(from),
             featureData=features)
@@ -161,6 +160,7 @@ setAs("BAFSet","ExpressionSet", def=
 ##'   eset.list = BAFSet.to.ExpressionSets(baf.ds)
 ##' @author Peter M. Haverty
 BAFSet.to.ExpressionSets <- function(bs) {
+  .Deprecated("as", msg="BAFSEt.toExpressionSets has been deprecated. Please use as(x, 'ExpressionSet').")
   features = data.frame(chr=chr(bs), start=start(bs), end=end(bs), row.names=featureNames(bs))
   features = new("AnnotatedDataFrame",data=features)
   esets = list()

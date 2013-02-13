@@ -46,6 +46,7 @@ setValidity("CNSet", function(object) {
 ##'    )
 ##' @author Peter M. Haverty
 CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
+  .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
   if (!is.null(assayData)) {
     if (! "cn" %in% assayDataElementNames(assayData)) {
       stop("If assayData is specified, it must contain an element called 'cn'.")
