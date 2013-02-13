@@ -613,7 +613,7 @@ setMethod("show","GenoSet",
           function(object) {
             callNextMethod(object)
             cat("Feature Locations:\n")
-            show(slot(object,"locData"))
+            show(locData(object))
           })
 
 ########################
