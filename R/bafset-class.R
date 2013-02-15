@@ -10,8 +10,15 @@
 setClass("BAFSet", contains=c("GenoSet"))
 
 setValidity("BAFSet", function(object) {
+  .Deprecated("", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
   return(all(is.element(c("lrr","baf"), assayDataElementNames(object))))
 })
+
+setMethod("show","BAFSet",
+          function(object) {
+            .Deprecated("", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
+            callNextMethod(object)
+          })
 
 ##' Create a BAFSet object
 ##'

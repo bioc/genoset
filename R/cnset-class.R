@@ -9,8 +9,15 @@
 setClass("CNSet", contains=c("GenoSet"))
 
 setValidity("CNSet", function(object) {
+  .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
   return(is.element("cn", assayDataElementNames(object)))
 })
+
+setMethod("show","CNSet",
+          function(object) {
+            .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
+            callNextMethod(object)
+          })
 
 ##' Create a CNSet object
 ##'
