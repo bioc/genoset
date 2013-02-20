@@ -28,6 +28,7 @@ Class \code{"\linkS4class{eSet}"}, by class "GenoSet", distance 2.
 }
 \section{Methods}{
   \describe{
+    \item{show}{\code{signature(object = "BAFSet")}: ... }
     \item{baf}{\code{signature(object = "BAFSet")}: Getter for 'baf' assayDataElement }
     \item{baf<-}{\code{signature(object = "BAFSet", value = "matrix")}: setter for 'baf' assayDataElement }
     \item{genoPlot}{\code{signature(x = "BAFSet", y = "ANY")}: Plot data

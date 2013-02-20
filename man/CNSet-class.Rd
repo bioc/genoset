@@ -29,6 +29,7 @@ Class \code{"\linkS4class{eSet}"}, by class "GenoSet", distance 2.
 }
 \section{Methods}{
   \describe{
+    \item{show}{\code{signature(object = "CNSet")}: ... }
     \item{cn}{\code{signature(object = "CNSet")}: Getter for cn assayDataElement }
     \item{cn<-}{\code{signature(object = "CNSet", value = "matrix")}: Setter for 'cn' assayDataElement }
     \item{genoPlot}{\code{signature(x = "CNSet", y = "ANY")}: Plot data
