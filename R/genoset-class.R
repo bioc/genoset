@@ -1898,7 +1898,7 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
-            if ( any(duplicated(runValue(seqnames(ds)))) ) { stop("GRanges not in blocks by chromosome.") }
+            if ( any(duplicated(runValue(seqnames(ds)))) ) { return(FALSE) }
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
                 return(FALSE)

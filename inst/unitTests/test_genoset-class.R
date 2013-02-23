@@ -570,5 +570,6 @@ test_genomeOrder <- function() {
   checkTrue(isGenomeOrder(gr2,strict=FALSE))
   checkTrue(isGenomeOrder(gr3,strict=TRUE))
   checkTrue(!isGenomeOrder(gr2,strict=TRUE))
-
+  checkTrue(!isGenomeOrder(gr1,strict=TRUE), "Not in blocks by chromsome, strict")
+  checkTrue(!isGenomeOrder(gr1,strict=FALSE), "Not in blocks by chromsome, strict")
 }
