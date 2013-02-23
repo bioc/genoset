@@ -546,7 +546,15 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
-              if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
+              if (is.numeric(k)) {
+                if (k > length(assayDataElementNames(x))) {
+                  stop("Numeric index k exceeds the number of assayDataElements.\n")
+                }
+                k = assayDataElementNames(x)[k]
+              }
+              if (!k %in% assayDataElementNames(x)) {
+                stop("Index k is not a member of assayDataElementNames.\n")
+              }
               if (missing(i) && missing(j)) {
                 return(assayDataElement(x,k)) # Necessary to get whole big.matrix object
               } else if (missing(i)) {
@@ -591,7 +599,15 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
             if ( missing(k)) {
               stop("Must specify k to replace data in the GenoSet")
             }
-            if (is.numeric(k)) { k = assayDataElementNames(x)[k] }
+            if (is.numeric(k)) {
+                if (k > length(assayDataElementNames(x))) {
+                  stop("Numeric index k exceeds the number of assayDataElements.\n")
+                }
+                k = assayDataElementNames(x)[k]
+              }
+            if (!k %in% assayDataElementNames(x)) {
+              stop("Index k is not a member of assayDataElementNames.\n")
+            }
             if (missing(i) && missing(j)) {
               if (! all( sampleNames(x) == colnames(value)) || ! all( featureNames(x) == rownames(value))) {
                 stop("Dimnames for incoming assayDataElement must match this genoset.\n")

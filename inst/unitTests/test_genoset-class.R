@@ -362,6 +362,8 @@ test_subset <- function() {
   checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
   checkEquals( ds[ gene.rd, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
+  checkException( ds[ , , "foo"], "Fail to extract assayDataElement with bad character k", silent=TRUE)
+  checkException( ds[ , , 8], "Fail to extract assayDataElement with bad integer k", silent=TRUE)
   
   # Test subsetting by location
   checkEquals( test.ds[test.rd,], expected.ds, check.attributes=FALSE )
@@ -394,6 +396,8 @@ test_subset <- function() {
   ds[,3,"lrr"] = 3
   lrr.mat[,3] = 3
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
+  checkException({ds[1, 1, "foo"] = 5}, "Fail to replace with bad character assayDataElement index k", silent=TRUE)
+  checkException({ds[1, 1, 8] = 5}, "Fail to replace with bad integer assayDataElement index k", silent=TRUE)
 }
 
 test_subset_w_granges <- function() {
