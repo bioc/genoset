@@ -605,14 +605,14 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
                 }
                 k = assayDataElementNames(x)[k]
               }
-            if (!k %in% assayDataElementNames(x)) {
-              stop("Index k is not a member of assayDataElementNames.\n")
-            }
             if (missing(i) && missing(j)) {
               if (! all( sampleNames(x) == colnames(value)) || ! all( featureNames(x) == rownames(value))) {
                 stop("Dimnames for incoming assayDataElement must match this genoset.\n")
               }
               return(assayDataElementReplace(x,k,value))
+            }
+            if (!k %in% assayDataElementNames(x)) {
+              stop("Index k is not a member of assayDataElementNames.\n")
             }
             if (missing(i)) {
               assayDataElement(x,k)[,j] = value

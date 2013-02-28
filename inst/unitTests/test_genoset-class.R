@@ -396,6 +396,8 @@ test_subset <- function() {
   ds[,3,"lrr"] = 3
   lrr.mat[,3] = 3
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
+  ds[, , "FOO"] = ds[, , "lrr"]
+  checkEquals(ds[, , "FOO"], ds[, , "lrr"], "Adding a whole new matrix is OK.")
   checkException({ds[1, 1, "foo"] = 5}, "Fail to replace with bad character assayDataElement index k", silent=TRUE)
   checkException({ds[1, 1, 8] = 5}, "Fail to replace with bad integer assayDataElement index k", silent=TRUE)
 }
