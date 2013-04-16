@@ -1,8 +1,8 @@
-\name{segsToGranges}
-\alias{segsToGranges}
+\name{segs2Granges}
+\alias{segs2Granges}
 \title{GRanges from segment table}
 \usage{
-  segsToGranges(segs)
+  segs2Granges(segs)
 }
 \arguments{
   \item{segs}{data.frame with loc.start, loc.end, and chrom

@@ -60,9 +60,9 @@ cn = Rle(c(3,4,5,6),rep(3,4))
   \code{\link{rangeSegMeanLength}},
   \code{\link{rangeSegMeanLength}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
+  \code{\link{segs2Granges}},
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}},
-  \code{\link{segsToGranges}}, \code{\link{segTable}},
+  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
   \code{\link{segTable}}, \code{\link{segTable}}
 }
 

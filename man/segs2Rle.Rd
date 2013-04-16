@@ -39,10 +39,9 @@ data(genoset)
   \code{\link{rangeSegMeanLength}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}},
+  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RangedData}},
-  \code{\link{segs2RleDataFrame}},
-  \code{\link{segsToGranges}}, \code{\link{segTable}},
+  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
   \code{\link{segTable}}, \code{\link{segTable}}
 }
 

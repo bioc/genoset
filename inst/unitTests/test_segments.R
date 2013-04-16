@@ -183,10 +183,10 @@ test_runCBS <- function() {
   checkEquals( runCBS(ds,locs.gr, n.cores=8,alpha=0.01), seg.rle.result, "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
 }
 
-test_segsToGranges <- function() {
+test_segs2Granges <- function() {
   segs = data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
   gr = GRanges(IRanges(start=1:4, end=c(5, 7, 9, 22)), seqnames=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4])
-  checkIdentical(gr, segsToGranges(segs))
+  checkIdentical(gr, segs2Granges(segs))
 }
 
 test_rangeSegMeanLength <- function() {

@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.13.1
+Version: 1.13.2
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -38,4 +38,6 @@ Collate:
     'DataFrame-methods.R'
     'test_genoset_package.R'
     'utils.R'
+    'ordering.R'
+    'segments.R'
 ByteCompile: TRUE
