@@ -4,7 +4,7 @@ test_bounds2Rle <- function() {
   locs = GRanges(IRanges(start=1:20,width=1),seqnames=c(rep("1",5),rep("2",5),rep("3",5),rep("4",5)))
   
   bounds1 = matrix(c(3,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
-  bounds2 = matrix( c(1,3, 4,5, 6,10, 11,15, 16,20), byrow=2, ncol=2)
+  bounds2 = matrix(c(1,3, 4,5, 6,10, 11,15, 16,20), byrow=2, ncol=2)
   bounds3 = matrix(c(1,5, 6,7, 9,9, 13,15, 16,19),ncol=2,byrow=TRUE)
   bounds4 = matrix(c(1,5, 6,7, 7,10, 11,15, 16,20),ncol=2,byrow=TRUE)
   bounds5 = matrix(c(1,5, 6,7, 7,9, 11,15, 16,20),ncol=2,byrow=TRUE)
