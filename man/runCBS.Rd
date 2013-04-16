@@ -65,10 +65,14 @@ sample.names = paste("a",1:2,sep="")
 }
 \seealso{
   Other "segmented data": \code{\link{bounds2Rle}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}},
   \code{\link{segPairTable}}, \code{\link{segPairTable}},
   \code{\link{segPairTable}},
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
+  \code{\link{segs2RleDataFrame}},
+  \code{\link{segsToGranges}}, \code{\link{segTable}},
   \code{\link{segTable}}, \code{\link{segTable}}
 }
 

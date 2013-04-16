@@ -1,0 +1,33 @@
+\name{segsToGranges}
+\alias{segsToGranges}
+\title{GRanges from segment table}
+\usage{
+  segsToGranges(segs)
+}
+\arguments{
+  \item{segs}{data.frame with loc.start, loc.end, and chrom
+  columns, like from segTable or runCBS}
+}
+\value{
+  GRanges
+}
+\description{
+  GenoSet contains a number of functions that work on
+  segments. Many work on a data.frame of segments, like
+  segTable and runCBS. This function converts one of these
+  tables in a GRanges. The three columns specifying the
+  ranges become the GRanges and all other columns go into
+  the 'mcols' portion of the GRanges object.
+}
+\seealso{
+  Other "segmented data": \code{\link{bounds2Rle}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
+  \code{\link{segPairTable}}, \code{\link{segPairTable}},
+  \code{\link{segPairTable}},
+  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
+  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
+  \code{\link{segTable}}, \code{\link{segTable}}
+}
+

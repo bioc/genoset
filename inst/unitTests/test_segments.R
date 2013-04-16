@@ -182,3 +182,22 @@ test_runCBS <- function() {
   checkEquals( runCBS(seg.rle.result,locs.gr, n.cores=8), seg.rle.result, "Return seg dfs starting from DF of Rle (like mbaf)")
   checkEquals( runCBS(ds,locs.gr, n.cores=8,alpha=0.01), seg.rle.result, "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
 }
+
+test_segsToGranges <- function() {
+  segs = data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
+  gr = GRanges(IRanges(start=1:4, end=c(5, 7, 9, 22)), seqnames=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4])
+  checkIdentical(gr, segsToGranges(segs))
+}
+
+test_rangeSegMeanLength <- function() {
+  segs = data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
+  seg.list = list(
+    foo=data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE), 
+    goo=data.frame(loc.start=2:5, loc.end=c(5, 7, 9, 20), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
+    )
+  gene.gr = GRanges(IRanges(start=c(1, 3), end=c(1, 20), names=c("EGFR", "ERBB2")), seqnames=factor(c("1", "2"), levels=c("1", "2")))
+  len = c("EGFR"=5, "ERBB2"=13)
+  len.list = list(foo=c("EGFR"=5, "ERBB2"=13), goo=c("EGFR"=4, "ERBB2"=11))
+  checkIdentical(len, rangeSegMeanLength(gene.gr, segs))
+  checkIdentical(len.list, rangeSegMeanLength(gene.gr, seg.list))
+}

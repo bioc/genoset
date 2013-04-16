@@ -1193,47 +1193,15 @@ bounds2Rle <- function( bounds, values, n ) {
   if (n < length(values)) {
     stop("n must be >= length(values)")
   }
-  cap = bounds[1,1] - 1
-  tail = n - bounds[nrow(bounds),2]
-  extras = (cap > 0) + (tail > 0) + sum(bounds[-1,1] - bounds[-nrow(bounds),2] > 1)
-  if (extras == 0) {
-    rle = Rle( values, (bounds[,2] - bounds[,1])+1 )
-    if (length(rle) != n) {
-      stop("Rle is the wrong length. Look for double counted features in your bounds table.")
-    }
-    return(rle)
-  }
-  extras = extras + length(values)
-  # Maybe make them 2x + 1 initialized to 0 and NA, let Rle dump zeros that don't get replaced
-  run.length = rep(0L,extras)
-  run.value = rep(NA_real_,extras)
-  if (tail > 0) {
-    run.length[ length(run.length) ] = tail
-  }
-  widths = (bounds[,2] - bounds[,1]) + 1
-  if (cap > 0) {
-    run.length[1] = cap
-    run.value[2] = values[1]
-    run.length[2] = widths[1]
-    i = 3
-  } else {
-    run.length[1] = widths[1]
-    run.value[1] = values[1]
-    i = 2
-  }
-  j=2
-
-  while (i < length(run.value)) {
-    pre.width = bounds[j,1] - bounds[j-1,2]
-    if (pre.width > 1) {
-      run.length[i] = pre.width - 1
-      i = i + 1
-    }
-    run.length[i] = widths[j]
-    run.value[i] = values[j]
-    j = j + 1
-    i = i + 1
-  }
+  run.length = integer((2*nrow(bounds))+1)
+  run.length[1] = bounds[1] - 1
+  run.value = rep(NA_real_, (2*nrow(bounds))+1)
+  data.indices = seq.int(from=2, by=2, length.out=nrow(bounds))
+  widths = (bounds[, 2] - bounds[, 1]) + 1
+  run.length[data.indices] = widths
+  run.value[data.indices] = values
+  run.length[data.indices+1] = diff(c(bounds[, 2], n)) - c(widths[-1], 0)
+  
   if (sum(run.length) != n) {
     stop("Rle is the wrong length. Look for double counted features in your bounds table.")
   }
@@ -1267,9 +1235,8 @@ segs2Rle <- function(segs, locs) {
   seg.gr = GRanges( ranges=IRanges(start=segs[,"loc.start"], end=segs[,"loc.end"]),
     seqnames=factor(segs[,"chrom"],levels=chrOrder(unique(as.character(segs$chrom)))), "Value"=segs[,"seg.mean"])
   seg.gr = toGenomeOrder(seg.gr, strict=TRUE)
-  temp.rle = Rle(seg.gr$Value[findOverlaps(locs, seg.gr, select="first")])
-#  bounds = boundingIndicesByChr( seg.gr, locs )
-#  temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
+  bounds = boundingIndicesByChr( seg.gr, locs )
+  temp.rle = bounds2Rle( bounds, values(seg.gr)$Value, nrow(locs) )  # Breaks unit test for 1st being NA
   return(temp.rle)
 }
 
@@ -1287,6 +1254,7 @@ segs2Rle <- function(segs, locs) {
 ##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
 ##'   segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##' @author Peter Haverty
+##' @segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
   rle.data.frame = DataFrame(rle.list, row.names=featureNames(locs))
@@ -1302,6 +1270,7 @@ segs2RleDataFrame <- function(seg.list, locs) {
 ##' @family "segmented data"
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
+##' @segments
 segs2RangedData <- function(segs) {
   rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean,num.mark=segs$num.mark)
   return(rd)
@@ -1839,6 +1808,59 @@ rangeColMeans <- function( bounds, x ) {
   }
   ans = .Call("rangeColMeans", bounds, x)
   return(ans)
+}
+
+##' GRanges from segment table
+##'
+##' GenoSet contains a number of functions that work on segments. Many work on a data.frame of
+##' segments, like segTable and runCBS. This function converts one of these tables in a GRanges.
+##' The three columns specifying the ranges become the GRanges and all other columns go into the 'mcols'
+##' portion of the GRanges object.
+##' @param segs data.frame with loc.start, loc.end, and chrom columns, like from segTable or runCBS
+##' @export 
+##' @return GRanges
+##' @family "segmented data"
+segsToGranges <- function(segs) {
+  other.cols = setdiff(colnames(segs), c("loc.start", "loc.end", "chrom"))
+  segs.gr = GRanges(IRanges(start=segs$loc.start, end=segs$loc.end), seqnames=segs$chrom)
+  mcols(segs.gr) = segs[, other.cols]
+  return(segs.gr)
+}
+
+##' Get segment widths
+##'
+##' The width of a genomic segment helps inform us about the importance of a copy number value. Focal amplifications
+##' are more interesting than broad gains, for example. Given a range of interesting regions (i.e. genes) this
+##' function determines all genomics segments covered by each gene and returns the average length of the
+##' segments covered by each gene in each sample. Often only a single segment covers a given gene in
+##' a given sample.
+##' @param range.gr GRanges, genome regions of interest, usually genes
+##' @param segs data.frame of segments, like from segTable, or a list of these
+##' @export 
+##' @return named vector of lengths, one per item in range.gr, or a list of these if segs is also list-like.
+##' @family "segmented data"
+##' @rdname rangeSegMeanLength-methods
+setGeneric("rangeSegMeanLength", function(range.gr,segs,...) standardGeneric("rangeSegMeanLength"))
+
+##' @rdname rangeSegMeanLength-methods
+##' @aliases rangeSegMeanLength,GRanges,list-method
+setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="list"), 
+  function(range.gr, segs) {
+    lapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) })
+  })
+
+##' @rdname rangeSegMeanLength-methods
+##' @aliases rangeSegMeanLength,GRanges,data.frame-method
+setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="data.frame"), 
+  function(range.gr, segs) {
+    .rangeSegMeanLength(range.gr, segs)
+})
+
+# Internal function for rangeSegMeanLength methods
+.rangeSegMeanLength <- function(range.gr, segs) {
+  segs.gr = segsToGranges(segs)
+  bounds = boundingIndicesByChr(range.gr, segs.gr)
+  rangeColMeans(bounds, width(segs.gr))
 }
 
 ##' Order chromosome names in proper genome order

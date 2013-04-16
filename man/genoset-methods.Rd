@@ -23,8 +23,6 @@
 \alias{ranges,GenoSet-method}
 \alias{show}
 \alias{show,GenoSet-method}
-\alias{show,BAFSet-method}
-\alias{show,CNSet-method}
 \alias{space}
 \alias{space,GenoSet-method}
 \alias{start}
