@@ -1125,22 +1125,22 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
 ##'   gcCorrect(ds, gc)
 ##' @author Peter M. Haverty
 gcCorrect <- function(ds, gc, retain.mean=TRUE) {
+  gcCorrect2 <- function(ds, gc, retain.mean=TRUE) {
   if (!requireNamespace("stats",quietly=TRUE)) {
     stop("Failed to require stats package.\n")
   }
-  fit = stats::lm( ds ~ gc, na.action=na.exclude )
+  ds = na.exclude(ds)
+  gc = gc[ - attr(ds, "na.action") ]
+  mm = cbind(rep.int(1, length(gc)), gc)
+  fit = stats::lm.fit(mm, ds)
+  fit$na.action = attr(ds, "na.action")
   ds.fixed = stats::residuals(fit)
   if (retain.mean == TRUE) {
     if (is.null(dim(ds))) {
-      ds.fixed = ds.fixed + mean(ds,na.rm=TRUE)
+      ds.fixed = ds.fixed + (sum(ds,na.rm=TRUE)/length(ds))
     } else {
       ds.fixed = sweep(ds.fixed,2,colMeans(ds,na.rm=TRUE),FUN="+")
     }
-  }
-  if (is.null(dim(ds))) {
-    ds.fixed = unname(ds.fixed)
-  } else {
-    dimnames(ds.fixed) = dimnames(ds)
   }
   return(ds.fixed)
 }
