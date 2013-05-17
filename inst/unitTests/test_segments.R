@@ -197,7 +197,7 @@ test_rangeSegMeanLength <- function() {
     )
   gene.gr = GRanges(IRanges(start=c(1, 3), end=c(1, 20), names=c("EGFR", "ERBB2")), seqnames=factor(c("1", "2"), levels=c("1", "2")))
   len = c("EGFR"=5, "ERBB2"=13)
-  len.list = list(foo=c("EGFR"=5, "ERBB2"=13), goo=c("EGFR"=4, "ERBB2"=11))
+  len.mat = matrix(c(5, 13, 4, 11), ncol=2, dimnames=list(c("EGFR", "ERBB2"), c("foo", "goo")))
   checkIdentical(len, rangeSegMeanLength(gene.gr, segs))
-  checkIdentical(len.list, rangeSegMeanLength(gene.gr, seg.list))
+  checkIdentical(len.mat, rangeSegMeanLength(gene.gr, seg.list))
 }

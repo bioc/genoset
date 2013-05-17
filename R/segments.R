@@ -407,7 +407,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
 ##' @param range.gr GRanges, genome regions of interest, usually genes
 ##' @param segs data.frame of segments, like from segTable, or a list of these
 ##' @export 
-##' @return named vector of lengths, one per item in range.gr, or a list of these if segs is also list-like.
+##' @return named vector of lengths, one per item in range.gr, or a range x length(segs) of these if segs is also list-like.
 ##' @family "segmented data"
 ##' @rdname rangeSegMeanLength-methods
 setGeneric("rangeSegMeanLength", function(range.gr,segs,...) standardGeneric("rangeSegMeanLength"))
@@ -416,7 +416,8 @@ setGeneric("rangeSegMeanLength", function(range.gr,segs,...) standardGeneric("ra
 ##' @aliases rangeSegMeanLength,GRanges,list-method
 setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="list"), 
   function(range.gr, segs) {
-    lapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) })
+    widths = lapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) })
+    return(do.call(cbind, widths))
   })
 
 ##' @rdname rangeSegMeanLength-methods

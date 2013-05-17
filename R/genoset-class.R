@@ -1125,7 +1125,6 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
 ##'   gcCorrect(ds, gc)
 ##' @author Peter M. Haverty
 gcCorrect <- function(ds, gc, retain.mean=TRUE) {
-  gcCorrect2 <- function(ds, gc, retain.mean=TRUE) {
   if (!requireNamespace("stats",quietly=TRUE)) {
     stop("Failed to require stats package.\n")
   }

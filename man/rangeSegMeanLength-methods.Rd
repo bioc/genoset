@@ -12,7 +12,7 @@
 }
 \value{
   named vector of lengths, one per item in range.gr, or a
-  list of these if segs is also list-like.
+  range x length(segs) of these if segs is also list-like.
 }
 \description{
   The width of a genomic segment helps inform us about the
