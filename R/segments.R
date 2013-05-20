@@ -50,7 +50,7 @@ segs2Rle <- function(segs, locs) {
 ##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
 ##'   segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##' @author Peter Haverty
-##' @segments
+##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
   rle.data.frame = DataFrame(rle.list, row.names=featureNames(locs))
@@ -83,7 +83,7 @@ segs2Granges <- function(segs) {
 ##' @family "segmented data"
 ##' @export 
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-##' @segments
+##' @family segments
 segs2RangedData <- function(segs) {
   rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean,num.mark=segs$num.mark)
   return(rd)

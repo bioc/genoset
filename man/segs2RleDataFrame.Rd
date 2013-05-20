@@ -40,5 +40,7 @@ data(genoset)
   \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
   \code{\link{segTable}}, \code{\link{segTable}},
   \code{\link{segTable}}
+
+  Other segments: \code{\link{segs2RangedData}}
 }
 

@@ -30,5 +30,7 @@
   \code{\link{segs2Rle}}, \code{\link{segs2RleDataFrame}},
   \code{\link{segTable}}, \code{\link{segTable}},
   \code{\link{segTable}}
+
+  Other segments: \code{\link{segs2RleDataFrame}}
 }
 

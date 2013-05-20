@@ -25,7 +25,7 @@
 ##' @importClassesFrom IRanges DataFrame RangedData Rle
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
-##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length
+##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean na.exclude nrow order paste ranges Rle rownames
@@ -34,7 +34,7 @@
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges DataFrame IRanges RangedData "%over%"
-##' @importFrom GenomicRanges seqlengths GRanges width
+##' @importFrom GenomicRanges seqlengths GRanges
 ##'
 ##' @import methods
 ##' @import BiocGenerics
