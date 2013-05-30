@@ -281,8 +281,6 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   locData(gs2) = point.locData2
   checkEquals( chrNames( gs2 ), c("1","3","X") )
   checkEquals( names( point.locData ), c("chr1","chr3","chrX") )
-  checkEquals( names( point.locData ), names( gs ) )
-  checkEquals( ranges( point.locData ), ranges( gs ) )
   checkEquals( elementLengths( point.locData ), elementLengths( gs ) )
   checkEquals( elementLengths( point.locData ), elementLengths( point.locData.gr ) )
   checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
