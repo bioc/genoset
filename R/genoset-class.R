@@ -1132,9 +1132,7 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
   }
   mm = cbind(rep.int(1, length(gc)), gc)
   fit = stats::lm.fit(mm, ds)
-  if ("na.action" %in% attributes(ds)) {
-    fit$na.action = attr(ds, "na.action")
-  }
+  fit$na.action = attr(ds, "na.action")
   ds.fixed = stats::residuals(fit)
   if (retain.mean == TRUE) {
     if (is.null(dim(ds))) {
