@@ -441,10 +441,9 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 ##' @rdname genoset-methods
 setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
-##' Get chromosome names
+##' Get data matrix names
 ##'
-##' Get chromosome names, which are the names of the locData slot. The names method on a GenoSet is deprecated. Please use chrNames.
-##' @title Names for chromosome
+##' Get names of data matrices. For the time being, this is \code{assayDataElementNames}. This function used to do \code{chrNames}.
 ##' @param x GenoSet
 ##' @return character
 ##' @author Peter Haverty
@@ -452,8 +451,7 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @rdname genoset-methods
 ##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
-  .Deprecated(old="names",new="chrNames",package="genoset",msg="The names method on a GenoSet is deprecated. Please use chrNames.")
-  return( chrNames(locData(x)) )
+  return( assayDataElementNames(x) )
 } )
 
 ##' Get ranges from locData slot

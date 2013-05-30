@@ -98,7 +98,9 @@
 
   Get width of location for each feature
 
-  Get chromosome names
+  Get names of data matrices. For the time being, this is
+  \code{assayDataElementNames}. This function used to do
+  \code{chrNames}.
 
   Get ranges from locData slot
 
@@ -115,10 +117,6 @@
   notation (e.g. hg18, hg19, etc.) should be used. For a
   GRanges, the first value is returned if there are
   multiple.
-
-  Get chromosome names, which are the names of the locData
-  slot. The names method on a GenoSet is deprecated. Please
-  use chrNames.
 
   Get ranges from locData slot. The ranges method on a
   GenoSet is deprecated. Please use ranges(locData(x)).
