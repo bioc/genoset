@@ -109,7 +109,7 @@ test_creation_w_granges <- function() {
   lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   locs=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  bad.locs=RangedData(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),seqnames=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)))  
+  bad.locs=GRanges(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),seqnames=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)))  
 
   tom = GenoSet( locData=locs, cn=cn, pData=pData )
   ted = BAFSet( locData=locs, lrr=lrr, baf=baf, pData=pData )
@@ -229,6 +229,19 @@ test_locData <- function() {
   checkException( {locData(ds) = locs.rd.bad},silent=TRUE )
   checkTrue({locData(ds) = locs.gr; is.null(names(ds@locData))}, "Setting locData makes locData GRanges names null")
   checkEquals(featureNames(locData(ds)), names(locs.gr), "However, getting locData back out resets the GRanges names")
+}
+
+test_getters.and.setters <- function() {
+  test.sample.names = LETTERS[11:13]
+  probe.names = letters[1:10]
+  pData = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+  bob = GenoSet(
+    locData=GRanges(IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))), 
+    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+    pData=pData
+    )
+  checkIdentical(c("baf", "lrr"), names(bob))
 }
 
 test_rd.gs.shared.api.and.getting.genome.info <- function() {
@@ -510,12 +523,11 @@ test_gcCorrect <- function() {
   output.matrix = matrix(c(output.vector,output.vector),ncol=2)
   checkEquals( gcCorrect(input.matrix, gc, retain.mean=FALSE ), output.matrix )
 
-  gc.w.na = gc
-  is.na(gc.w.na) = c(25,75)
+  input.matrix.w.na = input.matrix
+  input.matrix.w.na[ c(25,75),  ] = NA
   output.matrix.w.na = output.matrix
   output.matrix.w.na[ c(25,75), ] = NA
-  checkEquals( gcCorrect(input.matrix, gc.w.na, retain.mean=FALSE ), output.matrix.w.na )
-
+  checkEquals( gcCorrect(input.matrix.w.na, gc, retain.mean=FALSE ), output.matrix.w.na )
 }
 
 test_genomeOrder <- function() {

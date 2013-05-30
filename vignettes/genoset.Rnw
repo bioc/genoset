@@ -74,7 +74,10 @@ Let's have look at what's inside these objects.
 assayDataElementNames(rle.ds)
 head( rle.ds[,,"cn"] )
 head( rle.ds[,,"cn.segments"] )
+names(rle.ds)
 @ 
+
+Note that \Rfunction{names} lists the data matrices.
 
 \subsection{Accessing Genome Information}
 Now lets look at some special functions for accessing genome

@@ -1127,7 +1127,7 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
     stop("Failed to require stats package.\n")
   }
   ds = na.exclude(ds)
-  if ("na.action" %in% attributes(ds)) {
+  if ("na.action" %in% names(attributes(ds))) {
     gc = gc[ - attr(ds, "na.action") ]
   }
   mm = cbind(rep.int(1, length(gc)), gc)
