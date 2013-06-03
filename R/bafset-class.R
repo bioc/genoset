@@ -10,14 +10,12 @@
 setClass("BAFSet", contains=c("GenoSet"))
 
 setValidity("BAFSet", function(object) {
-  .Deprecated("", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
-  return(all(is.element(c("lrr","baf"), assayDataElementNames(object))))
+  .Defunct("", msg="The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
 })
 
 setMethod("show","BAFSet",
           function(object) {
-            .Deprecated("", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
-            callNextMethod(object)
+            .Defunct("", msg="The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
           })
 
 ##' Create a BAFSet object
@@ -32,7 +30,7 @@ setMethod("show","BAFSet",
 ##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
 ##' require it.
 ##'
-##' The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.
+##' The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.
 ##' 
 ##' @param locData A GRanges or RangedData object specifying feature chromosome
 ##' locations. featureNames (names or rownames) are required to match featureNames of assayData.
@@ -48,7 +46,7 @@ setMethod("show","BAFSet",
 ##' @return A BAFSet object
 ##' @export 
 ##' @author Peter M. Haverty
-##' @aliases BAFSet-deprecated
+##' @aliases BAFSet-defunct
 ##' @examples
 ##'   test.sample.names = LETTERS[11:13]
 ##'   probe.names = letters[1:10]
@@ -62,7 +60,7 @@ setMethod("show","BAFSet",
 ##' )
 ##' @seealso bafset-class, genoset-class
 BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
-  .Deprecated("GenoSet", msg="The BAFSet class is deprecated. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
+  .Defunct("GenoSet", msg="The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
   if (!is.null(assayData)) {
     if (! all(c("lrr","baf") %in% assayDataElementNames(assayData))) {
       stop("If assayData is specified, it must contain elements called 'lrr' and 'baf'.")
@@ -162,7 +160,7 @@ setAs("BAFSet","ExpressionSet", def=
 ##' ExpressionSet, with the lrr data in the exprs slot and the baf data as an additional
 ##' member of assayData, use the standard coercion eset = as(bafset,"ExpressionSet").
 ##'
-##' BAFSEt.toExpressionSets has been deprecated. Please use as(x, 'ExpressionSet').
+##' BAFSEt.toExpressionSets has been defunct. Please use as(x, 'ExpressionSet').
 ##' 
 ##' @param bs A BAFset object
 ##' @return A list with one ExpressionSet each for the baf and lrr data in the BAFSet object
@@ -171,21 +169,8 @@ setAs("BAFSet","ExpressionSet", def=
 ##'   data(genoset)
 ##'   eset.list = BAFSet.to.ExpressionSets(baf.ds)
 ##' @author Peter M. Haverty
-##' @aliases BAFSet.to.ExpressionSets-deprecated
+##' @aliases BAFSet.to.ExpressionSets-defunct
 BAFSet.to.ExpressionSets <- function(bs) {
-  .Deprecated("as", msg="BAFSEt.toExpressionSets has been deprecated. Please use as(x, 'ExpressionSet').")
-  features = data.frame(chr=chr(bs), start=start(bs), end=end(bs), row.names=featureNames(bs))
-  features = new("AnnotatedDataFrame",data=features)
-  esets = list()
-  esets[["lrr"]] = new("ExpressionSet", exprs=lrr(bs), phenoData=phenoData(bs),
-         experimentData=experimentData(bs), annotation=annotation(bs),
-         featureData=features)
-  esets[["baf"]] = new("ExpressionSet", exprs=baf(bs), phenoData=phenoData(bs),
-            experimentData=experimentData(bs), annotation=annotation(bs),
-         featureData=features)
-  return(esets)
+  .Defunct("as", msg="BAFSEt.toExpressionSets has been defunct. Please use as(x, 'ExpressionSet').")
 }
 
-############
-# Processing
-############

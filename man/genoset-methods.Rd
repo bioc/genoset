@@ -19,12 +19,8 @@
 \alias{names,GenoSet-method}
 \alias{nrow}
 \alias{nrow,GRanges-method}
-\alias{ranges}
-\alias{ranges,GenoSet-method}
 \alias{show}
 \alias{show,GenoSet-method}
-\alias{space}
-\alias{space,GenoSet-method}
 \alias{start}
 \alias{start,GenoSet-method}
 \alias{universe}
@@ -41,10 +37,6 @@
   \item{x}{GenoSet or GRanges}
 
   \item{value}{character, new universe string, e.g. hg19}
-
-  \item{x}{GenoSet}
-
-  \item{x}{GenoSet}
 
   \item{x}{GenoSet}
 
@@ -82,10 +74,6 @@
   character
 
   character
-
-  factor
-
-  character
 }
 \description{
   Genome universe for locData
@@ -102,14 +90,6 @@
   \code{assayDataElementNames}. This function used to do
   \code{chrNames}.
 
-  Get ranges from locData slot
-
-  locData slot holds a RangedData, which keeps the
-  chromosome of each feature in a factor names 'space'. The
-  ranges method on a GenoSet is deprecated. Please use
-  space(locData(x)) or seqnames(locData(x)) as appropriate
-  for RangedData or GRanges.
-
   Get elementLengths from locData slot
 }
 \details{
@@ -118,21 +98,12 @@
   GRanges, the first value is returned if there are
   multiple.
 
-  Get ranges from locData slot. The ranges method on a
-  GenoSet is deprecated. Please use ranges(locData(x)).
-
   Get elementLengths from locData slot
 }
 \examples{
 data(genoset)
   universe(locData.rd)
   universe(locData.rd) = "hg19"
-data(genoset)
-chr(genoset.ds)
-start(genoset.ds)
-end(genoset.ds)
-chrNames(genoset.ds)
-elementLengths(genoset.ds) # Returns the number of probes per chromosome
 data(genoset)
   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
   genoset.ds[ , "K"]  # Sample called K
@@ -151,10 +122,6 @@ data(genoset)
   Peter M. Haverty
 
   Peter Haverty
-
-  Peter Haverty
-
-  Peter M. Haverty
 
   Peter Haverty
 }

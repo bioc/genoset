@@ -1,6 +1,6 @@
 \name{BAFSet.to.ExpressionSets}
 \alias{BAFSet.to.ExpressionSets}
-\alias{BAFSet.to.ExpressionSets-deprecated}
+\alias{BAFSet.to.ExpressionSets-defunct}
 \title{Make a pair of ExpressionSets from a BAFSet}
 \usage{
   BAFSet.to.ExpressionSets(bs)
@@ -24,7 +24,7 @@
   eset = as(bafset,"ExpressionSet").
 }
 \details{
-  BAFSEt.toExpressionSets has been deprecated. Please use
+  BAFSEt.toExpressionSets has been defunct. Please use
   as(x, 'ExpressionSet').
 }
 \examples{

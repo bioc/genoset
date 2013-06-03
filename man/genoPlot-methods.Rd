@@ -11,10 +11,6 @@
 
   \item{y}{numeric or Rle}
 
-  \item{element}{character, Deprecated. when x is a
-  GenoSet, the y-th column of this assayDataElement is used
-  for the y-axis data.}
-
   \item{locs}{RangedData, like locData slot of GenoSet}
 
   \item{chr}{Chromosome to plot, NULL by default for full

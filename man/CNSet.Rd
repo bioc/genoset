@@ -1,6 +1,6 @@
 \name{CNSet}
 \alias{CNSet}
-\alias{CNSet-deprecated}
+\alias{CNSet-defunct}
 \title{Create a CNSet object}
 \usage{
   CNSet(locData, cn = NULL, pData = NULL, annotation = "",
@@ -49,7 +49,7 @@
   will be checked by methods that require it.
 }
 \details{
-  The CNSet class is deprecated. Please use GenoSet. CNSet
+  The CNSet class is defunct. Please use GenoSet. CNSet
   only added the cn getter/setter functions, which are
   redundant with x[, , 'cn'] now.
 }

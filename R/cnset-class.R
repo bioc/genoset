@@ -9,14 +9,12 @@
 setClass("CNSet", contains=c("GenoSet"))
 
 setValidity("CNSet", function(object) {
-  .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
-  return(is.element("cn", assayDataElementNames(object)))
+  .Defunct("GenoSet", msg="The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
 })
 
 setMethod("show","CNSet",
           function(object) {
-            .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
-            callNextMethod(object)
+            .Defunct("GenoSet", msg="The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
           })
 
 ##' Create a CNSet object
@@ -31,7 +29,7 @@ setMethod("show","CNSet",
 ##' order can be disrupted by "[" or "[[" calls and will be checked by methods that
 ##' require it.
 ##'
-##' The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.
+##' The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.
 ##' 
 ##' @param locData A GRanges or RangedData object specifying feature chromosome
 ##' locations. featureNames (names or rownames) are required to match featureNames of matrices.
@@ -54,18 +52,9 @@ setMethod("show","CNSet",
 ##'    annotation="SNP6"
 ##'    )
 ##' @author Peter M. Haverty
-##' @aliases CNSet-deprecated
+##' @aliases CNSet-defunct
 CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe, assayData=NULL, ...) {
-  .Deprecated("GenoSet", msg="The CNSet class is deprecated. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
-  if (!is.null(assayData)) {
-    if (! "cn" %in% assayDataElementNames(assayData)) {
-      stop("If assayData is specified, it must contain an element called 'cn'.")
-    }
-    object = initGenoSet(type="CNSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData, ...)
-  } else {
-    object = initGenoSet(type="CNSet", locData=locData, pData=pData, annotation=annotation, universe=universe, cn=cn, ...)
-  }
-  return(object)
+  .Defunct("GenoSet", msg="The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
 }
 
 #########

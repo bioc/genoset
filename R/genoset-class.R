@@ -42,16 +42,17 @@
 ##' @useDynLib genoset
 NULL
 
-##' Deprecated genoset features
+##' Defunct genoset features
 ##'
-##' The CNSet and BAFSet classes have been deprecated.  They only really added getter/setter methods for specific assayDataElements,
+##' The CNSet and BAFSet classes are defunct.  They only really added getter/setter methods for specific assayDataElements,
 ##' so they are now redundant with the preferred method of using the assayDataElement name as the third argument to bracket, e.g.
-##' \code{x[i, j, "lrr"]}. Accordingly \code{BAFSet.to.ExpressionSets} is also deprecated.
+##' \code{x[i, j, "lrr"]}. Accordingly \code{BAFSet.to.ExpressionSets} is also defunct.
 ##'
-##' Additionally, names, ranges, and space on a GenoSet are also deprecated. In an effort to make a consistent API for either RangedData or
+##' Additionally, names, ranges, and space on a GenoSet are also defunct. In an effort to make a consistent API for either RangedData or
 ##' GRanges in the locData slot, we recommend using \code{chrNames} for \code{names} and \code{chr} for \code{space}.
-##' @name genoset-deprecated
-##' @aliases genoset-deprecated
+##' @name genoset-defunct
+##' @aliases genoset-defunct
+
 NULL
 ###############
 # Class GenoSet
@@ -66,8 +67,6 @@ setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges")
 setValidity("GenoSet", function(object) {
   return( all( featureNames(locData(object)) == featureNames(assayData(object)) ) )
 })
-
-
 
 ##' Create a GenoSet or derivative object
 ##'
@@ -454,41 +453,12 @@ setMethod("names", "GenoSet", function(x) {
   return( assayDataElementNames(x) )
 } )
 
-##' Get ranges from locData slot
-##'
-##' Get ranges from locData slot. The ranges method on a GenoSet is deprecated. Please use ranges(locData(x)).
-##' @title Ranges for chromosome
-##' @param x GenoSet
-##' @return character
-##' @author Peter Haverty
-##' @exportMethod ranges
-##' @rdname genoset-methods
-##' @aliases ranges,GenoSet-method
 setMethod("ranges", "GenoSet", function(x) {
-  .Deprecated(old="ranges",package="genoset",msg="The ranges method on a GenoSet is deprecated. Please use ranges(locData(x)).")
-  return( ranges(locData(x)) )
+  .Defunct(old="ranges",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use ranges(locData(x)).")
 })
 
-
-##' Get space factor for GenoSet
-##'
-##' locData slot holds a RangedData, which keeps the chromosome of each
-##' feature in a factor names 'space'. The ranges method on a GenoSet is deprecated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.
-##' @param x GenoSet
-##' @return factor
-##' @author Peter M. Haverty
-##' @rdname genoset-methods
-##' @examples
-##' data(genoset)
-##' chr(genoset.ds)
-##' start(genoset.ds)
-##' end(genoset.ds)
-##' chrNames(genoset.ds)
-##' elementLengths(genoset.ds) # Returns the number of probes per chromosome
-##' @aliases space,GenoSet-method
 setMethod("space", "GenoSet", function(x) {
-  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is deprecated. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
-  return(space(locData(x)))
+  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
 } )
 
 ##' Get elementLengths from locData slot
@@ -912,7 +882,6 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' 
 ##' @param x GenoSet (or descendant), RangedData, or GRanges
 ##' @param y numeric or Rle
-##' @param element character, Deprecated. when x is a GenoSet, the y-th column of this assayDataElement is used for the y-axis data.
 ##' @param locs RangedData, like locData slot of GenoSet
 ##' @param chr Chromosome to plot, NULL by default for full genome
 ##' @param add Add plot to existing plot
@@ -973,16 +942,9 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
 
 ##' @rdname genoPlot-methods
 ##' @aliases genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method
-setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), function(x, y, element=NULL, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
+setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), function(x, y, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
   ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
   # Get position info, subset by chr if necessary
-  if (!is.null(element)) {
-    warning("The 'element' arg is deprecated. Please switch to genoPlot( RangedDataOrGenoSetOrGRanges, Rle or numeric ), e.g. genoPlot(genoset, genoset[,i,'cn']) .\n")
-    if (! element %in% assayDataElementNames(x)) {
-      stop("Provided assayData element, ", element, " is not a valid name of an assayData member")
-    }
-    y = x[ , y, element]
-  }
   dot.args = list(...)
   if ( !is.null(chr) ) {
     if ( "xlim" %in% names(dot.args) ) {

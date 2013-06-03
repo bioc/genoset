@@ -1,6 +1,6 @@
 \name{BAFSet}
 \alias{BAFSet}
-\alias{BAFSet-deprecated}
+\alias{BAFSet-defunct}
 \title{Create a BAFSet object}
 \usage{
   BAFSet(locData, lrr = NULL, baf = NULL, pData = NULL,
@@ -53,10 +53,9 @@
   will be checked by methods that require it.
 }
 \details{
-  The BAFSet class is deprecated. Please use GenoSet.
-  BAFSet only added the baf/lrr getter/setter functions,
-  which are redundant with x[, , 'baf'] and x[, , 'lrr']
-  now.
+  The BAFSet class is defunct. Please use GenoSet. BAFSet
+  only added the baf/lrr getter/setter functions, which are
+  redundant with x[, , 'baf'] and x[, , 'lrr'] now.
 }
 \examples{
 test.sample.names = LETTERS[11:13]
