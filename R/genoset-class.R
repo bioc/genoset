@@ -42,6 +42,13 @@
 ##' @useDynLib genoset
 NULL
 
+##' Deprecated genoset features
+##'
+##' GenoSet is moving towards using GenomicRanges instead of RangedData. We are also getting rid of dependencies on eSet for a potential switch to an underlying SummarizedExperiment.
+##' @name genoset-deprecated
+##' @aliases genoset-deprecated
+NULL
+
 ##' Defunct genoset features
 ##'
 ##' The CNSet and BAFSet classes are defunct.  They only really added getter/setter methods for specific assayDataElements,
@@ -52,8 +59,8 @@ NULL
 ##' GRanges in the locData slot, we recommend using \code{chrNames} for \code{names} and \code{chr} for \code{space}.
 ##' @name genoset-defunct
 ##' @aliases genoset-defunct
-
 NULL
+
 ###############
 # Class GenoSet
 ###############

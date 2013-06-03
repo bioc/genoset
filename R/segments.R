@@ -13,14 +13,14 @@
 ##' and the location of each feature, we can make a Rle that represents all features.
 ##' 
 ##' @param segs data.frame of segments, formatted as output of segment function from DNAcopy package
-##' @param locs RangedData, like locData slot of a GenoSet
+##' @param locs GenomicRanges, like locData slot of a GenoSet
 ##' @return Rle with run lengths and run values covering all features in the data set.
 ##' @export
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
 ##'   segs = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-##'   segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the RangedData locs
+##'   segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2Rle <- function(segs, locs) {
   if ("num.mark" %in% colnames(segs)) {
@@ -85,6 +85,7 @@ segs2Granges <- function(segs) {
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 ##' @family segments
 segs2RangedData <- function(segs) {
+  .Deprecated("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")
   rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean,num.mark=segs$num.mark)
   return(rd)
 }
@@ -93,7 +94,7 @@ segs2RangedData <- function(segs) {
 ##'
 ##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
 ##' Rle or a DataFrame with Rle
-##' columns and the locData RangedData both from a GenoSet object
+##' columns and the locData both from a GenoSet object
 ##' and makes a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
 ##' exactly to probe locations in locData and the input to
@@ -106,7 +107,7 @@ segs2RangedData <- function(segs) {
 ##' and this is used in the DataFrame version.
 ##'
 ##' @param object Rle or list/DataFrame of Rle vectors
-##' @param locs RangedData with rows corresponding to rows of df
+##' @param locs GenomicRanges with rows corresponding to rows of df
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
 ##' @param end integer, vector of feature end positions
@@ -208,7 +209,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
 ##'
 ##' @param x Rle or list/DataFrame of Rle vectors
 ##' @param y Rle or list/DataFrame of Rle vectors
-##' @param locs RangedData with rows corresponding to rows of df
+##' @param locs GenomicRanges with rows corresponding to rows of df
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
 ##' @param end integer, vector of feature end positions
@@ -221,7 +222,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
 ##'   loh = Rle(c(2,4,6,8,10,12),rep(2,6))
 ##'   start = c(9:11,4:9,15:17)
 ##'   end = start
-##'   locs = RangedData(IRanges(start=start,end=end),space=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+##'   locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
 ##'   segPairTable(cn,loh,locs)
 ##' @author Peter M. Haverty
 ##' @docType methods
@@ -330,7 +331,7 @@ fixSegNAs <- function(x,max.na.run=3) {
 ##' @title Run CBS Segmentation
 ##' @aliases runCBS
 ##' @param data numeric matrix with continuous data in one or more columns
-##' @param locs RangeData, like locData slot of GenoSet
+##' @param locs GenomicRanges, like locData slot of GenoSet
 ##' @param return.segs logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.
 ##' @param n.cores numeric, number of cores to ask mclapply to use
 ##' @param smooth.region number of positions to left and right of individual positions to consider when smoothing single point outliers
@@ -345,7 +346,7 @@ fixSegNAs <- function(x,max.na.run=3) {
 ##'     sample.names = paste("a",1:2,sep="")
 ##'     probe.names =  paste("p",1:30,sep="")
 ##'     ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
-##'     locs = RangedData(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),space=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
+##'     locs = GRanges(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),seqnames=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
 ##'   
 ##'     seg.rle.result = DataFrame( a1 = Rle(c(rep(5,20),rep(3,10))), a2 = Rle(c(rep(2,10),rep(7,10),rep(9,10))), row.names=probe.names )
 ##'     seg.list.result = list(

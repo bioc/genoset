@@ -7,8 +7,8 @@
 \arguments{
   \item{object}{Rle or list/DataFrame of Rle vectors}
 
-  \item{locs}{RangedData with rows corresponding to rows of
-  df}
+  \item{locs}{GenomicRanges with rows corresponding to rows
+  of df}
 
   \item{chr.ind}{matrix, like from chrIndices method}
 
@@ -29,7 +29,7 @@
 \description{
   Like the inverse of segs2Rle and segs2RleDataFrame. Takes
   a Rle or a DataFrame with Rle columns and the locData
-  RangedData both from a GenoSet object and makes a list of
+  both from a GenoSet object and makes a list of
   data.frames each like the result of CBS's segment.  Note
   the loc.start and loc.stop will correspond exactly to
   probe locations in locData and the input to

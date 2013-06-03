@@ -9,8 +9,8 @@
 
   \item{y}{Rle or list/DataFrame of Rle vectors}
 
-  \item{locs}{RangedData with rows corresponding to rows of
-  df}
+  \item{locs}{GenomicRanges with rows corresponding to rows
+  of df}
 
   \item{chr.ind}{matrix, like from chrIndices method}
 
@@ -49,7 +49,7 @@ cn = Rle(c(3,4,5,6),rep(3,4))
   loh = Rle(c(2,4,6,8,10,12),rep(2,6))
   start = c(9:11,4:9,15:17)
   end = start
-  locs = RangedData(IRanges(start=start,end=end),space=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+  locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
   segPairTable(cn,loh,locs)
 }
 \author{

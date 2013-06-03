@@ -10,7 +10,7 @@
   \item{data}{numeric matrix with continuous data in one or
   more columns}
 
-  \item{locs}{RangeData, like locData slot of GenoSet}
+  \item{locs}{GenomicRanges, like locData slot of GenoSet}
 
   \item{return.segs}{logical, if true list of segment
   data.frames return, otherwise a DataFrame of Rle vectors.
@@ -49,7 +49,7 @@
 sample.names = paste("a",1:2,sep="")
     probe.names =  paste("p",1:30,sep="")
     ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
-    locs = RangedData(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),space=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
+    locs = GRanges(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),seqnames=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
 
     seg.rle.result = DataFrame( a1 = Rle(c(rep(5,20),rep(3,10))), a2 = Rle(c(rep(2,10),rep(7,10),rep(9,10))), row.names=probe.names )
     seg.list.result = list(

@@ -8,7 +8,8 @@
   \item{segs}{data.frame of segments, formatted as output
   of segment function from DNAcopy package}
 
-  \item{locs}{RangedData, like locData slot of a GenoSet}
+  \item{locs}{GenomicRanges, like locData slot of a
+  GenoSet}
 }
 \value{
   Rle with run lengths and run values covering all features
@@ -28,7 +29,7 @@
 \examples{
 data(genoset)
   segs = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-  segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the RangedData locs
+  segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
 \author{
   Peter M. Haverty \email{phaverty@gene.com}
