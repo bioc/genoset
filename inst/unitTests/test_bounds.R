@@ -82,21 +82,21 @@ test_rangeSampleMeans <- function() {
   means = t(means)
   checkEquals( rangeSampleMeans( query.rd, subject, "cn" ), means)
   
-  rle.cnset = GenoSet(
+  rle.genoset = GenoSet(
     locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
     cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  rle.means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.rd), ncol=ncol(rle.cnset), dimnames=list(rownames(query.rd),sampleNames(rle.cnset)))
-  checkEquals( rangeSampleMeans( query.rd, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
+  rle.means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.rd), ncol=ncol(rle.genoset), dimnames=list(rownames(query.rd),sampleNames(rle.genoset)))
+  checkEquals( rangeSampleMeans( query.rd, rle.genoset, "cn" ), rle.means, "DataFrame of Rle")
 
   # With GRanges
   query.gr = as(query.rd,"GRanges")
   locData(subject) = as(locData(subject),"GRanges")
   checkEquals( rangeSampleMeans( query.gr, subject, "cn" ), means)
-  locData(rle.cnset) = as(locData(rle.cnset),"GRanges")
-  checkEquals( rangeSampleMeans( query.gr, rle.cnset, "cn" ), rle.means, "DataFrame of Rle")
+  locData(rle.genoset) = as(locData(rle.genoset),"GRanges")
+  checkEquals( rangeSampleMeans( query.gr, rle.genoset, "cn" ), rle.means, "DataFrame of Rle")
 }
 
 test_rangeColMeans <- function() {

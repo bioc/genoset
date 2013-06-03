@@ -1,5 +1,5 @@
 #################################################
-# Tests for functions and methods on BAFSet class
+# Tests for utility functions
 #################################################
 
 test_baf2mbaf <- function() {
@@ -60,3 +60,21 @@ test_baf2mbaf <- function() {
   
 }
 
+test_gcCorrect <- function() {
+
+  input.vector = c(rep(0.05,50),rep(0.08,50))
+  gc = input.vector
+  output.vector = rep(0,100)
+  checkEquals( gcCorrect(input.vector, gc, retain.mean=FALSE ), output.vector )
+  checkEquals( gcCorrect(input.vector, gc, retain.mean=TRUE ), output.vector + mean(input.vector) )
+
+  input.matrix = matrix(c(input.vector,input.vector),ncol=2)
+  output.matrix = matrix(c(output.vector,output.vector),ncol=2)
+  checkEquals( gcCorrect(input.matrix, gc, retain.mean=FALSE ), output.matrix )
+
+  input.matrix.w.na = input.matrix
+  input.matrix.w.na[ c(25,75),  ] = NA
+  output.matrix.w.na = output.matrix
+  output.matrix.w.na[ c(25,75), ] = NA
+  checkEquals( gcCorrect(input.matrix.w.na, gc, retain.mean=FALSE ), output.matrix.w.na )
+}
