@@ -1,10 +1,6 @@
 %\VignetteIndexEntry{genoset}
 %\VignetteDepends{}
 %\VignetteKeywords{genoset}
-%\VignetteKeywords{bafset}
-%\VignetteKeywords{cnset}
-%\VignetteKeywords{BAFSet}
-%\VignetteKeywords{CNSet}
 %\VignettePackage{genoset}
 \documentclass[10pt]{article}
 
@@ -71,10 +67,9 @@ rle.ds = GenoSet( locData=locData.gr,
 Let's have look at what's inside these objects.
 
 <<objectassaydata>>=
-assayDataElementNames(rle.ds)
+names(rle.ds)
 head( rle.ds[,,"cn"] )
 head( rle.ds[,,"cn.segments"] )
-names(rle.ds)
 @ 
 
 Note that \Rfunction{names} lists the data matrices.
@@ -386,20 +381,8 @@ expected values can be interpreted as Allelic Imbalance, which is a sign of gain
 copy-neutral LOH.  \Rclass{BAFSet}s require 'lrr' and 'baf' matrices as assayDataElements and have getter/setter 
 methods for these elements.
 
-\subsection{Creating \Rclass{CNSet} and \Rclass{BAFSet} Objects}
-<<objectcreation>>=
-library(genoset)
-data(genoset)
-
-baf.ds = BAFSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
-head( baf(baf.ds) )
-head( lrr(baf.ds) )
-cn.ds = CNSet( locData=locData.rd, cn=fake.lrr, pData=fake.pData, annotation="SNP6" )
-head( cn(cn.ds) )
-@
-
-\subsection{Processing Data}
-BAF data can be converted into the ``Modified BAF'' or mBAF metric, introduced by Staaf, et
+\subsection{Processing B-Allele Frequency Data}
+B-Allele Frequency (BAF) data can be converted into the ``Modified BAF'' or mBAF metric, introduced by Staaf, et
 al., 2008. mBAF folds the values around the 0.5 axis and makes the HOM positions NA.  The
 preferred way to identify HOMs is to use genotype calls from a matched
 normal (AA, AC, AG, etc.), but NA'ing greater than a certain value works OK.  A hom.cutoff of 0.90 is
@@ -407,17 +390,17 @@ suggested for Affymetrix arrays and 0.95 for Illumina arrays, following Staaf, e
 
 Return data as a matrix:
 <<mbafcutoff>>=
-mbaf.data = baf2mbaf(baf(baf.ds),hom.cutoff = 0.90)
-assayDataElement(baf.ds,"mbaf") = mbaf.data
+baf.ds = GenoSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+baf.ds[, , "mbaf"] = baf2mbaf(baf.ds[, , "baf"],hom.cutoff = 0.90)
 @ 
 
 ... or use compress it to a DataFrame of Rle. This uses ~1/3 the space
 on our random test data.
 <<mbaftorle>>=
-mbaf.data = DataFrame( sapply(colnames( mbaf.data),
-  function(x) { Rle( mbaf.data[,x] ) },
+mbaf.data = DataFrame( sapply(colnames( baf.ds),
+  function(x) { Rle( baf.ds[,x, "mbaf"] ) },
   USE.NAMES=TRUE, simplify=FALSE ) )
-as.numeric(object.size( assayDataElement(baf.ds,"mbaf")))  / as.numeric( object.size(mbaf.data))
+as.numeric(object.size( baf.ds[, ,"mbaf"]))  / as.numeric( object.size(mbaf.data))
 @ 
 
 Using the HOM SNP calls from the matched normal works much better. A
@@ -434,8 +417,8 @@ as a DataFrame of Rle as only the ~1/1000 HET positions are being used
 and all those NA HOM positions will compress nicely.
 
 <<segment>>=
-assayDataElement(baf.ds,"baf.segs") = runCBS( assayDataElement(baf.ds,"mbaf"), locData(baf.ds) )
-assayDataElement(baf.ds,"lrr.segs") = runCBS( lrr(baf.ds), locData(baf.ds) )
+baf.ds[,,"baf.segs"] = runCBS( baf.ds[, ,"mbaf"], locData(baf.ds) )
+baf.ds[,,"lrr.segs"] = runCBS( baf.ds[, , "lrr"], locData(baf.ds) )
 @ 
 
 \subsection{Plots}
@@ -492,7 +475,7 @@ sample at a time if your data ``matrix'' is a \Rclass{DataFrame}.
 <<crosssample>>=
 gain.list = lapply(sampleNames(baf.ds),
   function(sample.name) {
-    as.logical( assayDataElement(baf.ds,"lrr.segs")[,sample.name] > 0.3 )
+    as.logical( baf.ds[, sample.name, "lrr.segs"] > 0.3 )
 })
 gain.mat = do.call(cbind, gain.list)
 gain.freq = rowMeans(gain.mat,na.rm=TRUE)
