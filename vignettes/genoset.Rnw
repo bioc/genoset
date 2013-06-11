@@ -390,8 +390,8 @@ suggested for Affymetrix arrays and 0.95 for Illumina arrays, following Staaf, e
 
 Return data as a matrix:
 <<mbafcutoff>>=
-baf.ds = GenoSet( locData=locData.rd, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
-baf.ds[, , "mbaf"] = baf2mbaf(baf.ds[, , "baf"],hom.cutoff = 0.90)
+baf.ds = GenoSet( locData=locData.gr, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+baf.ds[, , "mbaf"] = baf2mbaf(baf.ds[, , "baf"], hom.cutoff = 0.90)
 @ 
 
 ... or use compress it to a DataFrame of Rle. This uses ~1/3 the space
