@@ -189,26 +189,26 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
 }
 
 test_subset <- function() {
-  test.rd = RangedData(ranges=IRanges(start=8:14,width=1),names=letters[8:14],space=rep("chrX",7))
+  test.gr = GRanges(ranges=IRanges(start=8:14,width=1,names=letters[8:14]),seqnames=rep("chrX",7))
   test.pdata = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])),stringsAsFactors=FALSE)
   test.phenodata = phenoData=new("AnnotatedDataFrame",test.pdata)
 
-  test.ds = new("Genoset",
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+  test.ds = new("GenoSet",
+    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     phenoData=test.phenodata
     )
   
-  expected.ds = new("Genoset",
-    locData=RangedData(ranges=IRanges(start=8:10,width=1,names=probe.names[8:10]),space="chrX",universe="hg18"),
+  expected.ds = new("GenoSet",
+    locData=GRanges(ranges=IRanges(start=8:10,width=1,names=probe.names[8:10]),seqnames="chrX"),
     lrr=matrix(c(8:10,18:20,28:30),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
     baf=matrix(c(38:40,48:50,58:60),nrow=3,ncol=3,dimnames=list(probe.names[8:10],test.sample.names)),
     phenoData=test.phenodata
     )
   
-  chr3.ds = new("Genoset",
-    locData=RangedData(ranges=IRanges(start=5:6,width=1,names=probe.names[5:6]),space="chr3",universe="hg18"),
+  chr3.ds = new("GenoSet",
+    locData=GRanges(ranges=IRanges(start=5:6,width=1,names=probe.names[5:6]),seqnames="chr3"),
     lrr=matrix(c(5:6,15:16,25:26),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     phenoData=test.phenodata
@@ -217,31 +217,31 @@ test_subset <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
   
-  ds = Genoset(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+  ds = GenoSet(
+    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=test.pdata,
     annotation="SNP6"
     )
 
-  subset.rows.ds = Genoset(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")[2:3,,drop=TRUE],
+  subset.rows.ds = GenoSet(
+    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))[2:3,,drop=TRUE],
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))[2:3,],
     pData=test.pdata,
     annotation="SNP6"
     )
   
-  subset.cols.ds = Genoset(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+  subset.cols.ds = GenoSet(
+    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
     lrr=matrix(11:30,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
     baf=matrix(41:60,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
     pData=test.pdata[2:3,],
     annotation="SNP6"
     )
 
-  gene.rd = RangedData(ranges=IRanges(start=2:3,width=1),space=c("chr1","chr1"),universe="hg18")
+  gene.rd = GRanges(ranges=IRanges(start=2:3,width=1),seqnames=c("chr1","chr1"))
   
   # Subsetting whole object
   checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=TRUE)
@@ -252,24 +252,21 @@ test_subset <- function() {
   checkEquals( ds[ gene.rd, ], subset.rows.ds, check.attributes=FALSE )
   
   # Subsetting assayData / extracting
-  checkEquals( ds[ 4:6, 1:2, "lrr"], lrr(ds)[4:6,1:2])
-  checkEquals( ds[ 5, 3, "baf"], baf(ds)[5,3])
   checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])
   checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
-  checkEquals( ds[ gene.rd, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
   checkException( ds[ , , "foo"], "Fail to extract assayDataElement with bad character k", silent=TRUE)
   checkException( ds[ , , 8], "Fail to extract assayDataElement with bad integer k", silent=TRUE)
   
   # Test subsetting by location
-  checkEquals( test.ds[test.rd,], expected.ds, check.attributes=FALSE )
-  checkEquals( test.ds[as(test.rd,"GRanges"),], expected.ds, check.attributes=FALSE )
+  checkEquals( test.ds[test.gr,], expected.ds, check.attributes=FALSE )
+  checkEquals( test.ds[as(test.gr,"GRanges"),], expected.ds, check.attributes=FALSE )
   checkEquals( test.ds[8:10,], expected.ds, check.attributes=FALSE)
   checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds , check.attributes=FALSE )
 
   # Replace
-  ds = Genoset(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+  ds = GenoSet(
+    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
     lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
@@ -288,7 +285,7 @@ test_subset <- function() {
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with integer indices")
   lrr.mat[6:8,2] = 3
   ds[locData(ds)[6:8,],2,"lrr"] = 3
-  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
+  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with GRanges subsetting of rows")
   ds[,3,"lrr"] = 3
   lrr.mat[,3] = 3
   checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
@@ -306,42 +303,42 @@ test_subset_w_granges <- function() {
   baf = matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   pData = data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
   locs = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  test.ds = Genoset(
+  test.ds = GenoSet(
     locData=locs,
     lrr=lrr,
     baf=baf,
     pData=pData
     )
   
-  expected.ds = Genoset(
+  expected.ds = GenoSet(
     locData=locs[8:10,],
     lrr=lrr[8:10,],
     baf=baf[8:10,],
     pData=pData
     )
   
-  chr3.ds = Genoset(
+  chr3.ds = GenoSet(
     locData=locs[5:6,],
     lrr=matrix(c(5:6,15:16,25:26),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     baf=matrix(c(35:36,45:46,55:56),nrow=2,ncol=3,dimnames=list(probe.names[5:6],test.sample.names)),
     pData=pData
     )
   
-  ds = Genoset(
+  ds = GenoSet(
     locData=locs,
     lrr=lrr,
     baf=baf,
     pData=pData
     )
 
-  subset.rows.ds = Genoset(
+  subset.rows.ds = GenoSet(
     locData=locs[2:3,],
     lrr=lrr[2:3,],
     baf=baf[2:3,],
     pData=pData
     )
   
-  subset.cols.ds = Genoset(
+  subset.cols.ds = GenoSet(
     locData=locs,
     lrr=matrix(11:30,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
     baf=matrix(41:60,nrow=10,ncol=2,dimnames=list(probe.names,test.sample.names[2:3])),
@@ -356,11 +353,8 @@ test_subset_w_granges <- function() {
   checkEquals( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE)
   
   # Subsetting assayData / extracting
-  checkEquals( ds[ 4:6, 1:2, "lrr"], lrr(ds)[4:6,1:2])
-  checkEquals( ds[ 5, 3, "baf"], baf(ds)[5,3])
   checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])
   checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
-  checkEquals( ds[ gene.gr, 1:2,"lrr" ], lrr(ds)[2:3,1:2] )
   checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
   
   # Test subsetting by location
@@ -369,7 +363,7 @@ test_subset_w_granges <- function() {
   checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds, check.attributes=FALSE)
 
   # Replace
-  ds = Genoset(
+  ds = GenoSet(
     locData=locs,
     lrr=lrr,
     baf=baf,
