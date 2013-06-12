@@ -98,7 +98,7 @@ setValidity("GenoSet", function(object) {
 ##'   test.sample.names = LETTERS[11:13]
 ##'   probe.names = letters[1:10]
 ##'   gs = GenoSet(
-##'      locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+##'      locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
 ##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 ##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'      annotation="SNP6"
@@ -207,7 +207,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
 ##' gs = GenoSet(
-##'    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+##'    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
 ##'    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 ##'    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'    annotation="SNP6"
@@ -465,7 +465,7 @@ setMethod("ranges", "GenoSet", function(x) {
 })
 
 setMethod("space", "GenoSet", function(x) {
-  .Deprecated(old="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
+  .Defunct(old="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
 } )
 
 ##' Get elementLengths from locData slot
@@ -629,16 +629,9 @@ setMethod("show","GenoSet",
 ##' @param object GRanges, RangedData or GenoSet
 ##' @return character vector of chromosome positions for each feature
 ##' @examples
-##'   test.sample.names = LETTERS[11:13]
-##'   probe.names = letters[1:10]
-##'   gs = GenoSet(
-##'      locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
-##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'      annotation="SNP6"
-##'   )
-##'   chr(gs)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
-##'   chr(locData(gs))  # The same
+##'   data(genoset)
+##'   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
+##'   chr(locData(genoset.ds))  # The same
 ##' @author Peter Haverty
 ##' @export chr
 ##' @rdname chr-methods
@@ -662,16 +655,9 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##' @author Peter Haverty
 ##' @export pos
 ##' @examples
-##'   test.sample.names = LETTERS[11:13]
-##'   probe.names = letters[1:10]
-##'   gs = GenoSet(
-##'      locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
-##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'      annotation="SNP6"
-##'   )
-##'   pos(gs)  # 1:10
-##'   pos(locData(gs))  # The same
+##'   data(genoset)
+##'   pos(genoset.ds)  # 1:10
+##'   pos(locData(genoset.ds))  # The same
 ##' @rdname pos
 ##' @aliases pos,RangedDataOrGenoSetOrGRanges-method
 setGeneric("pos", function(object) standardGeneric("pos"))
@@ -688,17 +674,10 @@ setMethod("pos", "RangedDataOrGenoSetOrGRanges",
 ##' @author Peter M. Haverty
 ##' @export chrNames
 ##' @examples
-##'   test.sample.names = LETTERS[11:13]
-##'   probe.names = letters[1:10]
-##'   gs = GenoSet(
-##'      locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
-##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'      annotation="SNP6"
-##'   )
-##'   chrNames(gs) # c("chr1","chr3","chrX")
-##'   chrNames(locData(gs))  # The same
-##'   chrNames(gs) = sub("^chr","",chrNames(gs))
+##'   data(genoset)
+##'   chrNames(genoset.ds) # c("chr1","chr3","chrX")
+##'   chrNames(locData(genoset.ds))  # The same
+##'   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 ##' @rdname chrNames
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 ##' @rdname chrNames
@@ -857,174 +836,6 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGRanges"),
           })
 
 ###########
-## Plots ##
-###########
-
-##' Plot data along the genome
-##'
-##' Plot location data and chromosome boundaries from a GenoSet, RangedData, or GRanges object
-##' against data from a numeric or Rle. Specifying a chromosome name and optionally a 'xlim'
-##' will zoom into one chromosome region. If more than one chromosome is present, the
-##' chromosome boundaries will be marked. Alternatively, for a numeric x and a
-##' numeric or Rle y, data in y can be plotted at genome positions x. In this case,
-##' chromosome boundaries can be taken from the argument locs. If data for y-axis comes
-##' from a Rle lines are plotted representing segments. X-axis tickmarks will be labeled
-##' with genome positions in the most appropriate units.
-##'
-##' @section Methods:
-##' \describe{
-##' 
-##' \item{\code{signature(x = "RangedDataOrGenoSetOrGRanges", y = "ANY")}}{
-##' Plot feature locations and data from one sample.
-##' }
-##' 
-##' \item{\code{signature(x = "numeric", y = "numeric")}}{
-##' Plot numeric location and a vector of numeric data.
-##' }
-##' 
-##' \item{\code{signature(x = "numeric", y = "Rle")}}{
-##' Plot numeric location and a vector of Rle data. Uses lines for Rle runs.
-##' }
-##' }
-##' 
-##' @param x GenoSet (or descendant), RangedData, or GRanges
-##' @param y numeric or Rle
-##' @param locs RangedData, like locData slot of GenoSet
-##' @param chr Chromosome to plot, NULL by default for full genome
-##' @param add Add plot to existing plot
-##' @param xlab character, label for x-axis of plot
-##' @param ylab character, label for y-axis of plot
-##' @param col character, color to plot lines or points
-##' @param lwd numeric, line width for segment plots from an Rle
-##' @param pch character or numeric, printing character, see points
-##' @param xlim integer, length two, bounds for genome positions. Used in conjunction with "chr" to subset data for plotting.
-##' @param ... Additional plotting args
-##' @return nothing
-##' @author Peter M. Haverty
-##' @export genoPlot
-##' @family "genome plots"
-##' @examples
-##' data(genoset)
-##' genoPlot( x=baf.ds,y=baf.ds[,1,"lrr"] )
-##' genoPlot( genoPos(baf.ds), baf.ds[,1,"lrr"], locs=locData(baf.ds) ) # The same
-##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
-##' @docType methods
-##' @rdname genoPlot-methods
-##' @aliases genoPlot-methods
-setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
-
-##' @rdname genoPlot-methods
-##' @aliases genoPlot,numeric,numeric-method
-setMethod("genoPlot",c(x="numeric",y="numeric"),
-          function(x, y, add=FALSE, xlab="", ylab="", col="black", locs=NULL, ...) {
-            if (add == FALSE) {
-              plot(x,y,axes=FALSE,xlab=xlab,ylab=ylab,xaxs="i",col=col,...)
-              genomeAxis(locs=locs)
-            } else {
-              points(x,y,col=col,...)
-            }
-            return(invisible())
-          })
-
-##' @rdname genoPlot-methods
-##' @aliases genoPlot,numeric,Rle-method
-setMethod("genoPlot", c(x="numeric",y="Rle"),
-          function(x, y, add=FALSE, xlab="", ylab="", col="red", locs=NULL, lwd=2, xlim=NULL, ...) {
-            if (add == FALSE) {
-              if (is.null(xlim)) {
-                xlim=range(x,na.rm=TRUE)
-              }
-              plot(NA,type="n",xlim=xlim,ylim=range(y,na.rm=TRUE),xlab=xlab,ylab=ylab,xaxs="i",axes=FALSE,...)
-              genomeAxis(locs=locs)
-            }
-            num.mark = runLength(y)
-            loc.end.indices = cumsum(num.mark)
-            loc.end = x[loc.end.indices]
-            loc.start.indices = (loc.end.indices - num.mark) + 1
-            loc.start = x[loc.start.indices]
-            seg.mean = runValue(y)
-            segments(loc.start, seg.mean, loc.end, seg.mean, col=col, lwd=lwd)
-            return(invisible())
-          })
-
-##' @rdname genoPlot-methods
-##' @aliases genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method
-setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGRanges",y="ANY"), function(x, y, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
-  ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
-  # Get position info, subset by chr if necessary
-  dot.args = list(...)
-  if ( !is.null(chr) ) {
-    if ( "xlim" %in% names(dot.args) ) {
-      xlim = dot.args[["xlim"]]
-      zoom.gr = GRanges(ranges=IRanges(start=xlim[1],end=xlim[2]),seqnames=chr)
-      bounds = boundingIndicesByChr(zoom.gr, x)[1,]
-      indices = bounds[1]:bounds[2]
-      positions = start(x)[indices]
-    } else {
-      indices = chrIndices(x,chr)
-      positions = start(x)[indices]
-    }
-    y = y[indices]
-    locs = NULL
-  } else {
-    positions = genoPos(x)
-    if (length(chrNames(x)) > 1) {
-      locs = x
-    } else {
-      locs = NULL
-    }
-  }
-  genoPlot(positions,y,locs=locs,add=add,xlab=xlab,ylab=ylab,pch=pch,...)
-})
-
-##' Label an axis with base positions
-##'
-##' Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
-##'
-##' @title Label axis with base pair units
-##' @param locs RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
-##' @param side integer side of plot to put axis
-##' @param log logical Is axis logged?
-##' @param do.other.side logical, label non-genome side with data values at tick marks?
-##' @return nothing
-##' @export genomeAxis
-##' @family "genome plots"
-##' @examples
-##'   data(genoset)
-##'   genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
-##'   genomeAxis( locs=locData(baf.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
-##'   genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
-##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
-##' @author Peter M. Haverty
-genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
-  if (is.null(locs)) {
-    label.positions = axTicks(side=side,log=log)
-    if ( max(label.positions) > 1e9 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e9),"Gb",sep="")}))
-    } else if ( max(label.positions) > 1e6 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e6),"Mb",sep="")}))
-    } else if ( max(label.positions) > 1e3 ) {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.1f",x/1e3),"kb",sep="")}))
-    } else {
-      axis(side=side,at=label.positions,labels=sapply(label.positions,function(x){paste(sprintf("%.0f",x),"bp",sep="")}))
-    }
-  } else {
-    chr.info = chrInfo(locs)
-    abline(v=chr.info[-1,"start"])
-    chr.labels = rownames(chr.info)
-    mtext(side=rep(c(3,1),len=length(chr.labels)), text=chr.labels, line=0, at=rowMeans(chr.info[,c("start","stop"),drop=FALSE]))
-  }
-  box()
-  if (do.other.side == TRUE) {
-    if (side == 1) {
-      axis(side=2)
-    } else if (side == 2) {
-      axis(side=1)
-    }
-  }
-}
-
-###########
 # Functions
 ###########
 
@@ -1096,267 +907,6 @@ modeCenter <- function(ds) {
   })
   ds = sweep(ds, 2, column.modes)
   return(ds)
-}
-
-##' Convert bounding indices into a Rle
-##'
-##' Given a matrix of first/last indices, like from boundingIndicesByChr, and values for
-##' each range, convert to a Rle.  This function takes the expected length of the Rle, n,
-##' so that any portion of the full length not covered by a first/last range will be a
-##' run with the value NA.  This is typical in the case where data is segmented with CBS
-##' and some of the data to be segmented is NA.
-##' @export 
-##' @param bounds matrix, two columns, with first and last index, like from boundingIndicesByChr
-##' @param values ANY, some value to be associated with each range, like segmented copy number.
-##' @param n integer, the expected length of the Rle, i.e. the number of features in the
-##' genome/target ranges processed by boundingIndicesByChr.
-##' @return Rle
-##' @family "segmented data"
-##' @author Peter M. Haverty
-bounds2Rle <- function( bounds, values, n ) {
-  if ( length(values) != nrow(bounds) ) {
-    stop("must have one value for each bound")
-  }
-  if (n < length(values)) {
-    stop("n must be >= length(values)")
-  }
-  run.length = integer((2*nrow(bounds))+1)
-  run.length[1] = bounds[1] - 1
-  run.value = rep(NA_real_, (2*nrow(bounds))+1)
-  data.indices = seq.int(from=2, by=2, length.out=nrow(bounds))
-  widths = (bounds[, 2] - bounds[, 1]) + 1
-  run.length[data.indices] = widths
-  run.value[data.indices] = values
-  run.length[data.indices+1] = diff(c(bounds[, 2], n)) - c(widths[-1], 0)
-  
-  if (sum(run.length) != n) {
-    stop("Rle is the wrong length. Look for double counted features in your bounds table.")
-  }
-  return( Rle( run.value, run.length ) )
-}
-
-##' Find indices of features bounding a set of chromosome ranges/genes
-##'
-##' This function is similar to findOverlaps but it guarantees at least two features will be
-##' covered. This is useful in the case of finding features corresponding to a set of genes.
-##' Some genes will fall entirely between two features and thus would not return any ranges
-##' with findOverlaps. Specifically, this function will find the indices of the features
-##' (first and last) bounding the ends of a range/gene (start and stop) such that
-##' first <= start <= stop <= last. Equality is necessary so that multiple conversions between
-##' indices and genomic positions will not expand with each conversion. This function uses
-##' findIntervals, which is for k queries and n features is O(k * log(n)) generally and
-##' ~O(k) for sorted queries. Therefore will be dramatically faster for sets of query genes
-##' that are sorted by start position within each chromosome.  This should give performance
-##' for k genes and n features that is ~O(k) for starts and O(k * log(n)) for stops and
-##' ~O(k * log(n)) overall.  Ranges/genes that are outside the range of feature positions will
-##' be given the indices of the corresponding first or last index rather than 0 or n + 1 so
-##' that genes can always be connected to some data.
-##'
-##' @param starts numeric or integer, first base position of each query range
-##' @param stops numeric or integer, last base position of each query range
-##' @param positions Base positions in which to search
-##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
-##' @return integer matrix of 2 columms for start and stop index of range in data
-##' @family "range summaries"
-##' @export boundingIndices2
-##' @examples
-##'   starts = seq(10,100,10)
-##'   boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )
-##' @author Peter M. Haverty
-boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
-  indices = c(findInterval(starts,positions,rightmost.closed=FALSE), findInterval(stops,positions,rightmost.closed=FALSE))
-  dim(indices) = c(length(starts),2)
-  indices[ indices == 0L ] = 1L  # If off left end, set to 1
-
-  right.bounds.to.expand = positions[indices[,2]] < stops
-  indices[ right.bounds.to.expand,2 ] = indices[ right.bounds.to.expand,2 ] + 1L  # Right end index moves right one unless it is an exact match
-  indices[ indices > length(positions) ] = length(positions)  # If off right end, set to right end
-  
-  if (!is.null(offset)) {  # Convert indices back to indices in full positions before subsetting by initial.bounds
-    indices = indices + as.integer(offset)
-  }
-  return(indices)
-}
-
-
-##' Find indices of features bounding a set of chromosome ranges/genes
-##'
-##' This function is similar to findOverlaps but it guarantees at least two features will be
-##' covered. This is useful in the case of finding features corresponding to a set of genes.
-##' Some genes will fall entirely between two features and thus would not return any ranges
-##' with findOverlaps. Specifically, this function will find the indices of the features
-##' (first and last) bounding the ends of a range/gene (start and stop) such that
-##' first <= start < stop <= last. Equality is necessary so that multiple conversions between
-##' indices and genomic positions will not expand with each conversion. Ranges/genes that are
-##' outside the range of feature positions will be given the indices of the corresponding
-##' first or last index rather than 0 or n + 1 so that genes can always be connected to some data.
-##'
-##' This function uses some tricks from findIntervals, where is for k queries and n features it
-##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
-##' faster for sets of query genes that are sorted by start position within each chromosome.
-##' The index of the stop position for each gene is found using the left bound from the start
-##' of the gene reducing the search space for the stop position somewhat. This function has
-##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
-##' check for NAs or unsorted data in the subject positions. Also, the positions are
-##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles.
-##' These assumptions are safe for position info coming from a GenoSet, GRanges, or RangedData.
-##'
-##' @param starts integer vector of first base position of each query range
-##' @param stops integer vector of last base position of each query range
-##' @param positions Base positions in which to search
-##' @param valid.indices logical, TRUE assures that the returned indices don't go off either end of the array, i.e. 0 becomes 1 and n+1 becomes n
-##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
-##' @param all.indices logical, return a list containing full sequence of indices for each query
-##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
-##' @family "range summaries"
-##' @export boundingIndices
-##' @examples
-##'   starts = seq(10,100,10)
-##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indices=FALSE, offset=0) {
-  bounds = vector("integer",length(starts)*2L)
-  bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions),
-    as.integer(length(starts)), as.integer(length(positions)), bounds=bounds, as.integer(valid.indices), as.integer(offset),
-    DUP=FALSE, NAOK=TRUE)
-  bounds = bound.results$bounds
-  dim(bounds) = c(length(starts),2)
-
-  if (all.indices == TRUE) { # Return all covered and bounding indices
-    return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )
-  } else {  # Just return left and right indices
-    return(bounds)
-  }
-  
-}
-
-##' Find indices of features bounding a set of chromosome ranges/genes, across chromosomes
-##'
-##' Finds subject ranges corresponding to a set of genes (query ranges), taking chromosome
-##' into account. Specifically, this function will find the indices of the features
-##' (first and last) bounding the ends of a range/gene (start and stop) such that
-##' first <= start < stop <= last. Equality is necessary so that multiple conversions between
-##' indices and genomic positions will not expand with each conversion. Ranges/genes that are
-##' outside the range of feature positions will be given the indices of the corresponding
-##' first or last index on that chromosome, rather than 0 or n + 1 so that genes can always be
-##' connected to some data. Checking the left and right bound for equality will tell you when
-##' a query is off the end of a chromosome.
-##' 
-##' This function uses some tricks from findIntervals, where is for k queries and n features it
-##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
-##' faster for sets of query genes that are sorted by start position within each chromosome.
-##' The index of the stop position for each gene is found using the left bound from the start
-##' of the gene reducing the search space for the stop position somewhat.
-##' 
-##' This function differs from boundingIndices in that 1. it uses both start and end positions for
-##' the subject, and 2. query and subject start and end positions are processed in blocks corresponding
-##' to chromosomes.
-##'
-##' Both query and subject must be in at least weak genome order (sorted by start within chromosome blocks).
-##' 
-##' @param query GRanges or something coercible to GRanges
-##' @param subject RangedData
-##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
-##' @export boundingIndicesByChr
-##' @family "range summaries"
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-boundingIndicesByChr <-function(query, subject) {
-  if (!is(query,"GRanges")) {
-    tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
-  }
-
-  # Subject must have features ordered by start within chromosome. Query need not really, but it's faster.  Just checking query genome order to assure data are in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
-  if (! isGenomeOrder(subject,strict=FALSE) ) {
-    stop("subject must be in genome order.\n")
-  }
-  if (! isGenomeOrder(query,strict=FALSE) ) {
-    stop("query must be in genome order.\n")
-  }
-  query.chr.indices = chrIndices(query)
-  subject.chr.indices = chrIndices(subject)
-  ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
-  query.chr.indices = query.chr.indices[ok.chrs,,drop=FALSE]
-  subject.chr.indices = subject.chr.indices[ok.chrs,,drop=FALSE]
-  nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3])) # !!!
-  query.start = start(query)
-  query.end = end(query)
-  query.names = names(query)
-  if (is.null(query.names)) { query.names = as.character(seq.int(from=1,to=nquery)) }
-  subject.start = start(subject)
-  subject.end = end(subject)
-  return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))
-}
-
-##' Average features in ranges per sample 
-##'
-##' This function takes per-feature genomic data and returns averages for each of a set of genomic ranges.
-##' The most obvious application is determining the copy number of a set of genes. The features
-##' corresponding to each gene are determined with boundingIndices such that all features with the bounds
-##' of a gene (overlaps). The features on either side of the gene unless those positions
-##' exactly match the first or last base covered by the gene.  Therefore, genes falling between two features
-##' will at least cover two features. This is similar to rangeSampleMeans, but it checks the subject
-##' positions for being sorted and not being NA and also treats them as doubles, not ints. Range bounding
-##' performed by the boundingIndices function.
-##' 
-##' @param query.rd RangedData object representing genomic regions (genes) to be averaged.
-##' @param subject A GenoSet object or derivative
-##' @param assay.element character, name of element in assayData to use to extract data
-##' @return numeric matrix of features in each range averaged by sample
-##' @family "range summaries"
-##' @export rangeSampleMeans
-##' @examples
-##'   data(genoset)
-##'   my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
-##'   rangeSampleMeans( my.genes, baf.ds, "lrr" )
-##' @author Peter M. Haverty
-rangeSampleMeans <- function(query.rd, subject, assay.element) {
-  ## Find feature bounds of each query in subject genoset, get feature data average for each sample
-  all.indices = boundingIndicesByChr(query.rd, subject)
-
-  # Temporary hack for DataFrame of Rle
-  data.matrix = assayDataElement(subject,assay.element)
-
-  if (class(data.matrix) == "DataFrame") {
-    sample.vals = lapply( data.matrix, function(x) { rangeColMeans( all.indices, as.numeric(x)) })
-    range.means = do.call(cbind,sample.vals)
-  } else if (is.matrix(data.matrix)) {
-    range.means = rangeColMeans( all.indices, data.matrix )
-  } else {
-    range.means = matrix(ncol=ncol(data.matrix),nrow=nrow(all.indices),dimnames=list(rownames(all.indices),colnames(data.matrix)))
-    for (i in seq.int(length.out=ncol(data.matrix))) {
-      range.means[,i] = rangeColMeans( all.indices, data.matrix[,i] )
-    }
-  }
-  return(range.means)
-}
-
-##' Calculate column means for multiple ranges
-##'
-##' Essentially colMeans with a loop, all in a .Call. Designed to take a
-##' 2-column matrix of row indices, bounds, for a matrix, x, and calculate
-##' mean for each range in each column (or along a single vector). bounds
-##' matrix need not cover all rows.
-##' 
-##' @param bounds A two column integer matrix of row indices
-##' @param x A numeric matrix with rows corresponding to indices in bounds.
-##' @return A numeric matrix or vector, matching the form of x. One row for
-##' each row in bounds, one col for each col of x and appropriate dimnames.
-##' If x is a vector, just a vector with names from the rownames of bounds.
-##' @export
-##' @family "range summaries"
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-rangeColMeans <- function( bounds, x ) {
-  if (! is.matrix(bounds) && ncol(bounds) == 2) {
-    stop("bounds must be a matrix with 2 columns\n")
-  }
-  if (!is.double(x)) {
-    storage.mode(x) = "double"
-  }
-  if (!is.integer(bounds)) {
-    storage.mode(bounds) = "integer"
-  }
-  ans = .Call("rangeColMeans", bounds, x)
-  return(ans)
 }
 
 ##' Load a GenoSet from a RData file

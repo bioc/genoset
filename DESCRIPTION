@@ -41,4 +41,6 @@ Collate:
     'utils.R'
     'ordering.R'
     'segments.R'
+    'bounds.R'
+    'plots.R'
 ByteCompile: TRUE

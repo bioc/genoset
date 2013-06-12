@@ -57,18 +57,6 @@
   only added the baf/lrr getter/setter functions, which are
   redundant with x[, , 'baf'] and x[, , 'lrr'] now.
 }
-\examples{
-test.sample.names = LETTERS[11:13]
-  probe.names = letters[1:10]
-  locData.rd = RangedData(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18")
-  bs = BAFSet(
-    locData=locData.rd,
-    lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
-)
-}
 \author{
   Peter M. Haverty
 }
