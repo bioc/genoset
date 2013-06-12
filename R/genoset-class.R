@@ -240,8 +240,8 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 ##' @rdname genoset-methods
 ##' @examples
 ##'   data(genoset)
-##'   universe(locData.rd)
-##'   universe(locData.rd) = "hg19"
+##'   universe(locData.gr)
+##'   universe(locData.gr) = "hg19"
 ##' @aliases universe,GenoSet-method
 ##' @aliases universe,GRanges-method
 setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
@@ -285,8 +285,7 @@ setMethod("universe<-", signature(x="GRanges"),
 ##' @exportMethod featureNames
 ##' @examples
 ##'   data(genoset)
-##'   head(featureNames(locData.rd))
-##'   head(featureNames(as(locData.rd,"GRanges")))
+##'   head(featureNames(locData.gr))
 ##'   head(featureNames(cn.ds))
 ##' @exportMethod featureNames
 ##' @rdname featureNames
