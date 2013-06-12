@@ -467,11 +467,11 @@ setMethod("names", "GenoSet", function(x) {
 } )
 
 setMethod("ranges", "GenoSet", function(x) {
-  .Defunct(old="ranges",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use ranges(locData(x)).")
+  .Defunct(new="ranges",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use ranges(locData(x)).")
 })
 
 setMethod("space", "GenoSet", function(x) {
-  .Defunct(old="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
+  .Defunct(new="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
 } )
 
 ##' Get elementLengths from locData slot
