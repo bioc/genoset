@@ -29,9 +29,9 @@
 }
 \examples{
 data(genoset)
-  genoPlot(genoPos(baf.ds), baf(baf.ds)[,1])
-  genomeAxis( locs=locData(baf.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
-  genomeAxis( locs=locData(baf.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
+  genoPlot(genoPos(genoset.ds), genoset.ds[,1, "baf"])
+  genomeAxis( locs=locData(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
+  genomeAxis( locs=locData(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 }
 \author{

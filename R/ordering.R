@@ -86,9 +86,9 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##' @export toGenomeOrder
 ##' @examples
 ##'   data(genoset)
-##'   toGenomeOrder( baf.ds, strict=TRUE )
-##'   toGenomeOrder( baf.ds, strict=FALSE )
-##'   toGenomeOrder( locData(baf.ds) )
+##'   toGenomeOrder( genoset.ds, strict=TRUE )
+##'   toGenomeOrder( genoset.ds, strict=FALSE )
+##'   toGenomeOrder( locData(genoset.ds) )
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @family "genome ordering"

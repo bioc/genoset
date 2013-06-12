@@ -13,6 +13,6 @@
 }
 \examples{
 data(genoset)
-  head(sampleNames(cn.ds))
+  head(sampleNames(genoset.ds))
 }
 

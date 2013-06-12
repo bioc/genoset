@@ -286,7 +286,7 @@ setMethod("universe<-", signature(x="GRanges"),
 ##' @examples
 ##'   data(genoset)
 ##'   head(featureNames(locData.gr))
-##'   head(featureNames(cn.ds))
+##'   head(featureNames(genoset.ds))
 ##' @exportMethod featureNames
 ##' @rdname featureNames
 ##' @aliases featureNames,GRanges-method
@@ -318,7 +318,7 @@ setMethod("featureNames", signature(object="GenoSet"),
 ##' @exportMethod sampleNames
 ##' @examples
 ##'   data(genoset)
-##'   head(sampleNames(cn.ds))
+##'   head(sampleNames(genoset.ds))
 ##' @exportMethod sampleNames
 ##' @rdname sampleNames
 ##' @aliases sampleNames,GenoSet-method

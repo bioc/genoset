@@ -100,8 +100,8 @@
 }
 \examples{
 data(genoset)
-  universe(locData.rd)
-  universe(locData.rd) = "hg19"
+  universe(locData.gr)
+  universe(locData.gr) = "hg19"
 data(genoset)
   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
   genoset.ds[ , "K"]  # Sample called K

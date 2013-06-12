@@ -46,12 +46,12 @@
 }
 \examples{
 data(genoset)
-  seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-  df = segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-  assayDataElement( baf.ds, "lrr.segs" ) = df
-  segTable( df, locData(baf.ds) )
-  segTable( assayDataElement(baf.ds,"lrr.segs"), locData(baf.ds) )
-  segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
+  seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+  df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+  assayDataElement( genoset.ds, "lrr.segs" ) = df
+  segTable( df, locData(genoset.ds) )
+  segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
+  segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), sampleNames(genoset.ds)[1] )
 }
 \author{
   Peter M. Haverty

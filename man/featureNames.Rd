@@ -15,9 +15,8 @@
 }
 \examples{
 data(genoset)
-  head(featureNames(locData.rd))
-  head(featureNames(as(locData.rd,"GRanges")))
-  head(featureNames(cn.ds))
+  head(featureNames(locData.gr))
+  head(featureNames(genoset.ds))
 }
 \author{
   Peter M. Haverty

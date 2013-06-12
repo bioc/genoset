@@ -24,8 +24,8 @@
 }
 \examples{
 data(genoset)
-  seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-  segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+  seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+  segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }
 \author{
   Peter Haverty

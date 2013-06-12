@@ -28,8 +28,8 @@
 }
 \examples{
 data(genoset)
-  segs = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-  segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
+  segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+  segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
 \author{
   Peter M. Haverty \email{phaverty@gene.com}

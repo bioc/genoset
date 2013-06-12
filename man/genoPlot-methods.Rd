@@ -69,8 +69,8 @@
 }
 \examples{
 data(genoset)
-genoPlot( x=baf.ds,y=baf.ds[,1,"lrr"] )
-genoPlot( genoPos(baf.ds), baf.ds[,1,"lrr"], locs=locData(baf.ds) ) # The same
+genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
+genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
 genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 }
 \author{

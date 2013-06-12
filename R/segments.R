@@ -19,8 +19,8 @@
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   segs = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-##'   segs2Rle( segs[[1]], locData(baf.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
+##'   segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+##'   segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2Rle <- function(segs, locs) {
   if ("num.mark" %in% colnames(segs)) {
@@ -47,8 +47,8 @@ segs2Rle <- function(segs, locs) {
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-##'   segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+##'   segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##' @author Peter Haverty
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
@@ -117,12 +117,12 @@ segs2RangedData <- function(segs) {
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   seg.list = runCBS( lrr(baf.ds), locData(baf.ds), return.segs=TRUE )
-##'   df = segs2RleDataFrame( seg.list, locData(baf.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-##'   assayDataElement( baf.ds, "lrr.segs" ) = df
-##'   segTable( df, locData(baf.ds) )
-##'   segTable( assayDataElement(baf.ds,"lrr.segs"), locData(baf.ds) )
-##'   segTable( assayDataElement(baf.ds,"lrr.segs")[,1], locData(baf.ds), sampleNames(baf.ds)[1] )
+##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
+##'   df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+##'   assayDataElement( genoset.ds, "lrr.segs" ) = df
+##'   segTable( df, locData(genoset.ds) )
+##'   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
+##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), sampleNames(genoset.ds)[1] )
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segTable-methods

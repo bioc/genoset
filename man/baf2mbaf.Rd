@@ -36,10 +36,10 @@
 }
 \examples{
 data(genoset)
-   mbaf = baf2mbaf( baf(genoset.ds), hom.cutoff=0.9 )
+   mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 )
    calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(featureNames(genoset.ds),c("K","L")))
-   mbaf = baf2mbaf( baf(genoset.ds), hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
-   assayDataElement(genoset.ds,"mbaf") = baf2mbaf( baf(genoset.ds), hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
+   mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
+   genoset.ds[, ,"mbaf"] = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
 }
 \author{
   Peter M. Haverty

@@ -36,7 +36,7 @@
 \examples{
 data(genoset)
   my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
-  rangeSampleMeans( my.genes, baf.ds, "lrr" )
+  rangeSampleMeans( my.genes, genoset.ds, "lrr" )
 }
 \author{
   Peter M. Haverty
