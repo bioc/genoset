@@ -11,7 +11,7 @@ However, as per BioConductor standard practice the object creation function \cod
 }
 \section{Slots}{
   \describe{
-    \item{\code{locData}:}{Object of class \code{"RangedData"} Feature
+    \item{\code{locData}:}{Object of class \code{"GenomicRangesOrRangedData"} Feature
       locations on the genome }
     \item{\code{assayData}:}{Object of class \code{"AssayData"} ~~ }
     \item{\code{phenoData}:}{Object of class \code{"AnnotatedDataFrame"} ~~ }
@@ -45,15 +45,5 @@ Peter M. Haverty \email{phaverty@gene.com}
 }
 \examples{
 showClass("BAFSet")
-test.sample.names = LETTERS[11:13]
-probe.names = letters[1:10]
-locData.gr = GRanges(ranges=IRanges(start=c(1,4,3,2,5:10),width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-bs = BAFSet(
-  locData=locData.gr,
-  lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-  baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-  pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-  annotation="SNP6"
-)
 }
 \keyword{classes}

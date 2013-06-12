@@ -13,6 +13,9 @@ setValidity("BAFSet", function(object) {
   .Defunct("", msg="The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
 })
 
+##' @exportMethod show
+##' @rdname show
+##' @aliases show,BAFSet-method
 setMethod("show","BAFSet",
           function(object) {
             .Defunct("", msg="The BAFSet class is defunct. Please use GenoSet. BAFSet only added the baf/lrr getter/setter functions, which are redundant with x[, , 'baf'] and x[, , 'lrr'] now.")
@@ -78,10 +81,6 @@ BAFSet <- function(locData, lrr=NULL, baf=NULL, pData=NULL, annotation="", unive
 ##' @return matrix
 ##' @author Peter M. Haverty
 ##' @export baf
-##' @examples
-##'   data(genoset)
-##'   baf(baf.ds)  # Returns assayDataElement called "baf"
-##'   baf(baf.ds) <- baf2mbaf( baf(baf.ds) )
 ##' @rdname baf
 setGeneric("baf", function(object) standardGeneric("baf"))
 ##' @rdname baf
@@ -98,10 +97,7 @@ setMethod("baf", "BAFSet", function(object) { return(object@assayData$baf) } )
 ##' @author Peter M. Haverty
 ##' @export lrr
 ##' @rdname lrr
-##' @examples
-##'   data(genoset)
-##'   lrr(baf.ds)  # Returns assayDataElement called "lrr"
-##'   lrr(baf.ds) <- lrr(baf.ds) + 0.1
+##' 
 setGeneric("lrr", function(object) standardGeneric("lrr"))
 ##' @rdname lrr
 ##' @aliases lrr,BAFSet-method
@@ -154,9 +150,6 @@ setAs("BAFSet","ExpressionSet", def=
 ##' @param bs A BAFset object
 ##' @return A list with one ExpressionSet each for the baf and lrr data in the BAFSet object
 ##' @export
-##' @examples
-##'   data(genoset)
-##'   eset.list = BAFSet.to.ExpressionSets(baf.ds)
 ##' @author Peter M. Haverty
 ##' @aliases BAFSet.to.ExpressionSets-defunct
 BAFSet.to.ExpressionSets <- function(bs) {

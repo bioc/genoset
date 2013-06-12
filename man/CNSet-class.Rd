@@ -13,7 +13,7 @@ However, as per BioConductor standard practice the object creation function \cod
 }
 \section{Slots}{
   \describe{
-    \item{\code{locData}:}{Object of class \code{"RangedDataOrGRanges"} Feature locations on the genome. }
+    \item{\code{locData}:}{Object of class \code{"RangedDataOrGenomicRanges"} Feature locations on the genome. }
     \item{\code{assayData}:}{Object of class \code{"AssayData"} From eSet }
     \item{\code{phenoData}:}{Object of class \code{"AnnotatedDataFrame"} From eSet }
     \item{\code{featureData}:}{Object of class \code{"AnnotatedDataFrame"}  From eSet }
@@ -44,13 +44,5 @@ Peter M. Haverty \email{phaverty@gene.com}
 }
 \examples{
 showClass("CNSet")
-test.sample.names = LETTERS[11:13]
-probe.names = letters[1:10]
-cn.ds = CNSet(
-   locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
-   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-   pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-   annotation="SNP6"
-   )
 }
 \keyword{classes}

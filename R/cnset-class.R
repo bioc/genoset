@@ -12,6 +12,9 @@ setValidity("CNSet", function(object) {
   .Defunct("GenoSet", msg="The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
 })
 
+##' @exportMethod show
+##' @rdname show
+##' @aliases show,CNSet-method
 setMethod("show","CNSet",
           function(object) {
             .Defunct("GenoSet", msg="The CNSet class is defunct. Please use GenoSet. CNSet only added the cn getter/setter functions, which are redundant with x[, , 'cn'] now.")
@@ -65,10 +68,6 @@ CNSet <- function(locData, cn=NULL, pData=NULL, annotation="", universe, assayDa
 ##' @return matrix
 ##' @author Peter M. Haverty
 ##' @export cn
-##' @examples
-##'   data(genoset)
-##'   cn(cn.ds)  # Returns assayDataElement called "cn"
-##'   cn(cn.ds) <- cn(cn.ds) + 5
 ##' @rdname cn
 setGeneric("cn", function(object) standardGeneric("cn"))
 ##' @rdname cn

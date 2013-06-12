@@ -4,7 +4,7 @@
 \alias{genoPlot-methods}
 \alias{genoPlot,numeric,numeric-method}
 \alias{genoPlot,numeric,Rle-method}
-\alias{genoPlot,RangedDataOrGenoSetOrGRanges,ANY-method}
+\alias{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}
 \title{Plot data along the genome}
 \arguments{
   \item{x}{GenoSet (or descendant), RangedData, or GRanges}
@@ -56,9 +56,9 @@
 \section{Methods}{
   \describe{
 
-  \item{\code{signature(x = "RangedDataOrGenoSetOrGRanges",
-  y = "ANY")}}{ Plot feature locations and data from one
-  sample. }
+  \item{\code{signature(x =
+  "RangedDataOrGenoSetOrGenomicRanges", y = "ANY")}}{ Plot
+  feature locations and data from one sample. }
 
   \item{\code{signature(x = "numeric", y = "numeric")}}{
   Plot numeric location and a vector of numeric data. }

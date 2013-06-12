@@ -27,10 +27,6 @@
   BAFSEt.toExpressionSets has been defunct. Please use
   as(x, 'ExpressionSet').
 }
-\examples{
-data(genoset)
-  eset.list = BAFSet.to.ExpressionSets(baf.ds)
-}
 \author{
   Peter M. Haverty
 }

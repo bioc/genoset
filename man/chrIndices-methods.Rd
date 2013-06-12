@@ -1,6 +1,6 @@
 \name{chrIndices}
 \alias{chrIndices}
-\alias{chrIndices,RangedDataOrGenoSetOrGRanges-method}
+\alias{chrIndices,RangedDataOrGenoSetOrGenomicRanges-method}
 \title{Get a matrix of first and last index of features in each chromosome}
 \arguments{
   \item{object}{GenoSet, RangedData, or GRanges}

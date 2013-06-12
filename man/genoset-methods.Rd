@@ -4,8 +4,8 @@
 \alias{[,GenoSet,ANY,ANY,ANY-method}
 \alias{[,GenoSet,character-method}
 \alias{[,GenoSet,character,ANY,ANY-method}
-\alias{[,GenoSet,RangedDataOrGRanges-method}
-\alias{[,GenoSet,RangedDataOrGRanges,ANY,ANY-method}
+\alias{[,GenoSet,RangedDataOrGenomicRanges-method}
+\alias{[,GenoSet,RangedDataOrGenomicRanges,ANY,ANY-method}
 \alias{[<-}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \alias{dim}
@@ -19,8 +19,6 @@
 \alias{names,GenoSet-method}
 \alias{nrow}
 \alias{nrow,GRanges-method}
-\alias{show}
-\alias{show,GenoSet-method}
 \alias{start}
 \alias{start,GenoSet-method}
 \alias{universe}

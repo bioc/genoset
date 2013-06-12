@@ -16,11 +16,6 @@
 \details{
   Get or Set the lrr assayData slot
 }
-\examples{
-data(genoset)
-  lrr(baf.ds)  # Returns assayDataElement called "lrr"
-  lrr(baf.ds) <- lrr(baf.ds) + 0.1
-}
 \author{
   Peter M. Haverty
 }

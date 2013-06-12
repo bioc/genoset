@@ -1,6 +1,6 @@
 \name{pos}
 \alias{pos}
-\alias{pos,RangedDataOrGenoSetOrGRanges-method}
+\alias{pos,RangedDataOrGenoSetOrGenomicRanges-method}
 \title{Positions for features}
 \arguments{
   \item{object}{GRanges, RangedData or GenoSet}

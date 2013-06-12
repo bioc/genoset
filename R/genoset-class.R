@@ -8,7 +8,7 @@
 ##' GenoSet: An eSet for data with genome locations
 ##' 
 ##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
-##' extends eSet by adding a "locData" slot for a GRanges or RangedData object.
+##' extends eSet by adding a "locData" slot for a GenomicRanges or RangedData object.
 ##' This object contains feature genome location data and
 ##' provides for efficient subsetting on genome location. CNSet and BAFSet extend
 ##' GenoSet and require assayData matrices for Copy Number (cn) or Log-R Ratio
@@ -66,10 +66,10 @@ NULL
 ###############
 
 ##' @exportClass GenoSet
-setClassUnion("RangedDataOrGRanges",c("RangedData","GRanges"))
-setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGRanges"))
+setClassUnion("RangedDataOrGenomicRanges",c("RangedData","GenomicRanges"))
+setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGenomicRanges"))
 setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
-setClassUnion("RangedDataOrGenoSetOrGRanges",c("RangedData","GenoSet","GRanges"))
+setClassUnion("RangedDataOrGenoSetOrGenomicRanges",c("RangedData","GenoSet","GenomicRanges"))
 
 setValidity("GenoSet", function(object) {
   return( all( featureNames(locData(object)) == featureNames(assayData(object)) ) )
@@ -389,7 +389,7 @@ setMethod("featureNames<-",
 ##' @aliases locData-methods
 ##' @aliases locData<--methods
 ##' @aliases locData,GenoSet-method
-##' @aliases locData<-,GenoSet,RangedDataOrGRanges-method
+##' @aliases locData<-,GenoSet,RangedDataOrGenomicRanges-method
 ##' @aliases locData
 ##' @aliases locData<-
 ##' @return A GenoSet object
@@ -401,7 +401,7 @@ setMethod("locData", "GenoSet", function(object) {
   return(locs)
 } )
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGRanges"),
+setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRanges"),
                  function(object,value) {
                    if (! all( featureNames(value) %in% featureNames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")
@@ -516,7 +516,7 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 ##' @rdname genoset-methods
 ##' @aliases [,GenoSet,ANY,ANY,ANY-method
 ##' @aliases [,GenoSet,ANY-method
-##' @aliases [,GenoSet,RangedDataOrGRanges-method
+##' @aliases [,GenoSet,RangedDataOrGenomicRanges-method
 ##' @aliases [,GenoSet,character-method
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
@@ -560,8 +560,8 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           })
 
 ##' @rdname genoset-methods
-##' @aliases [,GenoSet,RangedDataOrGRanges,ANY,ANY-method
-setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGRanges", j="ANY"),
+##' @aliases [,GenoSet,RangedDataOrGenomicRanges,ANY,ANY-method
+setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGenomicRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %over% i)
             callNextMethod(x,indices,j,...,drop=drop)
@@ -608,8 +608,11 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
 # Other
 #######
 
+##' Show a GenoSet
+##'
+##' Prints a description of a GenoSet object.
 ##' @exportMethod show
-##' @rdname genoset-methods
+##' @rdname show
 ##' @aliases show,GenoSet-method
 setMethod("show","GenoSet",
           function(object) {
@@ -659,10 +662,10 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##'   pos(genoset.ds)  # 1:10
 ##'   pos(locData(genoset.ds))  # The same
 ##' @rdname pos
-##' @aliases pos,RangedDataOrGenoSetOrGRanges-method
+##' @aliases pos,RangedDataOrGenoSetOrGenomicRanges-method
 setGeneric("pos", function(object) standardGeneric("pos"))
 ##' @rdname pos
-setMethod("pos", "RangedDataOrGenoSetOrGRanges",
+setMethod("pos", "RangedDataOrGenoSetOrGenomicRanges",
           function(object) { return( start(object) + (width(object) - 1L) %/% 2L) } )
 
 ##' Get list of unique chromosome names
@@ -740,8 +743,8 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##' @rdname chrInfo
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 ##' @rdname chrInfo
-##' @aliases chrInfo,RangedDataOrGenoSetOrGRanges-method
-setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
+##' @aliases chrInfo,RangedDataOrGenoSetOrGenomicRanges-method
+setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {
             # Get max end value for each chr
             if (class(object) == "GRanges" && !any(is.na(seqlengths(object)))) {
@@ -784,8 +787,8 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' @rdname chrIndices-methods
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 ##' @rdname chrIndices-methods
-##' @aliases chrIndices,RangedDataOrGenoSetOrGRanges-method
-setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
+##' @aliases chrIndices,RangedDataOrGenoSetOrGenomicRanges-method
+setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
             object.lengths = elementLengths(object)
             object.lengths = object.lengths[ object.lengths > 0 ]
@@ -819,8 +822,8 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGRanges"),
 ##' @rdname genoPos-methods
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
 ##' @rdname genoPos-methods
-##' @aliases genoPos,RangedDataOrGenoSetOrGRanges-method
-setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGRanges"),
+##' @aliases genoPos,RangedDataOrGenoSetOrGenomicRanges-method
+setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {
 
             # For single chr objects, just return pos
