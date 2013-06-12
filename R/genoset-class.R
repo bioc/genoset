@@ -26,7 +26,7 @@
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width
-##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
+##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" colnames "colnames<-" rownames "rownames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean na.exclude nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-"
@@ -309,22 +309,30 @@ setMethod("featureNames", signature(object="GenoSet"),
             return(unname(featureNames(featureData(object))))
           })
 
-##' Get sampleNames from a GenoSet
+##' Get colnames from a GenoSet
 ##'
-##' Get sampleNames from a GenoSet
+##' Get colnames from a GenoSet
 ##' 
 ##' @param object GenoSet
 ##' @return character vector with names of samples
 ##' @exportMethod sampleNames
 ##' @examples
 ##'   data(genoset)
+##'   head(colnames(genoset.ds))
 ##'   head(sampleNames(genoset.ds))
 ##' @exportMethod sampleNames
-##' @rdname sampleNames
+##' @exportMethod colnames
+##' @rdname colnames
 ##' @aliases sampleNames,GenoSet-method
-setMethod("sampleNames", signature(object="GenoSet"),
+##' @aliases colnames,GenoSet-method
+setMethod("colnames", signature(object="GenoSet"),
           function(object) {
             rownames(pData(object))
+          })
+setMethod("sampleNames", signature(object="GenoSet"),
+          function(object) {
+            .Deprecated(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
+            colnames(object)
           })
 
 ##' Set featureNames
