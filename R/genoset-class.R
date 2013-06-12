@@ -315,7 +315,6 @@ setMethod("featureNames", signature(object="GenoSet"),
 ##' 
 ##' @param object GenoSet
 ##' @return character vector with names of samples
-##' @exportMethod sampleNames
 ##' @examples
 ##'   data(genoset)
 ##'   head(colnames(genoset.ds))
@@ -325,9 +324,9 @@ setMethod("featureNames", signature(object="GenoSet"),
 ##' @rdname colnames
 ##' @aliases sampleNames,GenoSet-method
 ##' @aliases colnames,GenoSet-method
-setMethod("colnames", signature(object="GenoSet"),
-          function(object) {
-            rownames(pData(object))
+setMethod("colnames", signature(x="GenoSet"),
+          function(x) {
+            rownames(pData(x))
           })
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
