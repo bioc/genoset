@@ -128,8 +128,12 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' @param object GenomicRanges, GenoSet, or RangedData
 ##' @param bsgenome BSgenome, like Hsapiens from BSgenome.Hsapiens.UCSC.hg19
 ##' @param expand scalar integer, amount to expand each range before calculating gc
-##' @export 
 ##' @return numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}
+##' @examples
+##' \dontrun{ data(genoset) }
+##' \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
+##' \dontrun{ gc = calcGC(genoset.ds, Hsapiens) }
+##' @export
 calcGC <- function(object, bsgenome, expand=1e6) {
   if (!requireNamespace("BSgenome",quietly=TRUE)) {
     stop("Failed to require BSgenome package.\n")

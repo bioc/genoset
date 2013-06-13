@@ -12,14 +12,12 @@
   character vector with names rows/features
 }
 \description{
-  Get rownames from RangedData, GRanges, or GenoSet
+  Get rownames from RangedData, GRanges, or GenoSet.
 }
 \examples{
 data(genoset)
   head(rownames(locData.gr))
-  head(featureNames(locData.gr))
   head(rownames(genoset.ds))
-  head(featureNames(genoset.ds))
 }
 \author{
   Peter M. Haverty

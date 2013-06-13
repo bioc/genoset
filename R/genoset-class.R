@@ -8,25 +8,22 @@
 ##' GenoSet: An eSet for data with genome locations
 ##' 
 ##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
-##' extends eSet by adding a "locData" slot for a GenomicRanges or RangedData object.
+##' extends eSet by adding a "locData" slot for a GenomicRanges object.
 ##' This object contains feature genome location data and
-##' provides for efficient subsetting on genome location. CNSet and BAFSet extend
-##' GenoSet and require assayData matrices for Copy Number (cn) or Log-R Ratio
-##' (lrr) and B-Allele Frequency (baf) data. Implements and provides
-##' convenience functions for processing of copy number and B-Allele Frequency
-##' data.
+##' provides for efficient subsetting on genome location.
+##' Genoset also implements an number of  convenience functions for processing of copy number and B-Allele Frequency data and for working with segmented data.
 ##'
 ##' @docType package
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
-##' @seealso genoset-datasets GenoSet CNSet BAFSet
+##' @seealso genoset-datasets GenoSet
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame RangedData Rle
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
-##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width
-##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" colnames "colnames<-" rownames "rownames<-"
+##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
+##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean na.exclude nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-"
@@ -109,6 +106,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   # ... will be the matrices that end up in assayData
 
   if (! missing(universe)) {
+    warning("Use of the universe argument for GenoSet creation is deprecated. Please note the genome in the location data object.")
     universe(locData) = universe
   }
 
@@ -227,50 +225,53 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 # Getters and Setters
 #####################
 
-##' Genome universe for locData
+##' Genome version
 ##'
-##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used. For a
-##' GRanges, the first value is returned if there are multiple.
-##'
+##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used.
 ##' @title Get and set the genome universe annotation.
-##' @param x GenoSet or GRanges
+##' @param x GenoSet
 ##' @return character, e.g. hg19
 ##' @author Peter M. Haverty
 ##' @exportMethod universe
-##' @rdname genoset-methods
+##' @exportMethod genome
 ##' @examples
 ##'   data(genoset)
-##'   universe(locData.gr)
-##'   universe(locData.gr) = "hg19"
+##'   genome(genoset.ds)
+##'   genome(genoset.ds) = "hg19"
 ##' @aliases universe,GenoSet-method
 ##' @aliases universe,GRanges-method
-setMethod("universe", "GenoSet", function(x) { return(universe(x@locData)) } )
+##' @aliases universe<-,GenoSet-method
+##' @aliases universe<-,GRanges-method
+##' @aliases genome,GenoSet-method
+##' @aliases genome<-,GenoSet-method
+##' @rdname genome
+setMethod("genome", "GenoSet", function(x) {
+  return(genome(x@locData))
+})
+setMethod("genome<-", "GenoSet", function(x, value) {
+  genome(x@locData) = value
+  return(x)
+})
+setMethod("universe", "GenoSet", function(x) {
+  .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
+  return(universe(x@locData))
+} )
 setMethod("universe", "GRanges", function(x) {
+  .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
   if (length(unique(genome(x))) != 1) {
     warning("Taking first element of GRanges genome as universe.")
   }
   return(unname(genome(x)[1]))
 } )
-
-##' Set genome universe
-##'
-##' Set genome universe
-##' 
-##' @param x GenoSet or GRanges
-##' @param value character, new universe string, e.g. hg19
-##' @return updated copy of x
-##' @author Peter Haverty
-##' @exportMethod "universe<-"
-##' @rdname genoset-methods
-##' @aliases universe<-,GenoSet-method
-##' @aliases universe<-,GRanges-method
 setMethod("universe<-", signature(x="GenoSet"),
                  function(x,value) {
+                   .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
                    universe(x@locData) = value
                    return(x)
                    })
 setMethod("universe<-", signature(x="GRanges"),
           function(x,value) {
+            .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
             genome(x) = value
             return(x)
           })
@@ -284,7 +285,6 @@ setMethod("universe<-", signature(x="GRanges"),
 ##' @examples
 ##'   data(genoset)
 ##'   head(colnames(genoset.ds))
-##'   head(sampleNames(genoset.ds))
 ##' @exportMethod sampleNames
 ##' @exportMethod colnames
 ##' @rdname colnames
@@ -303,7 +303,7 @@ setMethod("sampleNames", signature(object="GenoSet"),
 
 ##' Get rownames from RangedData, GRanges, or GenoSet
 ##'
-##' Get rownames from RangedData, GRanges, or GenoSet
+##' Get rownames from RangedData, GRanges, or GenoSet.
 ##' 
 ##' @param object GRanges, RangedData, or GenoSet
 ##' @return character vector with names rows/features
@@ -311,9 +311,7 @@ setMethod("sampleNames", signature(object="GenoSet"),
 ##' @examples
 ##'   data(genoset)
 ##'   head(rownames(locData.gr))
-##'   head(featureNames(locData.gr))
 ##'   head(rownames(genoset.ds))
-##'   head(featureNames(genoset.ds))
 ##' @exportMethod featureNames
 ##' @exportMethod rownames
 ##' @rdname rownames

@@ -16,6 +16,5 @@
 \examples{
 data(genoset)
   head(colnames(genoset.ds))
-  head(sampleNames(genoset.ds))
 }
 

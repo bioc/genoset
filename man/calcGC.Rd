@@ -27,4 +27,9 @@
   letterFrequencyInSlidingWindow for big windows and then
   match to the nearest.
 }
+\examples{
+\dontrun{ data(genoset) }
+\dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
+\dontrun{ gc = calcGC(genoset.ds, Hsapiens) }
+}
 

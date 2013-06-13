@@ -40,7 +40,7 @@ test_creation <- function() {
 
 test_featureNames <- function() {
   ds = GenoSet(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    locData=GRanges(IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))), 
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
@@ -63,7 +63,7 @@ test_featureNames <- function() {
 
 test_sampleNames <- function() {
   ds = GenoSet(
-    locData=RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe="hg18"),
+    locData=GRanges(IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
@@ -72,27 +72,6 @@ test_sampleNames <- function() {
 }
 
 test_locData <- function() {
-  locs.rd = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
-  ds = GenoSet(
-    locData=locs.rd,
-    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
-    )
-  checkEquals(locs.rd,locData(ds))
-  locs.rd.new = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=factor(c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),levels=c("chr1","chr3","chrX")),universe="hg18")
-  locData(ds) = locs.rd.new
-  ds.new = GenoSet(
-    locData=locs.rd.new,
-    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-    annotation="SNP6"
-    )
-  checkEquals(ds,ds.new,check.attributes=FALSE)
-  locs.rd.bad = locs.rd.new
-  rownames(locs.rd.bad)[1] = "FOO"
-  checkException( {locData(ds) = locs.rd.bad},silent=TRUE )
-
   # With GRanges
   locs.gr = as(locs.rd,"GRanges")
   locs.gr.new = as(locs.rd.new,"GRanges")
@@ -186,6 +165,10 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   checkIdentical( "hg18", universe(gr.uni), "Two genomes" )
   genome(gr.uni) = c("hg19")
   checkIdentical( "hg19", universe(gr.uni), "Two genomes" )
+  geno = rep("hg19", 3)
+  locData(gs) = gr
+  genome(gs) = geno
+  checkEquals(geno, genome(gs), "Get and set genome of GenoSet", checkNames=FALSE)
 }
 
 test_subset <- function() {
