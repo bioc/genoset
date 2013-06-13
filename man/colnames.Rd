@@ -1,7 +1,9 @@
-\name{sampleNames}
+\name{colnames}
+\alias{colnames}
+\alias{colnames,GenoSet-method}
 \alias{sampleNames}
 \alias{sampleNames,GenoSet-method}
-\title{Get sampleNames from a GenoSet}
+\title{Get colnames from a GenoSet}
 \arguments{
   \item{object}{GenoSet}
 }
@@ -9,10 +11,11 @@
   character vector with names of samples
 }
 \description{
-  Get sampleNames from a GenoSet
+  Get colnames from a GenoSet
 }
 \examples{
 data(genoset)
+  head(colnames(genoset.ds))
   head(sampleNames(genoset.ds))
 }
 

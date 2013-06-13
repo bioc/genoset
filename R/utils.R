@@ -116,3 +116,38 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
   }
   return(mbaf)
 }
+
+##' Calculate GC Percentage in windows
+##'
+##' Local GC content  can be used to remove GC artifacts from copynumber data
+##' see Diskin, 2008). This function will calculate GC content fraction in expanded windows around
+##' a set of ranges following example in
+##' http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf. Currently
+##' all ranges are tabulated, later I may do letterFrequencyInSlidingWindow for big windows and then
+##' match to the nearest.
+##' @param object GenomicRanges, GenoSet, or RangedData
+##' @param bsgenome BSgenome, like Hsapiens from BSgenome.Hsapiens.UCSC.hg19
+##' @param expand scalar integer, amount to expand each range before calculating gc
+##' @export 
+##' @return numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}
+calcGC <- function(object, bsgenome, expand=1e6) {
+  if (!requireNamespace("BSgenome",quietly=TRUE)) {
+    stop("Failed to require BSgenome package.\n")
+  }
+  if (!requireNamespace("Biostrings",quietly=TRUE)) {
+    stop("Failed to require Biostrings package.\n")
+  }
+  chr.ind = chrIndices(object)
+  rownames(chr.ind) = paste0("chr", rownames(chr.ind))
+  start = start(object) - expand
+  end = end(object) + expand
+  gc.list = lapply(rownames(chr.ind), function(chr.name) {
+    range = seq.int(chr.ind[chr.name, 1], chr.ind[chr.name, 2])
+    seq = bsgenome[[chr.name]]
+    v = suppressWarnings( Views(seq,  start=start[range], end=end[range]) )
+    alf = alphabetFrequency(v, as.prob = TRUE)
+    gc = rowSums(alf[,  c("G",  "C"), drop=FALSE])
+  })
+  gc = do.call(c, gc.list)
+  return(gc)
+}

@@ -275,40 +275,6 @@ setMethod("universe<-", signature(x="GRanges"),
             return(x)
           })
 
-##' Get rownames from RangedData, GRanges, or GenoSet
-##'
-##' Get rownames from RangedData, GRanges, or GenoSet
-##' 
-##' @param object GRanges, RangedData, or GenoSet
-##' @return character vector with names rows/features
-##' @author Peter M. Haverty
-##' @exportMethod featureNames
-##' @examples
-##'   data(genoset)
-##'   head(featureNames(locData.gr))
-##'   head(featureNames(genoset.ds))
-##' @exportMethod featureNames
-##' @rdname featureNames
-##' @aliases featureNames,GRanges-method
-setMethod("featureNames", signature(object="GRanges"),
-          function(object) {
-            names(object)
-          })
-
-##' @rdname featureNames
-##' @aliases featureNames,RangedData-method
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            rownames(object)
-          })
-
-##' @rdname featureNames
-##' @aliases featureNames,GenoSet-method
-setMethod("featureNames", signature(object="GenoSet"),
-          function(object) {
-            return(unname(featureNames(featureData(object))))
-          })
-
 ##' Get colnames from a GenoSet
 ##'
 ##' Get colnames from a GenoSet
@@ -328,10 +294,48 @@ setMethod("colnames", signature(x="GenoSet"),
           function(x) {
             rownames(pData(x))
           })
+##' @rdname colnames
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
             colnames(object)
+          })
+
+##' Get rownames from RangedData, GRanges, or GenoSet
+##'
+##' Get rownames from RangedData, GRanges, or GenoSet
+##' 
+##' @param object GRanges, RangedData, or GenoSet
+##' @return character vector with names rows/features
+##' @author Peter M. Haverty
+##' @examples
+##'   data(genoset)
+##'   head(rownames(locData.gr))
+##'   head(featureNames(locData.gr))
+##'   head(rownames(genoset.ds))
+##'   head(featureNames(genoset.ds))
+##' @exportMethod featureNames
+##' @exportMethod rownames
+##' @rdname rownames
+##' @aliases featureNames,RangedDataOrGenosetOrGenomicRanges-method
+setMethod("featureNames", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+          function(object) {
+            .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            rownames(object)
+          })
+
+##' @aliases rownames,GRanges-method
+##' @rdname rownames
+setMethod("rownames", signature(x="GRanges"),
+          function(x) {
+            names(x)
+          })
+
+##' @rdname rownames
+##' @aliases rownames,GenoSet-method
+setMethod("rownames", signature(x="GenoSet"),
+          function(x) {
+            return(unname(featureNames(featureData(x))))
           })
 
 ##' Set featureNames
@@ -343,7 +347,7 @@ setMethod("sampleNames", signature(object="GenoSet"),
 ##' @return A new object of the class of supplied object
 ##' @exportMethod "featureNames<-"
 ##' @author Peter M. Haverty
-##' @rdname featureNames-set
+##' @rdname rownames-set
 ##' @aliases featureNames<-,GenoSet-method
 setMethod("featureNames<-",
                  signature=signature(object="GenoSet", value="ANY"),
@@ -352,7 +356,7 @@ setMethod("featureNames<-",
                    featureNames(slot(object,"featureData")) = value
                    return(object)
                  })
-##' @rdname featureNames-set
+##' @rdname rownames-set
 ##' @aliases featureNames<-,GRanges-method
 setMethod("featureNames<-",
                  signature=signature(object="GRanges", value="ANY"),
@@ -360,7 +364,7 @@ setMethod("featureNames<-",
                    names(object) = value
                    return(object)
                  })
-##' @rdname featureNames-set
+##' @rdname rownames-set
 ##' @aliases featureNames<-,RangedData-method
 setMethod("featureNames<-",
                  signature=signature(object="RangedData", value="ANY"),
