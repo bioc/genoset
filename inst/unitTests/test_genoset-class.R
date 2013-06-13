@@ -52,6 +52,9 @@ test_featureNames <- function() {
   checkEquals( featureNames(ds), rownames(fData(ds)), "GenoSet FeatureNames match fData rownames" )
   checkEquals( featureNames(ds), featureNames(rd), "Get featureNames from RangedData" )
   checkEquals( featureNames(ds), featureNames(gr), "Get featureNames from GRanges" )
+  checkEquals( featureNames(ds), rownames(ds), "featureNames and rownames are the same thing for a GenoSet.")
+  checkEquals( featureNames(gr), rownames(gr), "featureNames and rownames are the same thing for a GRanges.")
+  checkEquals( names(gr), rownames(gr), "names and rownames are the same thing for a GRanges.")
   new.fnames = paste("f",featureNames(ds),sep="")
   featureNames(ds) = new.fnames
   featureNames(rd) = new.fnames
@@ -59,6 +62,14 @@ test_featureNames <- function() {
   checkEquals( featureNames(ds), new.fnames, "Set featureNames in GenoSet")
   checkEquals( featureNames(rd), new.fnames, "Set featureNames in RangedData")
   checkEquals( featureNames(gr), new.fnames, "Set featureNames in GRanges")
+  new.fnames = paste("g",featureNames(ds),sep="")
+  rownames(ds) = new.fnames
+  rownames(rd) = new.fnames
+  rownames(gr) = new.fnames
+  checkEquals( rownames(ds), new.fnames, "Set rownames in GenoSet")
+  checkEquals( rownames(rd), new.fnames, "Set rownames in RangedData")
+  checkEquals( rownames(gr), new.fnames, "Set rownames in GRanges")
+
 }
 
 test_sampleNames <- function() {
@@ -69,6 +80,9 @@ test_sampleNames <- function() {
     annotation="SNP6"
     )
   checkIdentical( sampleNames(ds), test.sample.names )
+  checkIdentical( colnames(ds), test.sample.names )
+  colnames(ds) = LETTERS[1:3]
+  checkIdentical( colnames(ds), LETTERS[1:3] )
 }
 
 test_locData <- function() {

@@ -335,40 +335,31 @@ setMethod("rownames", signature(x="GenoSet"),
           function(x) {
             return(unname(featureNames(featureData(x))))
           })
-
-##' Set featureNames
-##'
-##' Set featureNames of a GenoSet, GRanges, or RangedData (rownames, names, or rownames respectively).
-##' @title Set featureNames
-##' @param object GenoSet, RangedData, or GRanges
-##' @param value ANY
-##' @return A new object of the class of supplied object
-##' @exportMethod "featureNames<-"
-##' @author Peter M. Haverty
-##' @rdname rownames-set
-##' @aliases featureNames<-,GenoSet-method
+##' @rdname rownames
+##' @aliases featureNames<-,RangedDataOrGenoSetOrGenomicRanges-method
 setMethod("featureNames<-",
-                 signature=signature(object="GenoSet", value="ANY"),
-                 function(object, value) {
-                   object = callNextMethod(object,value)
-                   featureNames(slot(object,"featureData")) = value
-                   return(object)
-                 })
-##' @rdname rownames-set
-##' @aliases featureNames<-,GRanges-method
-setMethod("featureNames<-",
-                 signature=signature(object="GRanges", value="ANY"),
-                 function(object, value) {
-                   names(object) = value
-                   return(object)
-                 })
-##' @rdname rownames-set
-##' @aliases featureNames<-,RangedData-method
-setMethod("featureNames<-",
-                 signature=signature(object="RangedData", value="ANY"),
-                 function(object, value) {
-                   rownames(object) = value
-                   return(object)
+          signature=signature(object="RangedDataOrGenoSetOrGenomicRanges", value="ANY"),
+          function(object, value) {
+            .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            rownames(object) = value
+            return(object)
+          })
+##' @rdname rownames
+##' @aliases rownames<-,GenoSet-method
+setMethod("rownames<-",
+          signature=signature(x="GenoSet", value="ANY"),
+          function(x, value) {
+            x = callNextMethod(x,value)
+#            featureNames(slot(x,"featureData")) = value
+            return(x)
+          })
+##' @rdname rownames
+##' @aliases rownames<-,GRanges-method
+setMethod("rownames<-",
+                 signature=signature(x="GRanges", value="ANY"),
+                 function(x, value) {
+                   names(x) = value
+                   return(x)
                  })
 
 ##' Access the feature genome position info
