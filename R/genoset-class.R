@@ -298,13 +298,13 @@ setMethod("colnames", signature(x="GenoSet"),
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
-            rownames(pData(x))
+            rownames(pData(object))
           })
 ##' @rdname colnames
 setMethod("sampleNames<-", signature(object="GenoSet"),
           function(object, value) {
             .Deprecated(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
-            object = callNextMethod(object)
+            object = callNextMethod(object, value)
             return(object)
           })
 
@@ -326,7 +326,7 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
-            return(unname(featureNames(featureData(x))))
+            return(unname(featureNames(featureData(object))))
           })
 ##' @rdname rownames
 ##' @aliases featureNames,GRanges-method
@@ -360,7 +360,7 @@ setMethod("featureNames<-",
           signature=signature(object="GenoSet", value="ANY"),
           function(object, value) {
             .Deprecated(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
-            object = callNextMethod(object)
+            object = callNextMethod(object, value)
             return(object)
           })
 ##' @rdname rownames

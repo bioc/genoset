@@ -3,6 +3,7 @@
 \alias{colnames,GenoSet-method}
 \alias{sampleNames}
 \alias{sampleNames,GenoSet-method}
+\alias{sampleNames<-}
 \title{Get colnames from a GenoSet}
 \arguments{
   \item{object}{GenoSet}
