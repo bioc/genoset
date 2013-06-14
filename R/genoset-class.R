@@ -304,7 +304,7 @@ setMethod("sampleNames", signature(object="GenoSet"),
 setMethod("sampleNames<-", signature(object="GenoSet"),
           function(object, value) {
             .Deprecated(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
-            colnames(object) = value
+            object = callNextMethod(object)
             return(object)
           })
 
@@ -360,7 +360,7 @@ setMethod("featureNames<-",
           signature=signature(object="GenoSet", value="ANY"),
           function(object, value) {
             .Deprecated(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
-            rownames(object) = value
+            object = callNextMethod(object)
             return(object)
           })
 ##' @rdname rownames
