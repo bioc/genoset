@@ -298,7 +298,14 @@ setMethod("colnames", signature(x="GenoSet"),
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
-            colnames(object)
+            rownames(pData(x))
+          })
+##' @rdname colnames
+setMethod("sampleNames<-", signature(object="GenoSet"),
+          function(object, value) {
+            .Deprecated(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
+            colnames(object) = value
+            return(object)
           })
 
 ##' Get rownames from RangedData, GRanges, or GenoSet
@@ -315,20 +322,32 @@ setMethod("sampleNames", signature(object="GenoSet"),
 ##' @exportMethod featureNames
 ##' @exportMethod rownames
 ##' @rdname rownames
-##' @aliases featureNames,RangedDataOrGenosetOrGenomicRanges-method
-setMethod("featureNames", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+##' @aliases featureNames,GenoSet-method
+setMethod("featureNames", signature(object="GenoSet"),
+          function(object) {
+            .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            return(unname(featureNames(featureData(x))))
+          })
+##' @rdname rownames
+##' @aliases featureNames,GRanges-method
+setMethod("featureNames", signature(object="GRanges"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             rownames(object)
           })
-
+##' @rdname rownames
+##' @aliases featureNames,RangedData-method
+setMethod("featureNames", signature(object="RangedData"),
+          function(object) {
+            .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            rownames(object)
+          })
 ##' @aliases rownames,GRanges-method
 ##' @rdname rownames
 setMethod("rownames", signature(x="GRanges"),
           function(x) {
             names(x)
           })
-
 ##' @rdname rownames
 ##' @aliases rownames,GenoSet-method
 setMethod("rownames", signature(x="GenoSet"),
@@ -336,22 +355,31 @@ setMethod("rownames", signature(x="GenoSet"),
             return(unname(featureNames(featureData(x))))
           })
 ##' @rdname rownames
-##' @aliases featureNames<-,RangedDataOrGenoSetOrGenomicRanges-method
+##' @aliases featureNames<-,GenoSet-method
 setMethod("featureNames<-",
-          signature=signature(object="RangedDataOrGenoSetOrGenomicRanges", value="ANY"),
+          signature=signature(object="GenoSet", value="ANY"),
           function(object, value) {
-            .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            .Deprecated(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
             rownames(object) = value
             return(object)
           })
 ##' @rdname rownames
-##' @aliases rownames<-,GenoSet-method
-setMethod("rownames<-",
-          signature=signature(x="GenoSet", value="ANY"),
-          function(x, value) {
-            x = callNextMethod(x,value)
-#            featureNames(slot(x,"featureData")) = value
-            return(x)
+##' @aliases featureNames<-,GRanges-method
+setMethod("featureNames<-",
+          signature=signature(object="GRanges", value="ANY"),
+          function(object, value) {
+            .Deprecated(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            rownames(object) = value
+            return(object)
+          })
+##' @rdname rownames
+##' @aliases featureNames<-,RangedData-method
+setMethod("featureNames<-",
+          signature=signature(object="RangedData", value="ANY"),
+          function(object, value) {
+            .Deprecated(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
+            rownames(object) = value
+            return(object)
           })
 ##' @rdname rownames
 ##' @aliases rownames<-,GRanges-method
@@ -396,7 +424,7 @@ setMethod("rownames<-",
 setGeneric("locData", function(object) standardGeneric("locData"))
 setMethod("locData", "GenoSet", function(object) {
   locs = slot(object,"locData")
-  featureNames(locs) = featureNames(object)
+  featureNames(locs) = rownames(object)
   return(locs)
 } )
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
@@ -883,53 +911,4 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
     }
     return(aData)
   }
-}
-
-##' Center continuous data on mode
-##'
-##' Copynumber data distributions are generally multi-modal. It is often assumed that
-##' the tallest peak represents "normal" and should therefore be centered on a
-##' log2ratio of zero. This function uses the density function to find the mode of
-##' the dominant peak and subtracts that value from the input data.
-##' 
-##' @param ds numeric matrix
-##' @return numeric matrix
-##' @author Peter M. Haverty
-##' @export
-##' @examples
-##'   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
-modeCenter <- function(ds) {
-  if (!requireNamespace("stats",quietly=TRUE)) {
-    stop("Failed to require stats package.\n")
-  }
-  column.modes = apply(ds,2, function(x) { 
-    l2r.density = stats::density(x,na.rm=TRUE)
-    density.max.index = which.max(l2r.density$y)
-    return(l2r.density$x[density.max.index])
-  })
-  ds = sweep(ds, 2, column.modes)
-  return(ds)
-}
-
-##' Load a GenoSet from a RData file
-##'
-##' Given a rds file or a rda file with one object (a GenoSet or related object), load it,
-##' and return.
-##' @param path character, path to rds or rda file
-##' @return GenoSet or related object (only object in RData file)
-##' @examples
-##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
-##' \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
-##' \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
-##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-readGenoSet <- function(path) {
-  header = readLines(path, 1)
-  if (grepl("^RD", header)[1] == TRUE) {
-    object = get(load(path)[1])    
-  } else {
-    object = readRDS(path)
-  }
-  if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
-  return( object )
 }
