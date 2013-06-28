@@ -473,7 +473,7 @@ with frequent alterations.  A bit more care is necessary to work one
 sample at a time if your data ``matrix'' is a \Rclass{DataFrame}.
 
 <<crosssample>>=
-gain.list = lapply(sampleNames(baf.ds),
+gain.list = lapply(colnames(baf.ds),
   function(sample.name) {
     as.logical( baf.ds[, sample.name, "lrr.segs"] > 0.3 )
 })
