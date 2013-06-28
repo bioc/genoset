@@ -87,26 +87,27 @@ test_sampleNames <- function() {
 
 test_locData <- function() {
   # With GRanges
-  locs.gr = as(locs.rd,"GRanges")
-  locs.gr.new = as(locs.rd.new,"GRanges")
-  locs.gr.bad = as(locs.rd.bad,"GRanges")
+  locs.gr = GRanges(ranges=IRanges(start=1:10, width=1, names=probe.names), seqnames=factor(c(rep("chr1", 4), rep("chr3", 2), rep("chrX", 4)), levels=c("chr1", "chr3", "chrX")))
+  locs.gr.new = GRanges(ranges=IRanges(start=1:10, width=1, names=probe.names), seqnames=factor(c(rep("chr1", 4), rep("chr3", 2), rep("chrX", 4)), levels=c("chr1", "chr3", "chrX")))
+  locs.gr.bad = locs.gr.new
+  names(locs.gr.bad)[1] = "FOO"
   ds = GenoSet(
-    locData=locs.rd,
+    locData=locs.gr,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
   ds.new = GenoSet(
-    locData=locs.rd.new,
+    locData=locs.gr.new,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  checkEquals(locs.rd,locData(ds))
+  checkEquals(locs.gr,locData(ds))
   checkEquals(ds,ds.new,check.attributes=FALSE)
-  checkException( {locData(ds) = locs.rd.bad},silent=TRUE )
+  checkException( {locData(ds) = locs.gr.bad},silent=TRUE )
   checkTrue({locData(ds) = locs.gr; is.null(names(ds@locData))}, "Setting locData makes locData GRanges names null")
-  checkEquals(featureNames(locData(ds)), names(locs.gr), "However, getting locData back out resets the GRanges names")
+  checkEquals(rownames(locData(ds)), names(locs.gr), "However, getting locData back out resets the GRanges names")
 }
 
 test_getters.and.setters <- function() {

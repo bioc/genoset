@@ -424,19 +424,19 @@ setMethod("rownames<-",
 setGeneric("locData", function(object) standardGeneric("locData"))
 setMethod("locData", "GenoSet", function(object) {
   locs = slot(object,"locData")
-  featureNames(locs) = rownames(object)
+  rownames(locs) = rownames(object)
   return(locs)
 } )
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRanges"),
                  function(object,value) {
-                   if (! all( featureNames(value) %in% featureNames(object))) {
+                   if (! all( rownames(value) %in% rownames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")
                      }
-                   if (! all(featureNames(value) == featureNames(object))) {
-                     object = object[featureNames(value), ]
+                   if (! all(rownames(value) == rownames(object))) {
+                     object = object[rownames(value), ]
                    }
-                   featureNames(value) = NULL
+                   rownames(value) = NULL
                    slot(object,"locData") = value
                    return(object)
                    })
