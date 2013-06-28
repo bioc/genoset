@@ -239,7 +239,7 @@ test_subset <- function() {
     annotation="SNP6"
     )
 
-  gene.rd = GRanges(ranges=IRanges(start=2:3,width=1),seqnames=c("chr1","chr1"))
+  gene.gr = GRanges(ranges=IRanges(start=2:3,width=1),seqnames=c("chr1","chr1"))
   
   # Subsetting whole object
   checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=TRUE)
@@ -247,7 +247,7 @@ test_subset <- function() {
   checkEquals( ds[ 2:3, , "baf" ], subset.rows.ds[, , "baf"], check.attributes=TRUE)
   ds.two.rows = ds[ 2:3, ]
   checkEquals( featureNames(assayData(ds.two.rows)), featureNames(locData(ds.two.rows)), "featureNames from locData and assayData should be the same when rows subset.")
-  checkEquals( ds[ gene.rd, ], subset.rows.ds, check.attributes=FALSE )
+  checkEquals( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE )
   
   # Subsetting assayData / extracting
   checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])

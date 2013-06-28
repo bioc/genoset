@@ -571,7 +571,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
               locs = locData(x)[i,,drop=TRUE]
               x@locData = locs
-              i = match(rownames(locs),rownames(featureData(x)))
+              i = match(rownames(locs),rownames(x))
             }
             callNextMethod(x,i,j,...,drop=drop)
           })
