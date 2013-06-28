@@ -571,7 +571,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
               locs = locData(x)[i,,drop=TRUE]
               x@locData = locs
-              i = match(featureNames(locs),featureNames(featureData(x)))
+              i = match(rownames(locs),rownames(featureData(x)))
             }
             callNextMethod(x,i,j,...,drop=drop)
           })
@@ -581,7 +581,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
 setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             if ( ! missing(i) ) {
-              indices = match(i,featureNames(x))
+              indices = match(i,rownames(x))
             }
             callNextMethod(x,indices,j,...,drop=drop)
           })
@@ -608,7 +608,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
                 k = assayDataElementNames(x)[k]
               }
             if (missing(i) && missing(j)) {
-              if (! all( sampleNames(x) == colnames(value)) || ! all( featureNames(x) == rownames(value))) {
+              if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
                 stop("Dimnames for incoming assayDataElement must match this genoset.\n")
               }
               return(assayDataElementReplace(x,k,value))

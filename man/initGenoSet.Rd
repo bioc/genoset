@@ -10,11 +10,11 @@
   BAFSet, CNSet) to be created}
 
   \item{locData}{A GRanges or RangedData object specifying
-  feature chromosome locations. featureNames (names or
-  rownames) are required to match featureNames.}
+  feature chromosome locations. rownames are required to
+  match assayData.}
 
-  \item{pData}{A data frame with rownames matching
-  sampleNames (colnames of all assayDataElements)}
+  \item{pData}{A data frame with rownames matching colnames
+  of all assayDataElements}
 
   \item{annotation}{character, string to specify
   chip/platform type}

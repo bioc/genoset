@@ -53,7 +53,7 @@ segs2Rle <- function(segs, locs) {
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
-  rle.data.frame = DataFrame(rle.list, row.names=featureNames(locs))
+  rle.data.frame = DataFrame(rle.list, row.names=rownames(locs))
   return(rle.data.frame)
 }
 
@@ -122,7 +122,7 @@ segs2RangedData <- function(segs) {
 ##'   assayDataElement( genoset.ds, "lrr.segs" ) = df
 ##'   segTable( df, locData(genoset.ds) )
 ##'   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
-##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), sampleNames(genoset.ds)[1] )
+##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segTable-methods
@@ -394,7 +394,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   if (return.segs == TRUE) {
     return(segs)
   } else {
-    return( DataFrame(segs, row.names=featureNames(locs) ) )
+    return( DataFrame(segs, row.names=rownames(locs) ) )
   }
 }
 

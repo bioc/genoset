@@ -51,7 +51,7 @@ data(genoset)
   assayDataElement( genoset.ds, "lrr.segs" ) = df
   segTable( df, locData(genoset.ds) )
   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
-  segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), sampleNames(genoset.ds)[1] )
+  segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
 }
 \author{
   Peter M. Haverty
