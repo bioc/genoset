@@ -69,7 +69,7 @@ setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
 setClassUnion("RangedDataOrGenoSetOrGenomicRanges",c("RangedData","GenoSet","GenomicRanges"))
 
 setValidity("GenoSet", function(object) {
-  return( all( featureNames(locData(object)) == featureNames(assayData(object)) ) )
+  return( all( rownames(locData(object)) == rownames(assayData(object)) ) )
 })
 
 ##' Create a GenoSet or derivative object
@@ -84,8 +84,8 @@ setValidity("GenoSet", function(object) {
 ##' 
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
 ##' @param locData A GRanges or RangedData object specifying feature chromosome
-##' locations. featureNames (names or rownames) are required to match featureNames.
-##' @param pData A data frame with rownames matching sampleNames (colnames of all assayDataElements)
+##' locations. rownames are required to match assayData.
+##' @param pData A data frame with rownames matching colnames of all assayDataElements
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe for locData, overrides universe/genome data in locData
 ##' @param assayData assayData, usually an environment
@@ -114,7 +114,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
     locData = toGenomeOrder(locData, strict=TRUE )
   }
-  clean.loc.rownames = featureNames(locData)
+  clean.loc.rownames = rownames(locData)
 
   # Create assayData
   if (is.null(assayData)) {
@@ -130,15 +130,15 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   } else {
     ad = assayData
   }
-  clean.featureNames = featureNames(ad)
+  clean.rownames = featureNames(ad)
 
-  if (length(clean.featureNames) != length(clean.loc.rownames)) {
+  if (length(clean.rownames) != length(clean.loc.rownames)) {
     stop("Row number mismatch for assayData and locData")
   }
 
   # Set row order to match locData, already know all ad elements have same row names
-  if ( ! all(clean.loc.rownames == clean.featureNames) ) {
-    if (! setequal(clean.loc.rownames, clean.featureNames)) {
+  if ( ! all(clean.loc.rownames == clean.rownames) ) {
+    if (! setequal(clean.loc.rownames, clean.rownames)) {
       stop("Row name set mismatch for locData and assayData")
     } else {
       for (  ad.name in assayDataElementNames(ad) ) {
@@ -177,7 +177,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
   pd = new("AnnotatedDataFrame",data=pData)
 
   # Create object
-  featureNames(locData) = NULL
+  rownames(locData) = NULL
   object = new(type, locData=locData, annotation=annotation, phenoData=pd, assayData=ad)
   return(object)
 }
