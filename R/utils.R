@@ -11,14 +11,26 @@ lr2cn <- function(x) {
 }
 
 ##' Take vector or matrix of copynumber values, convert to log2ratios
-##' Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal)
+##' Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal). If ploidy
+##' is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
 ##' @param x numeric data in copynumber units
+##' @param ploidy numeric, of length ncol(x). Ploidy of each sample.
 ##' @return data of same type as "x" transformed into log2ratio units
 ##' @export
 ##' @seealso lr2cn
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-cn2lr <- function(x) {
-  return ( log2(x) - 1 )
+cn2lr <- function(x, ploidy) {
+  if (missing(ploidy)){
+    new.x = log2(x) - 1
+  } else {
+    if (is.vector(x) && length(ploidy) == 1) {
+      new.x = log2( x / ploidy)
+    } else {
+      if ( ncol(x) != length(ploidy) ) { stop("ploidy must have the length of ncol(x)") }
+      new.x = log2( sweep(x, MARGIN=2, STATS=ploidy, FUN="/"))
+    }
+  }
+  return(new.x)
 }
 
 ##' Correct copy number for GC content

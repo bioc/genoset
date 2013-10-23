@@ -78,3 +78,15 @@ test_gcCorrect <- function() {
   output.matrix.w.na[ c(25,75), ] = NA
   checkEquals( gcCorrect(input.matrix.w.na, gc, retain.mean=FALSE ), output.matrix.w.na )
 }
+
+test_cn2lr <- function() {
+  ploidy = 2:3
+  dimnames = list(letters[1:2], LETTERS[1:2])
+  cn = matrix(2:5, byrow=TRUE, ncol=2, dimnames=dimnames)
+  lr = log2( matrix(2:5, byrow=TRUE, ncol=2, dimnames=dimnames) / 2 )
+  relative.lr = matrix(c(0, log2(3/3), log2(4/2), log2(5/3)), byrow=TRUE, ncol=2, dimnames=dimnames)
+  checkEquals( lr, cn2lr(cn), "Assume diploid")
+  checkEquals( relative.lr, cn2lr(cn, ploidy), "Use ploidy")
+  checkEquals( relative.lr[, 2], cn2lr(cn[, 2], ploidy[2]), "Use ploidy one sample")
+  checkException( cn2lr(cn, 1:8), "Ploidy and cn must match in size", silent=TRUE)
+}
