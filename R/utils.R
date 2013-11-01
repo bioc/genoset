@@ -13,25 +13,49 @@ lr2cn <- function(x) {
 ##' Take vector or matrix of copynumber values, convert to log2ratios
 ##' Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal). If ploidy
 ##' is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
-##' @param x numeric data in copynumber units
+##' @param x numeric vector or matrix, or DataFrame with numeric-like columns (Rle typicaly). Assumed to be in copynumber units.
 ##' @param ploidy numeric, of length ncol(x). Ploidy of each sample.
 ##' @return data of same type as "x" transformed into log2ratio units
 ##' @export
 ##' @seealso lr2cn
 ##' @author Peter M. Haverty \email{phaverty@@gene.com}
-cn2lr <- function(x, ploidy) {
-  if (missing(ploidy)){
-    new.x = log2(x) - 1
-  } else {
-    if (is.vector(x) && length(ploidy) == 1) {
-      new.x = log2( x / ploidy)
-    } else {
-      if ( ncol(x) != length(ploidy) ) { stop("ploidy must have the length of ncol(x)") }
-      new.x = log2( sweep(x, MARGIN=2, STATS=ploidy, FUN="/"))
-    }
-  }
-  return(new.x)
-}
+##' @rdname cn2lr
+##' @aliases cn2lr-methods
+##' @aliases cn2lr,numeric-methods
+##' @aliases cn2lr,matrix-methods
+##' @aliases cn2lr,DataFrame-methods
+setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
+setMethod("cn2lr", signature(x="numeric"),
+          function(x, ploidy) {
+            if (missing(ploidy)){
+              new.x = log2(x) - 1
+            } else {
+              if (length(ploidy) != 1) { stop("ploidy must be of length 1") }
+              new.x = log2( x / ploidy)
+            }
+            return(new.x)
+          })
+setMethod("cn2lr", signature(x="matrix"),
+          function(x, ploidy) {
+            if (missing(ploidy)){
+              new.x = log2(x) - 1
+            } else {
+              if ( ncol(x) != length(ploidy) ) { stop("ploidy must have the length of ncol(x)") }
+              new.x = log2( sweep(x, MARGIN=2, STATS=ploidy, FUN="/"))
+            }
+            return(new.x)
+          })
+setMethod("cn2lr", signature(x="DataFrame"),
+          function(x, ploidy) {
+            if (missing(ploidy)){
+              res.list = lapply( x, function(y) { log2(y) - 1 } )
+            } else {
+              if ( ncol(x) != length(ploidy) ) { stop("ploidy must have the length of ncol(x)") }
+              res.list = mapply( FUN=function(y, p) { log2(y/p) }, x, ploidy, SIMPLIFY=FALSE )
+            }
+            new.x = DataFrame( res.list, row.names=row.names(x), check.names=FALSE)
+            return(new.x)
+          })
 
 ##' Correct copy number for GC content
 ##'

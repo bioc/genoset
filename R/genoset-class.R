@@ -294,10 +294,11 @@ setMethod("colnames", signature(x="GenoSet"),
           function(x) {
             rownames(pData(x))
           })
-setMethod("colnames<-", signature(x="GenoSet"),
-          function(x, value) {
-            rownames(pData(x)) = value
-          })
+#setMethod("colnames<-", signature(x="GenoSet"),
+#          function(x, value) {
+#            rownames(pData(x)) = value
+#            return(object)
+#          })
 ##' @rdname colnames
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {

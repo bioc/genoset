@@ -89,4 +89,13 @@ test_cn2lr <- function() {
   checkEquals( relative.lr, cn2lr(cn, ploidy), "Use ploidy")
   checkEquals( relative.lr[, 2], cn2lr(cn[, 2], ploidy[2]), "Use ploidy one sample")
   checkException( cn2lr(cn, 1:8), "Ploidy and cn must match in size", silent=TRUE)
+
+  cn.df = as(cn, "DataFrame")
+  lr.df = as(lr, "DataFrame")
+  relative.lr.df = as(relative.lr, "DataFrame")
+  
+  checkEquals( lr.df, cn2lr(cn.df), "Assume diploid")
+  checkEquals( relative.lr.df, cn2lr(cn.df, ploidy), "Use ploidy")
+  checkException( cn2lr(cn.df, 1:8), "Ploidy and cn must match in size", silent=TRUE)
+
 }
