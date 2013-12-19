@@ -62,7 +62,10 @@ NULL
 # Class GenoSet
 ###############
 
+##' @exportClass RangedDataOrGenomicRanges
 ##' @exportClass GenoSet
+##' @exportClass RangedDataOrGenoSet
+##' @exportClass RangedDataOrGenoSetOrGenomicRanges
 setClassUnion("RangedDataOrGenomicRanges",c("RangedData","GenomicRanges"))
 setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGenomicRanges"))
 setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
