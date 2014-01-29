@@ -27,6 +27,7 @@ lr2cn <- function(x) {
 setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
 setMethod("cn2lr", signature(x="numeric"),
           function(x, ploidy) {
+            x = ifelse(x <= 0, 1e-3, x)
             if (missing(ploidy)){
               new.x = log2(x) - 1
             } else {
@@ -37,6 +38,7 @@ setMethod("cn2lr", signature(x="numeric"),
           })
 setMethod("cn2lr", signature(x="matrix"),
           function(x, ploidy) {
+            x = ifelse(x <= 0, 1e-3, x)
             if (missing(ploidy)){
               new.x = log2(x) - 1
             } else {
@@ -48,10 +50,16 @@ setMethod("cn2lr", signature(x="matrix"),
 setMethod("cn2lr", signature(x="DataFrame"),
           function(x, ploidy) {
             if (missing(ploidy)){
-              res.list = lapply( x, function(y) { log2(y) - 1 } )
+              res.list = lapply( x, function(y) {
+                y = ifelse(y <= 0, 1e-3, y)
+                log2(y) - 1
+              } )
             } else {
               if ( ncol(x) != length(ploidy) ) { stop("ploidy must have the length of ncol(x)") }
-              res.list = mapply( FUN=function(y, p) { log2(y/p) }, x, ploidy, SIMPLIFY=FALSE )
+              res.list = mapply( FUN=function(y, p) {
+                y = ifelse(y <= 0, 1e-3, y)
+                log2(y/p)
+              }, x, ploidy, SIMPLIFY=FALSE )
             }
             new.x = DataFrame( res.list, row.names=row.names(x), check.names=FALSE)
             return(new.x)
