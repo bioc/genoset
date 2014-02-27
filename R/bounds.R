@@ -166,7 +166,8 @@ boundingIndicesByChr <-function(query, subject) {
     tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
   }
 
-  # Subject must have features ordered by start within chromosome. Query need not really, but it's faster.  Just checking query genome order to assure data are in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
+  # Subject must have features ordered by start within chromosome. Query need not really, but it's faster.
+  # Just checking query genome order to assure data are in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
   if (! isGenomeOrder(subject,strict=FALSE) ) {
     stop("subject must be in genome order.\n")
   }
@@ -175,9 +176,10 @@ boundingIndicesByChr <-function(query, subject) {
   }
   query.chr.indices = chrIndices(query)
   subject.chr.indices = chrIndices(subject)
-  ok.chrs = intersect(rownames(subject.chr.indices),rownames(query.chr.indices))
-  query.chr.indices = query.chr.indices[ok.chrs,,drop=FALSE]
-  subject.chr.indices = subject.chr.indices[ok.chrs,,drop=FALSE]
+  if (! all(rownames(query.chr.indices) %in% rownames(subject.chr.indices))) {
+    stop("Some query chromosomes not represented in subject. Try query = keepSeqlevels( query, value=chrNames(subject) )")
+  }
+  subject.chr.indices = subject.chr.indices[rownames(query.chr.indices),,drop=FALSE]
   nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3])) # !!!
   query.start = start(query)
   query.end = end(query)

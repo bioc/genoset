@@ -140,4 +140,19 @@ test_boundingIndicesByChr <- function() {
   query3 = RangedData(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1110,1139,1150),width=c(rep(2,9),1,2,2),names=as.character(1:12)),space=c(rep("1",4),rep("2",4),rep("3",4)))
   res3 = matrix(as.integer(c(1,1, 1,1, 3,4, 4,4, 5,5, 5,5, 7,8, 8,8, 9,9, 9,9, 11,12, 12,12)),byrow=TRUE,ncol=2,dimnames=list(rownames(query3),c("left","right")))
   checkIdentical(res3, boundingIndicesByChr(query3,subject3))
+  
+  subject4 = GRanges(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=1,names=as.character(1:12)),
+    seqnames=c(rep("1",4),rep("2",4),rep("4",4)))
+  query4 = GRanges(
+    ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1110,1139,1150),width=c(rep(2,9),1,2,2),names=as.character(1:12)),
+    seqnames=c(rep("1",4),rep("2",2),rep("3", 2), rep("4",4)))
+  checkException(boundingIndicesByChr(query4,subject4), silent=TRUE, "Not OK to have extra chrs in query.")
+
+  subject5 = GRanges(ranges=IRanges(start=c(1, 2, seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=1,names=c("A", "B", as.character(1:12))),
+    seqnames=c(rep("0", 2), rep("1",4),rep("2",4),rep("3",4)))
+  query5 = GRanges(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1110,1139,1150),width=c(rep(2,9),1,2,2),names=c(as.character(1:12))),seqnames=c(rep("1",4),rep("2",4),rep("3",4)))
+
+  res5 = matrix(as.integer(c(1,1, 1,1, 3,4, 4,4, 5,5, 5,5, 7,8, 8,8, 9,9, 9,9, 11,12, 12,12) + 2),byrow=TRUE,ncol=2,dimnames=list(rownames(query5),c("left","right")))
+  checkIdentical(res5, boundingIndicesByChr(query5,subject5), "OK to have extra chrs in subject.")
+  
 }
