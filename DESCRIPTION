@@ -1,46 +1,30 @@
 Package: genoset
 Type: Package
-Title: Provides classes similar to ExpressionSet for copy number analysis
-Version: 1.15.7
+Title: Provides classes similar to ExpressionSet for copy number
+        analysis
+Version: 1.15.8
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
-Description: Load, manipulate, and plot copynumber and BAF data. GenoSet class
-    extends eSet by adding a "locData" slot for a RangedData or GRanegs object.
-    This object contains feature genome location data and provides for
-    efficient subsetting on genome location. CNSet and BAFSet extend GenoSet
-    and require assayData matrices for Copy Number (cn) or Log-R Ratio (lrr)
-    and B-Allele Frequency (baf) data. Implements and provides convenience
-    functions for processing of copy number and B-Allele Frequency data.
+Description: Load, manipulate, and plot copynumber and BAF data.
+        GenoSet class extends eSet by adding a "locData" slot for a
+        RangedData or GRanegs object. This object contains feature
+        genome location data and provides for efficient subsetting on
+        genome location. CNSet and BAFSet extend GenoSet and require
+        assayData matrices for Copy Number (cn) or Log-R Ratio (lrr)
+        and B-Allele Frequency (baf) data. Implements and provides
+        convenience functions for processing of copy number and
+        B-Allele Frequency data.
 License: Artistic-2.0
 LazyLoad: yes
-Depends:
-    R (>= 2.10),
-    BiocGenerics (>= 0.1.6),
-    Biobase (>= 2.15.1),
-    IRanges,
-    GenomicRanges
-Imports:
-    methods,
-    graphics
-Suggests:
-    RUnit,
-    DNAcopy,
-    stats,
-    BSgenome,
-    Biostrings
+Depends: R (>= 2.10), BiocGenerics (>= 0.1.6), Biobase (>= 2.15.1),
+        IRanges, GenomicRanges
+Imports: methods, graphics
+Suggests: RUnit, DNAcopy, stats, BSgenome, Biostrings
 Enhances: parallel
-biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
-    CopyNumberVariants
-Collate:
-    'genoset-class.R'
-    'cnset-class.R'
-    'bafset-class.R'
-    'DataFrame-methods.R'
-    'test_genoset_package.R'
-    'utils.R'
-    'ordering.R'
-    'segments.R'
-    'bounds.R'
-    'plots.R'
+Collate: 'genoset-class.R' 'cnset-class.R' 'bafset-class.R'
+        'DataFrame-methods.R' 'test_genoset_package.R' 'utils.R'
+        'ordering.R' 'segments.R' 'bounds.R' 'plots.R'
 ByteCompile: TRUE
+biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
+        CopyNumberVariation
