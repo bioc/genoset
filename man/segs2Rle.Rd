@@ -2,7 +2,7 @@
 \alias{segs2Rle}
 \title{Make Rle from segments for one sample}
 \usage{
-  segs2Rle(segs, locs)
+segs2Rle(segs, locs)
 }
 \arguments{
   \item{segs}{data.frame of segments, formatted as output
@@ -12,19 +12,19 @@
   GenoSet}
 }
 \value{
-  Rle with run lengths and run values covering all features
-  in the data set.
+Rle with run lengths and run values covering all features
+in the data set.
 }
 \description{
-  Take output of CBS, make Rle representing all features in
-  'locs' ranges. CBS output contains run length and run
-  values for genomic segmetns, which could very directly be
-  converted into a Rle. However, as NA values are often
-  removed, especially for mBAF data, these run lengths do
-  not necessarily cover all features in every sample. Using
-  the start and top positions of each segment and the
-  location of each feature, we can make a Rle that
-  represents all features.
+Take output of CBS, make Rle representing all features in
+'locs' ranges. CBS output contains run length and run
+values for genomic segmetns, which could very directly be
+converted into a Rle. However, as NA values are often
+removed, especially for mBAF data, these run lengths do not
+necessarily cover all features in every sample. Using the
+start and top positions of each segment and the location of
+each feature, we can make a Rle that represents all
+features.
 }
 \examples{
 data(genoset)
@@ -32,17 +32,26 @@ data(genoset)
   segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
 \author{
-  Peter M. Haverty \email{phaverty@gene.com}
+Peter M. Haverty \email{phaverty@gene.com}
 }
 \seealso{
-  Other "segmented data": \code{\link{bounds2Rle}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
-  \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
-  \code{\link{segs2RangedData}},
-  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
-  \code{\link{segTable}}, \code{\link{segTable}}
+Other "segmented data": \code{\link{bounds2Rle}};
+\code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{runCBS}}, \code{\link{runCBS}};
+\code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2RleDataFrame}}; \code{\link{segTable}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,Rle-method}},
+\code{\link{segTable,Rle-method}}
 }
 

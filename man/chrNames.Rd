@@ -1,21 +1,17 @@
 \name{chrNames}
 \alias{chrNames}
-\alias{chrNames,GenoSet-method}
-\alias{chrNames,GRanges-method}
-\alias{chrNames,RangedData-method}
-\alias{chrNames<-}
-\alias{chrNames<-,GenoSet-method}
-\alias{chrNames<-,GRanges-method}
-\alias{chrNames<-,RangedData-method}
 \title{Get list of unique chromosome names}
+\usage{
+chrNames(object)
+}
 \arguments{
   \item{object}{RangedData or GenoSet}
 }
 \value{
-  character vector with names of chromosomes
+character vector with names of chromosomes
 }
 \description{
-  Get list of unique chromosome names
+Get list of unique chromosome names
 }
 \examples{
 data(genoset)
@@ -24,6 +20,6 @@ data(genoset)
   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 

@@ -4,6 +4,15 @@
 \alias{segTable,DataFrame-method}
 \alias{segTable,Rle-method}
 \title{Convert Rle objects to tables of segments}
+\usage{
+segTable(object, ...)
+
+\S4method{segTable}{Rle}(object, locs = NULL, chr.ind = NULL,
+  start = NULL, end = NULL, factor.chr = TRUE)
+
+\S4method{segTable}{DataFrame}(object, locs, factor.chr = TRUE,
+  stack = FALSE)
+}
 \arguments{
   \item{object}{Rle or list/DataFrame of Rle vectors}
 
@@ -23,26 +32,25 @@
   each sample and add "Sample" column?}
 }
 \value{
-  one or a list of data.frames with columns chrom,
-  loc.start, loc.end, num.mark, seg.mean
+one or a list of data.frames with columns chrom, loc.start,
+loc.end, num.mark, seg.mean
 }
 \description{
-  Like the inverse of segs2Rle and segs2RleDataFrame. Takes
-  a Rle or a DataFrame with Rle columns and the locData
-  both from a GenoSet object and makes a list of
-  data.frames each like the result of CBS's segment.  Note
-  the loc.start and loc.stop will correspond exactly to
-  probe locations in locData and the input to
-  segs2RleDataFrame are not necessarily so. For a
-  DataFrame, the argument \code{stack} combines all of the
-  individual data.frames into one large data.frame and adds
-  a "Sample" column of sample ids.
+Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
+Rle or a DataFrame with Rle columns and the locData both
+from a GenoSet object and makes a list of data.frames each
+like the result of CBS's segment.  Note the loc.start and
+loc.stop will correspond exactly to probe locations in
+locData and the input to segs2RleDataFrame are not
+necessarily so. For a DataFrame, the argument \code{stack}
+combines all of the individual data.frames into one large
+data.frame and adds a "Sample" column of sample ids.
 }
 \details{
-  For a Rle, the user can provide \code{locs} or
-  \code{chr.ind}, \code{start} and \code{stop}.  The latter
-  is surprisingly much faster and this is used in the
-  DataFrame version.
+For a Rle, the user can provide \code{locs} or
+\code{chr.ind}, \code{start} and \code{stop}.  The latter
+is surprisingly much faster and this is used in the
+DataFrame version.
 }
 \examples{
 data(genoset)
@@ -54,16 +62,22 @@ data(genoset)
   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 \seealso{
-  Other "segmented data": \code{\link{bounds2Rle}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
-  \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
-  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}}
+Other "segmented data": \code{\link{bounds2Rle}};
+\code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{runCBS}}, \code{\link{runCBS}};
+\code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2Rle}}; \code{\link{segs2RleDataFrame}}
 }
 

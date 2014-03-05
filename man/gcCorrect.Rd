@@ -2,7 +2,7 @@
 \alias{gcCorrect}
 \title{Correct copy number for GC content}
 \usage{
-  gcCorrect(ds, gc, retain.mean = TRUE)
+gcCorrect(ds, gc, retain.mean = TRUE)
 }
 \arguments{
   \item{ds}{numeric matrix of copynumber or log2ratio
@@ -15,15 +15,15 @@
   mean?}
 }
 \value{
-  numeric matrix, residuals of ds regressed on gc
+numeric matrix, residuals of ds regressed on gc
 }
 \description{
-  Copy number estimates from various platforms show
-  "Genomic Waves" (Diskin et al., Nucleic Acids Research,
-  2008) where copy number trends with local GC content.
-  This function regresses copy number on GC percentage and
-  removes the effect (returns residuals). GC content should
-  be smoothed along the genome in wide windows >= 100kb.
+Copy number estimates from various platforms show "Genomic
+Waves" (Diskin et al., Nucleic Acids Research, 2008) where
+copy number trends with local GC content. This function
+regresses copy number on GC percentage and removes the
+effect (returns residuals). GC content should be smoothed
+along the genome in wide windows >= 100kb.
 }
 \examples{
 gc = runif(n=100, min=1, max=100)
@@ -31,6 +31,6 @@ gc = runif(n=100, min=1, max=100)
   gcCorrect(ds, gc)
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 

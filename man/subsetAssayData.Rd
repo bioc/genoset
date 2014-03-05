@@ -2,7 +2,7 @@
 \alias{subsetAssayData}
 \title{Subset assayData}
 \usage{
-  subsetAssayData(orig, i, j, ..., drop = FALSE)
+subsetAssayData(orig, i, j, ..., drop = FALSE)
 }
 \arguments{
   \item{orig}{assayData environment}
@@ -17,16 +17,16 @@
   single value?}
 }
 \value{
-  assayData data structure
+assayData data structure
 }
 \description{
-  Subset or re-order assayData
+Subset or re-order assayData
 }
 \details{
-  Subset or re-order assayData locked environment,
-  environment, or list. Shamelessly stolen from "[" method
-  in Biobase version 2.8 along with guts of
-  assayDataStorageMode()
+Subset or re-order assayData locked environment,
+environment, or list. Shamelessly stolen from "[" method in
+Biobase version 2.8 along with guts of
+assayDataStorageMode()
 }
 \examples{
 data(genoset)
@@ -34,6 +34,6 @@ data(genoset)
   small.ad = subsetAssayData(ad,1:5,2:3)
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 

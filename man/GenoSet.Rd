@@ -2,8 +2,8 @@
 \alias{GenoSet}
 \title{Create a GenoSet object}
 \usage{
-  GenoSet(locData, pData = NULL, annotation = "", universe,
-    assayData = NULL, ...)
+GenoSet(locData, pData = NULL, annotation = "", universe,
+  assayData = NULL, ...)
 }
 \arguments{
   \item{locData}{A RangedData object specifying feature
@@ -25,19 +25,19 @@
   assayData}
 }
 \value{
-  A GenoSet object
+A GenoSet object
 }
 \description{
-  This function is the preferred method for creating a new
-  GenoSet object. Users are generally discouraged from
-  calling "new" directly. Any "..." arguments will become
-  part of the assayData slot of the resulting object. "..."
-  can be matrices or DataFrame objects (from IRanges). This
-  function passes control to the "initGenoSet" method which
-  performs argument checking including dimname matching
-  among relevant slots and sets everything to genome order.
-  Genome order can be disrupted by "[" calls and will be
-  checked by methods that require it.
+This function is the preferred method for creating a new
+GenoSet object. Users are generally discouraged from
+calling "new" directly. Any "..." arguments will become
+part of the assayData slot of the resulting object. "..."
+can be matrices or DataFrame objects (from IRanges). This
+function passes control to the "initGenoSet" method which
+performs argument checking including dimname matching among
+relevant slots and sets everything to genome order. Genome
+order can be disrupted by "[" calls and will be checked by
+methods that require it.
 }
 \examples{
 test.sample.names = LETTERS[11:13]
@@ -50,6 +50,6 @@ gs = GenoSet(
 )
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 

@@ -24,6 +24,7 @@ lr2cn <- function(x) {
 ##' @aliases cn2lr,numeric-methods
 ##' @aliases cn2lr,matrix-methods
 ##' @aliases cn2lr,DataFrame-methods
+##' @rdname cn2lr-methods
 setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
 setMethod("cn2lr", signature(x="numeric"),
           function(x, ploidy) {

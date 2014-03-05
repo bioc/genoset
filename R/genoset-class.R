@@ -247,7 +247,6 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 ##' @aliases universe<-,GRanges-method
 ##' @aliases genome,GenoSet-method
 ##' @aliases genome<-,GenoSet-method
-##' @rdname genome
 setMethod("genome", "GenoSet", function(x) {
   return(genome(x@locData))
 })
@@ -290,7 +289,6 @@ setMethod("universe<-", signature(x="GRanges"),
 ##'   head(colnames(genoset.ds))
 ##' @exportMethod sampleNames
 ##' @exportMethod colnames
-##' @rdname colnames
 ##' @aliases sampleNames,GenoSet-method
 ##' @aliases colnames,GenoSet-method
 setMethod("colnames", signature(x="GenoSet"),
@@ -302,13 +300,11 @@ setMethod("colnames", signature(x="GenoSet"),
 #            rownames(pData(x)) = value
 #            return(object)
 #          })
-##' @rdname colnames
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
             rownames(pData(object))
           })
-##' @rdname colnames
 setMethod("sampleNames<-", signature(object="GenoSet"),
           function(object, value) {
             .Deprecated(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
@@ -329,21 +325,18 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
 ##'   head(rownames(genoset.ds))
 ##' @exportMethod featureNames
 ##' @exportMethod rownames
-##' @rdname rownames
 ##' @aliases featureNames,GenoSet-method
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             return(unname(featureNames(featureData(object))))
           })
-##' @rdname rownames
 ##' @aliases featureNames,GRanges-method
 setMethod("featureNames", signature(object="GRanges"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             rownames(object)
           })
-##' @rdname rownames
 ##' @aliases featureNames,RangedData-method
 setMethod("featureNames", signature(object="RangedData"),
           function(object) {
@@ -351,18 +344,15 @@ setMethod("featureNames", signature(object="RangedData"),
             rownames(object)
           })
 ##' @aliases rownames,GRanges-method
-##' @rdname rownames
 setMethod("rownames", signature(x="GRanges"),
           function(x) {
             names(x)
           })
-##' @rdname rownames
 ##' @aliases rownames,GenoSet-method
 setMethod("rownames", signature(x="GenoSet"),
           function(x) {
             return(unname(featureNames(featureData(x))))
           })
-##' @rdname rownames
 ##' @aliases featureNames<-,GenoSet-method
 setMethod("featureNames<-",
           signature=signature(object="GenoSet", value="ANY"),
@@ -371,7 +361,6 @@ setMethod("featureNames<-",
             object = callNextMethod(object, value)
             return(object)
           })
-##' @rdname rownames
 ##' @aliases featureNames<-,GRanges-method
 setMethod("featureNames<-",
           signature=signature(object="GRanges", value="ANY"),
@@ -380,7 +369,6 @@ setMethod("featureNames<-",
             rownames(object) = value
             return(object)
           })
-##' @rdname rownames
 ##' @aliases featureNames<-,RangedData-method
 setMethod("featureNames<-",
           signature=signature(object="RangedData", value="ANY"),
@@ -389,7 +377,6 @@ setMethod("featureNames<-",
             rownames(object) = value
             return(object)
           })
-##' @rdname rownames
 ##' @aliases rownames<-,GRanges-method
 setMethod("rownames<-",
                  signature=signature(x="GRanges", value="ANY"),
@@ -428,7 +415,6 @@ setMethod("rownames<-",
 ##' @aliases locData
 ##' @aliases locData<-
 ##' @return A GenoSet object
-##' @rdname locData-methods
 setGeneric("locData", function(object) standardGeneric("locData"))
 setMethod("locData", "GenoSet", function(object) {
   locs = slot(object,"locData")
@@ -459,7 +445,6 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRan
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
-##' @rdname genoset-methods
 ##' @aliases start,GenoSet-method
 setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 
@@ -469,7 +454,6 @@ setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
-##' @rdname genoset-methods
 ##' @aliases end,GenoSet-method
 setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
@@ -479,7 +463,6 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 ##' @param x GenoSet
 ##' @return integer
 ##' @author Peter M. Haverty
-##' @rdname genoset-methods
 setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
 ##' Get data matrix names
@@ -489,7 +472,6 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' @return character
 ##' @author Peter Haverty
 ##' @exportMethod names
-##' @rdname genoset-methods
 ##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
   return( assayDataElementNames(x) )
@@ -511,10 +493,8 @@ setMethod("space", "GenoSet", function(x) {
 ##' @return character
 ##' @author Peter Haverty
 ##' @exportMethod elementLengths
-##' @rdname genoset-methods
 ##' @aliases elementLengths,GenoSet-method
 setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
-##' @rdname genoset-methods
 ##' @aliases elementLengths,GRanges-method
 setMethod("elementLengths", "GRanges", function(x) {
   if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GRanges not ordered by chromosome.") }
@@ -522,12 +502,10 @@ setMethod("elementLengths", "GRanges", function(x) {
 })
 
 ##' @exportMethod nrow
-##' @rdname genoset-methods
 ##' @aliases nrow,GRanges-method
 setMethod("nrow", "GRanges", function(x) { length(x) })
 
 ##' @exportMethod dim
-##' @rdname genoset-methods
 ##' @aliases dim,GenoSet-method
 setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(unname(phenoData(x))))})
 
@@ -535,6 +513,9 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 # Sub-setters
 #############
 
+##' Subset a GenoSet
+##'
+##' Subset a GenoSet
 ##' @exportMethod "["
 ##' @param x GenoSet
 ##' @param i character, RangedData, logical, integer
@@ -548,7 +529,6 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 ##'   genoset.ds[ , "K"]  # Sample called K
 ##'   rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
 ##'   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-##' @rdname genoset-methods
 ##' @aliases [,GenoSet,ANY,ANY,ANY-method
 ##' @aliases [,GenoSet,ANY-method
 ##' @aliases [,GenoSet,RangedDataOrGenomicRanges-method
@@ -584,7 +564,6 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
             callNextMethod(x,i,j,...,drop=drop)
           })
 
-##' @rdname genoset-methods
 ##' @aliases [,GenoSet,character,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           function(x,i,j,...,drop=FALSE) {
@@ -594,7 +573,6 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
-##' @rdname genoset-methods
 ##' @aliases [,GenoSet,RangedDataOrGenomicRanges,ANY,ANY-method
 setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGenomicRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
@@ -602,7 +580,6 @@ setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGenomicRanges", j
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
-##' @rdname genoset-methods
 ##' @aliases [<-,GenoSet,ANY,ANY,ANY-method
 setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),          
           function(x,i,j,k,value) {
@@ -647,7 +624,6 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
 ##'
 ##' Prints a description of a GenoSet object.
 ##' @exportMethod show
-##' @rdname show
 ##' @aliases show,GenoSet-method
 setMethod("show","GenoSet",
           function(object) {
@@ -672,15 +648,11 @@ setMethod("show","GenoSet",
 ##'   chr(locData(genoset.ds))  # The same
 ##' @author Peter Haverty
 ##' @export chr
-##' @rdname chr-methods
 setGeneric("chr", function(object) standardGeneric("chr"))
-##' @rdname chr-methods
 ##' @aliases chr,RangedData-method
 setMethod("chr", "RangedData", function(object) { return(as.character(space(object))) } )
-##' @rdname chr-methods
 ##' @aliases chr,GenoSet-method
 setMethod("chr", "GenoSet", function(object) { return(chr(slot(object,"locData"))) } )
-##' @rdname chr-methods
 ##' @aliases chr,GRanges-method
 setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(object))) })
 
@@ -696,10 +668,8 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##'   data(genoset)
 ##'   pos(genoset.ds)  # 1:10
 ##'   pos(locData(genoset.ds))  # The same
-##' @rdname pos
 ##' @aliases pos,RangedDataOrGenoSetOrGenomicRanges-method
 setGeneric("pos", function(object) standardGeneric("pos"))
-##' @rdname pos
 setMethod("pos", "RangedDataOrGenoSetOrGenomicRanges",
           function(object) { return( start(object) + (width(object) - 1L) %/% 2L) } )
 
@@ -716,45 +686,37 @@ setMethod("pos", "RangedDataOrGenoSetOrGenomicRanges",
 ##'   chrNames(genoset.ds) # c("chr1","chr3","chrX")
 ##'   chrNames(locData(genoset.ds))  # The same
 ##'   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
-##' @rdname chrNames
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
-##' @rdname chrNames
 ##' @aliases chrNames,GenoSet-method
 setMethod("chrNames", signature(object="GenoSet"),
           function(object) {
             chrNames(locData(object))
           })
-##' @rdname chrNames
 ##' @aliases chrNames,RangedData-method
 setMethod("chrNames", signature(object="RangedData"),
           function(object) {
             names(object)
           })
-##' @rdname chrNames
 ##' @aliases chrNames,GRanges-method
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
             as.character(unique(seqnames(object)))
           })
 
-##' @rdname chrNames
 ##' @export "chrNames<-"
 setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
-##' @rdname chrNames
 ##' @aliases chrNames<-,GenoSet-method
 setMethod("chrNames<-", signature(object="GenoSet"),
           function(object,value) {
             chrNames(locData(object)) = value
             return(object)
           })
-##' @rdname chrNames
 ##' @aliases chrNames<-,RangedData-method
 setMethod("chrNames<-", signature(object="RangedData"),
           function(object,value) {
             names(object) = value
             return(object)
           })
-##' @rdname chrNames
 ##' @aliases chrNames<-,GRanges-method
 setMethod("chrNames<-", signature(object="GRanges"),
           function(object,value) {
@@ -775,9 +737,7 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##'   data(genoset)
 ##'   chrInfo(genoset.ds)
 ##'   chrInfo(locData(genoset.ds))  # The same
-##' @rdname chrInfo
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
-##' @rdname chrInfo
 ##' @aliases chrInfo,RangedDataOrGenoSetOrGenomicRanges-method
 setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {
@@ -819,9 +779,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##'   data(genoset)
 ##'   chrIndices(genoset.ds)
 ##'   chrIndices(locData(genoset.ds))  # The same
-##' @rdname chrIndices-methods
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
-##' @rdname chrIndices-methods
 ##' @aliases chrIndices,RangedDataOrGenoSetOrGenomicRanges-method
 setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
@@ -854,9 +812,7 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##'   head(genoPos(genoset.ds))
 ##'   head(genoPos(locData(genoset.ds)))  # The same
 ##' @export genoPos
-##' @rdname genoPos-methods
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
-##' @rdname genoPos-methods
 ##' @aliases genoPos,RangedDataOrGenoSetOrGenomicRanges-method
 setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {

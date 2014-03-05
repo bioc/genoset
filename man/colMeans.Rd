@@ -1,7 +1,13 @@
+\docType{methods}
 \name{colMeans}
 \alias{colMeans}
 \alias{colMeans,DataFrame-method}
 \title{Means of columns}
+\usage{
+colMeans(x, na.rm = FALSE, dims = 1, ...)
+
+\S4method{colMeans}{DataFrame}(x, na.rm = TRUE, dims = 1L)
+}
 \arguments{
   \item{x}{DataFrame}
 
@@ -10,10 +16,10 @@
   \item{dims}{integer}
 }
 \description{
-  Calculate means of columns of a DataFrame as if it were a
-  matrix. Allow colmeans in rangeSampleMeans for DataTable
-  just like a real matrix. I'm sure there is much more
-  clever way to do this using aggregate.
+Calculate means of columns of a DataFrame as if it were a
+matrix. Allow colmeans in rangeSampleMeans for DataTable
+just like a real matrix. I'm sure there is much more clever
+way to do this using aggregate.
 }
 \examples{
 df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
@@ -21,6 +27,6 @@ df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
  \dontrun{ identical( colMeans(df.ds), colMeans(mat.ds) ) }
 }
 \author{
-  Peter M. Haverty
+Peter M. Haverty
 }
 

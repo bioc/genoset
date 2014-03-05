@@ -132,6 +132,7 @@ test_boundingIndicesByChr <- function() {
   subject2= GRanges(ranges=IRanges(start=c(seq(from=10,to=40,by=10),seq(from=110,to=140,by=10),seq(from=1110,to=1140,by=10)),width=2,names=as.character(1:12)),
     seqnames=c(rep("1",4),rep("2",4),rep("5",4)))
   query2 = RangedData(ranges=IRanges(start=c(2,9,39,50,102,109,139,150,1102,1109,1139,1150),width=2,names=as.character(1:12)),space=c(rep("1",4),rep("3",4),rep("5",4)))
+  query2 = query2[chr(query2) %in% c("1", "5"), ]
   res2 = res[c(1:4,9:12),]
   checkIdentical(res2, boundingIndicesByChr(query2,subject2))
   
