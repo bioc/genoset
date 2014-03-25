@@ -2,15 +2,15 @@
 
 ##' Means of columns
 ##'
-##' Calculate means of columns of a DataFrame as if it were a matrix. Allow colmeans
+##' Calculate means of columns of a DataFrame as if it were a matrix. Allows colmeans
 ##' in rangeSampleMeans for DataTable just like a real matrix. I'm sure there
 ##' is much more clever way to do this using aggregate.
 ##' 
-##' @export colMeans
+##' @export
 ##' @param x DataFrame
 ##' @param na.rm logical
 ##' @param dims integer
-##' @author Peter M. Haverty
+##' @param ... in generic, for extra args in methods.
 ##' @examples
 ##'  df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
 ##'  mat.ds = matrix( c(5,5,4,4,3,3,3,6,9,9,9,9), ncol=2, dimnames=list(NULL,c("a","b")))
@@ -18,7 +18,6 @@
 ##' @rdname colMeans
 setGeneric("colMeans", function(x,na.rm=TRUE,dims=1L) standardGeneric("colMeans") )
 ##' @rdname colMeans
-##' @aliases colMeans,DataFrame-method
 setMethod("colMeans", signature(x="DataFrame"), function(x,na.rm=TRUE,dims=1L) { return( sapply(x,mean,na.rm=na.rm) ) } )
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix

@@ -1,0 +1,14 @@
+\docType{methods}
+\name{show,GenoSet-method}
+\alias{show,GenoSet-method}
+\title{Print a GenoSet}
+\usage{
+\S4method{show}{GenoSet}(object)
+}
+\arguments{
+  \item{object}{Any R object}
+}
+\description{
+Prints out a description of a GenoSet object
+}
+

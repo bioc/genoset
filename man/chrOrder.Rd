@@ -18,9 +18,6 @@ letter.
 \examples{
 chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX","chrY")
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "genome ordering": \code{\link{isGenomeOrder}},
 \code{\link{isGenomeOrder,GRanges-method}},
@@ -28,10 +25,10 @@ Other "genome ordering": \code{\link{isGenomeOrder}},
 \code{\link{isGenomeOrder,RangedDataOrGenoSet-method}},
 \code{\link{isGenomeOrder,RangedDataOrGenoSet-method}};
 \code{\link{toGenomeOrder}},
-\code{\link{toGenomeOrder,GenoSet-method}},
-\code{\link{toGenomeOrder,GenoSet-method}},
 \code{\link{toGenomeOrder,GRanges-method}},
 \code{\link{toGenomeOrder,GRanges-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
 \code{\link{toGenomeOrder,RangedData-method}},
 \code{\link{toGenomeOrder,RangedData-method}}
 }

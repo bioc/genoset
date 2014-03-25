@@ -13,7 +13,6 @@
 ##' @family "genome ordering"
 ##' @examples
 ##'    chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX","chrY")
-##' @author Peter M. Haverty
 chrOrder <- function(chr.names) {
   simple.names = gsub("^chr","",chr.names)
   name.is.numeric = grepl("^[0-9]+$",simple.names,perl=T)
@@ -38,9 +37,8 @@ chrOrder <- function(chr.names) {
 ##' @examples
 ##'   data(genoset)
 ##'   isGenomeOrder( locData(genoset.ds) )
-##' @author Peter M. Haverty
 ##' @rdname isGenomeOrder-methods
-setGeneric("isGenomeOrder", function(ds,...) standardGeneric("isGenomeOrder"))
+setGeneric("isGenomeOrder", function(ds, strict) standardGeneric("isGenomeOrder"))
 
 ##' @aliases isGenomeOrder,RangedDataOrGenoSet-method
 ##' @rdname isGenomeOrder-methods
@@ -89,11 +87,10 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##'   toGenomeOrder( genoset.ds, strict=TRUE )
 ##'   toGenomeOrder( genoset.ds, strict=FALSE )
 ##'   toGenomeOrder( locData(genoset.ds) )
-##' @author Peter M. Haverty
 ##' @docType methods
 ##' @family "genome ordering"
 ##' @rdname toGenomeOrder-methods
-setGeneric("toGenomeOrder", function(ds,...) standardGeneric("toGenomeOrder"))
+setGeneric("toGenomeOrder", function(ds, strict) standardGeneric("toGenomeOrder"))
 
 ##' @rdname toGenomeOrder-methods
 ##' @aliases toGenomeOrder,RangedData-method

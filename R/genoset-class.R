@@ -620,9 +620,9 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
 # Other
 #######
 
-##' Show a GenoSet
+##' Print a GenoSet
 ##'
-##' Prints a description of a GenoSet object.
+##' Prints out a description of a GenoSet object
 ##' @exportMethod show
 ##' @aliases show,GenoSet-method
 setMethod("show","GenoSet",

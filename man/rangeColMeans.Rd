@@ -27,9 +27,9 @@ all rows.
 Peter M. Haverty \email{phaverty@gene.com}
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices}};
-\code{\link{boundingIndices2}};
+Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndicesByChr}};
+\code{\link{boundingIndices}};
 \code{\link{rangeSampleMeans}}
 }
 

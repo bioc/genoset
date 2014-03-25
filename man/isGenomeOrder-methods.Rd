@@ -5,7 +5,7 @@
 \alias{isGenomeOrder,RangedDataOrGenoSet-method}
 \title{Check if a GRanges, GenoSet or RangedData is in genome order}
 \usage{
-isGenomeOrder(ds, ...)
+isGenomeOrder(ds, strict)
 
 \S4method{isGenomeOrder}{RangedDataOrGenoSet}(ds, strict = TRUE)
 
@@ -31,16 +31,13 @@ than chromsome, strand, start, and width.
 data(genoset)
   isGenomeOrder( locData(genoset.ds) )
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}};
 \code{\link{toGenomeOrder}},
-\code{\link{toGenomeOrder,GenoSet-method}},
-\code{\link{toGenomeOrder,GenoSet-method}},
 \code{\link{toGenomeOrder,GRanges-method}},
 \code{\link{toGenomeOrder,GRanges-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
 \code{\link{toGenomeOrder,RangedData-method}},
 \code{\link{toGenomeOrder,RangedData-method}}
 }

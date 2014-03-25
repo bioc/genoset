@@ -50,8 +50,8 @@ order (sorted by start within chromosome blocks).
 Peter M. Haverty \email{phaverty@gene.com}
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices}};
-\code{\link{boundingIndices2}};
-\code{\link{rangeColMeans}}; \code{\link{rangeSampleMeans}}
+Other "range summaries": \code{\link{boundingIndices2}};
+\code{\link{boundingIndices}}; \code{\link{rangeColMeans}};
+\code{\link{rangeSampleMeans}}
 }
 

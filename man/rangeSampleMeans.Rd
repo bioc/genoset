@@ -40,9 +40,8 @@ data(genoset)
 Peter M. Haverty
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices}};
-\code{\link{boundingIndices2}};
+Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndicesByChr}};
-\code{\link{rangeColMeans}}
+\code{\link{boundingIndices}}; \code{\link{rangeColMeans}}
 }
 

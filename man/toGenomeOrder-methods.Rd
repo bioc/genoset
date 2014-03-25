@@ -6,7 +6,7 @@
 \alias{toGenomeOrder,RangedData-method}
 \title{Set a GRanges, GenoSet, or RangedData to genome order}
 \usage{
-toGenomeOrder(ds, ...)
+toGenomeOrder(ds, strict)
 
 \S4method{toGenomeOrder}{RangedData}(ds, strict = TRUE)
 
@@ -41,9 +41,6 @@ data(genoset)
   toGenomeOrder( genoset.ds, strict=TRUE )
   toGenomeOrder( genoset.ds, strict=FALSE )
   toGenomeOrder( locData(genoset.ds) )
-}
-\author{
-Peter M. Haverty
 }
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}};

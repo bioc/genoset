@@ -77,3 +77,6 @@ No more make.names on sampleNames in object initialization
 
 1.11.22
 CNSet and BAFSet are deprecated.  See help("genoset-deprecated")
+
+1.15.10
+CNSet and BAFSet are gone.

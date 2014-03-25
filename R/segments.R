@@ -112,6 +112,7 @@ segs2RangedData <- function(segs) {
 ##' @param start integer, vector of feature start positions
 ##' @param end integer, vector of feature end positions
 ##' @param factor.chr scalar logical, make 'chrom' column a factor?
+##' @param ... in generic, for extra args in methods
 ##' @return one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 ##' @export segTable
 ##' @family "segmented data"
@@ -126,10 +127,9 @@ segs2RangedData <- function(segs) {
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segTable-methods
-setGeneric("segTable", function(object,...) standardGeneric("segTable"))
+setGeneric("segTable", function(object, ...) standardGeneric("segTable"))
 
 ##' @rdname segTable-methods
-##' @aliases segTable,Rle-method
 setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,factor.chr=TRUE) {
 
   if (!is.null(locs)) {
@@ -167,7 +167,6 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
 })
 
 ##' @rdname segTable-methods
-##' @aliases segTable,DataFrame-method
 ##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
 setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor.chr=TRUE,stack=FALSE) {
   internal.factor.chr = ifelse(factor.chr == TRUE && stack == FALSE,TRUE,FALSE)
@@ -209,6 +208,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
 ##'
 ##' @param x Rle or list/DataFrame of Rle vectors
 ##' @param y Rle or list/DataFrame of Rle vectors
+##' @param ... in generic, extra arguments for methods
 ##' @param locs GenomicRanges with rows corresponding to rows of df
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
@@ -227,10 +227,9 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
 ##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segPairTable-methods
-setGeneric("segPairTable", function(x,y,...) standardGeneric("segPairTable"))
+setGeneric("segPairTable", function(x, y, ...) standardGeneric("segPairTable"))
 
 ##' @rdname segPairTable-methods
-##' @aliases segPairTable,Rle,Rle-method
 setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr.ind=NULL,start=NULL,end=NULL,factor.chr=TRUE) {
   # Fill in missing args if locs given
   # Maybe use ... rather than x and y and get names from that to use in colnames
@@ -275,7 +274,6 @@ setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr
 })
 
 ##' @rdname segPairTable-methods
-##' @aliases segPairTable,DataFrame,DataFrame-method
 ##' @param stack logical, rbind list of segment tables for each sample and add "Sample" column?
 setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,locs,stack=FALSE,factor.chr=TRUE) {
   internal.factor.chr = ifelse(factor.chr == TRUE && stack == FALSE,TRUE,FALSE)
@@ -411,10 +409,9 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
 ##' @return named vector of lengths, one per item in range.gr, or a range x length(segs) of these if segs is also list-like.
 ##' @family "segmented data"
 ##' @rdname rangeSegMeanLength-methods
-setGeneric("rangeSegMeanLength", function(range.gr,segs,...) standardGeneric("rangeSegMeanLength"))
+setGeneric("rangeSegMeanLength", function(range.gr,segs) standardGeneric("rangeSegMeanLength"))
 
 ##' @rdname rangeSegMeanLength-methods
-##' @aliases rangeSegMeanLength,GRanges,list-method
 setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="list"), 
   function(range.gr, segs) {
     widths = lapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) })
@@ -422,7 +419,6 @@ setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="li
   })
 
 ##' @rdname rangeSegMeanLength-methods
-##' @aliases rangeSegMeanLength,GRanges,data.frame-method
 setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="data.frame"), 
   function(range.gr, segs) {
     .rangeSegMeanLength(range.gr, segs)

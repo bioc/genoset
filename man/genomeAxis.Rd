@@ -38,12 +38,12 @@ Peter M. Haverty
 }
 \seealso{
 Other "genome plots": \code{\link{genoPlot}},
-\code{\link{genoPlot-methods}},
-\code{\link{genoPlot,numeric,numeric-method}},
-\code{\link{genoPlot,numeric,numeric-method}},
-\code{\link{genoPlot,numeric,Rle-method}},
-\code{\link{genoPlot,numeric,Rle-method}},
 \code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
-\code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}}
+\code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
+\code{\link{genoPlot,numeric,Rle-method}},
+\code{\link{genoPlot,numeric,Rle-method}},
+\code{\link{genoPlot,numeric,numeric-method}},
+\code{\link{genoPlot,numeric,numeric-method}},
+\code{\link{genoPlot-methods}}
 }
 

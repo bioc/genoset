@@ -1,0 +1,20 @@
+\docType{methods}
+\name{end,GenoSet-method}
+\alias{end,GenoSet-method}
+\title{Get end of location for each feature}
+\usage{
+\S4method{end}{GenoSet}(x)
+}
+\arguments{
+  \item{x}{GenoSet}
+}
+\value{
+integer
+}
+\description{
+Get end of location for each feature
+}
+\author{
+Peter M. Haverty
+}
+

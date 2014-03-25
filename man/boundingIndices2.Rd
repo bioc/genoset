@@ -52,8 +52,9 @@ starts = seq(10,100,10)
 Peter M. Haverty
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices}};
+Other "range summaries":
 \code{\link{boundingIndicesByChr}};
-\code{\link{rangeColMeans}}; \code{\link{rangeSampleMeans}}
+\code{\link{boundingIndices}}; \code{\link{rangeColMeans}};
+\code{\link{rangeSampleMeans}}
 }
 

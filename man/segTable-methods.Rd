@@ -28,6 +28,8 @@ segTable(object, ...)
   \item{factor.chr}{scalar logical, make 'chrom' column a
   factor?}
 
+  \item{...}{in generic, for extra args in methods}
+
   \item{stack}{logical, rbind list of segment tables for
   each sample and add "Sample" column?}
 }
@@ -68,16 +70,12 @@ Peter M. Haverty
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},
 \code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
-\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
-\code{\link{rangeSegMeanLength,GRanges,list-method}},
 \code{\link{rangeSegMeanLength,GRanges,list-method}};
 \code{\link{runCBS}}, \code{\link{runCBS}};
 \code{\link{segPairTable}},
 \code{\link{segPairTable,DataFrame,DataFrame-method}},
-\code{\link{segPairTable,DataFrame,DataFrame-method}},
-\code{\link{segPairTable,Rle,Rle-method}},
 \code{\link{segPairTable,Rle,Rle-method}};
 \code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
-\code{\link{segs2Rle}}; \code{\link{segs2RleDataFrame}}
+\code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 
