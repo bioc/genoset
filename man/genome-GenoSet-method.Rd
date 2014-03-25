@@ -1,7 +1,6 @@
 \docType{methods}
 \name{genome,GenoSet-method}
 \alias{genome,GenoSet-method}
-\alias{universe,GenoSet-method}
 \title{Get and set the genome universe annotation.}
 \usage{
 \S4method{genome}{GenoSet}(x)

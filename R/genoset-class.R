@@ -241,12 +241,6 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 ##'   data(genoset)
 ##'   genome(genoset.ds)
 ##'   genome(genoset.ds) = "hg19"
-##' @aliases universe,GenoSet-method
-##' @aliases universe,GRanges-method
-##' @aliases universe<-,GenoSet-method
-##' @aliases universe<-,GRanges-method
-##' @aliases genome,GenoSet-method
-##' @aliases genome<-,GenoSet-method
 setMethod("genome", "GenoSet", function(x) {
   return(genome(x@locData))
 })
@@ -289,8 +283,6 @@ setMethod("universe<-", signature(x="GRanges"),
 ##'   head(colnames(genoset.ds))
 ##' @exportMethod sampleNames
 ##' @exportMethod colnames
-##' @aliases sampleNames,GenoSet-method
-##' @aliases colnames,GenoSet-method
 setMethod("colnames", signature(x="GenoSet"),
           function(x) {
             rownames(pData(x))
@@ -325,35 +317,35 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
 ##'   head(rownames(genoset.ds))
 ##' @exportMethod featureNames
 ##' @exportMethod rownames
-##' @aliases featureNames,GenoSet-method
+##' @rdname rownames-methods
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             return(unname(featureNames(featureData(object))))
           })
-##' @aliases featureNames,GRanges-method
+##' @rdname rownames-methods
 setMethod("featureNames", signature(object="GRanges"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             rownames(object)
           })
-##' @aliases featureNames,RangedData-method
+##' @rdname rownames-methods
 setMethod("featureNames", signature(object="RangedData"),
           function(object) {
             .Deprecated(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
             rownames(object)
           })
-##' @aliases rownames,GRanges-method
+##' @rdname rownames-methods
 setMethod("rownames", signature(x="GRanges"),
           function(x) {
             names(x)
           })
-##' @aliases rownames,GenoSet-method
+##' @rdname rownames-methods
 setMethod("rownames", signature(x="GenoSet"),
           function(x) {
             return(unname(featureNames(featureData(x))))
           })
-##' @aliases featureNames<-,GenoSet-method
+##' @rdname rownames-methods
 setMethod("featureNames<-",
           signature=signature(object="GenoSet", value="ANY"),
           function(object, value) {
@@ -361,7 +353,7 @@ setMethod("featureNames<-",
             object = callNextMethod(object, value)
             return(object)
           })
-##' @aliases featureNames<-,GRanges-method
+##' @rdname rownames-methods
 setMethod("featureNames<-",
           signature=signature(object="GRanges", value="ANY"),
           function(object, value) {
@@ -369,7 +361,7 @@ setMethod("featureNames<-",
             rownames(object) = value
             return(object)
           })
-##' @aliases featureNames<-,RangedData-method
+##' @rdname rownames-methods
 setMethod("featureNames<-",
           signature=signature(object="RangedData", value="ANY"),
           function(object, value) {
@@ -377,7 +369,7 @@ setMethod("featureNames<-",
             rownames(object) = value
             return(object)
           })
-##' @aliases rownames<-,GRanges-method
+##' @rdname rownames-methods
 setMethod("rownames<-",
                  signature=signature(x="GRanges", value="ANY"),
                  function(x, value) {

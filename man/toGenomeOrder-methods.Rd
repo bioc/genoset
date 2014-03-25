@@ -46,8 +46,6 @@ data(genoset)
 Other "genome ordering": \code{\link{chrOrder}};
 \code{\link{isGenomeOrder}},
 \code{\link{isGenomeOrder,GRanges-method}},
-\code{\link{isGenomeOrder,GRanges-method}},
-\code{\link{isGenomeOrder,RangedDataOrGenoSet-method}},
 \code{\link{isGenomeOrder,RangedDataOrGenoSet-method}}
 }
 

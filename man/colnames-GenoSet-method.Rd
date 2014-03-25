@@ -1,7 +1,6 @@
 \docType{methods}
 \name{colnames,GenoSet-method}
 \alias{colnames,GenoSet-method}
-\alias{sampleNames,GenoSet-method}
 \title{Get colnames from a GenoSet}
 \usage{
 \S4method{colnames}{GenoSet}(x)

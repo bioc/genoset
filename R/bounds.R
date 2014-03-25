@@ -119,7 +119,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
   bounds = vector("integer",length(starts)*2L)
   bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions),
     as.integer(length(starts)), as.integer(length(positions)), bounds=bounds, as.integer(valid.indices), as.integer(offset),
-    DUP=FALSE, NAOK=TRUE)
+    DUP=TRUE, NAOK=TRUE)
   bounds = bound.results$bounds
   dim(bounds) = c(length(starts),2)
 

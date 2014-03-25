@@ -38,9 +38,8 @@ chrOrder <- function(chr.names) {
 ##'   data(genoset)
 ##'   isGenomeOrder( locData(genoset.ds) )
 ##' @rdname isGenomeOrder-methods
-setGeneric("isGenomeOrder", function(ds, strict) standardGeneric("isGenomeOrder"))
+setGeneric("isGenomeOrder", function(ds, strict=TRUE) standardGeneric("isGenomeOrder"))
 
-##' @aliases isGenomeOrder,RangedDataOrGenoSet-method
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
           function(ds, strict=TRUE) {
@@ -54,7 +53,6 @@ setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
             return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
           })
 
-##' @aliases isGenomeOrder,GRanges-method
 ##' @rdname isGenomeOrder-methods
 setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
@@ -90,10 +88,9 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##' @docType methods
 ##' @family "genome ordering"
 ##' @rdname toGenomeOrder-methods
-setGeneric("toGenomeOrder", function(ds, strict) standardGeneric("toGenomeOrder"))
+setGeneric("toGenomeOrder", function(ds, strict=TRUE) standardGeneric("toGenomeOrder"))
 
 ##' @rdname toGenomeOrder-methods
-##' @aliases toGenomeOrder,RangedData-method
 setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           function(ds, strict=TRUE) {
             if (strict == TRUE) {
@@ -110,7 +107,6 @@ setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
           })
 
 ##' @rdname toGenomeOrder-methods
-##' @aliases toGenomeOrder,GRanges-method
 setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
             if (strict == TRUE) {
@@ -126,7 +122,6 @@ setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
           })
 
 ##' @rdname toGenomeOrder-methods
-##' @aliases toGenomeOrder,GenoSet-method
 setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
           function(ds,strict=TRUE) {
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
