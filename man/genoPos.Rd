@@ -24,7 +24,4 @@ data(genoset)
   head(genoPos(genoset.ds))
   head(genoPos(locData(genoset.ds)))  # The same
 }
-\author{
-Peter M. Haverty
-}
 

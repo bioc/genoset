@@ -66,9 +66,6 @@ info coming from a GenoSet, GRanges, or RangedData.
 starts = seq(10,100,10)
   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndicesByChr}};

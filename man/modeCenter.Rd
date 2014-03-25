@@ -21,7 +21,4 @@ data.
 \examples{
 modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
 }
-\author{
-Peter M. Haverty
-}
 

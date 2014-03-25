@@ -36,9 +36,6 @@ data(genoset)
   my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndicesByChr}};

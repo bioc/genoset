@@ -23,9 +23,6 @@ matrix, x, and calculate mean for each range in each column
 (or along a single vector). bounds matrix need not cover
 all rows.
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndicesByChr}};

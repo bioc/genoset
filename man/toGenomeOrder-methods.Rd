@@ -6,7 +6,7 @@
 \alias{toGenomeOrder,RangedData-method}
 \title{Set a GRanges, GenoSet, or RangedData to genome order}
 \usage{
-toGenomeOrder(ds, strict)
+toGenomeOrder(ds, strict = TRUE)
 
 \S4method{toGenomeOrder}{RangedData}(ds, strict = TRUE)
 

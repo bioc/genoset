@@ -14,7 +14,4 @@ integer
 \description{
 Get width of location for each feature
 }
-\author{
-Peter M. Haverty
-}
 

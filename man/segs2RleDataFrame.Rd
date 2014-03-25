@@ -27,9 +27,6 @@ data(genoset)
   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
   segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }
-\author{
-Peter Haverty
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

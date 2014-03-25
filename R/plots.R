@@ -43,7 +43,6 @@
 ##' @param xlim integer, length two, bounds for genome positions. Used in conjunction with "chr" to subset data for plotting.
 ##' @param ... Additional plotting args
 ##' @return nothing
-##' @author Peter M. Haverty
 ##' @export genoPlot
 ##' @family "genome plots"
 ##' @examples
@@ -51,13 +50,10 @@
 ##' genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
 ##' genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
-##' @docType methods
 ##' @rdname genoPlot-methods
-##' @aliases genoPlot-methods
 setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
 
 ##' @rdname genoPlot-methods
-##' @aliases genoPlot,numeric,numeric-method
 setMethod("genoPlot",c(x="numeric",y="numeric"),
           function(x, y, add=FALSE, xlab="", ylab="", col="black", locs=NULL, ...) {
             if (add == FALSE) {
@@ -70,7 +66,6 @@ setMethod("genoPlot",c(x="numeric",y="numeric"),
           })
 
 ##' @rdname genoPlot-methods
-##' @aliases genoPlot,numeric,Rle-method
 setMethod("genoPlot", c(x="numeric",y="Rle"),
           function(x, y, add=FALSE, xlab="", ylab="", col="red", locs=NULL, lwd=2, xlim=NULL, ...) {
             if (add == FALSE) {
@@ -91,7 +86,6 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
           })
 
 ##' @rdname genoPlot-methods
-##' @aliases genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method
 setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGenomicRanges",y="ANY"), function(x, y, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
   ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
   # Get position info, subset by chr if necessary
@@ -138,7 +132,6 @@ setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGenomicRanges",y="ANY"),
 ##'   genomeAxis( locs=locData(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
 ##'   genomeAxis( locs=locData(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
 ##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
-##' @author Peter M. Haverty
 genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
   if (is.null(locs)) {
     label.positions = axTicks(side=side,log=log)

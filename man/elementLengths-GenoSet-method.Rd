@@ -17,7 +17,4 @@ Get elementLengths from locData slot
 \details{
 Get elementLengths from locData slot
 }
-\author{
-Peter Haverty
-}
 

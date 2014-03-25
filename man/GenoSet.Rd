@@ -49,7 +49,4 @@ gs = GenoSet(
    annotation="SNP6"
 )
 }
-\author{
-Peter M. Haverty
-}
 

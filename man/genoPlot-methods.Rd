@@ -4,7 +4,6 @@
 \alias{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}
 \alias{genoPlot,numeric,Rle-method}
 \alias{genoPlot,numeric,numeric-method}
-\alias{genoPlot-methods}
 \title{Plot data along the genome}
 \usage{
 genoPlot(x, y, ...)
@@ -84,9 +83,6 @@ data(genoset)
 genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
 genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
 genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
-}
-\author{
-Peter M. Haverty
 }
 \seealso{
 Other "genome plots": \code{\link{genomeAxis}}

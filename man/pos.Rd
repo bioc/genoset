@@ -23,7 +23,4 @@ data(genoset)
   pos(genoset.ds)  # 1:10
   pos(locData(genoset.ds))  # The same
 }
-\author{
-Peter Haverty
-}
 

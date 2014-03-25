@@ -60,9 +60,6 @@ sample.names = paste("a",1:2,sep="")
     runCBS(ds,locs)  # Should give seg.rle.result
     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

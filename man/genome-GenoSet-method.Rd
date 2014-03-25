@@ -23,7 +23,4 @@ data(genoset)
   genome(genoset.ds)
   genome(genoset.ds) = "hg19"
 }
-\author{
-Peter M. Haverty
-}
 

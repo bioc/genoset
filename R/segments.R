@@ -21,7 +21,6 @@
 ##'   data(genoset)
 ##'   segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
 ##'   segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 segs2Rle <- function(segs, locs) {
   if ("num.mark" %in% colnames(segs)) {
     if (sum(segs[,"num.mark"]) == nrow(locs)) {
@@ -49,7 +48,6 @@ segs2Rle <- function(segs, locs) {
 ##'   data(genoset)
 ##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
 ##'   segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-##' @author Peter Haverty
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
@@ -82,7 +80,6 @@ segs2Granges <- function(segs) {
 ##' @return RangedData
 ##' @family "segmented data"
 ##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 ##' @family segments
 segs2RangedData <- function(segs) {
   .Deprecated("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")
@@ -124,7 +121,6 @@ segs2RangedData <- function(segs) {
 ##'   segTable( df, locData(genoset.ds) )
 ##'   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
 ##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
-##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segTable-methods
 setGeneric("segTable", function(object, ...) standardGeneric("segTable"))
@@ -224,7 +220,6 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
 ##'   end = start
 ##'   locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
 ##'   segPairTable(cn,loh,locs)
-##' @author Peter M. Haverty
 ##' @docType methods
 ##' @rdname segPairTable-methods
 setGeneric("segPairTable", function(x, y, ...) standardGeneric("segPairTable"))
@@ -307,7 +302,6 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
 ##' @param max.na.run integer, longest run of NAs that will be fixed
 ##' @return Rle
 ##' @export 
-##' @author Peter M. Haverty
 fixSegNAs <- function(x,max.na.run=3) {
   if (is.na(runValue(x)[1]) & runLength(x)[1] <= max.na.run) {
     runValue(x)[1] = runValue(x)[2]
@@ -354,7 +348,6 @@ fixSegNAs <- function(x,max.na.run=3) {
 ##'
 ##'     runCBS(ds,locs)  # Should give seg.rle.result
 ##'     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
-##' @author Peter M. Haverty
 runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, outlier.SD.scale=4, smooth.SD.scale=2, trim=0.025, alpha=0.001) {
   if (!requireNamespace("DNAcopy",quietly=TRUE)) {
     stop("Failed to require DNAcopy package.\n")

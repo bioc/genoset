@@ -33,17 +33,10 @@ data(genoset)
   genomeAxis( locs=locData(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "genome plots": \code{\link{genoPlot}},
 \code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
-\code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
 \code{\link{genoPlot,numeric,Rle-method}},
-\code{\link{genoPlot,numeric,Rle-method}},
-\code{\link{genoPlot,numeric,numeric-method}},
-\code{\link{genoPlot,numeric,numeric-method}},
-\code{\link{genoPlot-methods}}
+\code{\link{genoPlot,numeric,numeric-method}}
 }
 

@@ -17,9 +17,6 @@ segTable, organize as a RangedData. Label data "score", so
 it can easily be made into various genome browser formats
 using rtracklayer.
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

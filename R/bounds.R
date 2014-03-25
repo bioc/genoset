@@ -13,7 +13,6 @@
 ##' genome/target ranges processed by boundingIndicesByChr.
 ##' @return Rle
 ##' @family "segmented data"
-##' @author Peter M. Haverty
 bounds2Rle <- function( bounds, values, n ) {
   if ( length(values) != nrow(bounds) ) {
     stop("must have one value for each bound")
@@ -63,7 +62,6 @@ bounds2Rle <- function( bounds, values, n ) {
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )
-##' @author Peter M. Haverty
 boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
   indices = c(findInterval(starts,positions,rightmost.closed=FALSE), findInterval(stops,positions,rightmost.closed=FALSE))
   dim(indices) = c(length(starts),2)
@@ -114,7 +112,6 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indices=FALSE, offset=0) {
   bounds = vector("integer",length(starts)*2L)
   bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions),
@@ -160,7 +157,6 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
 ##' @export boundingIndicesByChr
 ##' @family "range summaries"
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 boundingIndicesByChr <-function(query, subject) {
   if (!is(query,"GRanges")) {
     tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
@@ -211,7 +207,6 @@ boundingIndicesByChr <-function(query, subject) {
 ##'   data(genoset)
 ##'   my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
 ##'   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
-##' @author Peter M. Haverty
 rangeSampleMeans <- function(query.rd, subject, assay.element) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
   all.indices = boundingIndicesByChr(query.rd, subject)
@@ -247,7 +242,6 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
 ##' If x is a vector, just a vector with names from the rownames of bounds.
 ##' @export
 ##' @family "range summaries"
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 rangeColMeans <- function( bounds, x ) {
   if (! is.matrix(bounds) && ncol(bounds) == 2) {
     stop("bounds must be a matrix with 2 columns\n")

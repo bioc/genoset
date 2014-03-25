@@ -14,7 +14,4 @@ integer
 \description{
 Get end of location for each feature
 }
-\author{
-Peter M. Haverty
-}
 

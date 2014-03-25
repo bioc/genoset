@@ -63,9 +63,6 @@ data(genoset)
   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

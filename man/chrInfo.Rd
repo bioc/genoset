@@ -22,7 +22,4 @@ data(genoset)
   chrInfo(genoset.ds)
   chrInfo(locData(genoset.ds))  # The same
 }
-\author{
-Peter Haverty
-}
 

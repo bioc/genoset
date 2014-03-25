@@ -5,7 +5,6 @@
 ##' @return data of same type as "x" transformed into copynumber units
 ##' @export
 ##' @seealso cn2lr
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 lr2cn <- function(x) {
   return( 2 ^ (x + 1) )
 }
@@ -18,12 +17,6 @@ lr2cn <- function(x) {
 ##' @return data of same type as "x" transformed into log2ratio units
 ##' @export
 ##' @seealso lr2cn
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
-##' @rdname cn2lr
-##' @aliases cn2lr-methods
-##' @aliases cn2lr,numeric-methods
-##' @aliases cn2lr,matrix-methods
-##' @aliases cn2lr,DataFrame-methods
 ##' @rdname cn2lr-methods
 setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
 setMethod("cn2lr", signature(x="numeric"),
@@ -84,7 +77,6 @@ setMethod("cn2lr", signature(x="DataFrame"),
 ##'   gc = runif(n=100, min=1, max=100)
 ##'   ds = rnorm(100) + (0.1 * gc)
 ##'   gcCorrect(ds, gc)
-##' @author Peter M. Haverty
 gcCorrect <- function(ds, gc, retain.mean=TRUE) {
   if (!requireNamespace("stats",quietly=TRUE)) {
     stop("Failed to require stats package.\n")
@@ -128,7 +120,6 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
 ##'    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
 ##'    genoset.ds[, ,"mbaf"] = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
 ##' @export
-##' @author Peter M. Haverty
 baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
   mbaf = abs(baf[,] - 0.5) + 0.5
   is.na(mbaf) <- mbaf > hom.cutoff
@@ -210,7 +201,6 @@ calcGC <- function(object, bsgenome, expand=1e6) {
 ##' 
 ##' @param ds numeric matrix
 ##' @return numeric matrix
-##' @author Peter M. Haverty
 ##' @export
 ##' @examples
 ##'   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
@@ -238,7 +228,6 @@ modeCenter <- function(ds) {
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
 ##' @export 
-##' @author Peter M. Haverty \email{phaverty@@gene.com}
 readGenoSet <- function(path) {
   header = readLines(path, 1)
   if (grepl("^RD", header)[1] == TRUE) {

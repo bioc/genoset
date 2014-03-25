@@ -33,7 +33,4 @@ data(genoset)
   ad = assayData(genoset.ds)
   small.ad = subsetAssayData(ad,1:5,2:3)
 }
-\author{
-Peter M. Haverty
-}
 

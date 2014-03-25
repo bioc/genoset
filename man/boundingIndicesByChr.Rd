@@ -46,9 +46,6 @@ blocks corresponding to chromosomes.
 Both query and subject must be in at least weak genome
 order (sorted by start within chromosome blocks).
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 Other "range summaries": \code{\link{boundingIndices2}};
 \code{\link{boundingIndices}}; \code{\link{rangeColMeans}};

@@ -30,7 +30,4 @@ gc = runif(n=100, min=1, max=100)
   ds = rnorm(100) + (0.1 * gc)
   gcCorrect(ds, gc)
 }
-\author{
-Peter M. Haverty
-}
 

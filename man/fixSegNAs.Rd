@@ -17,7 +17,4 @@ Rle
 Fix NA runs in a Rle when the adjacent runs have equal
 values
 }
-\author{
-Peter M. Haverty
-}
 

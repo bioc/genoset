@@ -16,9 +16,6 @@ Take vector or matrix of log2 ratios, convert to copynumber
 Utility function for converting log2ratio units (zero is
 normal) to copynumber units (two is normal)
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 cn2lr
 }

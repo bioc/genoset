@@ -19,7 +19,4 @@ or related object), load it, and return.
 \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
 \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 

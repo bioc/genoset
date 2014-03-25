@@ -103,7 +103,6 @@ setValidity("GenoSet", function(object) {
 ##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'      annotation="SNP6"
 ##'   )
-##' @author Peter M. Haverty
 initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   # Function to clean up items for slots and call new for GenoSet and its children
   # ... will be the matrices that end up in assayData
@@ -214,7 +213,6 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##'    annotation="SNP6"
 ##' )
 ##' @export GenoSet
-##' @author Peter M. Haverty
 GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
   object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData,...)
   return(object)
@@ -234,7 +232,6 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 ##' @title Get and set the genome universe annotation.
 ##' @param x GenoSet
 ##' @return character, e.g. hg19
-##' @author Peter M. Haverty
 ##' @exportMethod universe
 ##' @exportMethod genome
 ##' @examples
@@ -310,7 +307,6 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
 ##' 
 ##' @param object GRanges, RangedData, or GenoSet
 ##' @return character vector with names rows/features
-##' @author Peter M. Haverty
 ##' @examples
 ##'   data(genoset)
 ##'   head(rownames(locData.gr))
@@ -394,7 +390,6 @@ setMethod("rownames<-",
 ##' }}
 ##' @export locData
 ##' @export "locData<-"
-##' @author Peter M. Haverty
 ##' @docType methods
 ##' @examples
 ##' data(genoset)
@@ -436,7 +431,6 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRan
 ##' Get start of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @author Peter M. Haverty
 ##' @aliases start,GenoSet-method
 setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 
@@ -445,7 +439,6 @@ setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 ##' Get end of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @author Peter M. Haverty
 ##' @aliases end,GenoSet-method
 setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
@@ -454,7 +447,6 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 ##' Get width of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @author Peter M. Haverty
 setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
 ##' Get data matrix names
@@ -462,7 +454,6 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' Get names of data matrices. For the time being, this is \code{assayDataElementNames}. This function used to do \code{chrNames}.
 ##' @param x GenoSet
 ##' @return character
-##' @author Peter Haverty
 ##' @exportMethod names
 ##' @aliases names,GenoSet-method
 setMethod("names", "GenoSet", function(x) {
@@ -483,7 +474,6 @@ setMethod("space", "GenoSet", function(x) {
 ##' @title ElementLengths for chromosome
 ##' @param x GenoSet
 ##' @return character
-##' @author Peter Haverty
 ##' @exportMethod elementLengths
 ##' @aliases elementLengths,GenoSet-method
 setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
@@ -638,7 +628,6 @@ setMethod("show","GenoSet",
 ##'   data(genoset)
 ##'   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
 ##'   chr(locData(genoset.ds))  # The same
-##' @author Peter Haverty
 ##' @export chr
 setGeneric("chr", function(object) standardGeneric("chr"))
 ##' @aliases chr,RangedData-method
@@ -654,7 +643,6 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##' @title Positions for features
 ##' @param object GRanges, RangedData or GenoSet
 ##' @return numeric vector of feature positions within a chromosome
-##' @author Peter Haverty
 ##' @export pos
 ##' @examples
 ##'   data(genoset)
@@ -671,7 +659,6 @@ setMethod("pos", "RangedDataOrGenoSetOrGenomicRanges",
 ##' 
 ##' @param object RangedData or GenoSet
 ##' @return character vector with names of chromosomes
-##' @author Peter M. Haverty
 ##' @export chrNames
 ##' @examples
 ##'   data(genoset)
@@ -723,7 +710,6 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##' @title Chromosome Information
 ##' @param object A GenoSet object or similar
 ##' @return list with start and stop position, by ordered chr
-##' @author Peter Haverty
 ##' @export chrInfo
 ##' @examples
 ##'   data(genoset)
@@ -765,7 +751,6 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##' @param object GenoSet, RangedData, or GRanges
 ##' @param chr character, specific chromosome name
 ##' @return data.frame with "first" and "last" columns
-##' @author Peter M. Haverty
 ##' @export chrIndices
 ##' @examples
 ##'   data(genoset)
@@ -798,7 +783,6 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##' @title Convert chromosome positions to positions from start of genome
 ##' @param object A GenoSet object or a RangedData object
 ##' @return numeric position of each feature in whole genome units, in original order
-##' @author Peter M. Haverty
 ##' @examples
 ##'   data(genoset)
 ##'   head(genoPos(genoset.ds))
@@ -841,7 +825,6 @@ setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##'   data(genoset)
 ##'   ad = assayData(genoset.ds)
 ##'   small.ad = subsetAssayData(ad,1:5,2:3)
-##' @author Peter M. Haverty
 subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
   if (is(orig, "list")) {
     if (missing(i))                     # j must be present

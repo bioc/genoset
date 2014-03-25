@@ -14,7 +14,4 @@ integer
 \description{
 Get start of location for each feature
 }
-\author{
-Peter M. Haverty
-}
 

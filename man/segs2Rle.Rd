@@ -31,9 +31,6 @@ data(genoset)
   segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
   segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

@@ -24,7 +24,4 @@ data(genoset)
   chrIndices(genoset.ds)
   chrIndices(locData(genoset.ds))  # The same
 }
-\author{
-Peter M. Haverty
-}
 

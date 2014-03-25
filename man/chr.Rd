@@ -22,7 +22,4 @@ data(genoset)
   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
   chr(locData(genoset.ds))  # The same
 }
-\author{
-Peter Haverty
-}
 

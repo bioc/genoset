@@ -53,7 +53,4 @@ test.sample.names = LETTERS[11:13]
      annotation="SNP6"
   )
 }
-\author{
-Peter M. Haverty
-}
 

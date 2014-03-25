@@ -24,9 +24,6 @@ log2ratios Utility function for converting copynumber units
 (2 is normal) to log2ratio units (two is normal). If ploidy
 is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
 }
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
-}
 \seealso{
 lr2cn
 }

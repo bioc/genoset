@@ -27,9 +27,6 @@ first/last range will be a run with the value NA.  This is
 typical in the case where data is segmented with CBS and
 some of the data to be segmented is NA.
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "segmented data": \code{\link{rangeSegMeanLength}},
 \code{\link{rangeSegMeanLength,GRanges,data.frame-method}},

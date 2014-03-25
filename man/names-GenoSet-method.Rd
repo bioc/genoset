@@ -16,7 +16,4 @@ Get names of data matrices. For the time being, this is
 \code{assayDataElementNames}. This function used to do
 \code{chrNames}.
 }
-\author{
-Peter Haverty
-}
 

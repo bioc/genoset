@@ -62,9 +62,6 @@ cn = Rle(c(3,4,5,6),rep(3,4))
   locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
   segPairTable(cn,loh,locs)
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{rangeSegMeanLength}},

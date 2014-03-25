@@ -29,7 +29,4 @@ data(genoset)
 rd = locData(genoset.ds)
 locData(genoset.ds) = rd
 }
-\author{
-Peter M. Haverty
-}
 

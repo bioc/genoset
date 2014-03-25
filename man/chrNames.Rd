@@ -19,7 +19,4 @@ data(genoset)
   chrNames(locData(genoset.ds))  # The same
   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 }
-\author{
-Peter M. Haverty
-}
 

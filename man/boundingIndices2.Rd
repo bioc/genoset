@@ -48,9 +48,6 @@ that genes can always be connected to some data.
 starts = seq(10,100,10)
   boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )
 }
-\author{
-Peter M. Haverty
-}
 \seealso{
 Other "range summaries":
 \code{\link{boundingIndicesByChr}};
