@@ -2,7 +2,7 @@
 \alias{bounds2Rle}
 \title{Convert bounding indices into a Rle}
 \usage{
-  bounds2Rle(bounds, values, n)
+bounds2Rle(bounds, values, n)
 }
 \arguments{
   \item{bounds}{matrix, two columns, with first and last
@@ -16,26 +16,29 @@
   processed by boundingIndicesByChr.}
 }
 \value{
-  Rle
+Rle
 }
 \description{
-  Given a matrix of first/last indices, like from
-  boundingIndicesByChr, and values for each range, convert
-  to a Rle.  This function takes the expected length of the
-  Rle, n, so that any portion of the full length not
-  covered by a first/last range will be a run with the
-  value NA.  This is typical in the case where data is
-  segmented with CBS and some of the data to be segmented
-  is NA.
+Given a matrix of first/last indices, like from
+boundingIndicesByChr, and values for each range, convert to
+a Rle.  This function takes the expected length of the Rle,
+n, so that any portion of the full length not covered by a
+first/last range will be a run with the value NA.  This is
+typical in the case where data is segmented with CBS and
+some of the data to be segmented is NA.
 }
 \seealso{
-  Other "segmented data": \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
-  \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
-  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
-  \code{\link{segTable}}, \code{\link{segTable}}
+Other "segmented data": \code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{runCBS}}, \code{\link{runCBS}};
+\code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segTable}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 

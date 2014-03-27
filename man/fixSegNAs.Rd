@@ -2,7 +2,7 @@
 \alias{fixSegNAs}
 \title{Fix NA runs in a Rle}
 \usage{
-  fixSegNAs(x, max.na.run = 3)
+fixSegNAs(x, max.na.run = 3)
 }
 \arguments{
   \item{x}{Rle to be fixed}
@@ -11,10 +11,10 @@
   be fixed}
 }
 \value{
-  Rle
+Rle
 }
 \description{
-  Fix NA runs in a Rle when the adjacent runs have equal
-  values
+Fix NA runs in a Rle when the adjacent runs have equal
+values
 }
 

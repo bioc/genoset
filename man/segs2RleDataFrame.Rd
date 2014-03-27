@@ -2,7 +2,7 @@
 \alias{segs2RleDataFrame}
 \title{CBS segments to probe matrix}
 \usage{
-  segs2RleDataFrame(seg.list, locs)
+segs2RleDataFrame(seg.list, locs)
 }
 \arguments{
   \item{seg.list}{list, list of data frames, one per
@@ -11,16 +11,16 @@
   \item{locs}{locData from a GenoSet object}
 }
 \value{
-  DataFrame of Rle objects with nrows same as locs and one
-  column for each sample
+DataFrame of Rle objects with nrows same as locs and one
+column for each sample
 }
 \description{
-  Given segments, make a DataFrame of Rle objects for each
-  sample
+Given segments, make a DataFrame of Rle objects for each
+sample
 }
 \details{
-  Take table of segments from CBS, convert DataTable of Rle
-  objects for each sample.
+Take table of segments from CBS, convert DataTable of Rle
+objects for each sample.
 }
 \examples{
 data(genoset)
@@ -28,16 +28,20 @@ data(genoset)
   segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }
 \seealso{
-  Other "segmented data": \code{\link{bounds2Rle}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
-  \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
-  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segTable}}, \code{\link{segTable}},
-  \code{\link{segTable}}
+Other "segmented data": \code{\link{bounds2Rle}};
+\code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{runCBS}}, \code{\link{runCBS}};
+\code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segTable}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2Rle}}
 
-  Other segments: \code{\link{segs2RangedData}}
+Other segments: \code{\link{segs2RangedData}}
 }
 

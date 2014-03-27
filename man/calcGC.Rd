@@ -2,7 +2,7 @@
 \alias{calcGC}
 \title{Calculate GC Percentage in windows}
 \usage{
-  calcGC(object, bsgenome, expand = 1e+06)
+calcGC(object, bsgenome, expand = 1e+06)
 }
 \arguments{
   \item{object}{GenomicRanges, GenoSet, or RangedData}
@@ -14,18 +14,18 @@
   before calculating gc}
 }
 \value{
-  numeric vector, fraction of nucleotides that are G or C
-  in expanded ranges of \code{object}
+numeric vector, fraction of nucleotides that are G or C in
+expanded ranges of \code{object}
 }
 \description{
-  Local GC content can be used to remove GC artifacts from
-  copynumber data see Diskin, 2008). This function will
-  calculate GC content fraction in expanded windows around
-  a set of ranges following example in
-  http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf.
-  Currently all ranges are tabulated, later I may do
-  letterFrequencyInSlidingWindow for big windows and then
-  match to the nearest.
+Local GC content can be used to remove GC artifacts from
+copynumber data see Diskin, 2008). This function will
+calculate GC content fraction in expanded windows around a
+set of ranges following example in
+http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf.
+Currently all ranges are tabulated, later I may do
+letterFrequencyInSlidingWindow for big windows and then
+match to the nearest.
 }
 \examples{
 \dontrun{ data(genoset) }

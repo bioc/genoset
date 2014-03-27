@@ -4,16 +4,16 @@
 \alias{genoset-package}
 \title{GenoSet: An eSet for data with genome locations}
 \description{
-  Load, manipulate, and plot copynumber and BAF data.
-  GenoSet class extends eSet by adding a "locData" slot for
-  a GenomicRanges object. This object contains feature
-  genome location data and provides for efficient
-  subsetting on genome location. Genoset also implements an
-  number of convenience functions for processing of copy
-  number and B-Allele Frequency data and for working with
-  segmented data.
+Load, manipulate, and plot copynumber and BAF data. GenoSet
+class extends eSet by adding a "locData" slot for a
+GenomicRanges object. This object contains feature genome
+location data and provides for efficient subsetting on
+genome location. Genoset also implements an number of
+convenience functions for processing of copy number and
+B-Allele Frequency data and for working with segmented
+data.
 }
 \seealso{
-  genoset-datasets GenoSet
+genoset-datasets GenoSet
 }
 

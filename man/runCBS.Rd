@@ -2,9 +2,9 @@
 \alias{runCBS}
 \title{Run CBS Segmentation}
 \usage{
-  runCBS(data, locs, return.segs = FALSE, n.cores = 1,
-    smooth.region = 2, outlier.SD.scale = 4,
-    smooth.SD.scale = 2, trim = 0.025, alpha = 0.001)
+runCBS(data, locs, return.segs = FALSE, n.cores = 1, smooth.region = 2,
+  outlier.SD.scale = 4, smooth.SD.scale = 2, trim = 0.025,
+  alpha = 0.001)
 }
 \arguments{
   \item{data}{numeric matrix with continuous data in one or
@@ -34,16 +34,16 @@
   \item{alpha}{pvalue cutoff for calling a breakpoint}
 }
 \value{
-  data frame of segments from CBS
+data frame of segments from CBS
 }
 \description{
-  Utility function to run CBS's three functions on one or
-  more samples
+Utility function to run CBS's three functions on one or
+more samples
 }
 \details{
-  Takes care of running CBS segmentation on one or more
-  samples. Makes appropriate input, smooths outliers, and
-  segment
+Takes care of running CBS segmentation on one or more
+samples. Makes appropriate input, smooths outliers, and
+segment
 }
 \examples{
 sample.names = paste("a",1:2,sep="")
@@ -61,14 +61,17 @@ sample.names = paste("a",1:2,sep="")
     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 }
 \seealso{
-  Other "segmented data": \code{\link{bounds2Rle}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{segPairTable}}, \code{\link{segPairTable}},
-  \code{\link{segPairTable}}, \code{\link{segs2Granges}},
-  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
-  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
-  \code{\link{segTable}}, \code{\link{segTable}}
+Other "segmented data": \code{\link{bounds2Rle}};
+\code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segTable}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 

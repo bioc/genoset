@@ -1,18 +1,21 @@
 \name{chr}
 \alias{chr}
 \title{Look up chromosome for each feature}
+\usage{
+chr(object)
+}
 \arguments{
   \item{object}{GRanges, RangedData or GenoSet}
 }
 \value{
-  character vector of chromosome positions for each feature
+character vector of chromosome positions for each feature
 }
 \description{
-  Chromosome name for each feature
+Chromosome name for each feature
 }
 \details{
-  Get chromosome name for each feature.  Returns character,
-  not the factor 'space'.
+Get chromosome name for each feature.  Returns character,
+not the factor 'space'.
 }
 \examples{
 data(genoset)

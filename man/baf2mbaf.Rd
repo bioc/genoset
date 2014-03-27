@@ -2,8 +2,7 @@
 \alias{baf2mbaf}
 \title{Calculate mBAF from BAF}
 \usage{
-  baf2mbaf(baf, hom.cutoff = 0.95, calls = NULL,
-    call.pairs = NULL)
+baf2mbaf(baf, hom.cutoff = 0.95, calls = NULL, call.pairs = NULL)
 }
 \arguments{
   \item{baf}{numeric matrix of BAF values}
@@ -20,19 +19,18 @@
   "calls" matrix.}
 }
 \value{
-  numeric matix of mBAF values
+numeric matix of mBAF values
 }
 \description{
-  Calculate Mirrored B-Allele Frequence (mBAF) from
-  B-Allele Frequency (BAF) as in Staaf et al., Genome
-  Biology, 2008.  BAF is converted to mBAF by folding
-  around 0.5 so that is then between 0.5 and 1. HOM value
-  are then made NA to leave only HET values that can be
-  easily segmented. Values > hom.cutoff are made NA. Then,
-  if genotypes (usually from a matched normal) are provided
-  as the matrix 'calls' additional HOMs can be set to NA.
-  The argument 'call.pairs' is used to match columns in
-  'calls' to columns in 'baf'.
+Calculate Mirrored B-Allele Frequence (mBAF) from B-Allele
+Frequency (BAF) as in Staaf et al., Genome Biology, 2008.
+BAF is converted to mBAF by folding around 0.5 so that is
+then between 0.5 and 1. HOM value are then made NA to leave
+only HET values that can be easily segmented. Values >
+hom.cutoff are made NA. Then, if genotypes (usually from a
+matched normal) are provided as the matrix 'calls'
+additional HOMs can be set to NA. The argument 'call.pairs'
+is used to match columns in 'calls' to columns in 'baf'.
 }
 \examples{
 data(genoset)
