@@ -36,3 +36,12 @@ Enhances: parallel
 ByteCompile: TRUE
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariation
+Collate:
+    'bounds.R'
+    'DataFrame-methods.R'
+    'genoset-class.R'
+    'ordering.R'
+    'plots.R'
+    'segments.R'
+    'test_genoset_package.R'
+    'utils.R'

@@ -2,8 +2,8 @@
 \alias{initGenoSet}
 \title{Create a GenoSet or derivative object}
 \usage{
-initGenoSet(type, locData, pData = NULL, annotation = "", universe,
-  assayData = NULL, ...)
+  initGenoSet(type, locData, pData = NULL, annotation = "",
+    universe, assayData = NULL, ...)
 }
 \arguments{
   \item{type}{character, the type of object (e.g. GenoSet,
@@ -29,19 +29,19 @@ initGenoSet(type, locData, pData = NULL, annotation = "", universe,
   assayData}
 }
 \value{
-A GenoSet object or derivative as specified by "type" arg
+  A GenoSet object or derivative as specified by "type" arg
 }
 \description{
-This function is the preferred method for creating a new
-GenoSet object. Users are generally discouraged from
-calling "new" directly. The "..." argument is for any
-number of matrices of matching size that will become part
-of the assayData slot of the resulting object. This
-function passes control to the "genoSet" object which
-performs argument checking including dimname matching among
-relevant slots and sets everything to genome order. Genome
-order can be disrupted by "[" calls and will be checked by
-methods that require it.
+  This function is the preferred method for creating a new
+  GenoSet object. Users are generally discouraged from
+  calling "new" directly. The "..." argument is for any
+  number of matrices of matching size that will become part
+  of the assayData slot of the resulting object. This
+  function passes control to the "genoSet" object which
+  performs argument checking including dimname matching
+  among relevant slots and sets everything to genome order.
+  Genome order can be disrupted by "[" calls and will be
+  checked by methods that require it.
 }
 \examples{
 test.sample.names = LETTERS[11:13]

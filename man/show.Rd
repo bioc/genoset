@@ -1,13 +1,8 @@
-\docType{methods}
-\name{show,BAFSet-method}
-\alias{show,BAFSet-method}
-\alias{show,CNSet-method}
-\usage{
-\S4method{show}{BAFSet}(object)
-
-\S4method{show}{CNSet}(object)
-}
-\arguments{
-  \item{object}{Any R object}
+\name{show}
+\alias{show}
+\alias{show,GenoSet-method}
+\title{Print a GenoSet}
+\description{
+  Prints out a description of a GenoSet object
 }
 

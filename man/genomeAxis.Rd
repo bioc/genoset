@@ -2,7 +2,8 @@
 \alias{genomeAxis}
 \title{Label axis with base pair units}
 \usage{
-genomeAxis(locs = NULL, side = 1, log = FALSE, do.other.side = TRUE)
+  genomeAxis(locs = NULL, side = 1, log = FALSE,
+    do.other.side = TRUE)
 }
 \arguments{
   \item{locs}{RangedData to be used to draw chromosome
@@ -17,14 +18,14 @@ genomeAxis(locs = NULL, side = 1, log = FALSE, do.other.side = TRUE)
   data values at tick marks?}
 }
 \value{
-nothing
+  nothing
 }
 \description{
-Label an axis with base positions
+  Label an axis with base positions
 }
 \details{
-Label a plot with Mb, kb, bp as appropriate, using tick
-locations from axTicks
+  Label a plot with Mb, kb, bp as appropriate, using tick
+  locations from axTicks
 }
 \examples{
 data(genoset)
@@ -34,9 +35,8 @@ data(genoset)
   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 }
 \seealso{
-Other "genome plots": \code{\link{genoPlot}},
-\code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
-\code{\link{genoPlot,numeric,Rle-method}},
-\code{\link{genoPlot,numeric,numeric-method}}
+  Other "genome plots": \code{\link{genoPlot}},
+  \code{\link{genoPlot}}, \code{\link{genoPlot}},
+  \code{\link{genoPlot}}
 }
 

@@ -1,18 +1,7 @@
 \docType{methods}
 \name{segPairTable}
 \alias{segPairTable}
-\alias{segPairTable,DataFrame,DataFrame-method}
-\alias{segPairTable,Rle,Rle-method}
 \title{Convert Rle objects to tables of segments}
-\usage{
-segPairTable(x, y, ...)
-
-\S4method{segPairTable}{Rle,Rle}(x, y, locs = NULL, chr.ind = NULL,
-  start = NULL, end = NULL, factor.chr = TRUE)
-
-\S4method{segPairTable}{DataFrame,DataFrame}(x, y, locs, stack = FALSE,
-  factor.chr = TRUE)
-}
 \arguments{
   \item{x}{Rle or list/DataFrame of Rle vectors}
 
@@ -36,23 +25,24 @@ segPairTable(x, y, ...)
   each sample and add "Sample" column?}
 }
 \value{
-one or a list of data.frames with columns chrom, loc.start,
-loc.end, num.mark, seg.mean
+  one or a list of data.frames with columns chrom,
+  loc.start, loc.end, num.mark, seg.mean
 }
 \description{
-Like segTable, but for two Rle objects. Takes a pair of Rle
-or DataFrames with Rle columns and makes one or more
-data.frames with bounds of each new segment.  Rle objects
-are broken up so that each resulting segment has one value
-from each Rle. For a DataFrame, the argument \code{stack}
-combines all of the individual data.frames into one large
-data.frame and adds a "Sample" column of sample ids.
+  Like segTable, but for two Rle objects. Takes a pair of
+  Rle or DataFrames with Rle columns and makes one or more
+  data.frames with bounds of each new segment.  Rle objects
+  are broken up so that each resulting segment has one
+  value from each Rle. For a DataFrame, the argument
+  \code{stack} combines all of the individual data.frames
+  into one large data.frame and adds a "Sample" column of
+  sample ids.
 }
 \details{
-For a Rle, the user can provide \code{locs} or
-\code{chr.ind}, \code{start} and \code{stop}.  The latter
-is surprisingly much faster and this is used in the
-DataFrame version.
+  For a Rle, the user can provide \code{locs} or
+  \code{chr.ind}, \code{start} and \code{stop}.  The latter
+  is surprisingly much faster and this is used in the
+  DataFrame version.
 }
 \examples{
 cn = Rle(c(3,4,5,6),rep(3,4))
@@ -63,15 +53,13 @@ cn = Rle(c(3,4,5,6),rep(3,4))
   segPairTable(cn,loh,locs)
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}};
-\code{\link{rangeSegMeanLength}},
-\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
-\code{\link{rangeSegMeanLength,GRanges,list-method}};
-\code{\link{runCBS}}, \code{\link{runCBS}};
-\code{\link{segTable}},
-\code{\link{segTable,DataFrame-method}},
-\code{\link{segTable,Rle-method}};
-\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
-\code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
+  Other "segmented data": \code{\link{bounds2Rle}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
+  \code{\link{segs2Granges}},
+  \code{\link{segs2RangedData}}, \code{\link{segs2Rle}},
+  \code{\link{segs2RleDataFrame}}, \code{\link{segTable}},
+  \code{\link{segTable}}, \code{\link{segTable}}
 }
 

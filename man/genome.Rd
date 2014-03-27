@@ -1,11 +1,5 @@
 \name{genome}
 \alias{genome}
-\alias{genome,GenoSet-method}
-\alias{genome<-,GenoSet-method}
-\alias{universe,GenoSet-method}
-\alias{universe,GRanges-method}
-\alias{universe<-,GenoSet-method}
-\alias{universe<-,GRanges-method}
 \title{Get and set the genome universe annotation.}
 \arguments{
   \item{x}{GenoSet}
@@ -24,8 +18,5 @@
 data(genoset)
   genome(genoset.ds)
   genome(genoset.ds) = "hg19"
-}
-\author{
-  Peter M. Haverty
 }
 

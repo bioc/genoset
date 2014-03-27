@@ -1,30 +1,16 @@
-\docType{methods}
-\name{colnames,GenoSet-method}
-\alias{colnames,GenoSet-method}
-\alias{sampleNames,GenoSet-method}
-\alias{sampleNames<-,GenoSet,ANY-method}
+\name{colnames}
+\alias{colnames}
+\alias{sampleNames}
+\alias{sampleNames<-}
 \title{Get colnames from a GenoSet}
-\usage{
-\S4method{colnames}{GenoSet}(x)
-
-\S4method{sampleNames}{GenoSet}(object)
-
-\S4method{sampleNames}{GenoSet,ANY}(object) <- value
-}
 \arguments{
   \item{x}{GenoSet}
-
-  \item{object}{Object, possibly derived from class
-  \code{eSet}.}
-
-  \item{value}{Character vector containing feature or
-  sample names.}
 }
 \value{
-character vector with names of samples
+  character vector with names of samples
 }
 \description{
-Get colnames from a GenoSet
+  Get colnames from a GenoSet
 }
 \examples{
 data(genoset)
