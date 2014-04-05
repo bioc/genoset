@@ -3,7 +3,7 @@
 \alias{locData}
 \alias{locData,GenoSet-method}
 \alias{locData<-}
-\alias{locData<-,GenoSet,GenomicRanges-method}
+\alias{locData<-,GenoSet,GRanges-method}
 \title{Access the feature genome position info}
 \usage{
 locData(object)
@@ -12,7 +12,7 @@ locData(object)
 
 locData(object) <- value
 
-\S4method{locData}{GenoSet,GenomicRanges}(object) <- value
+\S4method{locData}{GenoSet,GRanges}(object) <- value
 }
 \arguments{
   \item{object}{GenoSet}

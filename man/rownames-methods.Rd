@@ -9,6 +9,7 @@
 \alias{rownames,GRanges-method}
 \alias{rownames,GenoSet-method}
 \alias{rownames<-,GRanges-method}
+\alias{rownames<-,GenoSet-method}
 \title{Get rownames from GRanges, or GenoSet}
 \usage{
 \S4method{rownames}{GRanges}(x)
@@ -16,6 +17,8 @@
 \S4method{rownames}{GenoSet}(x)
 
 \S4method{rownames}{GRanges}(x) <- value
+
+\S4method{rownames}{GenoSet}(x) <- value
 
 \S4method{featureNames}{GenoSet}(object)
 
@@ -25,9 +28,9 @@
 
 \S4method{featureNames}{GRanges}(object) <- value
 
-\S4method{featureNames}{RangedData}(object) <- value
-
 \S4method{featureNames}{RangedData}(object)
+
+\S4method{featureNames}{RangedData}(object) <- value
 }
 \arguments{
   \item{object}{GRanges or GenoSet}

@@ -53,7 +53,7 @@ test_segs2GRanges <- function() {
 
 test_segs2Rle <- function() {
   # With GRanges
-  na.df = data.frame( chrom = factor(c("chr1", "chr1", "chr3", "chr3", "chrX"), levels=names(locData.rd)),
+  na.df = data.frame( chrom = factor(c("chr1", "chr1", "chr3", "chr3", "chrX"), levels=chrNames(locData.gr)),
     loc.start = c(3, 5, 4, 6, 2),  loc.end = c(3, 7, 4, 6, 6),  num.mark = c(1, 2, 1, 1, 3),  seg.mean = c(3.3, 4.3, 4.3, 6.3, 7.3),  stringsAsFactors=FALSE )
   na.rle = Rle( c(NA, 3.3, 4.3, 6.3, 7.3, NA),  c(1, 1, 3, 1, 3, 1) )
   checkEquals( segs2Rle( basic.segs[[1]], locData.gr ), basic.rle.df[[1]], checkNames=FALSE )
@@ -63,14 +63,13 @@ test_segs2Rle <- function() {
 }
 
 test_segs2RleDataFrame <- function() {
-  checkEquals( segs2RleDataFrame( basic.segs, locData.rd ), basic.rle.df, checkNames=FALSE )
   checkEquals( segs2RleDataFrame( basic.segs, locData.gr ), basic.rle.df, checkNames=FALSE )
 }
 
 test_segTable <- function() {
-  chr.ind = chrIndices(locData.rd)
-  start = start(locData.rd)
-  end = end(locData.rd)
+  chr.ind = chrIndices(locData.gr)
+  start = start(locData.gr)
+  end = end(locData.gr)
 
   # With GRanges
   checkEquals( segTable( basic.rle.df[["K"]], locData.gr), basic.segs.after[["K"]], checkNames=FALSE )
