@@ -1,15 +1,15 @@
 \docType{methods}
 \name{genoPos}
 \alias{genoPos}
-\alias{genoPos,RangedDataOrGenoSetOrGenomicRanges-method}
+\alias{genoPos,GenoSetOrGenomicRanges-method}
 \title{Get base positions of features in genome-scale units}
 \usage{
 genoPos(object)
 
-\S4method{genoPos}{RangedDataOrGenoSetOrGenomicRanges}(object)
+\S4method{genoPos}{GenoSetOrGenomicRanges}(object)
 }
 \arguments{
-  \item{object}{A GenoSet object or a RangedData object}
+  \item{object}{A GenoSet object or a GenomicRanges object}
 }
 \value{
 numeric position of each feature in whole genome units, in

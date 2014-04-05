@@ -72,21 +72,6 @@ segs2Granges <- function(segs) {
   return(segs.gr)
 }
 
-##' Make a RangedData from segments
-##'
-##' Starting from a data.frame of segments, like from CBS and segTable, organize as a RangedData. Label data "score",
-##' so it can easily be made into various genome browser formats using rtracklayer.
-##' @param segs data.frame, like from segment in DNAcopy or segTable
-##' @return RangedData
-##' @family "segmented data"
-##' @export 
-##' @family segments
-segs2RangedData <- function(segs) {
-  .Deprecated("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")
-  rd = RangedData(ranges=IRanges(start=segs$loc.start,end=segs$loc.end),space=segs$chrom,score=segs$seg.mean,num.mark=segs$num.mark)
-  return(rd)
-}
-
 ##' Convert Rle objects to tables of segments
 ##'
 ##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a

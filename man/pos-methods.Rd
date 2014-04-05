@@ -1,15 +1,15 @@
 \docType{methods}
 \name{pos}
 \alias{pos}
-\alias{pos,RangedDataOrGenoSetOrGenomicRanges-method}
+\alias{pos,GenoSetOrGenomicRanges-method}
 \title{Chromosome position of features}
 \usage{
 pos(object)
 
-\S4method{pos}{RangedDataOrGenoSetOrGenomicRanges}(object)
+\S4method{pos}{GenoSetOrGenomicRanges}(object)
 }
 \arguments{
-  \item{object}{GRanges, RangedData or GenoSet}
+  \item{object}{GRanges GenoSet}
 }
 \value{
 numeric vector of feature positions within a chromosome

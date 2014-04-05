@@ -1,5 +1,5 @@
 \docType{methods}
-\name{featureNames,RangedData-method}
+\name{rownames,GRanges-method}
 \alias{featureNames,GRanges-method}
 \alias{featureNames,GenoSet-method}
 \alias{featureNames,RangedData-method}
@@ -9,10 +9,8 @@
 \alias{rownames,GRanges-method}
 \alias{rownames,GenoSet-method}
 \alias{rownames<-,GRanges-method}
-\title{Get rownames from RangedData, GRanges, or GenoSet}
+\title{Get rownames from GRanges, or GenoSet}
 \usage{
-\S4method{featureNames}{RangedData}(object)
-
 \S4method{rownames}{GRanges}(x)
 
 \S4method{rownames}{GenoSet}(x)
@@ -28,20 +26,24 @@
 \S4method{featureNames}{GRanges}(object) <- value
 
 \S4method{featureNames}{RangedData}(object) <- value
+
+\S4method{featureNames}{RangedData}(object)
 }
 \arguments{
-  \item{object}{GRanges, RangedData, or GenoSet}
-
-  \item{value}{Character vector containing feature or
-  sample names.}
+  \item{object}{GRanges or GenoSet}
 
   \item{x}{ A matrix-like object.  }
+
+  \item{value}{a valid value for that component of
+  \code{\link{dimnames}(x)}.  For a matrix or array this is
+  either \code{NULL} or a character vector of non-zero
+  length equal to the appropriate dimension.}
 }
 \value{
 character vector with names rows/features
 }
 \description{
-Get rownames from RangedData, GRanges, or GenoSet.
+Get rownames from GRanges or GenoSet.
 }
 \examples{
 data(genoset)

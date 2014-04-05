@@ -2,17 +2,17 @@
 \name{isGenomeOrder}
 \alias{isGenomeOrder}
 \alias{isGenomeOrder,GRanges-method}
-\alias{isGenomeOrder,RangedDataOrGenoSet-method}
-\title{Check if a GRanges, GenoSet or RangedData is in genome order}
+\alias{isGenomeOrder,GenoSet-method}
+\title{Check if a GRanges orGenoSet is in genome order}
 \usage{
 isGenomeOrder(ds, strict = TRUE)
 
-\S4method{isGenomeOrder}{RangedDataOrGenoSet}(ds, strict = TRUE)
+\S4method{isGenomeOrder}{GenoSet}(ds, strict = TRUE)
 
 \S4method{isGenomeOrder}{GRanges}(ds, strict = TRUE)
 }
 \arguments{
-  \item{ds}{GenoSet, GRanges, or RangedData}
+  \item{ds}{GenoSet or GRanges}
 
   \item{strict}{logical, should space/chromosome order be
   identical to that from chrOrder?}

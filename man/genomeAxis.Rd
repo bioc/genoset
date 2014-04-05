@@ -35,7 +35,7 @@ data(genoset)
 }
 \seealso{
 Other "genome plots": \code{\link{genoPlot}},
-\code{\link{genoPlot,RangedDataOrGenoSetOrGenomicRanges,ANY-method}},
+\code{\link{genoPlot,GenoSetOrGenomicRanges,ANY-method}},
 \code{\link{genoPlot,numeric,Rle-method}},
 \code{\link{genoPlot,numeric,numeric-method}}
 }

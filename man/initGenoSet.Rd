@@ -9,9 +9,8 @@ initGenoSet(type, locData, pData = NULL, annotation = "", universe,
   \item{type}{character, the type of object (e.g. GenoSet,
   BAFSet, CNSet) to be created}
 
-  \item{locData}{A GRanges or RangedData object specifying
-  feature chromosome locations. rownames are required to
-  match assayData.}
+  \item{locData}{A GRanges specifying feature chromosome
+  locations. rownames are required to match assayData.}
 
   \item{pData}{A data frame with rownames matching colnames
   of all assayDataElements}

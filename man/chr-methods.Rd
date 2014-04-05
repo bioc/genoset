@@ -3,19 +3,16 @@
 \alias{chr}
 \alias{chr,GRanges-method}
 \alias{chr,GenoSet-method}
-\alias{chr,RangedData-method}
 \title{Chromosome name for each feature}
 \usage{
 chr(object)
-
-\S4method{chr}{RangedData}(object)
 
 \S4method{chr}{GenoSet}(object)
 
 \S4method{chr}{GRanges}(object)
 }
 \arguments{
-  \item{object}{GRanges, RangedData or GenoSet}
+  \item{object}{GRanges GenoSet}
 }
 \value{
 character vector of chromosome positions for each feature

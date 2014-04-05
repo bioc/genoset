@@ -19,7 +19,7 @@
 ##' @seealso genoset-datasets GenoSet
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
-##' @importClassesFrom IRanges DataFrame RangedData Rle
+##' @importClassesFrom IRanges DataFrame Rle RangedData
 ##' @importClassesFrom GenomicRanges GRanges
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
@@ -30,7 +30,7 @@
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
-##' @importFrom IRanges DataFrame IRanges RangedData "%over%"
+##' @importFrom IRanges DataFrame IRanges "%over%"
 ##' @importFrom GenomicRanges seqlengths GRanges
 ##'
 ##' @import methods
@@ -39,37 +39,14 @@
 ##' @useDynLib genoset
 NULL
 
-##' Deprecated genoset features
-##'
-##' GenoSet is moving towards using GenomicRanges instead of RangedData. We are also getting rid of dependencies on eSet for a potential switch to an underlying SummarizedExperiment.
-##' @name genoset-deprecated
-##' @aliases genoset-deprecated
-NULL
-
-##' Defunct genoset features
-##'
-##' The CNSet and BAFSet classes are defunct.  They only really added getter/setter methods for specific assayDataElements,
-##' so they are now redundant with the preferred method of using the assayDataElement name as the third argument to bracket, e.g.
-##' \code{x[i, j, "lrr"]}. Accordingly \code{BAFSet.to.ExpressionSets} is also defunct.
-##'
-##' Additionally, names, ranges, and space on a GenoSet are also defunct. In an effort to make a consistent API for either RangedData or
-##' GRanges in the locData slot, we recommend using \code{chrNames} for \code{names} and \code{chr} for \code{space}.
-##' @name genoset-defunct
-##' @aliases genoset-defunct
-NULL
-
 ###############
 # Class GenoSet
 ###############
 
-##' @exportClass RangedDataOrGenomicRanges
 ##' @exportClass GenoSet
-##' @exportClass RangedDataOrGenoSet
-##' @exportClass RangedDataOrGenoSetOrGenomicRanges
-setClassUnion("RangedDataOrGenomicRanges",c("RangedData","GenomicRanges"))
-setClass("GenoSet", contains=c("eSet"), representation=representation(locData="RangedDataOrGenomicRanges"))
-setClassUnion("RangedDataOrGenoSet",c("RangedData","GenoSet"))
-setClassUnion("RangedDataOrGenoSetOrGenomicRanges",c("RangedData","GenoSet","GenomicRanges"))
+setClass("GenoSet", contains=c("eSet"), representation=representation(locData="GenomicRanges"))
+##' @exportClass GenoSetOrGenomicRanges
+setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
 setValidity("GenoSet", function(object) {
   return( all( rownames(locData(object)) == rownames(assayData(object)) ) )
@@ -86,7 +63,7 @@ setValidity("GenoSet", function(object) {
 ##' require it.
 ##' 
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
-##' @param locData A GRanges or RangedData object specifying feature chromosome
+##' @param locData A GRanges specifying feature chromosome
 ##' locations. rownames are required to match assayData.
 ##' @param pData A data frame with rownames matching colnames of all assayDataElements
 ##' @param annotation character, string to specify chip/platform type
@@ -194,7 +171,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##' order can be disrupted by "[" calls and will be checked by methods that
 ##' require it.
 ##' 
-##' @param locData A RangedData object specifying feature chromosome
+##' @param locData A GRanges object specifying feature chromosome
 ##' locations. Rownames are required to match featureNames.
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
@@ -263,36 +240,16 @@ setMethod("colnames", signature(x="GenoSet"),
 #            return(object)
 #          })
 
-##' @rdname colnames
-##' @exportMethod sampleNames
-setMethod("sampleNames", signature(object="GenoSet"),
-          function(object) {
-            .Defunct(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
-          })
-
-##' @rdname colnames
-##' @exportMethod "sampleNames<-"
-setMethod("sampleNames<-", signature(object="GenoSet"),
-          function(object, value) {
-            .Defunct(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
-            return(object)
-          })
-
-##' Get rownames from RangedData, GRanges, or GenoSet
+##' Get rownames from GRanges, or GenoSet
 ##'
-##' Get rownames from RangedData, GRanges, or GenoSet.
-##' @param object GRanges, RangedData, or GenoSet
+##' Get rownames from GRanges or GenoSet.
+##' @param object GRanges or GenoSet
 ##' @return character vector with names rows/features
 ##' @examples
 ##'   data(genoset)
 ##'   head(rownames(locData.gr))
 ##'   head(rownames(genoset.ds))
 ##' @exportMethod rownames
-##' @rdname rownames-methods
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            .Defunct(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
 ##' @rdname rownames-methods
 setMethod("rownames", signature(x="GRanges"),
           function(x) {
@@ -313,18 +270,10 @@ setMethod("rownames<-",
 
 ##' Access the feature genome position info
 ##'
-##' The position information for each probe/feature is stored as an IRanges RangedData object.
+##' The position information for each probe/feature is stored as an GRanges object.
 ##' The locData functions allow this data to be accessed or re-set.
 ##' @param object GenoSet
-##' @param value RangedData describing features
-##' @section Methods:
-##' \describe{
-##' \item{\code{signature(object = "GenoSet")}}{
-##' Get location data.
-##' }
-##' \item{\code{signature(object = "GenoSet", value = "RangedData")}}{
-##' Set location data.
-##' }}
+##' @param value GRanges describing features
 ##' @examples
 ##' data(genoset)
 ##' rd = locData(genoset.ds)
@@ -346,7 +295,7 @@ setMethod("locData", "GenoSet", function(object) {
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 
 ##' @rdname locData-methods
-setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRanges"),
+setMethod("locData<-", signature(object="GenoSet", value="GenomicRanges"),
                  function(object,value) {
                    if (! all( rownames(value) %in% rownames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")
@@ -359,9 +308,9 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRan
                    return(object)
                    })
 
-###########################################
-# Shared API between GenoSet and RangedData
-###########################################
+##############################################
+# Shared API between GenoSet and GenomicRanges
+##############################################
 
 ##' Get start of location for each feature
 ##'
@@ -437,8 +386,8 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 ##' Subset a GenoSet
 ##' @exportMethod "["
 ##' @param x GenoSet
-##' @param i character, RangedData, logical, integer
-##' @param j character, RangedData, logical, integer
+##' @param i character, GRanges, logical, integer
+##' @param j character, GRanges, logical, integer
 ##' @param k character or integer
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
@@ -446,12 +395,9 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 ##'   data(genoset)
 ##'   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
 ##'   genoset.ds[ , "K"]  # Sample called K
-##'   rd = RangedData(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1),names=letters[8:14],space=rep("chr17",7))
-##'   genoset.ds[ rd, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
-##' @aliases [,GenoSet,ANY,ANY,ANY-method
-##' @aliases [,GenoSet,ANY-method
-##' @aliases [,GenoSet,RangedDataOrGenomicRanges-method
-##' @aliases [,GenoSet,character-method
+##'   gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep("chr17",7))
+##'   genoset.ds[ gr, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
+##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
@@ -483,7 +429,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
             callNextMethod(x,i,j,...,drop=drop)
           })
 
-##' @aliases [,GenoSet,character,ANY,ANY-method
+##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             if ( ! missing(i) ) {
@@ -492,14 +438,14 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
-##' @aliases [,GenoSet,RangedDataOrGenomicRanges,ANY,ANY-method
-setMethod("[", signature=signature(x="GenoSet", i="RangedDataOrGenomicRanges", j="ANY"),
+##' @rdname genoset-subset
+setMethod("[", signature=signature(x="GenoSet", i="GenomicRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
             indices = unlist(x@locData %over% i)
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
-##' @aliases [<-,GenoSet,ANY,ANY,ANY-method
+##' @rdname genoset-subset
 setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),          
           function(x,i,j,k,value) {
             if ( missing(k)) {
@@ -558,7 +504,7 @@ setMethod("show","GenoSet",
 ##' Chromosome name for each feature
 ##'
 ##' Get chromosome name for each feature.  Returns character.
-##' @param object GRanges, RangedData or GenoSet
+##' @param object GRanges GenoSet
 ##' @return character vector of chromosome positions for each feature
 ##' @examples
 ##'   data(genoset)
@@ -568,8 +514,6 @@ setMethod("show","GenoSet",
 ##' @rdname chr-methods
 setGeneric("chr", function(object) standardGeneric("chr"))
 ##' @rdname chr-methods
-setMethod("chr", "RangedData", function(object) { return(as.character(space(object))) } )
-##' @rdname chr-methods
 setMethod("chr", "GenoSet", function(object) { return(chr(slot(object,"locData"))) } )
 ##' @rdname chr-methods
 setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(object))) })
@@ -577,7 +521,7 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##' Chromosome position of features
 ##'
 ##' Get chromosome position of features/ranges. Defined as floor of mean of start and end.
-##' @param object GRanges, RangedData or GenoSet
+##' @param object GRanges GenoSet
 ##' @return numeric vector of feature positions within a chromosome
 ##' @export pos
 ##' @examples
@@ -587,14 +531,14 @@ setMethod("chr", "GRanges", function(object) { return(as.character(seqnames(obje
 ##' @rdname pos-methods
 setGeneric("pos", function(object) standardGeneric("pos"))
 ##' @rdname pos-methods
-setMethod("pos", "RangedDataOrGenoSetOrGenomicRanges",
+setMethod("pos", "GenoSetOrGenomicRanges",
           function(object) { return( start(object) + (width(object) - 1L) %/% 2L) } )
 
 ##' Get list of unique chromosome names
 ##'
 ##' Get list of unique chromosome names
 ##' 
-##' @param object RangedData or GenoSet
+##' @param object GenomicRanges or GenoSet
 ##' @param value return value of chrNames
 ##' @return character vector with names of chromosomes
 ##' @examples
@@ -611,11 +555,7 @@ setMethod("chrNames", signature(object="GenoSet"),
           function(object) {
             chrNames(locData(object))
           })
-##' @rdname chrNames-methods
-setMethod("chrNames", signature(object="RangedData"),
-          function(object) {
-            names(object)
-          })
+
 ##' @rdname chrNames-methods
 setMethod("chrNames", signature(object="GRanges"),
           function(object) {
@@ -630,13 +570,6 @@ setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
 setMethod("chrNames<-", signature(object="GenoSet"),
           function(object,value) {
             chrNames(locData(object)) = value
-            return(object)
-          })
-
-##' @rdname chrNames-methods
-setMethod("chrNames<-", signature(object="RangedData"),
-          function(object,value) {
-            names(object) = value
             return(object)
           })
 
@@ -660,7 +593,7 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##' @rdname chrInfo-methods
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 ##' @rdname chrInfo-methods
-setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
           function(object) {
             # Get max end value for each chr
             if (class(object) == "GRanges" && !any(is.na(seqlengths(object)))) {
@@ -691,7 +624,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##' locations. If chr is specified, the function will return a sequence
 ##' of integers representing the row indices of features on that chromosome.
 ##' 
-##' @param object GenoSet, RangedData, or GRanges
+##' @param object GenoSet or GRanges
 ##' @param chr character, specific chromosome name
 ##' @return data.frame with "first" and "last" columns
 ##' @export chrIndices
@@ -703,7 +636,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 
 ##' @rdname chrIndices-methods
-setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
             object.lengths = elementLengths(object)
             object.lengths = object.lengths[ object.lengths > 0 ]
@@ -724,7 +657,7 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 ##'
 ##' Get base positions of array features in bases counting from the start of the
 ##' genome. Chromosomes are ordered numerically, when possible, then lexically.
-##' @param object A GenoSet object or a RangedData object
+##' @param object A GenoSet object or a GenomicRanges object
 ##' @return numeric position of each feature in whole genome units, in original order
 ##' @examples
 ##'   data(genoset)
@@ -735,7 +668,7 @@ setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
 
 ##' @rdname genoPos-methods
-setMethod("genoPos", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
           function(object) {
 
             # For single chr objects, just return pos

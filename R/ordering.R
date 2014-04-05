@@ -22,14 +22,14 @@ chrOrder <- function(chr.names) {
   return(all.names)
 }
 
-##' Check if a GRanges, GenoSet or RangedData is in genome order
+##' Check if a GRanges orGenoSet is in genome order
 ##'
 ##' Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromosomes
 ##' must be in order specified by chrOrder. isGenomeOrder for GRanges differs from order
 ##' in that it orders by chromsome and start position only,
 ##' rather than chromsome, strand, start, and width.
 ##' 
-##' @param ds GenoSet, GRanges, or RangedData
+##' @param ds GenoSet or GRanges
 ##' @param strict logical, should space/chromosome order be identical to that from chrOrder?
 ##' @return logical
 ##' @export isGenomeOrder
@@ -41,7 +41,7 @@ chrOrder <- function(chr.names) {
 setGeneric("isGenomeOrder", function(ds, strict=TRUE) standardGeneric("isGenomeOrder"))
 
 ##' @rdname isGenomeOrder-methods
-setMethod("isGenomeOrder",signature=signature(ds="RangedDataOrGenoSet"),
+setMethod("isGenomeOrder",signature=signature(ds="GenoSet"),
           function(ds, strict=TRUE) {
             if (strict) {
               if ( ! all( chrNames(ds) == chrOrder( chrNames(ds) ) ) ) {
@@ -66,7 +66,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
             return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
           })
 
-##' Set a GRanges, GenoSet, or RangedData to genome order
+##' Set a GRanges or GenoSet to genome order
 ##'
 ##' Returns a re-ordered object sorted by chromosome and start position. If strict=TRUE, then
 ##' chromosomes must be in order specified by chrOrder.
@@ -76,7 +76,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##' toGenomeOrder for GRanges differs from sort in that it orders by chromsome and start position only,
 ##' rather than chromsome, strand, start, and width.
 ##' 
-##' @param ds GenoSet, GRanges, or RangedData
+##' @param ds GenoSet or GRanges
 ##' @param strict logical, should chromosomes be in order specified by chrOrder?
 ##' @return re-ordered ds
 ##' @export toGenomeOrder

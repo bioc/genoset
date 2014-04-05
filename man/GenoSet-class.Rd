@@ -2,12 +2,13 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{GenoSet-class}
+\alias{GenoSetOrGenomicRanges-class}
 
 \title{Class \code{"GenoSet"}}
 \description{
 \code{GenoSet} extends \code{eSet} by adding genome location information in the form of the locData slot.
-GenoSet uses this location information to allow quick subsetting and summarization by a set of genome locations (RangedData or GRanges). 
-GenoSet implements and extends the RangedData/GRanges API for access to the underlying location information.
+GenoSet uses this location information to allow quick subsetting and summarization by a set of genome locations (GRanges). 
+GenoSet implements and extends the GRanges API for access to the underlying location information.
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("GenoSet", assayData, phenoData, featureData, experimentData, annotation, protocolData, ...)}.
@@ -15,7 +16,7 @@ However, as per BioConductor standard practice the object creation function \cod
 }
 \section{Slots}{
   \describe{
-    \item{\code{locData}:}{Object of class \code{"RangedDataOrGenomicRanges"} Locations of features on the genome }
+    \item{\code{locData}:}{Object of class \code{"GenomicRanges"} Locations of features on the genome }
     \item{\code{assayData}:}{Object of class \code{"AssayData"} From eSet }
     \item{\code{phenoData}:}{Object of class \code{"AnnotatedDataFrame"} From eSet }
     \item{\code{featureData}:}{Object of class \code{"AnnotatedDataFrame"} From eSet }
@@ -32,7 +33,6 @@ Class \code{"\linkS4class{eSet}"}, directly.
   \describe{
     \item{[}{\code{signature(x = "GenoSet", i = "ANY", j = "ANY", drop = "ANY")}: ... }
     \item{[}{\code{signature(x = "GenoSet", i = "character", j = "ANY", drop = "ANY")}: ... }
-    \item{[}{\code{signature(x = "GenoSet", i = "RangedData", j = "ANY", drop = "ANY")}: ... }
     \item{[<-}{\code{signature(x = "GenoSet", i = "ANY", j = "ANY", value = "ANY")}: ... }
     \item{chr}{\code{signature(object = "GenoSet")}: ... }
     \item{chrNames}{\code{signature(object = "GenoSet")}: ... }
@@ -43,15 +43,11 @@ Class \code{"\linkS4class{eSet}"}, directly.
     \item{dim}{\code{signature(object = "GenoSet")}: ... }
     \item{genoPlot}{\code{signature(x = "GenoSet", y = "ANY")}: ... }
     \item{locData}{\code{signature(object = "GenoSet")}: ... }
-    \item{locData<-}{\code{signature(object = "GenoSet", value = "RangedData")}: ... }
     \item{names}{\code{signature(x = "GenoSet")}: ... }
     \item{ranges}{\code{signature(x = "GenoSet")}: ... }
     \item{show}{\code{signature(object = "GenoSet")}: ... }
     \item{toGenomeOrder}{\code{signature(ds = "GenoSet")}: ... }
   }
-}
-\author{
-Peter M. Haverty \email{phaverty@gene.com}
 }
 
 \seealso{

@@ -5,7 +5,7 @@
 
 ##' Plot data along the genome
 ##'
-##' Plot location data and chromosome boundaries from a GenoSet, RangedData, or GRanges object
+##' Plot location data and chromosome boundaries from a GenoSet or GRanges object
 ##' against data from a numeric or Rle. Specifying a chromosome name and optionally a 'xlim'
 ##' will zoom into one chromosome region. If more than one chromosome is present, the
 ##' chromosome boundaries will be marked. Alternatively, for a numeric x and a
@@ -17,7 +17,7 @@
 ##' @section Methods:
 ##' \describe{
 ##' 
-##' \item{\code{signature(x = "RangedDataOrGenoSetOrGenomicRanges", y = "ANY")}}{
+##' \item{\code{signature(x = "GenoSetOrGenomicRanges", y = "ANY")}}{
 ##' Plot feature locations and data from one sample.
 ##' }
 ##' 
@@ -30,9 +30,9 @@
 ##' }
 ##' }
 ##' 
-##' @param x GenoSet (or descendant), RangedData, or GRanges
+##' @param x GenoSet (or descendant) or GRanges
 ##' @param y numeric or Rle
-##' @param locs RangedData, like locData slot of GenoSet
+##' @param locs GRanges, like locData slot of GenoSet
 ##' @param chr Chromosome to plot, NULL by default for full genome
 ##' @param add Add plot to existing plot
 ##' @param xlab character, label for x-axis of plot
@@ -86,7 +86,7 @@ setMethod("genoPlot", c(x="numeric",y="Rle"),
           })
 
 ##' @rdname genoPlot-methods
-setMethod("genoPlot", signature(x="RangedDataOrGenoSetOrGenomicRanges",y="ANY"), function(x, y, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
+setMethod("genoPlot", signature(x="GenoSetOrGenomicRanges",y="ANY"), function(x, y, chr=NULL, add=FALSE, pch=".", xlab="", ylab="", ...) {
   ## Note: zoom in by subset is much faster (10X) than xlim, so implement a zoom in with subsetting
   # Get position info, subset by chr if necessary
   dot.args = list(...)

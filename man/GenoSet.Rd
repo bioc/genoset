@@ -6,7 +6,7 @@ GenoSet(locData, pData = NULL, annotation = "", universe,
   assayData = NULL, ...)
 }
 \arguments{
-  \item{locData}{A RangedData object specifying feature
+  \item{locData}{A GRanges object specifying feature
   chromosome locations. Rownames are required to match
   featureNames.}
 
