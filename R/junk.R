@@ -1,4 +1,13 @@
 
+##' @exportClass RangedDataOrGenomicRanges
+setClassUnion("RangedDataOrGenomicRanges", c("RangedData", "GenomicRanges"))
+##' @exportClass RangedDataOrGenoset
+setClassUnion("RangedDataOrGenoset", c("RangedData", "GenoSet"))
+##' @exportClass RangedDataOrGenoSetOrGenomicRanges
+setClassUnion("RangedDataOrGenoSetOrGenomicRanges", c("RangedData", "GenoSet", "GenomicRanges"))
+
+
+
 ##' Get universe annotations
 ##'
 ##' Get universe annotations
@@ -30,37 +39,17 @@ setMethod("universe<-", signature(x="GRanges"),
           })
 
 ##' @rdname rownames-methods
-##' @exportMethod featureNames
-setMethod("featureNames", signature(object="GenoSet"),
-          function(object) {
-             .Defunct(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-
-##' @rdname rownames-methods
-setMethod("featureNames", signature(object="GRanges"),
+setMethod("featureNames", signature(object="RangedData"),
           function(object) {
             .Defunct(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
           })
 
 ##' @rdname rownames-methods
 setMethod("featureNames<-",
-          signature=signature(object="GenoSet", value="ANY"),
-          function(object, value) {
-            .Defunct(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-##' @rdname rownames-methods
-setMethod("featureNames<-",
-          signature=signature(object="GRanges", value="ANY"),
-          function(object, value) {
-            .Defunct(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-##' @rdname rownames-methods
-setMethod("featureNames<-",
           signature=signature(object="RangedData", value="ANY"),
           function(object, value) {
             .Defunct(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
           })
-
 
 ##' Deprecated genoset features
 ##'
@@ -81,26 +70,6 @@ NULL
 ##' @aliases genoset-defunct
 NULL
 
-##' @rdname rownames-methods
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            .Defunct(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-
-
-##' @rdname colnames
-##' @exportMethod sampleNames
-setMethod("sampleNames", signature(object="GenoSet"),
-          function(object) {
-            .Defunct(new="colnames", msg="Please use colnames. We are switching away from eSet-specific methods.")
-          })
-
-##' @rdname colnames
-##' @exportMethod "sampleNames<-"
-setMethod("sampleNames<-", signature(object="GenoSet"),
-          function(object, value) {
-            .Defunct(new="colnames<-", msg="Please use colnames. We are switching away from eSet-specific methods.")
-          })
 
 
 ##' Make a RangedData from segments

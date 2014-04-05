@@ -20,17 +20,17 @@ basic.segs = list(
   )
 
 basic.segs.after = list(
-  K = data.frame( chrom = factor(c("chr1","chr3","chrX"),levels=chr(locData.gr)),
+  K = data.frame( chrom = factor(c("chr1","chr3","chrX"),levels=chrNames(locData.gr)),
     loc.start = c(1,4,2), loc.end = c(7,6,8), num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2), stringsAsFactors=FALSE ),
-  L = data.frame( chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=chr(locData.gr)),
+  L = data.frame( chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=chrNames(locData.gr)),
     loc.start = c(1,3,4,2,6), loc.end = c(1,7,6,4,8), num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5), stringsAsFactors=FALSE ),
-  M = data.frame( chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=chr(locData.gr)),
+  M = data.frame( chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=chrNames(locData.gr)),
     loc.start = c(1,3,4,6,2), loc.end = c(1,7,4,6,8), num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3), stringsAsFactors=FALSE )
   )
 
 stacked.basic.segs.after = data.frame(
   Sample=c(rep("K",3),rep("L",5),rep("M",5)),
-  chrom = factor(c("chr1","chr3","chrX","chr1","chr1","chr3","chrX","chrX","chr1","chr1","chr3","chr3","chrX"),levels=names(locData.gr)),
+  chrom = factor(c("chr1","chr3","chrX","chr1","chr1","chr3","chrX","chrX","chr1","chr1","chr3","chr3","chrX"),levels=chrNames(locData.gr)),
   loc.start = c(1,4,2,1,3,4,2,6,1,3,4,6,2), loc.end = c(7,6,8,1,7,6,4,8,1,7,4,6,8),
   num.mark = c(4,2,4,1,3,2,2,2,1,3,1,1,4),
   seg.mean = c(5.3,2.3,1.2,1.1,1.4,2.2,3.3,0.5,3.3,4.3,4.3,6.3,7.3),
@@ -38,11 +38,11 @@ stacked.basic.segs.after = data.frame(
   stringsAsFactors=FALSE)
 
 basic.rds.after = list(
-  K = GRanges( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),seqnames = factor(c("chr1","chr3","chrX"),levels=names(locData.rd)),  score = c(5.3,2.3,1.2), num.mark = c(4,2,4) ),
-  L = GRanges( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), seqnames = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=names(locData.rd)),
-    score = c(1.1,1.4,2.2,3.3,0.5), num.mark = c(1,3,2,2,2)),
-  M = GRanges( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), seqnames = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.rd)),
-    score = c(3.3,4.3,4.3,6.3,7.3), num.mark = c(1,3,1,1,4))
+  K = GRanges( ranges=IRanges(start = c(1,4,2), end = c(7,6,8)),seqnames = factor(c("chr1","chr3","chrX"),levels=chrNames(locData.gr)), num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2) ),
+  L = GRanges( ranges=IRanges(start = c(1,3,4,2,6), end = c(1,7,6,4,8)), seqnames = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=chrNames(locData.gr)),
+    num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5)),
+  M = GRanges( ranges=IRanges(start = c(1,3,4,6,2), end = c(1,7,4,6,8)), seqnames = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=chrNames(locData.gr)),
+    num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3))
   )
 
 test_segs2GRanges <- function() {
@@ -119,7 +119,7 @@ test_segPairTable <- function() {
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
 }
 
-test.fixSegNAs <- function() {
+test_fixSegNAs <- function() {
   x = Rle(c(1,NA,1,5,4,NA,4,2,NA,3), rep(1,10) )
   x.fixed = Rle(c(1,5,4,2,NA,3), c(3,1,3,1,1,1))
   checkIdentical( fixSegNAs(x), x.fixed, "Easy, no NAs on ends" )

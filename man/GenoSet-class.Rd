@@ -3,6 +3,9 @@
 \docType{class}
 \alias{GenoSet-class}
 \alias{GenoSetOrGenomicRanges-class}
+\alias{RangedDataOrGenomicRanges-class}
+\alias{RangedDataOrGenoset-class}
+\alias{RangedDataOrGenoSetOrGenomicRanges-class}
 
 \title{Class \code{"GenoSet"}}
 \description{

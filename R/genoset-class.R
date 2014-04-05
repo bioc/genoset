@@ -242,6 +242,21 @@ setMethod("colnames<-", signature(x="GenoSet"),
             return(x)
           })
 
+##' @rdname colnames
+##' @exportMethod sampleNames
+setMethod("sampleNames", signature(object="GenoSet"),
+          function(object) {
+            colnames(object)
+          })
+
+##' @rdname colnames
+##' @exportMethod "sampleNames<-"
+setMethod("sampleNames<-", signature(object="GenoSet"),
+          function(object, value) {
+            colnames(object) = value
+            return(object)
+          })
+
 ##' Get rownames from GRanges, or GenoSet
 ##'
 ##' Get rownames from GRanges or GenoSet.
@@ -270,6 +285,45 @@ setMethod("rownames<-",
                    return(x)
                  })
 
+##' @rdname rownames-methods
+setMethod("rownames<-",
+                 signature=signature(x="GenoSet", value="ANY"),
+                 function(x, value) {
+                   names(x@locData) = value
+                   rownames(fData(x)) = value
+                   featureNames(assayData(x)) = value
+                   return(x)
+                 })
+
+##' @rdname rownames-methods
+##' @exportMethod featureNames
+setMethod("featureNames", signature(object="GenoSet"),
+          function(object) {
+            rownames(object)
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames", signature(object="GRanges"),
+          function(object) {
+            names(object)
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames<-",
+          signature=signature(object="GenoSet", value="ANY"),
+          function(object, value) {
+            rownames(object) = value
+            return(object)
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames<-",
+          signature=signature(object="GRanges", value="ANY"),
+          function(object, value) {
+            names(object) = value
+            return(object)
+          })
+
 ##' Access the feature genome position info
 ##'
 ##' The position information for each probe/feature is stored as an GRanges object.
@@ -297,7 +351,7 @@ setMethod("locData", "GenoSet", function(object) {
 setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
 
 ##' @rdname locData-methods
-setMethod("locData<-", signature(object="GenoSet", value="GenomicRanges"),
+setMethod("locData<-", signature(object="GenoSet", value="GRanges"),
                  function(object,value) {
                    if (! all( rownames(value) %in% rownames(object))) {
                        stop("Can not replace locData using rownames not in this GenoSet")

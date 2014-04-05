@@ -120,11 +120,10 @@ test_getters.and.setters <- function() {
 test_rd.gs.shared.api.and.getting.genome.info <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
-  uni = "hg19"
-  point.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
+  point.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
   point.locData.gr = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  point.bad.chr.order.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqlevels=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe=uni)
-  wide.locData =  GRanges(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),seqlevels=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
+  point.bad.chr.order.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)))
+  wide.locData =  GRanges(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
   gs = GenoSet(
     locData=point.locData,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
@@ -153,7 +152,7 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   gs2 = gs
   locData(gs2) = point.locData2
   checkEquals( chrNames( gs2 ), c("1","3","X") )
-  checkEquals( names( point.locData ), c("chr1","chr3","chrX") )
+  checkEquals( chrNames( point.locData ), c("chr1","chr3","chrX") )
   checkEquals( elementLengths( point.locData ), elementLengths( gs ) )
   checkEquals( elementLengths( point.locData ), elementLengths( point.locData.gr ) )
   checkEquals( chrInfo( point.locData ), chrInfo( gs ) )
@@ -171,9 +170,7 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   # Universe
   gr.uni = GRanges(IRanges(start=1:4,width=1),seqnames=c("chr1","chr2","chr3","chr4"))
   genome(gr.uni) = c("hg18","hg19","hg19","hg19")
-  checkIdentical( "hg18", universe(gr.uni), "Two genomes" )
   genome(gr.uni) = c("hg19")
-  checkIdentical( "hg19", universe(gr.uni), "Two genomes" )
   geno = rep("hg19", 3)
   locData(gs) = gr
   genome(gs) = geno
