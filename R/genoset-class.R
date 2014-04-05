@@ -233,12 +233,14 @@ setMethod("colnames", signature(x="GenoSet"),
           function(x) {
             rownames(pData(x))
           })
-
-#setMethod("colnames<-", signature(x="GenoSet"),
-#          function(x, value) {
-#            rownames(pData(x)) = value
-#            return(object)
-#          })
+##' @exportMethod "colnames<-"
+##' @rdname colnames
+setMethod("colnames<-", signature(x="GenoSet"),
+          function(x, value) {
+            rownames(pData(x)) = value
+            sampleNames(assayData(x)) = value
+            return(x)
+          })
 
 ##' Get rownames from GRanges, or GenoSet
 ##'
@@ -446,7 +448,7 @@ setMethod("[", signature=signature(x="GenoSet", i="GenomicRanges", j="ANY"),
           })
 
 ##' @rdname genoset-subset
-setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),          
+setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
           function(x,i,j,k,value) {
             if ( missing(k)) {
               stop("Must specify k to replace data in the GenoSet")

@@ -45,29 +45,23 @@ test_featureNames <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  rd = locData(ds)
-  gr = as(rd,"GRanges")
+  gr = locData(ds)
   checkEquals( featureNames(ds), probe.names, "Get featureNames from GenoSet" )
   checkEquals( featureNames(ds), featureNames(featureData(ds)), "GenoSet FeatureNames match featureData featureNames" )
   checkEquals( featureNames(ds), rownames(fData(ds)), "GenoSet FeatureNames match fData rownames" )
-  checkEquals( featureNames(ds), featureNames(rd), "Get featureNames from RangedData" )
   checkEquals( featureNames(ds), featureNames(gr), "Get featureNames from GRanges" )
   checkEquals( featureNames(ds), rownames(ds), "featureNames and rownames are the same thing for a GenoSet.")
   checkEquals( featureNames(gr), rownames(gr), "featureNames and rownames are the same thing for a GRanges.")
   checkEquals( names(gr), rownames(gr), "names and rownames are the same thing for a GRanges.")
   new.fnames = paste("f",featureNames(ds),sep="")
   featureNames(ds) = new.fnames
-  featureNames(rd) = new.fnames
   featureNames(gr) = new.fnames
   checkEquals( featureNames(ds), new.fnames, "Set featureNames in GenoSet")
-  checkEquals( featureNames(rd), new.fnames, "Set featureNames in RangedData")
   checkEquals( featureNames(gr), new.fnames, "Set featureNames in GRanges")
   new.fnames = paste("g",featureNames(ds),sep="")
   rownames(ds) = new.fnames
-  rownames(rd) = new.fnames
   rownames(gr) = new.fnames
   checkEquals( rownames(ds), new.fnames, "Set rownames in GenoSet")
-  checkEquals( rownames(rd), new.fnames, "Set rownames in RangedData")
   checkEquals( rownames(gr), new.fnames, "Set rownames in GRanges")
 
 }
@@ -79,7 +73,7 @@ test_sampleNames <- function() {
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
-  checkIdentical( sampleNames(ds), test.sample.names )
+  checkIdentical( suppressWarnings(sampleNames(ds)), test.sample.names )
   checkIdentical( colnames(ds), test.sample.names )
   colnames(ds) = LETTERS[1:3]
   checkIdentical( colnames(ds), LETTERS[1:3] )
@@ -127,10 +121,10 @@ test_rd.gs.shared.api.and.getting.genome.info <- function() {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
   uni = "hg19"
-  point.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
+  point.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
   point.locData.gr = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  point.bad.chr.order.locData = RangedData(ranges=IRanges(start=1:10,width=1,names=probe.names),space=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe=uni)
-  wide.locData =  RangedData(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),space=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
+  point.bad.chr.order.locData = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqlevels=c(rep("chr5",4),rep("chrX",2),rep("chr3",4)),universe=uni)
+  wide.locData =  GRanges(ranges=IRanges(start=seq(1,30,by=3),width=3,names=probe.names),seqlevels=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)),universe=uni)
   gs = GenoSet(
     locData=point.locData,
     cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
@@ -389,22 +383,12 @@ test_subset_w_granges <- function() {
 test_genomeOrder <- function() {
   chr.names = c(rep("chr1",3),rep("chr2",3),rep("chr10",4))
 
-  ok.locs = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  ok.locs = GRanges( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), seqnames=factor(chr.names,levels=c("chr1","chr2","chr10")))
   checkTrue( isGenomeOrder(ok.locs), "Good locs" )
 
-  ok.locs.weak = RangedData( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), space=factor(chr.names,levels=c("chr1","chr10","chr2")))
-  checkTrue( isGenomeOrder(ok.locs.weak, strict=FALSE), "Good locs with disordered chrs OK" )
-  checkTrue( ! isGenomeOrder(ok.locs.weak, strict=TRUE), "Good locs with disordered chrs not strict" )
-
-  bad.locs = RangedData( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), space=factor(chr.names,levels=c("chr1","chr2","chr10")))
-  bad.locs.bad.chr = RangedData( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), space=factor(chr.names,levels=c("chr2","chr1","chr10")))
+  bad.locs = GRanges( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr1","chr2","chr10")))
+  bad.locs.bad.chr = GRanges( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr2","chr1","chr10")))
   checkTrue( ! isGenomeOrder(bad.locs, strict=TRUE), "Bad within chr, OK chr levels, fail")
-
-  checkEquals( ok.locs, toGenomeOrder(ok.locs,strict=TRUE), "Perfect locs pass")
-  checkEquals( ok.locs.weak, toGenomeOrder(ok.locs.weak,strict=FALSE), "locs with disordered chr block pass with strict as FALSE")
-  checkEquals( ok.locs, toGenomeOrder(ok.locs.weak,strict=TRUE), "locs disordered chrs, but ok within chrs passes with strict as TRUE")
-  checkEquals( ok.locs, toGenomeOrder(bad.locs,strict=TRUE), "locs ok chrs, but disordered within")
-  checkEquals( ok.locs, toGenomeOrder(bad.locs.bad.chr,strict=TRUE), "locs with disordered chrs and within chrs")
 
   good.ds = GenoSet(
     locData=ok.locs,
@@ -424,17 +408,9 @@ test_genomeOrder <- function() {
   checkEquals( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, "GenoSet disordered within chrs" )
   checkEquals( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, "GenoSet disordered within chrs, disordered chrs" )
 
-  rd1 = RangedData(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
-  rd2 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","C","B")))
-  rd3 = RangedData(ranges=IRanges(start=c(1,9,4,5,2,6),width=1,names=LETTERS[c(1,9,4,5,2,6)]),space=factor(c("A","A","B","B","C","C"),levels=c("A","B","C")))
   gr1 = GRanges(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),seqnames=Rle(factor(c("A","B","C","C","B","A"),levels=c("A","C","B"))))
   gr2 = GRanges(ranges=IRanges(start=c(2,9,4,5,1,6),width=1,names=LETTERS[c(2,9,4,5,1,6)]),seqnames=Rle(factor(c("A","A","C","C","B","B"),levels=c("A","C","B"))))
   gr3 = GRanges(ranges=IRanges(start=c(2,9,1,6,4,5),width=1,names=LETTERS[c(2,9,1,6,4,5)]),seqnames=Rle(factor(c("A","A","B","B","C","C"),levels=c("A","B","C"))))
-  checkIdentical(toGenomeOrder(rd1,strict=FALSE),rd2,"RangedData with mis-ordered chromosomes, without strict")
-  checkIdentical(toGenomeOrder(rd1,strict=TRUE),rd3,"RangedData with mis-ordered chromosomes, with strict")
-  checkTrue(isGenomeOrder(rd2,strict=FALSE))
-  checkTrue(isGenomeOrder(rd3,strict=TRUE))
-  checkTrue(!isGenomeOrder(rd2,strict=TRUE))
   checkIdentical(toGenomeOrder(gr1,strict=FALSE),gr2,"GRanges with mis-ordered chromosomes, without strict")
   checkIdentical(toGenomeOrder(gr1,strict=TRUE),gr3,"GRanges with mis-ordered chromosomes, with strict")
   checkTrue(isGenomeOrder(gr2,strict=FALSE))

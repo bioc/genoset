@@ -1,11 +1,14 @@
 \docType{methods}
 \name{colnames,GenoSet-method}
 \alias{colnames,GenoSet-method}
+\alias{colnames<-,GenoSet-method}
 \alias{sampleNames,GenoSet-method}
 \alias{sampleNames<-,GenoSet,ANY-method}
 \title{Get colnames from a GenoSet}
 \usage{
 \S4method{colnames}{GenoSet}(x)
+
+\S4method{colnames}{GenoSet}(x) <- value
 
 \S4method{sampleNames}{GenoSet}(object)
 
@@ -14,11 +17,13 @@
 \arguments{
   \item{x}{GenoSet}
 
+  \item{value}{a valid value for that component of
+  \code{\link{dimnames}(x)}.  For a matrix or array this is
+  either \code{NULL} or a character vector of non-zero
+  length equal to the appropriate dimension.}
+
   \item{object}{Object, possibly derived from class
   \code{eSet}.}
-
-  \item{value}{Character vector containing feature or
-  sample names.}
 }
 \value{
 character vector with names of samples
