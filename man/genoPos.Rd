@@ -1,12 +1,8 @@
-\docType{methods}
 \name{genoPos}
 \alias{genoPos}
-\alias{genoPos,RangedDataOrGenoSetOrGenomicRanges-method}
-\title{Get base positions of features in genome-scale units}
+\title{Convert chromosome positions to positions from start of genome}
 \usage{
 genoPos(object)
-
-\S4method{genoPos}{RangedDataOrGenoSetOrGenomicRanges}(object)
 }
 \arguments{
   \item{object}{A GenoSet object or a RangedData object}
@@ -16,6 +12,9 @@ numeric position of each feature in whole genome units, in
 original order
 }
 \description{
+Get base positions of features in genome-scale units
+}
+\details{
 Get base positions of array features in bases counting from
 the start of the genome. Chromosomes are ordered
 numerically, when possible, then lexically.

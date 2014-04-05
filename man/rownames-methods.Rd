@@ -1,5 +1,5 @@
 \docType{methods}
-\name{featureNames,GenoSet-method}
+\name{featureNames,RangedData-method}
 \alias{featureNames,GRanges-method}
 \alias{featureNames,GenoSet-method}
 \alias{featureNames,RangedData-method}
@@ -11,23 +11,23 @@
 \alias{rownames<-,GRanges-method}
 \title{Get rownames from RangedData, GRanges, or GenoSet}
 \usage{
-\S4method{featureNames}{GenoSet}(object)
-
-\S4method{featureNames}{GRanges}(object)
-
 \S4method{featureNames}{RangedData}(object)
 
 \S4method{rownames}{GRanges}(x)
 
 \S4method{rownames}{GenoSet}(x)
 
+\S4method{rownames}{GRanges}(x) <- value
+
+\S4method{featureNames}{GenoSet}(object)
+
+\S4method{featureNames}{GRanges}(object)
+
 \S4method{featureNames}{GenoSet}(object) <- value
 
 \S4method{featureNames}{GRanges}(object) <- value
 
 \S4method{featureNames}{RangedData}(object) <- value
-
-\S4method{rownames}{GRanges}(x) <- value
 }
 \arguments{
   \item{object}{GRanges, RangedData, or GenoSet}

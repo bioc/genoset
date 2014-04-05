@@ -1,7 +1,7 @@
 \docType{methods}
 \name{genome,GenoSet-method}
 \alias{genome,GenoSet-method}
-\title{Get and set the genome universe annotation.}
+\title{Genome version}
 \usage{
 \S4method{genome}{GenoSet}(x)
 }
@@ -12,9 +12,6 @@
 character, e.g. hg19
 }
 \description{
-Genome version
-}
-\details{
 The genome positions of the features in locData. The UCSC
 notation (e.g. hg18, hg19, etc.) should be used.
 }

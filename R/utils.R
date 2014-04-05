@@ -1,5 +1,5 @@
 ##' Take vector or matrix of log2 ratios, convert to copynumber
-
+##'
 ##' Utility function for converting log2ratio units (zero is normal) to copynumber units (two is normal)
 ##' @param x numeric data in log2ratio values
 ##' @return data of same type as "x" transformed into copynumber units
@@ -10,6 +10,7 @@ lr2cn <- function(x) {
 }
 
 ##' Take vector or matrix of copynumber values, convert to log2ratios
+##' 
 ##' Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal). If ploidy
 ##' is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
 ##' @param x numeric vector or matrix, or DataFrame with numeric-like columns (Rle typicaly). Assumed to be in copynumber units.
@@ -19,6 +20,8 @@ lr2cn <- function(x) {
 ##' @seealso lr2cn
 ##' @rdname cn2lr-methods
 setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
+
+##' @rdname cn2lr-methods
 setMethod("cn2lr", signature(x="numeric"),
           function(x, ploidy) {
             x = ifelse(x <= 0, 1e-3, x)
@@ -30,6 +33,8 @@ setMethod("cn2lr", signature(x="numeric"),
             }
             return(new.x)
           })
+
+##' @rdname cn2lr-methods
 setMethod("cn2lr", signature(x="matrix"),
           function(x, ploidy) {
             x = ifelse(x <= 0, 1e-3, x)
@@ -41,6 +46,8 @@ setMethod("cn2lr", signature(x="matrix"),
             }
             return(new.x)
           })
+
+##' @rdname cn2lr-methods
 setMethod("cn2lr", signature(x="DataFrame"),
           function(x, ploidy) {
             if (missing(ploidy)){

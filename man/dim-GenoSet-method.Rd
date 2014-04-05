@@ -9,7 +9,7 @@
   \item{x}{GenoSet}
 }
 \value{
-integer(2)
+integer
 }
 \description{
 Dimensions

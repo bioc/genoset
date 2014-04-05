@@ -1,10 +1,18 @@
+\docType{methods}
 \name{cn2lr}
 \alias{cn2lr}
-\title{Take vector or matrix of copynumber values, convert to log2ratios
-Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal). If ploidy
-is provided lr is log2(cn/ploidy), otherwise log2(cn/2).}
+\alias{cn2lr,DataFrame-method}
+\alias{cn2lr,matrix-method}
+\alias{cn2lr,numeric-method}
+\title{Take vector or matrix of copynumber values, convert to log2ratios}
 \usage{
 cn2lr(x, ploidy)
+
+\S4method{cn2lr}{numeric}(x, ploidy)
+
+\S4method{cn2lr}{matrix}(x, ploidy)
+
+\S4method{cn2lr}{DataFrame}(x, ploidy)
 }
 \arguments{
   \item{x}{numeric vector or matrix, or DataFrame with
@@ -18,10 +26,9 @@ cn2lr(x, ploidy)
 data of same type as "x" transformed into log2ratio units
 }
 \description{
-Take vector or matrix of copynumber values, convert to
-log2ratios Utility function for converting copynumber units
-(2 is normal) to log2ratio units (two is normal). If ploidy
-is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
+Utility function for converting copynumber units (2 is
+normal) to log2ratio units (two is normal). If ploidy is
+provided lr is log2(cn/ploidy), otherwise log2(cn/2).
 }
 \seealso{
 lr2cn

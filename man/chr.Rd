@@ -1,18 +1,8 @@
-\docType{methods}
 \name{chr}
 \alias{chr}
-\alias{chr,GRanges-method}
-\alias{chr,GenoSet-method}
-\alias{chr,RangedData-method}
-\title{Chromosome name for each feature}
+\title{Look up chromosome for each feature}
 \usage{
 chr(object)
-
-\S4method{chr}{RangedData}(object)
-
-\S4method{chr}{GenoSet}(object)
-
-\S4method{chr}{GRanges}(object)
 }
 \arguments{
   \item{object}{GRanges, RangedData or GenoSet}
@@ -21,7 +11,11 @@ chr(object)
 character vector of chromosome positions for each feature
 }
 \description{
-Get chromosome name for each feature.  Returns character.
+Chromosome name for each feature
+}
+\details{
+Get chromosome name for each feature.  Returns character,
+not the factor 'space'.
 }
 \examples{
 data(genoset)

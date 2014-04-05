@@ -1,0 +1,26 @@
+\docType{methods}
+\name{chrInfo}
+\alias{chrInfo}
+\alias{chrInfo,RangedDataOrGenoSetOrGenomicRanges-method}
+\title{Get chromosome start and stop positions}
+\usage{
+chrInfo(object)
+
+\S4method{chrInfo}{RangedDataOrGenoSetOrGenomicRanges}(object)
+}
+\arguments{
+  \item{object}{A GenoSet object or similar}
+}
+\value{
+list with start and stop position, by ordered chr
+}
+\description{
+Provides a matrix of start, stop and offset, in base
+numbers for each chromosome.
+}
+\examples{
+data(genoset)
+  chrInfo(genoset.ds)
+  chrInfo(locData(genoset.ds))  # The same
+}
+

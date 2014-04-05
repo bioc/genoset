@@ -1,7 +1,6 @@
 \name{lr2cn}
 \alias{lr2cn}
-\title{Take vector or matrix of log2 ratios, convert to copynumber
-Utility function for converting log2ratio units (zero is normal) to copynumber units (two is normal)}
+\title{Take vector or matrix of log2 ratios, convert to copynumber}
 \usage{
 lr2cn(x)
 }
@@ -12,7 +11,6 @@ lr2cn(x)
 data of same type as "x" transformed into copynumber units
 }
 \description{
-Take vector or matrix of log2 ratios, convert to copynumber
 Utility function for converting log2ratio units (zero is
 normal) to copynumber units (two is normal)
 }

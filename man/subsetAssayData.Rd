@@ -1,6 +1,6 @@
 \name{subsetAssayData}
 \alias{subsetAssayData}
-\title{Subset assayData}
+\title{Subset or re-order assayData}
 \usage{
 subsetAssayData(orig, i, j, ..., drop = FALSE)
 }
@@ -20,9 +20,6 @@ subsetAssayData(orig, i, j, ..., drop = FALSE)
 assayData data structure
 }
 \description{
-Subset or re-order assayData
-}
-\details{
 Subset or re-order assayData locked environment,
 environment, or list. Shamelessly stolen from "[" method in
 Biobase version 2.8 along with guts of
