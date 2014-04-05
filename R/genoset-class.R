@@ -244,26 +244,21 @@ setMethod("genome<-", "GenoSet", function(x, value) {
   return(x)
 })
 setMethod("universe", "GenoSet", function(x) {
-  .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-  return(universe(x@locData))
+  .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
+  return(NULL)
 } )
 setMethod("universe", "GRanges", function(x) {
-  .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-  if (length(unique(genome(x))) != 1) {
-    warning("Taking first element of GRanges genome as universe.")
-  }
-  return(unname(genome(x)[1]))
+  .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
+  return(NULL)
 } )
 setMethod("universe<-", signature(x="GenoSet"),
                  function(x,value) {
-                   .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-                   universe(x@locData) = value
+                   .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
                    return(x)
                    })
 setMethod("universe<-", signature(x="GRanges"),
           function(x,value) {
-            .Deprecated(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-            genome(x) = value
+            .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
             return(x)
           })
 
@@ -436,7 +431,6 @@ setMethod("locData<-", signature(object="GenoSet", value="RangedDataOrGenomicRan
 ##' Get start of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @rdname shared-location-api
 ##' @exportMethod start
 setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 
@@ -445,7 +439,6 @@ setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
 ##' Get end of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @rdname shared-location-api
 ##' @exportMethod end
 setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 
@@ -454,7 +447,6 @@ setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
 ##' Get width of location for each feature
 ##' @param x GenoSet
 ##' @return integer
-##' @rdname shared-location-api
 ##' @exportMethod width
 setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
@@ -463,42 +455,40 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 ##' Get names of data matrices. For the time being, this is \code{assayDataElementNames}. This function used to do \code{chrNames}.
 ##' @param x GenoSet
 ##' @return character
-##' @rdname shared-location-api
 ##' @exportMethod names
 setMethod("names", "GenoSet", function(x) {
   return( assayDataElementNames(x) )
 } )
 
-setMethod("ranges", "GenoSet", function(x) {
-  .Defunct(new="ranges",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use ranges(locData(x)).")
-})
-
-setMethod("space", "GenoSet", function(x) {
-  .Defunct(new="space",package="genoset",msg="The ranges method on a GenoSet is defunct. Please use space(locData(x)) or seqnames(locData(x)) as appropriate for RangedData or GRanges.")
-} )
-
 ##' Get elementLengths from locData slot
 ##'
 ##' Get elementLengths from locData slot
-##' @title ElementLengths for chromosome
 ##' @param x GenoSet
 ##' @return character
-##' @rdname shared-location-api
 ##' @exportMethod elementLengths
+##' @rdname elementLengths-methods
 setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
 
-##' @rdname shared-location-api
+##' @rdname elementLengths-methods
 setMethod("elementLengths", "GRanges", function(x) {
   if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GRanges not ordered by chromosome.") }
   return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )
 })
 
+##' Number of rows
+##'
+##' Number of rows
+##' @param x GRanges or GenoSet
+##' @return integer
 ##' @exportMethod nrow
-##' @rdname shared-location-api
 setMethod("nrow", "GRanges", function(x) { length(x) })
 
+##' Dimensions
+##'
+##' Dimensions
+##' @param x GenoSet
+##' @return integer(2)
 ##' @exportMethod dim
-##' @rdname shared-location-api
 setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(unname(phenoData(x))))})
 
 #############

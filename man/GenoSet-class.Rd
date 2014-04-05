@@ -55,7 +55,7 @@ Peter M. Haverty \email{phaverty@gene.com}
 }
 
 \seealso{
-\code{\link{GenoSet}}, \code{\linkS4class{CNSet}}, \code{\linkS4class{BAFSet}}
+\code{\link{GenoSet}}
 }
 \examples{
 showClass("GenoSet")
