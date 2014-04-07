@@ -20,7 +20,7 @@
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame Rle RangedData
-##' @importClassesFrom GenomicRanges GRanges
+##' @importClassesFrom GenomicRanges GRanges GenomicRanges
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
@@ -44,7 +44,10 @@ NULL
 ###############
 
 ##' @exportClass GenoSet
-setClass("GenoSet", contains=c("eSet"), representation=representation(locData="GenomicRanges"))
+setClass("GenoSet", contains=c("eSet"),
+         prototype=list(locData=GRanges()),
+         representation=representation(locData="GenomicRanges"))
+
 ##' @exportClass GenoSetOrGenomicRanges
 setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
