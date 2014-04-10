@@ -1,4 +1,3 @@
-
 ##' @exportClass RangedDataOrGenomicRanges
 setClassUnion("RangedDataOrGenomicRanges", c("RangedData", "GenomicRanges"))
 ##' @exportClass RangedDataOrGenoset
@@ -38,19 +37,6 @@ setMethod("universe<-", signature(x="GRanges"),
             .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
           })
 
-##' @rdname rownames-methods
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            .Defunct(new="rownames", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-
-##' @rdname rownames-methods
-setMethod("featureNames<-",
-          signature=signature(object="RangedData", value="ANY"),
-          function(object, value) {
-            .Defunct(new="rownames<-", msg="Please use rownames. We are switching away from eSet-specific methods.")
-          })
-
 ##' Deprecated genoset features
 ##'
 ##' GenoSet is moving towards using GenomicRanges instead of RangedData. We are also getting rid of dependencies on eSet for a potential switch to an underlying SummarizedExperiment.
@@ -70,8 +56,6 @@ NULL
 ##' @aliases genoset-defunct
 NULL
 
-
-
 ##' Make a RangedData from segments
 ##'
 ##' Starting from a data.frame of segments, like from CBS and segTable, organize as a RangedData. Label data "score",
@@ -84,3 +68,4 @@ NULL
 segs2RangedData <- function(segs) {
   .Defunct("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")
 }
+

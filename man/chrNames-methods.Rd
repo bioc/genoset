@@ -3,9 +3,11 @@
 \alias{chrNames}
 \alias{chrNames,GRanges-method}
 \alias{chrNames,GenoSet-method}
+\alias{chrNames,RangedData-method}
 \alias{chrNames<-}
 \alias{chrNames<-,GRanges-method}
 \alias{chrNames<-,GenoSet-method}
+\alias{chrNames<-,RangedData-method}
 \title{Get list of unique chromosome names}
 \usage{
 chrNames(object)
@@ -19,6 +21,10 @@ chrNames(object) <- value
 \S4method{chrNames}{GenoSet}(object) <- value
 
 \S4method{chrNames}{GRanges}(object) <- value
+
+\S4method{chrNames}{RangedData}(object)
+
+\S4method{chrNames}{RangedData}(object) <- value
 }
 \arguments{
   \item{object}{GenomicRanges or GenoSet}

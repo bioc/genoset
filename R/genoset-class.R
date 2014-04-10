@@ -1,5 +1,5 @@
 ####  Class definition for GenoSet, which will extend eSet
-######   GenoSet will provide a locData slot containing a RangedData object from the IRanges
+######   GenoSet will provide a locData slot containing a GenomicRanges object from the GenomicRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
 ######   by location.
 ######   Intended to be subset by other classes to add one or more data matrices to
@@ -652,7 +652,7 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##' @rdname chrInfo-methods
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 ##' @rdname chrInfo-methods
-setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
+setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {
             # Get max end value for each chr
             if (class(object) == "GRanges" && !any(is.na(seqlengths(object)))) {
@@ -695,7 +695,7 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 
 ##' @rdname chrIndices-methods
-setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
+setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
             object.lengths = elementLengths(object)
             object.lengths = object.lengths[ object.lengths > 0 ]
@@ -787,3 +787,33 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
     return(aData)
   }
 }
+
+#### Deprecated RangedData stuff
+
+##' @rdname chrNames-methods
+setMethod("chrNames", signature(object="RangedData"),
+          function(object) {
+            names(object)
+          })
+
+##' @rdname chrNames-methods
+setMethod("chrNames<-", signature(object="RangedData"),
+          function(object,value) {
+            names(object) = value
+            return(object)
+          })
+
+
+##' @rdname rownames-methods
+setMethod("featureNames", signature(object="RangedData"),
+          function(object) {
+            return(rownames(object))
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames<-",
+          signature=signature(object="RangedData", value="ANY"),
+          function(object, value) {
+            rownames(object) = value
+            return(object)
+          })

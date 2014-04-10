@@ -91,22 +91,6 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 setGeneric("toGenomeOrder", function(ds, strict=TRUE) standardGeneric("toGenomeOrder"))
 
 ##' @rdname toGenomeOrder-methods
-setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
-          function(ds, strict=TRUE) {
-            if (strict == TRUE) {
-              if (!isTRUE(all.equal(chrOrder(chrNames(ds)), chrNames(ds)))) {
-                ds = ds[ chrOrder(chrNames(ds)) ]
-              }
-            }
-            row.order = order(as.integer(space(ds)),start(ds))
-            if (is.unsorted(row.order)) {
-              return( ds[row.order,,drop=FALSE] )
-            } else {
-              return( ds )
-            }
-          })
-
-##' @rdname toGenomeOrder-methods
 setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
           function(ds, strict=TRUE) {
             if (strict == TRUE) {
@@ -127,3 +111,36 @@ setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
             locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
             return(ds)
           })
+
+### Deprecated RangedData stuff
+
+##' @rdname toGenomeOrder-methods
+setMethod("toGenomeOrder",signature=signature(ds="RangedData"),
+          function(ds, strict=TRUE) {
+            if (strict == TRUE) {
+              if (!isTRUE(all.equal(chrOrder(chrNames(ds)), chrNames(ds)))) {
+                ds = ds[ chrOrder(chrNames(ds)) ]
+              }
+            }
+            row.order = order(as.integer(space(ds)),start(ds))
+            if (is.unsorted(row.order)) {
+              return( ds[row.order,,drop=FALSE] )
+            } else {
+              return( ds )
+            }
+          })
+
+##' @rdname isGenomeOrder-methods
+setMethod("isGenomeOrder",signature=signature(ds="RangedData"),
+          function(ds, strict=TRUE) {
+            if (strict) {
+              if ( ! all( chrNames(ds) == chrOrder( chrNames(ds) ) ) ) {
+                return(FALSE)
+              }
+            }
+            # Check each chr for ordered start
+            chr.ind = chrIndices(ds)
+            return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
+          })
+
+

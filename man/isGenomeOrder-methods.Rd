@@ -3,6 +3,7 @@
 \alias{isGenomeOrder}
 \alias{isGenomeOrder,GRanges-method}
 \alias{isGenomeOrder,GenoSet-method}
+\alias{isGenomeOrder,RangedData-method}
 \title{Check if a GRanges orGenoSet is in genome order}
 \usage{
 isGenomeOrder(ds, strict = TRUE)
@@ -10,6 +11,8 @@ isGenomeOrder(ds, strict = TRUE)
 \S4method{isGenomeOrder}{GenoSet}(ds, strict = TRUE)
 
 \S4method{isGenomeOrder}{GRanges}(ds, strict = TRUE)
+
+\S4method{isGenomeOrder}{RangedData}(ds, strict = TRUE)
 }
 \arguments{
   \item{ds}{GenoSet or GRanges}
