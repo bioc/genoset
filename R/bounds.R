@@ -215,8 +215,9 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   data.matrix = assayDataElement(subject,assay.element)
 
   if (class(data.matrix) == "DataFrame") {
-    sample.vals = lapply( data.matrix, function(x) { rangeColMeans( all.indices, as.numeric(x)) })
-    range.means = do.call(cbind,sample.vals)
+    range.means = vapply(
+      data.matrix, function(x) { rangeColMeans( all.indices, as.numeric(x))},
+      USE.NAMES=TRUE, FUN.VALUE=numeric(nrow(all.indices)))
   } else if (is.matrix(data.matrix)) {
     range.means = rangeColMeans( all.indices, data.matrix )
   } else {
