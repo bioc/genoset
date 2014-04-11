@@ -20,7 +20,7 @@
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame Rle RangedData
-##' @importClassesFrom GenomicRanges GRanges GenomicRanges
+##' @importClassesFrom GenomicRanges GRanges GenomicRanges GIntervalTree
 ##'
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
@@ -54,6 +54,13 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 setValidity("GenoSet", function(object) {
   return( all( rownames(locData(object)) == rownames(assayData(object)) ) )
 })
+
+##' @exportClass RangedDataOrGenomicRanges
+setClassUnion("RangedDataOrGenomicRanges", c("RangedData", "GenomicRanges"))
+##' @exportClass RangedDataOrGenoset
+setClassUnion("RangedDataOrGenoset", c("RangedData", "GenoSet"))
+##' @exportClass RangedDataOrGenoSetOrGenomicRanges
+setClassUnion("RangedDataOrGenoSetOrGenomicRanges", c("RangedData", "GenoSet", "GenomicRanges"))
 
 ##' Create a GenoSet or derivative object
 ##'
@@ -651,6 +658,7 @@ setMethod("chrNames<-", signature(object="GRanges"),
 ##'   chrInfo(locData(genoset.ds))  # The same
 ##' @rdname chrInfo-methods
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
+
 ##' @rdname chrInfo-methods
 setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
           function(object) {

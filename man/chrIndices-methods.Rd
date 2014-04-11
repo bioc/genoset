@@ -1,12 +1,12 @@
 \docType{methods}
 \name{chrIndices}
 \alias{chrIndices}
-\alias{chrIndices,GenoSetOrGenomicRanges-method}
+\alias{chrIndices,RangedDataOrGenoSetOrGenomicRanges-method}
 \title{Get a matrix of first and last index of features in each chromosome}
 \usage{
 chrIndices(object, chr = NULL)
 
-\S4method{chrIndices}{GenoSetOrGenomicRanges}(object, chr = NULL)
+\S4method{chrIndices}{RangedDataOrGenoSetOrGenomicRanges}(object, chr = NULL)
 }
 \arguments{
   \item{object}{GenoSet or GRanges}

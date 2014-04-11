@@ -1,9 +1,3 @@
-##' @exportClass RangedDataOrGenomicRanges
-setClassUnion("RangedDataOrGenomicRanges", c("RangedData", "GenomicRanges"))
-##' @exportClass RangedDataOrGenoset
-setClassUnion("RangedDataOrGenoset", c("RangedData", "GenoSet"))
-##' @exportClass RangedDataOrGenoSetOrGenomicRanges
-setClassUnion("RangedDataOrGenoSetOrGenomicRanges", c("RangedData", "GenoSet", "GenomicRanges"))
 
 
 

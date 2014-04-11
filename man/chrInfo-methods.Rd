@@ -1,12 +1,12 @@
 \docType{methods}
 \name{chrInfo}
 \alias{chrInfo}
-\alias{chrInfo,GenoSetOrGenomicRanges-method}
+\alias{chrInfo,RangedDataOrGenoSetOrGenomicRanges-method}
 \title{Get chromosome start and stop positions}
 \usage{
 chrInfo(object)
 
-\S4method{chrInfo}{GenoSetOrGenomicRanges}(object)
+\S4method{chrInfo}{RangedDataOrGenoSetOrGenomicRanges}(object)
 }
 \arguments{
   \item{object}{A GenoSet object or similar}
