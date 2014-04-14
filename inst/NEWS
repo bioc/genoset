@@ -2,24 +2,25 @@ CHANGES IN VERSION 1.16.0
 -------------------------
 
 NEW FEATURES
-	cn2lr now has methods for vector, matrix, and DataFrame (of Rle) and 
+
+	o cn2lr now has methods for vector, matrix, and DataFrame (of Rle) and 
 	allows you to center your log2ratio values on 2 copies, or on a specified 
 	'ploidy' for your sample.
 
 DEPRECATED AND DEFUNCT
 
-	The BAFSet and CNSet classes have moved from deprecated 
+	o The BAFSet and CNSet classes have moved from deprecated 
 	to defunct. These classes only added getter/setter methods 
 	for baf/lrr/cn. Since these only cover some possible 
 	assayDataElements, it is better to use x[i,j,k], where k is 
 	the name of an assayDataElement.
 	
-	All RangedData-related things have now progressed to defunct. Please use 
+	o All RangedData-related things have now progressed to defunct. Please use 
 	GRanges for locData and everywhere else. Since the genoset package provides 
 	a common API for GenoSet, GRanges, and RangedData, I hope this will be a 
 	simple change for everyone.
 	
-	sampleNames and featureNames are now *un-deprecated*.  Feel free to use 
+	o sampleNames and featureNames are now *un-deprecated*.  Feel free to use 
 	them. They just call colnames and rownames, respectively. I have defined 
 	my own rownames and colnames functions. The eSet ones seem to do a lot of 
 	extra work, and the getter versions read from the first assayDataElement, 
