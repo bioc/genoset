@@ -215,11 +215,13 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   data.matrix = assayDataElement(subject,assay.element)
 
   if (class(data.matrix) == "DataFrame") {
+    # Can't use RleList, length of compressed Rle too long, also want to vapply anyway
     viewMethod = getMethod("Views", "Rle")
+    meanMethod = getMethod("viewMeans", "RleViews")
     ranges = IRanges(start=all.indices[, 1], end=all.indices[, 2], names=rownames(all.indices))
     range.means = vapply(as.list(data.matrix), function(x) {
       myview = viewMethod(subject=x, start=ranges)
-      .Call2("RleViews_viewMeans", myview, TRUE, PACKAGE = "IRanges")  # trim(myview) is not necessary
+      meanMethod(myview, na.rm=TRUE)
     }, USE.NAMES=TRUE, FUN.VALUE=numeric(nrow(all.indices)))
   } else if (is.matrix(data.matrix)) {
     range.means = rangeColMeans( all.indices, data.matrix )
