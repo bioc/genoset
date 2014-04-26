@@ -22,7 +22,13 @@ setMethod("show", "RleDataFrame",
             show(object@listData)
           })
 
-setGeneric("rowMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
+setGeneric("rowMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("rowMeans") )
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @param x 
+##' @export 
+##' @return 
 setMethod("rowMeans", signature(x="RleDataFrame"),
           function(x) {
             # This will probably have to be .Call, but try in R first
@@ -39,10 +45,30 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
             # decrement all counters
             # }
             # divide by ncols at end
-            # NAs make this awful of course
+            # NAs make this awful of course, you'd have to keep a nrows long vector of the denominator (number of non-NAs), make NA values 0 for the sum, ifelse(is.na(currentValues), 0, currentValues)
             # return(res)
             ## Can use diff() to get running difference of runValues per Rle rather than doing this in the loop
             ##   This will be pretty big, maybe just do it in the loop looking forward to C version
+            whichRun = rep(1L, ncol(x))  # Counter for each rle, which run are we in now?
+            maxRuns = max(elementLengths(rl)) # number of runs in rle with the most runs
+            sums = numeric(nrow(x)) # sum of each row 
+            rl = lapply(x, runLength)
+            rv = lapply(x, runValue)
+            runLengths = vapply(rl, function(y) {y[1]}, FUN.VALUE=integer(1), USE.NAMES=FALSE ) - 1
+            runValues = vapply(rv, function(y) {y[1]}, FUN.VALUE=numeric(1), USE.NAMES=FALSE )
+            sums[1] = tempSum = sum(runValues, na.rm=TRUE)
+            for (i in 2:nrow(x)) {
+              for (j in which(runLengths == 0L)) {
+                runLengths[j] = rl[[j]][whichRun[j]]
+                tempSum = tempSum - runValues[j]
+                whichRun[j] = whichRun[j] + 1L
+                runValues[j] = rv[[j]][whichRun[j]]
+                tempSum = tempSum + runValues[j]
+              }
+              sums[i] = tempSum
+              runLengths = runLengths - 1L
+            }
+            return(sums / ncol(x))
           })
 
 ##' Means of columns

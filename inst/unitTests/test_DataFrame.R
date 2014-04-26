@@ -10,7 +10,9 @@ test_RleDataFrame <- function() {
 }
 
 test_rowMeans <- function() {
-  
+  foo = new("RleDataFrame", listData=list(A=Rle(1:5, rep(2, 5)), B=Rle(6:10,rep(2, 5))), nrows=10L)
+  mat = do.call(cbind, lapply(foo, as.numeric))
+  checkEquals(rowMeans(mat), rowMeans(foo))
 }
 
 test_colMeans <- function() {
