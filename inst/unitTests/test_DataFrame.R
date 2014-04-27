@@ -12,10 +12,10 @@ test_RleDataFrame <- function() {
 test_rowMeans_and_rowSums <- function() {
   foo = new("RleDataFrame", listData=list(A=Rle(c(NA, 2:3, NA, 5), rep(2, 5)), B=Rle(c(6:7, NA, 8:10),c(3,2,1,2,1,1))), nrows=10L)
   mat = do.call(cbind, lapply(foo, as.numeric))
-  checkEquals(base::rowMeans(mat), rowMeans(foo))
-  checkEquals(base::rowMeans(mat, na.rm=TRUE), rowMeans(foo, na.rm=TRUE))
-  checkEquals(base::rowSums(mat), rowSums(foo))
-  checkEquals(base::rowSums(mat, na.rm=TRUE), rowSums(foo, na.rm=TRUE))
+  checkEquals(rowMeans(mat), as.numeric(rowMeans(foo)))
+  checkEquals(rowMeans(mat, na.rm=TRUE), as.numeric(rowMeans(foo, na.rm=TRUE)))
+  checkEquals(rowSums(mat), as.numeric(rowSums(foo)))
+  checkEquals(rowSums(mat, na.rm=TRUE), as.numeric(rowSums(foo, na.rm=TRUE)))
 }
 
 test_colMeans_and_colSums <- function() {

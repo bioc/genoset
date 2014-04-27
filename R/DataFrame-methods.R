@@ -37,19 +37,17 @@ setMethod("colSums", "RleDataFrame",
           })
 
 ##' @rdname RleDataFrame-methods
-setGeneric("rowMeans", function(x, na.rm=FALSE) standardGeneric("rowMeans") )
+setGeneric("rowMeans", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowMeans") )
 ##' @rdname RleDataFrame-methods
 setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
 ##' @rdname RleDataFrame-methods
 setMethod("rowMeans", signature(x="RleDataFrame"),
-          function(x, na.rm=FALSE) {
-            # Hmm, this would be way cooler if Rle + vector returned a vector, not an Rle, or would it? Probably depends on the run lengths.
+          function(x, na.rm=FALSE, dims=1L) {
             if (na.rm==TRUE) {
               sums = x[[1L]]
               na.sums = is.na(runValue(sums))
               runValue(sums)[na.sums] = 0
               na.count = Rle(na.sums, runLength(sums))             
-#              sums = as.numeric(sums)
               for (i in 2L:ncol(x)) {
                 current = x[[i]]
                 is.na.current = is.na(runValue(current))
@@ -60,14 +58,13 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
               }
               means = sums / (ncol(x) - na.count)
             } else {
-#              sums = as.numeric(x[[1L]])
               sums = x[[1L]]
               for (i in 2L:ncol(x)) {
                 sums = sums + x[[i]]
               }
               means = sums / ncol(x)
             }
-            return(as.numeric(means))
+            return(means)
           })
 
 setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
@@ -88,7 +85,7 @@ setMethod("rowSums", signature(x="RleDataFrame"),
                 sums = sums + x[[i]]
               }
             }
-            return(as.numeric(sums))
+            return(sums)
         })
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix
