@@ -1,75 +1,3 @@
-##### Additional methods for DataFrame class to allow use of DataTable of Rle vectors as assayData element
-
-setClass("RleDataFrame",
-         representation(
-           rownames = "characterORNULL",
-           nrows = "integer"
-           ),
-         prototype(rownames = NULL,
-                   nrows = 0L,
-                   listData = structure(list(),  names = character())),
-         contains = c("SimpleRleList", "DataFrame")
-)
-
-RleDataFrame <- function(..., row.names=NULL, check.names=TRUE) {
-  x = DataFrame(..., row.names=row.names, check.names=check.names)
-  return( new("RleDataFrame", listData=x@listData, rownames=rownames(x), nrows=nrow(x)) )
-}
-
-setMethod("show", "RleDataFrame",
-          function(object) {
-            message(sprintf("RleDataFrame with %i rows and %i columns\n", nrow(object), ncol(object)))
-            show(object@listData)
-          })
-
-setGeneric("rowMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("rowMeans") )
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @param x 
-##' @export 
-##' @return 
-setMethod("rowMeans", signature(x="RleDataFrame"),
-          function(x) {
-            # This will probably have to be .Call, but try in R first
-            # set counter for each col to first runLength - 1
-            # set vector to first runValues
-            # temp = sum vector of first runValues
-            # result[1] = temp
-            # for i in 2:nrows(x)
-            # for cols with zero counter
-            #      temp += (next runValue) - (current runValue)
-            #      set counter to next runLength
-            #      current runValue = next runValue
-            # res[i] = temp
-            # decrement all counters
-            # }
-            # divide by ncols at end
-            # NAs make this awful of course, you'd have to keep a nrows long vector of the denominator (number of non-NAs), make NA values 0 for the sum, ifelse(is.na(currentValues), 0, currentValues)
-            # return(res)
-            ## Can use diff() to get running difference of runValues per Rle rather than doing this in the loop
-            ##   This will be pretty big, maybe just do it in the loop looking forward to C version
-            whichRun = rep(1L, ncol(x))  # Counter for each rle, which run are we in now?
-            maxRuns = max(elementLengths(rl)) # number of runs in rle with the most runs
-            sums = numeric(nrow(x)) # sum of each row 
-            rl = lapply(x, runLength)
-            rv = lapply(x, runValue)
-            runLengths = vapply(rl, function(y) {y[1]}, FUN.VALUE=integer(1), USE.NAMES=FALSE ) - 1
-            runValues = vapply(rv, function(y) {y[1]}, FUN.VALUE=numeric(1), USE.NAMES=FALSE )
-            sums[1] = tempSum = sum(runValues, na.rm=TRUE)
-            for (i in 2:nrow(x)) {
-              for (j in which(runLengths == 0L)) {
-                runLengths[j] = rl[[j]][whichRun[j]]
-                tempSum = tempSum - runValues[j]
-                whichRun[j] = whichRun[j] + 1L
-                runValues[j] = rv[[j]][whichRun[j]]
-                tempSum = tempSum + runValues[j]
-              }
-              sums[i] = tempSum
-              runLengths = runLengths - 1L
-            }
-            return(sums / ncol(x))
-          })
 
 ##' Means of columns
 ##'
@@ -86,10 +14,82 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
 ##'  df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
 ##'  mat.ds = matrix( c(5,5,4,4,3,3,3,6,9,9,9,9), ncol=2, dimnames=list(NULL,c("a","b")))
 ##'  \dontrun{ identical( colMeans(df.ds), colMeans(mat.ds) ) }
-##' @rdname colMeans
+##' @rdname RleDataFrame-methods
 setGeneric("colMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
-##' @rdname colMeans
-setMethod("colMeans", signature(x="DataFrame"), function(x,na.rm=TRUE,dims=1L) { return( sapply(x,mean,na.rm=na.rm) ) } )
+##' @rdname RleDataFrame-methods
+setMethod("colMeans", "RleDataFrame",
+          function(x, na.rm=TRUE) {
+            mean(x, na.rm=na.rm)
+          })
+
+##' @rdname RleDataFrame-methods
+setMethod("colMeans", signature(x="DataFrame"),
+          function(x,na.rm=TRUE,dims=1L) {
+            .Deprecated("colMeans", msg="colMeans on a DataFrame is Deprecated. It is kind of odd given that the column type are arbitrary. Try RleDataFrame, or another class that inherits from AtomicList and DataFrame. But, if you find this DataFrame version useful, let me know.")
+            return( vapply(x,mean,na.rm=na.rm, FUN.VALUE=numeric(1), USE.NAMES=TRUE) ) } )
+
+##' @rdname RleDataFrame-methods
+setGeneric("colSums", function(x, na.rm=TRUE, dims=1L) standardGeneric("colSums") )
+##' @rdname RleDataFrame-methods
+setMethod("colSums", "RleDataFrame",
+          function(x, na.rm=TRUE) {
+            sum(x, na.rm=na.rm)
+          })
+
+##' @rdname RleDataFrame-methods
+setGeneric("rowMeans", function(x, na.rm=FALSE) standardGeneric("rowMeans") )
+##' @rdname RleDataFrame-methods
+setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
+##' @rdname RleDataFrame-methods
+setMethod("rowMeans", signature(x="RleDataFrame"),
+          function(x, na.rm=FALSE) {
+            # Hmm, this would be way cooler if Rle + vector returned a vector, not an Rle, or would it? Probably depends on the run lengths.
+            if (na.rm==TRUE) {
+              sums = x[[1L]]
+              na.sums = is.na(runValue(sums))
+              runValue(sums)[na.sums] = 0
+              na.count = Rle(na.sums, runLength(sums))             
+#              sums = as.numeric(sums)
+              for (i in 2L:ncol(x)) {
+                current = x[[i]]
+                is.na.current = is.na(runValue(current))
+                na.current = Rle(is.na.current, runLength(current))
+                runValue(current)[is.na.current] = 0
+                sums = sums + current
+                na.count = na.count + na.current
+              }
+              means = sums / (ncol(x) - na.count)
+            } else {
+#              sums = as.numeric(x[[1L]])
+              sums = x[[1L]]
+              for (i in 2L:ncol(x)) {
+                sums = sums + x[[i]]
+              }
+              means = sums / ncol(x)
+            }
+            return(as.numeric(means))
+          })
+
+setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
+setMethod("rowSums", signature(x="ANY"), base::rowSums)
+setMethod("rowSums", signature(x="RleDataFrame"),
+          function(x, na.rm=FALSE, dims=1L) {
+          if (na.rm==TRUE) {
+              sums = x[[1L]]
+              runValue(sums)[is.na(runValue(sums))] = 0
+              for (i in 2L:ncol(x)) {
+                current = x[[i]]
+                runValue(current)[is.na(runValue(current))] = 0
+                sums = sums + current
+              }
+            } else {
+              sums = x[[1L]]
+              for (i in 2L:ncol(x)) {
+                sums = sums + x[[i]]
+              }
+            }
+            return(as.numeric(sums))
+        })
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix
 setMethod("annotatedDataFrameFrom",

@@ -9,14 +9,19 @@ test_RleDataFrame <- function() {
   checkException(new("RleDataFrame", listData=list(1:10, 1:10), nrows=10L), silent=TRUE)
 }
 
-test_rowMeans <- function() {
-  foo = new("RleDataFrame", listData=list(A=Rle(1:5, rep(2, 5)), B=Rle(6:10,rep(2, 5))), nrows=10L)
+test_rowMeans_and_rowSums <- function() {
+  foo = new("RleDataFrame", listData=list(A=Rle(c(NA, 2:3, NA, 5), rep(2, 5)), B=Rle(c(6:7, NA, 8:10),c(3,2,1,2,1,1))), nrows=10L)
   mat = do.call(cbind, lapply(foo, as.numeric))
-  checkEquals(rowMeans(mat), rowMeans(foo))
+  checkEquals(base::rowMeans(mat), rowMeans(foo))
+  checkEquals(base::rowMeans(mat, na.rm=TRUE), rowMeans(foo, na.rm=TRUE))
+  checkEquals(base::rowSums(mat), rowSums(foo))
+  checkEquals(base::rowSums(mat, na.rm=TRUE), rowSums(foo, na.rm=TRUE))
 }
 
-test_colMeans <- function() {
+test_colMeans_and_colSums <- function() {
   df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
+  rle.df = new("RleDataFrame", listData=df.ds@listData, nrows=nrow(df.ds))
   mat.ds = matrix( c(5,5,4,4,3,3,3,6,9,9,9,9), ncol=2, dimnames=list(NULL,c("a","b")))
-  checkEquals( colMeans(df.ds), colMeans(mat.ds) )
+  checkEquals( suppressWarnings(colMeans(df.ds)), colMeans(mat.ds) )
+  checkEquals( colMeans(rle.df), colMeans(mat.ds) )
 }
