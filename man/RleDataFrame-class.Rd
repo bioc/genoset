@@ -103,18 +103,20 @@ Peter M. Haverty, design suggestion from Michael Lawrence.
   \code{\link{colSums}}
 }
 \examples{
-  showClass("RleDataFrame")
+showClass("RleDataFrame")
 
 ## Constructors
 df = new("RleDataFrame", listData=list(A=Rle(c(NA, 2:3, NA, 5), rep(2,
 5)), B=Rle(c(6:7, NA, 8:10),c(3,2,1,2,1,1))), nrows=10L)
+
 df2 = RleDataFrame(list(A=Rle(c(NA, 2:3, NA, 5), rep(2, 5)),
 B=Rle(c(6:7, NA, 8:10),c(3,2,1,2,1,1))))
+
 df3 = RleDataFrame(A=Rle(c(NA, 2:3, NA, 5), rep(2, 5)), B=Rle(c(6:7,
 NA, 8:10),c(3,2,1,2,1,1)))
 
 ## AtomicList Methods
-runValue(df)
+orunValue(df)
 runLength(df)
 ranges(df)
 mean(df)

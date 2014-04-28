@@ -1,48 +1,27 @@
 ##' @include RleDataFrame-class.R
 NULL
 
-##' Means of columns
-##'
-##' Calculate means of columns of a DataFrame as if it were a matrix. Allows colmeans
-##' in rangeSampleMeans for DataTable just like a real matrix. I'm sure there
-##' is much more clever way to do this using aggregate.
-##' 
-##' @export
-##' @param x DataFrame
-##' @param na.rm logical
-##' @param dims integer
-##' @param ... in generic, for extra args in methods.
-##' @examples
-##'  df.ds = DataFrame( a = Rle(c(5,4,3),c(2,2,2)), b = Rle(c(3,6,9),c(1,1,4)) )
-##'  mat.ds = matrix( c(5,5,4,4,3,3,3,6,9,9,9,9), ncol=2, dimnames=list(NULL,c("a","b")))
-##'  \dontrun{ identical( colMeans(df.ds), colMeans(mat.ds) ) }
-##' @rdname RleDataFrame-methods
 setGeneric("colMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
-##' @rdname RleDataFrame-methods
+
 setMethod("colMeans", "RleDataFrame",
           function(x, na.rm=TRUE) {
             mean(x, na.rm=na.rm)
           })
 
-##' @rdname RleDataFrame-methods
 setMethod("colMeans", signature(x="DataFrame"),
           function(x,na.rm=TRUE,dims=1L) {
             .Deprecated("colMeans", msg="colMeans on a DataFrame is Deprecated. It is kind of odd given that the column type are arbitrary. Try RleDataFrame, or another class that inherits from AtomicList and DataFrame. But, if you find this DataFrame version useful, let me know.")
             return( vapply(x,mean,na.rm=na.rm, FUN.VALUE=numeric(1), USE.NAMES=TRUE) ) } )
 
-##' @rdname RleDataFrame-methods
+##' @export
 setGeneric("colSums", function(x, na.rm=TRUE, dims=1L) standardGeneric("colSums") )
-##' @rdname RleDataFrame-methods
 setMethod("colSums", "RleDataFrame",
           function(x, na.rm=TRUE) {
             sum(x, na.rm=na.rm)
           })
-
-##' @rdname RleDataFrame-methods
+##' @export
 setGeneric("rowMeans", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowMeans") )
-##' @rdname RleDataFrame-methods
 setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
-##' @rdname RleDataFrame-methods
 setMethod("rowMeans", signature(x="RleDataFrame"),
           function(x, na.rm=FALSE, dims=1L) {
             if (na.rm==TRUE) {
@@ -69,6 +48,7 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
             return(means)
           })
 
+##' @export
 setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
 setMethod("rowSums", signature(x="ANY"), base::rowSums)
 setMethod("rowSums", signature(x="RleDataFrame"),
@@ -91,6 +71,7 @@ setMethod("rowSums", signature(x="RleDataFrame"),
         })
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix
+##' @export
 setMethod("annotatedDataFrameFrom",
           signature(object="DataFrame"),
           Biobase:::annotatedDataFrameFromMatrix)
