@@ -1,3 +1,5 @@
+##' @include RleDataFrame-class.R
+NULL
 
 ##' Means of columns
 ##'
