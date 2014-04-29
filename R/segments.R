@@ -250,9 +250,9 @@ setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr
   loc.start = start[all.starts]
 
   # Make output object
-  sample.seg = data.frame(chrom=chrom,loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, x=x.vals, y=y.vals, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
-  #  sample.seg = GRanges(ranges=IRanges(start=loc.start, end=loc.end), seqnames=chrom,  num.mark = num.mark, x=x.vals, y=y.vals)
-  # Later, when incoming pinfo is a GRanges, will want to pass on chrlengths in new GRanges
+  sample.seg = list(chrom=chrom,loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, x=x.vals, y=y.vals)
+  class(sample.seg) = "data.frame"
+  attr(sample.seg, "row.names") = .set_row_names(length(chrom))
   return(sample.seg)
 })
 

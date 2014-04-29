@@ -2,12 +2,15 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{RleDataFrame-class}
+\alias{as.matrix,RleDataFrame-method}
+\alias{coerce,RleDataFrame,matrix-method}
 \alias{colMeans,RleDataFrame-method}
 \alias{colSums,RleDataFrame-method}
+\alias{colMeans,DataFrame-method}
 \alias{rowMeans,RleDataFrame-method}
 \alias{rowSums,RleDataFrame-method}
 \alias{show,RleDataFrame-method}
-
+\alias{RleDataFrame}
 \title{Class \code{"RleDataFrame"}}
 \description{
 The \code{RleDataFrame} class serves to hold a collection of Run Length
@@ -81,6 +84,10 @@ Class \code{"\linkS4class{Annotated}"}, by class "DataFrame", distance 5.
 }
 \section{Methods}{
   \describe{
+    \item{as.matrix}{\code{signature(x = "RleDataFrame")}: Convert to
+  matrix. }
+    \item{coerce}{\code{signature(x = "RleDataFrame")}: Convert to other
+  classes. }
     \item{colMeans}{\code{signature(x = "RleDataFrame")}: Mean of each column. }
     \item{colSums}{\code{signature(x = "RleDataFrame")}: Sum of each column. }
     \item{rowMeans}{\code{signature(x = "RleDataFrame")}: Mean of each 'row'. }

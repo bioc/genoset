@@ -2,11 +2,11 @@
 \alias{rangeSampleMeans}
 \title{Average features in ranges per sample}
 \usage{
-rangeSampleMeans(query.rd, subject, assay.element)
+rangeSampleMeans(query, subject, assay.element)
 }
 \arguments{
-  \item{query.rd}{RangedData object representing genomic
-  regions (genes) to be averaged.}
+  \item{query}{GRanges object representing genomic regions
+  (genes) to be averaged.}
 
   \item{subject}{A GenoSet object or derivative}
 
@@ -26,14 +26,12 @@ the bounds of a gene (overlaps). The features on either
 side of the gene unless those positions exactly match the
 first or last base covered by the gene.  Therefore, genes
 falling between two features will at least cover two
-features. This is similar to rangeSampleMeans, but it
-checks the subject positions for being sorted and not being
-NA and also treats them as doubles, not ints. Range
-bounding performed by the boundingIndices function.
+features. Range bounding is performed by the
+boundingIndices function.
 }
 \examples{
 data(genoset)
-  my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
+  my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), seqnames=c("chr17","chr8") )
   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
 }
 \seealso{
