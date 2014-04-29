@@ -1,7 +1,6 @@
 
-R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.1.0 (2014-04-10) -- "Spring Dance"
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -19,19 +18,28 @@ Type 'q()' to quit R.
 > require("genoset") || stop("unable to load genoset package")
 Loading required package: genoset
 Loading required package: BiocGenerics
+Loading required package: parallel
 
 Attaching package: 'BiocGenerics'
 
-The following object(s) are masked from 'package:stats':
+The following objects are masked from 'package:parallel':
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following object is masked from 'package:stats':
 
     xtabs
 
-The following object(s) are masked from 'package:base':
+The following objects are masked from 'package:base':
 
-    Filter, Find, Map, Position, Reduce, anyDuplicated, cbind,
-    colnames, duplicated, eval, get, intersect, lapply, mapply, mget,
-    order, paste, pmax, pmax.int, pmin, pmin.int, rbind, rep.int,
-    rownames, sapply, setdiff, table, tapply, union, unique
+    Filter, Find, Map, Position, Reduce, anyDuplicated, append,
+    as.data.frame, as.vector, cbind, colnames, do.call, duplicated,
+    eval, evalq, get, intersect, is.unsorted, lapply, mapply, match,
+    mget, order, paste, pmax, pmax.int, pmin, pmin.int, rank, rbind,
+    rep.int, rownames, sapply, setdiff, sort, table, tapply, union,
+    unique, unlist
 
 Loading required package: Biobase
 Welcome to Bioconductor
@@ -40,35 +48,11 @@ Welcome to Bioconductor
     'browseVignettes()'. To cite Bioconductor, see
     'citation("Biobase")', and for packages 'citation("pkgname")'.
 
-
-Attaching package: 'Biobase'
-
-The following object(s) are masked from 'package:BiocGenerics':
-
-    annotation, annotation<-
-
 Loading required package: IRanges
 Loading required package: GenomicRanges
+Loading required package: GenomeInfoDb
 [1] TRUE
-Warning message:
-replacing previous import 'annotation' when loading 'Biobase' 
 > genoset:::.test()
-Loading required namespace: DNAcopy
-Using mclapply for segmentation ...
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Using mclapply for segmentation ...
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Using mclapply for segmentation ...
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Using mclapply for segmentation ...
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
-Using mclapply for segmentation ...
-Working on segmentation for sample number 1 : a1
-Working on segmentation for sample number 2 : a2
 Using mclapply for segmentation ...
 Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
@@ -86,20 +70,19 @@ Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
 
 
-RUNIT TEST PROTOCOL -- Thu Oct 25 19:26:26 2012 
+RUNIT TEST PROTOCOL -- Tue Apr 29 11:30:53 2014 
 *********************************************** 
-Number of test functions: 24 
+Number of test functions: 29 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-genoset RUnit Tests - 24 test functions, 0 errors, 0 failures
-Number of test functions: 24 
+genoset RUnit Tests - 29 test functions, 0 errors, 0 failures
+Number of test functions: 29 
 Number of errors: 0 
 Number of failures: 0 
-There were 37 warnings (use warnings() to see them)
 > 
 > proc.time()
    user  system elapsed 
- 24.245   0.908  21.264 
+ 16.724   0.348  15.660 
