@@ -14,7 +14,7 @@ segTable(object, ...)
   stack = FALSE)
 }
 \arguments{
-  \item{object}{Rle or list/DataFrame of Rle vectors}
+  \item{object}{Rle or RleDataFrame}
 
   \item{locs}{GenomicRanges with rows corresponding to rows
   of df}
@@ -39,14 +39,14 @@ loc.end, num.mark, seg.mean
 }
 \description{
 Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
-Rle or a DataFrame with Rle columns and the locData both
-from a GenoSet object and makes a list of data.frames each
-like the result of CBS's segment.  Note the loc.start and
-loc.stop will correspond exactly to probe locations in
-locData and the input to segs2RleDataFrame are not
-necessarily so. For a DataFrame, the argument \code{stack}
-combines all of the individual data.frames into one large
-data.frame and adds a "Sample" column of sample ids.
+Rle or a RleDataFrame and the locData both from a GenoSet
+object and makes a list of data.frames each like the result
+of CBS's segment.  Note the loc.start and loc.stop will
+correspond exactly to probe locations in locData and the
+input to segs2RleDataFrame are not necessarily so. For a
+DataFrame, the argument \code{stack} combines all of the
+individual data.frames into one large data.frame and adds a
+"Sample" column of sample ids.
 }
 \details{
 For a Rle, the user can provide \code{locs} or

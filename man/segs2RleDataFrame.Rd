@@ -11,12 +11,12 @@ segs2RleDataFrame(seg.list, locs)
   \item{locs}{locData from a GenoSet object}
 }
 \value{
-DataFrame of Rle objects with nrows same as locs and one
-column for each sample
+RleDataFrame with nrows same as locs and one column for
+each sample
 }
 \description{
-Given segments, make a DataFrame of Rle objects for each
-sample
+Given segments, make an RleDataFrame of Rle objects for
+each sample
 }
 \details{
 Take table of segments from CBS, convert DataTable of Rle

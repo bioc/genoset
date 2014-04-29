@@ -19,9 +19,10 @@ expanded ranges of \code{object}
 }
 \description{
 Local GC content can be used to remove GC artifacts from
-copynumber data see Diskin, 2008). This function will
-calculate GC content fraction in expanded windows around a
-set of ranges following example in
+copynumber data (see Diskin et al, Nucleic Acids Research,
+2008, PMID: 18784189). This function will calculate GC
+content fraction in expanded windows around a set of ranges
+following example in
 http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf.
 Currently all ranges are tabulated, later I may do
 letterFrequencyInSlidingWindow for big windows and then
