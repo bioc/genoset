@@ -193,11 +193,9 @@ boundingIndicesByChr <-function(query, subject) {
 ##' corresponding to each gene are determined with boundingIndices such that all features with the bounds
 ##' of a gene (overlaps). The features on either side of the gene unless those positions
 ##' exactly match the first or last base covered by the gene.  Therefore, genes falling between two features
-##' will at least cover two features. This is similar to rangeSampleMeans, but it checks the subject
-##' positions for being sorted and not being NA and also treats them as doubles, not ints. Range bounding
-##' performed by the boundingIndices function.
+##' will at least cover two features. Range bounding is performed by the boundingIndices function.
 ##' 
-##' @param query.rd RangedData object representing genomic regions (genes) to be averaged.
+##' @param query GRanges object representing genomic regions (genes) to be averaged.
 ##' @param subject A GenoSet object or derivative
 ##' @param assay.element character, name of element in assayData to use to extract data
 ##' @return numeric matrix of features in each range averaged by sample
@@ -205,11 +203,11 @@ boundingIndicesByChr <-function(query, subject) {
 ##' @export rangeSampleMeans
 ##' @examples
 ##'   data(genoset)
-##'   my.genes = RangedData( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), space=c("chr17","chr8"), universe="hg19")
+##'   my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), seqnames=c("chr17","chr8") )
 ##'   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
-rangeSampleMeans <- function(query.rd, subject, assay.element) {
+rangeSampleMeans <- function(query, subject, assay.element) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
-  all.indices = boundingIndicesByChr(query.rd, subject)
+  all.indices = boundingIndicesByChr(query, subject)
 
   # Temporary hack for DataFrame of Rle
   data.matrix = assayDataElement(subject,assay.element)

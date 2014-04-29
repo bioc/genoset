@@ -1,3 +1,24 @@
+CHANGES IN VERSION 1.19.0
+-------------------------
+
+NEW FEATURES
+
+	o This version introduces the RleDataFrame class. This class extends 
+	SimpleRleList and DataFrame. It stores a collection of like-length 
+	Rle objects.  With the AtomicList features it behaves much like a 
+	matrix. For example, log2(x) - 1 works. We also have row and column sums 
+	and means. rangeSampleMeans functions like viewMeans.
+	This object can be used to store 
+	runs of data along the genome for multiple samples, like coverage or DNA 
+	copy number. It can be used as an assayDataElement in a genoset (or any 
+	eSet).
+
+DEPRECATED AND DEFUNCT
+
+	Previously we used a DataFrame for storing collections of Rle objects. 
+	This practice is now deprecated. Similarly, colMeans on a DataFrame is 
+	now deprecated.
+
 CHANGES IN VERSION 1.16.0
 -------------------------
 
