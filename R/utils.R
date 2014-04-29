@@ -69,7 +69,7 @@ setMethod("cn2lr", signature(x="DataFrame"),
 ##' Correct copy number for GC content
 ##'
 ##' Copy number estimates from various platforms show "Genomic Waves" (Diskin et al.,
-##' Nucleic Acids Research, 2008) where copy number trends with local GC content.
+##' Nucleic Acids Research, 2008, PMID: 18784189) where copy number trends with local GC content.
 ##' This function regresses copy number on GC percentage and removes the effect
 ##' (returns residuals). GC content should be smoothed along the genome in wide
 ##' windows >= 100kb.
@@ -163,7 +163,8 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' Calculate GC Percentage in windows
 ##'
 ##' Local GC content  can be used to remove GC artifacts from copynumber data
-##' see Diskin, 2008). This function will calculate GC content fraction in expanded windows around
+##' (see Diskin et al, Nucleic Acids Research, 2008, PMID: 18784189). This 
+##' function will calculate GC content fraction in expanded windows around
 ##' a set of ranges following example in
 ##' http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf. Currently
 ##' all ranges are tabulated, later I may do letterFrequencyInSlidingWindow for big windows and then

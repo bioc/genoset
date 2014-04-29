@@ -124,3 +124,9 @@ Maybe try gView before I get too far into zooming
 
 # Tue 06-04-2013 - 09:39
 I want to move in a direction where I could swap out eSet for SummarizedExperiment without anyone noticing.  So, I should try to avoid eSet API stuff like sampleNames.  It's funny that rownames and colnames exist for eSet, but are so much slower than featureNames and sampleNames.  Oh, they do dimnames and then subset.
+
+
+# Mon 04-28-2014 - 13:47
+Add viewMeans and viewSums for RleDataFrame, base on rangeSampleMeans.
+
+Coercion for RleDataFrame to matrix, with examples and section in class Rd.

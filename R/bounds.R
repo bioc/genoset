@@ -214,7 +214,7 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   # Temporary hack for DataFrame of Rle
   data.matrix = assayDataElement(subject,assay.element)
 
-  if (class(data.matrix) == "DataFrame") {
+  if (class(data.matrix) == "DataFrameRle") {
     # Can't use RleList, length of compressed Rle too long, also want to vapply anyway
     viewMethod = getMethod("Views", "Rle")
     meanMethod = getMethod("viewMeans", "RleViews")
@@ -228,7 +228,7 @@ rangeSampleMeans <- function(query.rd, subject, assay.element) {
   } else {
     range.means = matrix(ncol=ncol(data.matrix),nrow=nrow(all.indices),dimnames=list(rownames(all.indices),colnames(data.matrix)))
     for (i in seq.int(length.out=ncol(data.matrix))) {
-      range.means[,i] = rangeColMeans( all.indices, data.matrix[,i] )
+      range.means[,i] = rangeColMeans( all.indices, as.numeric(data.matrix[,i]) )  # as.numeric makes this work on an Rle if it needs to
     }
   }
   return(range.means)

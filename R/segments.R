@@ -35,13 +35,13 @@ segs2Rle <- function(segs, locs) {
   return(temp.rle)
 }
 
-##' Given segments, make a DataFrame of Rle objects for each sample
+##' Given segments, make an RleDataFrame of Rle objects for each sample
 ##'
 ##' Take table of segments from CBS, convert DataTable of Rle objects for each sample.
 ##' @title CBS segments to probe matrix
 ##' @param seg.list list, list of data frames, one per sample, each is result from CBS
 ##' @param locs locData from a GenoSet object
-##' @return DataFrame of Rle objects with nrows same as locs and one column for each sample
+##' @return RleDataFrame with nrows same as locs and one column for each sample
 ##' @export segs2RleDataFrame
 ##' @family "segmented data"
 ##' @examples
@@ -51,7 +51,7 @@ segs2Rle <- function(segs, locs) {
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
-  rle.data.frame = DataFrame(rle.list, row.names=rownames(locs))
+  rle.data.frame = RleDataFrame(rle.list, row.names=rownames(locs))
   return(rle.data.frame)
 }
 
@@ -75,8 +75,7 @@ segs2Granges <- function(segs) {
 ##' Convert Rle objects to tables of segments
 ##'
 ##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
-##' Rle or a DataFrame with Rle
-##' columns and the locData both from a GenoSet object
+##' Rle or a RleDataFrame and the locData both from a GenoSet object
 ##' and makes a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
 ##' exactly to probe locations in locData and the input to
@@ -88,7 +87,7 @@ segs2Granges <- function(segs) {
 ##' \code{start} and \code{stop}.  The latter is surprisingly much faster
 ##' and this is used in the DataFrame version.
 ##'
-##' @param object Rle or list/DataFrame of Rle vectors
+##' @param object Rle or RleDataFrame
 ##' @param locs GenomicRanges with rows corresponding to rows of df
 ##' @param chr.ind matrix, like from chrIndices method
 ##' @param start integer, vector of feature start positions
@@ -126,7 +125,7 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
   # Get union of all breakpoints in Rle and chromosomes
   object.ends = cumsum(runLength(object))
   
-  all.ends = sort(unique(c(chr.ind[,2],object.ends)))
+  all.ends = sort.int(unique(c(chr.ind[,2],object.ends)))
   all.starts = c(1L,all.ends[-length(all.ends)]+1L)
   num.mark = (all.ends - all.starts) + 1L
 
@@ -143,7 +142,10 @@ setMethod("segTable", signature(object="Rle"), function(object,locs=NULL,chr.ind
   loc.end = end[all.ends]
   loc.start = start[all.starts]
 
-  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = object.vals, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
+#  sample.seg = data.frame(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = object.vals, row.names=NULL, stringsAsFactors=FALSE, check.names=FALSE, check.rows=FALSE)
+  sample.seg = list(chrom = chrom, loc.start = loc.start, loc.end = loc.end, num.mark = num.mark, seg.mean = object.vals)
+  class(sample.seg) = "data.frame"
+  attr(sample.seg, "row.names") = .set_row_names(length(chrom))
   return(sample.seg)
 })
 
@@ -154,10 +156,11 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
   chr.ind = chrIndices(locs)
   start = start(locs)
   end = end(locs)
-  
+
+  segTable.method = getMethod("segTable", "Rle")
   segs = lapply( object,
     function(x) {
-      return(segTable(x,chr.ind=chr.ind, start=start, end=end,factor.chr=internal.factor.chr))
+      return(segTable.method(x,chr.ind=chr.ind, start=start, end=end,factor.chr=internal.factor.chr))
     })
   if (stack == FALSE) {
     return(segs)
@@ -227,7 +230,7 @@ setMethod("segPairTable", signature(x="Rle",y="Rle"), function(x,y,locs=NULL,chr
   x.ends = cumsum(runLength(x))
   y.ends = cumsum(runLength(y))
   
-  all.ends = sort(unique(c(chr.ind[,2],x.ends,y.ends)))
+  all.ends = sort.int(unique(c(chr.ind[,2],x.ends,y.ends)))
   all.starts = c(1L,all.ends[-length(all.ends)]+1L)
   num.mark = (all.ends - all.starts) + 1L
 
