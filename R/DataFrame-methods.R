@@ -1,6 +1,7 @@
 ##' @include RleDataFrame-class.R
 NULL
 
+##' @export
 setGeneric("colMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
 
 setMethod("colMeans", "RleDataFrame",

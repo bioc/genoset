@@ -29,3 +29,18 @@ setMethod("show", "RleDataFrame",
             }
             show(object@listData)
           })
+
+
+### Coercion
+
+##' @export
+setAs("RleDataFrame", "matrix",
+      function(from){
+        mat = vapply(from, as.vector, vector(storage.mode(runValue(from[[1]])), nrow(from)), USE.NAMES=TRUE)
+        dimnames(mat) = dimnames(from)
+        return(mat)
+      })
+
+##' @export
+setMethod("as.matrix", "RleDataFrame", function(x) {as(x, "matrix")})
+

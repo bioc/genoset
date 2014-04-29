@@ -119,8 +119,8 @@ NA, 8:10),c(3,2,1,2,1,1)))
 runValue(df)
 runLength(df)
 ranges(df)
-mean(df)
-sum(df)
+mean(df,na.rm=TRUE)
+sum(df,na.rm=TRUE)
 df + 5
 log2(df) - 1
 
