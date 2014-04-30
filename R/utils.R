@@ -255,10 +255,11 @@ readGenoSet <- function(path) {
   inds = structure(1L:length(cn), names=cn)
   big <- mylapply(inds,
                 function(x) {
+                  browser()
                   myunlist(
-#                    mylapply(dflist, function(y) { y[[x]] })
-                    mylapply(dflist, function(y) { .subset2(y, x) })
-                    )
+#                    mylapply(dflist, function(y) { y[[x]] }), 
+                    mylapply(dflist, function(y) { .subset2(y, x) }), 
+                    use.names=FALSE)
                 })
   class(big) <- "data.frame"
   attr(big, "row.names") <- .set_row_names(length(big[[1]]))
