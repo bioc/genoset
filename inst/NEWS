@@ -13,6 +13,9 @@ NEW FEATURES
 	copy number. It can be used as an assayDataElement in a genoset (or any 
 	eSet).
 
+	o segTable and segPairTable are dramatically faster. Stacking data.frames 
+	with segTable(RleDataFrame,stack=TRUE) argument is now instantaneous.
+
 DEPRECATED AND DEFUNCT
 
 	Previously we used a DataFrame for storing collections of Rle objects. 
