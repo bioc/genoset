@@ -25,7 +25,7 @@
 ##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
-##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean na.exclude nrow order paste ranges Rle rownames
+##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-" viewMeans Views
 ##'
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
