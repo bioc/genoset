@@ -165,12 +165,12 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = do.call(rbind,segs)
-    segs.df = cbind(data.frame(Sample = rep(names(segs),sapply(segs,nrow)),stringsAsFactors=FALSE),segs.df,row.names=NULL)
+    segs.df = .simple_rbind_dataframe(segs)
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
     }
+    segs.df$Sample <- rep(names(segs), vapply(segs,nrow, integer(1)) )
     return(segs.df)
   }
 })
@@ -273,12 +273,12 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = do.call(rbind,segs)
-    segs.df = cbind(Sample = rep(names(segs),sapply(segs,nrow)),segs.df,stringsAsFactors=FALSE,row.names=NULL,check.rows=FALSE)
+    segs.df = .simple_rbind_dataframe(segs)
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
     }
+    segs.df$Sample <- rep(names(segs), vapply(segs,nrow, integer(1)) )
     return(segs.df)
   }
 })
@@ -395,8 +395,7 @@ setGeneric("rangeSegMeanLength", function(range.gr,segs) standardGeneric("rangeS
 ##' @rdname rangeSegMeanLength-methods
 setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="list"), 
   function(range.gr, segs) {
-    widths = lapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) })
-    return(do.call(cbind, widths))
+    vapply(segs, function(x) { .rangeSegMeanLength(range.gr, x) }, numeric(length(range.gr)) )
   })
 
 ##' @rdname rangeSegMeanLength-methods
