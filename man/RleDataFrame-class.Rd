@@ -72,15 +72,6 @@ of Rle objects, or one or more individual Rle objects.
 \section{Extends}{
 Class \code{"\linkS4class{SimpleRleList}"}, directly.
 Class \code{"\linkS4class{DataFrame}"}, directly.
-Class \code{"\linkS4class{RleList}"}, by class "SimpleRleList", distance 2.
-Class \code{"\linkS4class{SimpleAtomicList}"}, by class "SimpleRleList", distance 2.
-Class \code{"\linkS4class{DataTable}"}, by class "DataFrame", distance 2.
-Class \code{"\linkS4class{AtomicList}"}, by class "SimpleRleList", distance 3.
-Class \code{"\linkS4class{SimpleList}"}, by class "SimpleRleList", distance 3.
-Class \code{"\linkS4class{DataTableORNULL}"}, by class "DataFrame", distance 3.
-Class \code{"\linkS4class{List}"}, by class "DataFrame", distance 3.
-Class \code{"\linkS4class{Vector}"}, by class "DataFrame", distance 4.
-Class \code{"\linkS4class{Annotated}"}, by class "DataFrame", distance 5.
 }
 \section{Methods}{
   \describe{
