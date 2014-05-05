@@ -137,3 +137,4 @@ as(df, "DataFrame")
 as(df, "data.frame")
 }
 \keyword{classes}
+\keyword{methods}

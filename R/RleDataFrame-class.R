@@ -24,8 +24,10 @@ setMethod("show", "RleDataFrame",
             message(sprintf("RleDataFrame with %i rows and %i columns\n", nrow(object), ncol(object)))
             if (is.null(rownames(object))) {
               message("rownames: NULL\n")
+            } else if (nrow(object) > 5){
+              message(sprintf("rownames: %s, ...\n", paste(head(rownames(object)), collapse=", ")))
             } else {
-              message(sprintf("rownames: %s\n", paste(head(rownames(object)), collapse=", ")))
+              message(sprintf("rownames: %s\n", paste(rownames(object), collapse=", ")))
             }
             show(object@listData)
           })
