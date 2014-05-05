@@ -21,6 +21,9 @@
   SimpleRleList. They differ in that they work on an RleDataFrame and an
   IRanges directly and also have a simplify argument. This works out to be
   faster (compute-wise) and also convenient.
+
+  Still, an RleDataFrame inherits from SimpleRleList, so all of the
+  views functions will work.
 }
 
 \details{
@@ -78,12 +81,15 @@ rangeMeans(df,ir,simplify=FALSE)
 rangeMeans(df,ir,simplify=TRUE)
 rangeMeans(df,mat,simplify=TRUE)
 
-rangeSums(df,ir,simplify=TRUE)
-rangeMins(df,ir,simplify=TRUE)
-rangeMaxs(df,ir,simplify=TRUE)
-rangeWhichMins(df,ir,simplify=TRUE)
-rangeWhichMaxs(df,ir,simplify=TRUE)
-  
+rangeMeans(df,ir)
+rangeSums(df,ir)
+rangeMins(df,ir)
+rangeMaxs(df,ir)
+rangeWhichMins(df,ir)
+rangeWhichMaxs(df,ir)
+
+# RleDataFrame isa SimpleRleList, so all the IRanges view* methods work too:
+viewMeans( Views( df, ir) )
 }
 
 \seealso{
