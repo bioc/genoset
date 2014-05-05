@@ -8,21 +8,24 @@
 NULL
 ##' Calculate min/max/sum/mean/whichmin/whichmax over each view on each column of an RleDataFrame.
 ##'
-##' Loop over Rles in RleDataFrame, calculate the appropriate statistic for each view. If simplify == FALSE,
-##' returns a vector for each Rle. If simplify == TRUE, returns a vector for the case of a single view, otherwise,
+##' Loop over the Rle objects in an RleDataFrame, calculate the appropriate statistic for each view. If simplify == FALSE,
+##' this function returns a vector for each Rle. If simplify == TRUE, it returns a vector for the case of a single view or Rle, otherwise,
 ##' a matrix. Rownames for the matrix are taken from the names of the argument \code{ir}.
 ##' @param x RleDataFrame
-##' @param ir IRanges or matrix, views on every Rle. If ir is a matrix, it is converted to an IRanges using the first
-##' two columns as the starts and stops. Names for the IRanges are taken from the rownames of the matrix.
+##' @param ir IRanges or matrix, views on every Rle. If \code{ir} is a matrix, it is converted to an IRanges using the first
+##' two columns as the starts and stops. Names for the IRanges are taken from the rownames of the matrix. Such a matrix can be
+##' constructed with \code{boundingIndicesByChr}.
 ##' @param na.rm scalar logical, ignore NAs in calculations?
-##' @param simplify scalar logical, simplify result? For single view, vector, otherwise matrix with one row per view.
-##' @param FUN S4Generic or scalar character with the name of an S4 Generic
+##' @param simplify scalar logical, simplify result? For single view or Rle, a vector, otherwise a matrix with one row per view.
+##' @param FUN S4 Generic function or scalar character with the name of an S4 Generic function
 ##' @param FUN.TYPE scalar character, the storage mode for the returned vector or matrix (when simplify==TRUE).
 ##' @export 
-##' @return With simplify == TRUE, vector for single view or single column x with simplify == TRUE, matix
-##' otherwise. When simplify == FALSE, a list of length ncol(x).
+##' @return With \code{simplify == TRUE}, a vector for single view or single Rle or a matrix
+##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(ir)}.
 ##' @keywords internal
 ##' @rdname RleDataFrame-views
+##' @seealso RleDataFrame boundingIndicesByChr
+##' @family views
 .do_rledf_views <- function(x, ir, na.rm=FALSE, simplify=TRUE, FUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
   if (is.matrix(ir)) {
     ir = IRanges(start=ir[, 1], end=ir[, 2], names=rownames(ir))

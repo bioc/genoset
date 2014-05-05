@@ -99,6 +99,7 @@ Peter M. Haverty, design suggestion from Michael Lawrence.
   \code{\link{colMeans}}
   \code{\link{rowSums}}
   \code{\link{colSums}}
+  \code{\link{view-summarization-methods}}
 }
 \examples{
 showClass("RleDataFrame")
