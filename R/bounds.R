@@ -213,7 +213,6 @@ rangeSampleMeans <- function(query, subject, assay.element) {
   data.matrix = assayDataElement(subject,assay.element)
 
   if (class(data.matrix) == "DataFrameRle") {
-    # Can't use RleList, length of compressed Rle too long, also want to vapply anyway
     viewMethod = getMethod("Views", "Rle")
     meanMethod = getMethod("viewMeans", "RleViews")
     ranges = IRanges(start=all.indices[, 1], end=all.indices[, 2], names=rownames(all.indices))
