@@ -1,22 +1,32 @@
 ### Methods to do view operations on an RleDataFrame
-###  viewMeans(Views(rledf,iranges)) works, but gives list.  Consistency good, but I really wanna vapply here ...
+###  viewMeans(Views(rledf,iranges)) works, but gives list.  Consistency good, but I really wanna simplify via vapply here ...
 
+### Hmm, naming is an issue. Can't add methods for viewMeans etc. without "..." in those generic function definitions.
+### Maybe these shouldn't be "view" functions anyway because they aren't methods on View types.
+
+##' @include RleDataFrame-class.R
+NULL
 ##' Calculate min/max/sum/mean/whichmin/whichmax over each view on each column of an RleDataFrame.
 ##'
 ##' Loop over Rles in RleDataFrame, calculate the appropriate statistic for each view. If simplify == FALSE,
 ##' returns a vector for each Rle. If simplify == TRUE, returns a vector for the case of a single view, otherwise,
 ##' a matrix. Rownames for the matrix are taken from the names of the argument \code{ir}.
 ##' @param x RleDataFrame
-##' @param ir IRanges, views on each Rle you want to work on
-##' @param na.rm scalar logical, ignore NAs?
+##' @param ir IRanges or matrix, views on every Rle. If ir is a matrix, it is converted to an IRanges using the first
+##' two columns as the starts and stops. Names for the IRanges are taken from the rownames of the matrix.
+##' @param na.rm scalar logical, ignore NAs in calculations?
 ##' @param simplify scalar logical, simplify result? For single view, vector, otherwise matrix with one row per view.
 ##' @param FUN S4Generic or scalar character with the name of an S4 Generic
 ##' @param FUN.TYPE scalar character, the storage mode for the returned vector or matrix (when simplify==TRUE).
 ##' @export 
-##' @return With simlify == TRUE, vector for single view or single column x with simplify == TRUE, matix
+##' @return With simplify == TRUE, vector for single view or single column x with simplify == TRUE, matix
 ##' otherwise. When simplify == FALSE, a list of length ncol(x).
 ##' @keywords internal
+##' @rdname RleDataFrame-views
 .do_rledf_views <- function(x, ir, na.rm=FALSE, simplify=TRUE, FUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
+  if (is.matrix(ir)) {
+    ir = IRanges(start=ir[, 1], end=ir[, 2], names=rownames(ir))
+  }
   myfun = getMethod(FUN, "RleViews", where="IRanges")
   myviewfun = getMethod("Views", "Rle", where="IRanges")
   if (simplify == TRUE) {
@@ -30,52 +40,52 @@
   } else {
     val = lapply(x,   	 
       function(rle) {
-        myfun(myviewfun(rle, ir), na.rm=na.rm)
+        myfun(myrangefun(rle, ir), na.rm=na.rm)
       })
     }
   return(val)
 }
 
 ##' @export
-setGeneric("viewSums2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewSums2") })
-setMethod("viewSums2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeSums", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeSums") })
+setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewSums", FUN.TYPE="numeric")
           })
 
 ##' @export
-setGeneric("viewMeans2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewMeans2") })
-setMethod("viewMeans2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeMeans", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMeans") })
+setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewMeans", FUN.TYPE="numeric")
+            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="rangeMeans", FUN.TYPE="numeric")
           })
 
 ##' @export
-setGeneric("viewMins2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewMins2") })
-setMethod("viewMins2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMins") })
+setMethod("rangeMins", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewMins", FUN.TYPE="numeric")
+            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="rangeMins", FUN.TYPE="numeric")
           })
 
 ##' @export
-setGeneric("viewMaxs2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewMaxs2") })
-setMethod("viewMaxs2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMaxs") })
+setMethod("rangeMaxs", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewMaxs", FUN.TYPE="numeric")
+            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="rangeMaxs", FUN.TYPE="numeric")
           })
 
 ##' @export
-setGeneric("viewWhichMins2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewWhichMins2") })
-setMethod("viewWhichMins2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeWhichMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
+setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewWhichMins", FUN.TYPE="integer")
+            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="rangeWhichMins", FUN.TYPE="integer")
           })
 
 ##' @export
-setGeneric("viewWhichMaxs2", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("viewWhichMaxs2") })
-setMethod("viewWhichMaxs2", signature=signature(x="RleDataFrame"), 
+setGeneric("rangeWhichMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
+setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="viewWhichMaxs", FUN.TYPE="integer")
+            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, FUN="rangeWhichMaxs", FUN.TYPE="integer")
           })
 
 ds = RleDataFrame(list(a=Rle(1:5, rep(2, 5))), b=Rle(1:5, rep(2, 5)))

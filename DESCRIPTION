@@ -2,7 +2,7 @@ Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number
     analysis
-Version: 1.19.5
+Version: 1.19.6
 Date: 2011-01-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -37,7 +37,8 @@ biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariation
 Collate:
     'RleDataFrame-class.R'
-    'DataFrame-methods.R'
+    'RleDataFrame-methods.R'
+    'RleDataFrame-views.R'
     'bounds.R'
     'genoset-class.R'
     'junk.R'
