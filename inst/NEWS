@@ -1,3 +1,16 @@
+CHANGES IN VERSION 1.19.7
+-------------------------
+
+NEW FEATURES
+
+	o The version introduces the rangeMeans family of functions, which are 
+	closely related to IRanges::viewMeans family of functions. These 
+	new functions take an RleDataFrame and an IRanges (or matrix) of row 
+	ranges and compute summary stats. These are useful for summaries like 
+	the average DNA copy number or coverage in a gene, by sample. These 
+	functions differ from view* in that they are more time efficient and 
+	they offer a 'simplify' argument to return a matrix, rather than a list.
+
 CHANGES IN VERSION 1.19.0
 -------------------------
 
