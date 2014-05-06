@@ -31,7 +31,8 @@
 ##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges DataFrame IRanges "%over%"
-##' @importFrom GenomicRanges seqlengths GRanges
+##' @importFrom GenomicRanges GRanges
+##' @importFrom GenomeInfoDb seqlengths
 ##'
 ##' @import methods
 ##' @import BiocGenerics
