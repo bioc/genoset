@@ -1,7 +1,7 @@
 ##' @include RleDataFrame-class.R
 NULL
 
-##' @export
+##' @export colMeans
 setGeneric("colMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
 
 setMethod("colMeans", "RleDataFrame",
@@ -14,13 +14,13 @@ setMethod("colMeans", signature(x="DataFrame"),
             .Deprecated("colMeans", msg="colMeans on a DataFrame is Deprecated. It is kind of odd given that the column type are arbitrary. Try RleDataFrame, or another class that inherits from AtomicList and DataFrame. But, if you find this DataFrame version useful, let me know.")
             return( vapply(x,mean,na.rm=na.rm, FUN.VALUE=numeric(1), USE.NAMES=TRUE) ) } )
 
-##' @export
+##' @export colSums
 setGeneric("colSums", function(x, na.rm=TRUE, dims=1L) standardGeneric("colSums") )
 setMethod("colSums", "RleDataFrame",
           function(x, na.rm=TRUE) {
             sum(x, na.rm=na.rm)
           })
-##' @export
+##' @export rowMeans
 setGeneric("rowMeans", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowMeans") )
 setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
 setMethod("rowMeans", signature(x="RleDataFrame"),
@@ -49,7 +49,7 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
             return(means)
           })
 
-##' @export
+##' @export rowSums
 setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
 setMethod("rowSums", signature(x="ANY"), base::rowSums)
 setMethod("rowSums", signature(x="RleDataFrame"),
@@ -72,7 +72,7 @@ setMethod("rowSums", signature(x="RleDataFrame"),
         })
 
 # Allow eSet constructor to make featureNames from a DataFrame as if it were a matrix
-##' @export
+##' @export annotatedDataFrameFrom
 setMethod("annotatedDataFrameFrom",
           signature(object="DataFrame"),
           Biobase:::annotatedDataFrameFromMatrix)
