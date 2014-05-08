@@ -247,8 +247,12 @@ readGenoSet <- function(path) {
   return( object )
 }
 
-
-.simple_rbind_dataframe <- function(dflist) {
+.simple_rbind_dataframe <- function(dflist, element.colname) {
+  numrows = vapply(dflist, nrow, integer(1)) > 0
+  if (!missing(element.colname)) {
+    list.name.col = rep(names(dflist), numrows)
+  }
+  dflist = dflist[ numrows > 0 ] # ARGH, if some data.frames have zero rows, factors become integers
   myunlist = base::unlist
   mylapply = base::lapply
   cn = names(dflist[[1]])
@@ -260,6 +264,9 @@ readGenoSet <- function(path) {
                     mylapply(dflist, function(y) { .subset2(y, x) }), 
                     use.names=FALSE)
                 })
+  if (!missing(element.colname)) {
+    big[[element.colname]] = list.name.col
+  }
   class(big) <- "data.frame"
   attr(big, "row.names") <- .set_row_names(length(big[[1]]))
   return(big)
