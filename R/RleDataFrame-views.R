@@ -88,7 +88,7 @@ setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"),
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_mins, FUN.TYPE="integer")
           })
 
-##' @export
+##' @export rangeWhichMaxs
 setGeneric("rangeWhichMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
 setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
