@@ -3,7 +3,7 @@
 ##' Utility function for converting log2ratio units (zero is normal) to copynumber units (two is normal)
 ##' @param x numeric data in log2ratio values
 ##' @return data of same type as "x" transformed into copynumber units
-##' @export
+##' @export cn2lr
 ##' @seealso cn2lr
 lr2cn <- function(x) {
   return( 2 ^ (x + 1) )
@@ -16,7 +16,7 @@ lr2cn <- function(x) {
 ##' @param x numeric vector or matrix, or DataFrame with numeric-like columns (Rle typicaly). Assumed to be in copynumber units.
 ##' @param ploidy numeric, of length ncol(x). Ploidy of each sample.
 ##' @return data of same type as "x" transformed into log2ratio units
-##' @export
+##' @export lr2cn
 ##' @seealso lr2cn
 ##' @rdname cn2lr-methods
 setGeneric("cn2lr", function(x, ploidy) standardGeneric("cn2lr"))
@@ -126,7 +126,7 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
 ##'    calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(rownames(genoset.ds),c("K","L")))
 ##'    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
 ##'    genoset.ds[, ,"mbaf"] = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
-##' @export
+##' @export baf2mbaf
 baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
   mbaf = abs(baf[,] - 0.5) + 0.5
   is.na(mbaf) <- mbaf > hom.cutoff
@@ -177,7 +177,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' \dontrun{ data(genoset) }
 ##' \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
 ##' \dontrun{ gc = calcGC(genoset.ds, Hsapiens) }
-##' @export
+##' @export calcGC
 calcGC <- function(object, bsgenome, expand=1e6) {
   if (!requireNamespace("BSgenome",quietly=TRUE)) {
     stop("Failed to require BSgenome package.\n")
@@ -209,7 +209,7 @@ calcGC <- function(object, bsgenome, expand=1e6) {
 ##' 
 ##' @param ds numeric matrix
 ##' @return numeric matrix
-##' @export
+##' @export modeCenter
 ##' @examples
 ##'   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
 modeCenter <- function(ds) {
@@ -235,7 +235,7 @@ modeCenter <- function(ds) {
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
 ##' \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
-##' @export 
+##' @export readGenoSet
 readGenoSet <- function(path) {
   header = readLines(path, 1)
   if (grepl("^RD", header)[1] == TRUE) {

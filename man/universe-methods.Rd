@@ -5,7 +5,7 @@
 \alias{universe,GenoSet-method}
 \alias{universe<-,GRanges-method}
 \alias{universe<-,GenoSet-method}
-\title{Get universe annotations}
+\title{##' Get universe annotations}
 \usage{
 \S4method{universe}{GenoSet}(x)
 

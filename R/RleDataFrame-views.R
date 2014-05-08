@@ -19,7 +19,6 @@ NULL
 ##' @param simplify scalar logical, simplify result? For a single view, a vector, otherwise a matrix with one row per view.
 ##' @param RLEFUN function, internal rle view summary function like .rle_view_means
 ##' @param FUN.TYPE scalar character, the storage mode for the returned vector or matrix (when simplify==TRUE).
-##' @export 
 ##' @return With \code{simplify == TRUE}, a vector for single view or a matrix
 ##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(ir)}.
 ##' @keywords internal
@@ -54,35 +53,35 @@ NULL
   return(val)
 }
 
-##' @export
+##' @export rangeSums
 setGeneric("rangeSums", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeSums") })
 setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
           })
 
-##' @export
+##' @export rangeMeans
 setGeneric("rangeMeans", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_means, FUN.TYPE="numeric")
           })
 
-##' @export
+##' @export rangeMins
 setGeneric("rangeMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMins") })
 setMethod("rangeMins", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_mins, FUN.TYPE="numeric")
           })
 
-##' @export
+##' @export rangeMaxs
 setGeneric("rangeMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMaxs") })
 setMethod("rangeMaxs", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_maxs, FUN.TYPE="numeric")
           })
 
-##' @export
+##' @export rangeWhichMins
 setGeneric("rangeWhichMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
 setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=TRUE, simplify=TRUE) {

@@ -1,7 +1,6 @@
+### All of my deprecated and defunct stuff
 
-
-
-##' Get universe annotations
+##' ##' Get universe annotations
 ##'
 ##' Get universe annotations
 ##' @param x GenoSet
@@ -57,7 +56,7 @@ NULL
 ##' @param segs data.frame, like from segment in DNAcopy or segTable
 ##' @return RangedData
 ##' @family "segmented data"
-##' @export 
+##' @export segs2RangedData
 ##' @family segments
 segs2RangedData <- function(segs) {
   .Defunct("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")

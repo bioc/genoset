@@ -15,7 +15,7 @@
 ##' @param segs data.frame of segments, formatted as output of segment function from DNAcopy package
 ##' @param locs GenomicRanges, like locData slot of a GenoSet
 ##' @return Rle with run lengths and run values covering all features in the data set.
-##' @export
+##' @export segs2Rle
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
@@ -62,7 +62,7 @@ segs2RleDataFrame <- function(seg.list, locs) {
 ##' The three columns specifying the ranges become the GRanges and all other columns go into the 'mcols'
 ##' portion of the GRanges object.
 ##' @param segs data.frame with loc.start, loc.end, and chrom columns, like from segTable or runCBS
-##' @export 
+##' @export  segs2Granges
 ##' @return GRanges
 ##' @family "segmented data"
 segs2Granges <- function(segs) {
@@ -289,7 +289,7 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
 ##' @param x Rle to be fixed
 ##' @param max.na.run integer, longest run of NAs that will be fixed
 ##' @return Rle
-##' @export 
+##' @export fixSegNAs
 fixSegNAs <- function(x,max.na.run=3) {
   if (is.na(runValue(x)[1]) & runLength(x)[1] <= max.na.run) {
     runValue(x)[1] = runValue(x)[2]
@@ -386,7 +386,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
 ##' a given sample.
 ##' @param range.gr GRanges, genome regions of interest, usually genes
 ##' @param segs data.frame of segments, like from segTable, or a list of these
-##' @export 
+##' @export rangeSegMeanLength
 ##' @return named vector of lengths, one per item in range.gr, or a range x length(segs) of these if segs is also list-like.
 ##' @family "segmented data"
 ##' @rdname rangeSegMeanLength-methods

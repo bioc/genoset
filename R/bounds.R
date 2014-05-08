@@ -6,7 +6,7 @@
 ##' so that any portion of the full length not covered by a first/last range will be a
 ##' run with the value NA.  This is typical in the case where data is segmented with CBS
 ##' and some of the data to be segmented is NA.
-##' @export 
+##' @export bounds2Rle
 ##' @param bounds matrix, two columns, with first and last index, like from boundingIndicesByChr
 ##' @param values ANY, some value to be associated with each range, like segmented copy number.
 ##' @param n integer, the expected length of the Rle, i.e. the number of features in the
@@ -243,7 +243,7 @@ rangeSampleMeans <- function(query, subject, assay.element) {
 ##' @return A numeric matrix or vector, matching the form of x. One row for
 ##' each row in bounds, one col for each col of x and appropriate dimnames.
 ##' If x is a vector, just a vector with names from the rownames of bounds.
-##' @export
+##' @export rangeColMeans
 ##' @family "range summaries"
 rangeColMeans <- function( bounds, x ) {
   if (! is.matrix(bounds) && ncol(bounds) == 2) {

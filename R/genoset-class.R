@@ -637,7 +637,7 @@ setMethod("chrNames", signature(object="GRanges"),
           })
 
 ##' @rdname chrNames-methods
-##' @export
+##' @export "chrNames<-"
 setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
 
 ##' @rdname chrNames-methods

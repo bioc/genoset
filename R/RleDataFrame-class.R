@@ -1,6 +1,6 @@
 ##### Additional methods for DataFrame class to allow use of DataTable of Rle vectors as assayData element
 
-##' @export
+##' @exportClass RleDataFrame
 setClass("RleDataFrame",
          representation(
            rownames = "characterORNULL",
@@ -12,13 +12,13 @@ setClass("RleDataFrame",
          contains = c("SimpleRleList", "DataFrame")
 )
 
-##' @export
+##' @export RleDataFrame
 RleDataFrame <- function(..., row.names=NULL, check.names=TRUE) {
   x = DataFrame(..., row.names=row.names, check.names=check.names)
   return( new("RleDataFrame", listData=x@listData, rownames=rownames(x), nrows=nrow(x)) )
 }
 
-##' @export
+##' @exportMethod show
 setMethod("show", "RleDataFrame",
           function(object) {
             message(sprintf("RleDataFrame with %i rows and %i columns\n", nrow(object), ncol(object)))
@@ -43,6 +43,6 @@ setAs("RleDataFrame", "matrix",
         return(mat)
       })
 
-##' @export
+##' @exportMethod as.matrix
 setMethod("as.matrix", "RleDataFrame", function(x) {as(x, "matrix")})
 
