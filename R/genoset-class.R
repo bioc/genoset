@@ -222,10 +222,12 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 ##'   data(genoset)
 ##'   genome(genoset.ds)
 ##'   genome(genoset.ds) = "hg19"
+##' @rdname genome-methods
 setMethod("genome", "GenoSet", function(x) {
   return(genome(x@locData))
 })
 ##' @exportMethod "genome<-"
+##' @rdname genome-methods
 setMethod("genome<-", "GenoSet", function(x, value) {
   genome(x@locData) = value
   return(x)
