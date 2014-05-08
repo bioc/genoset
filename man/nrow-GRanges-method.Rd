@@ -7,7 +7,7 @@
 \S4method{nrow}{GRanges}(x)
 }
 \arguments{
-\item{x}{GRanges or GenoSet}
+  \item{x}{GRanges or GenoSet}
 }
 \value{
 integer

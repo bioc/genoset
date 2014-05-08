@@ -16,18 +16,20 @@ isGenomeOrder(ds, strict = TRUE)
 \S4method{isGenomeOrder}{RangedData}(ds, strict = TRUE)
 }
 \arguments{
-\item{ds}{GenoSet or GRanges}
+  \item{ds}{GenoSet or GRanges}
 
-\item{strict}{logical, should space/chromosome order be identical to that from chrOrder?}
+  \item{strict}{logical, should space/chromosome order be
+  identical to that from chrOrder?}
 }
 \value{
 logical
 }
 \description{
-Checks that rows in each chr are ordered by start.  If strict=TRUE, then chromosomes
-must be in order specified by chrOrder. isGenomeOrder for GRanges differs from order
-in that it orders by chromsome and start position only,
-rather than chromsome, strand, start, and width.
+Checks that rows in each chr are ordered by start.  If
+strict=TRUE, then chromosomes must be in order specified by
+chrOrder. isGenomeOrder for GRanges differs from order in
+that it orders by chromsome and start position only, rather
+than chromsome, strand, start, and width.
 }
 \examples{
 data(genoset)
@@ -35,9 +37,9 @@ data(genoset)
 }
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}};
-  \code{\link{toGenomeOrder}},
-  \code{\link{toGenomeOrder,GRanges-method}},
-  \code{\link{toGenomeOrder,GenoSet-method}},
-  \code{\link{toGenomeOrder,RangedData-method}}
+\code{\link{toGenomeOrder}},
+\code{\link{toGenomeOrder,GRanges-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
+\code{\link{toGenomeOrder,RangedData-method}}
 }
 

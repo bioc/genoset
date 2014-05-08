@@ -225,6 +225,7 @@ GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL
 setMethod("genome", "GenoSet", function(x) {
   return(genome(x@locData))
 })
+##' @exportMethod "genome<-"
 setMethod("genome<-", "GenoSet", function(x, value) {
   genome(x@locData) = value
   return(x)
@@ -278,6 +279,7 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
 ##'   head(rownames(locData.gr))
 ##'   head(rownames(genoset.ds))
 ##' @exportMethod rownames
+##' @exportMethod "rownames<-"
 ##' @rdname rownames-methods
 setMethod("rownames", signature(x="GRanges"),
           function(x) {
@@ -308,6 +310,7 @@ setMethod("rownames<-",
 
 ##' @rdname rownames-methods
 ##' @exportMethod featureNames
+##' @exportMethod "featureNames<-"
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
             rownames(object)
@@ -347,7 +350,7 @@ setMethod("featureNames<-",
 ##' locData(genoset.ds) = rd
 ##' @return A GenoSet object
 ##' @rdname locData-methods
-##' @export
+##' @export "locData"
 setGeneric("locData", function(object) standardGeneric("locData"))
 
 ##' @rdname locData-methods
@@ -452,6 +455,7 @@ setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(un
 ##'
 ##' Subset a GenoSet
 ##' @exportMethod "["
+##' @exportMethod "[<-"
 ##' @param x GenoSet
 ##' @param i character, GRanges, logical, integer
 ##' @param j character, GRanges, logical, integer
@@ -614,7 +618,8 @@ setMethod("pos", "GenoSetOrGenomicRanges",
 ##'   chrNames(locData(genoset.ds))  # The same
 ##'   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 ##' @rdname chrNames-methods
-##' @export
+##' @export "chrNames"
+##' @export "chrNames<-"
 setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 
 ##' @rdname chrNames-methods
@@ -811,7 +816,6 @@ setMethod("chrNames<-", signature(object="RangedData"),
             names(object) = value
             return(object)
           })
-
 
 ##' @rdname rownames-methods
 setMethod("featureNames", signature(object="RangedData"),

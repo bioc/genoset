@@ -7,7 +7,7 @@
 \S4method{start}{GenoSet}(x)
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 }
 \value{
 integer

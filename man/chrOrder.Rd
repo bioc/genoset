@@ -6,25 +6,27 @@
 chrOrder(chr.names)
 }
 \arguments{
-\item{chr.names}{character, vector of unique chromosome names}
+  \item{chr.names}{character, vector of unique chromosome
+  names}
 }
 \value{
 character vector of chromosome names in proper order
 }
 \description{
-Chromosomes make the most sense orded by number, then by letter.
+Chromosomes make the most sense orded by number, then by
+letter.
 }
 \examples{
 chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX","chrY")
 }
 \seealso{
 Other "genome ordering": \code{\link{isGenomeOrder}},
-  \code{\link{isGenomeOrder,GRanges-method}},
-  \code{\link{isGenomeOrder,GenoSet-method}},
-  \code{\link{isGenomeOrder,RangedData-method}};
-  \code{\link{toGenomeOrder}},
-  \code{\link{toGenomeOrder,GRanges-method}},
-  \code{\link{toGenomeOrder,GenoSet-method}},
-  \code{\link{toGenomeOrder,RangedData-method}}
+\code{\link{isGenomeOrder,GRanges-method}},
+\code{\link{isGenomeOrder,GenoSet-method}},
+\code{\link{isGenomeOrder,RangedData-method}};
+\code{\link{toGenomeOrder}},
+\code{\link{toGenomeOrder,GRanges-method}},
+\code{\link{toGenomeOrder,GenoSet-method}},
+\code{\link{toGenomeOrder,RangedData-method}}
 }
 

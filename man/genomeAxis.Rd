@@ -6,13 +6,16 @@
 genomeAxis(locs = NULL, side = 1, log = FALSE, do.other.side = TRUE)
 }
 \arguments{
-\item{locs}{RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.}
+  \item{locs}{RangedData to be used to draw chromosome
+  boundaries, if necessary.  Usually locData slot from a
+  GenoSet.}
 
-\item{side}{integer side of plot to put axis}
+  \item{side}{integer side of plot to put axis}
 
-\item{log}{logical Is axis logged?}
+  \item{log}{logical Is axis logged?}
 
-\item{do.other.side}{logical, label non-genome side with data values at tick marks?}
+  \item{do.other.side}{logical, label non-genome side with
+  data values at tick marks?}
 }
 \value{
 nothing
@@ -21,7 +24,8 @@ nothing
 Label an axis with base positions
 }
 \details{
-Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
+Label a plot with Mb, kb, bp as appropriate, using tick
+locations from axTicks
 }
 \examples{
 data(genoset)
@@ -32,8 +36,8 @@ data(genoset)
 }
 \seealso{
 Other "genome plots": \code{\link{genoPlot}},
-  \code{\link{genoPlot,GenoSetOrGenomicRanges,ANY-method}},
-  \code{\link{genoPlot,numeric,Rle-method}},
-  \code{\link{genoPlot,numeric,numeric-method}}
+\code{\link{genoPlot,GenoSetOrGenomicRanges,ANY-method}},
+\code{\link{genoPlot,numeric,Rle-method}},
+\code{\link{genoPlot,numeric,numeric-method}}
 }
 

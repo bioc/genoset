@@ -10,18 +10,19 @@ chrIndices(object, chr = NULL)
 \S4method{chrIndices}{RangedDataOrGenoSetOrGenomicRanges}(object, chr = NULL)
 }
 \arguments{
-\item{object}{GenoSet or GRanges}
+  \item{object}{GenoSet or GRanges}
 
-\item{chr}{character, specific chromosome name}
+  \item{chr}{character, specific chromosome name}
 }
 \value{
 data.frame with "first" and "last" columns
 }
 \description{
-Sometimes it is handy to know the first and last index for each chr.
-This is like chrInfo but for feature indices rather than chromosome
-locations. If chr is specified, the function will return a sequence
-of integers representing the row indices of features on that chromosome.
+Sometimes it is handy to know the first and last index for
+each chr. This is like chrInfo but for feature indices
+rather than chromosome locations. If chr is specified, the
+function will return a sequence of integers representing
+the row indices of features on that chromosome.
 }
 \examples{
 data(genoset)

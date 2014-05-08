@@ -16,14 +16,15 @@
 \S4method{sampleNames}{GenoSet,ANY}(object) <- value
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 
-\item{value}{a valid value for that component of
-    \code{\link{dimnames}(x)}.  For a matrix or array this is either
-    \code{NULL} or a character vector of non-zero length equal to the
-    appropriate dimension.}
+  \item{value}{a valid value for that component of
+  \code{\link{dimnames}(x)}.  For a matrix or array this is
+  either \code{NULL} or a character vector of non-zero
+  length equal to the appropriate dimension.}
 
-\item{object}{Object, possibly derived from class \code{eSet}.}
+  \item{object}{Object, possibly derived from class
+  \code{eSet}.}
 }
 \value{
 character vector with names of samples

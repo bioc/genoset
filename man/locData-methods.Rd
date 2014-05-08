@@ -16,16 +16,17 @@ locData(object) <- value
 \S4method{locData}{GenoSet,GRanges}(object) <- value
 }
 \arguments{
-\item{object}{GenoSet}
+  \item{object}{GenoSet}
 
-\item{value}{GRanges describing features}
+  \item{value}{GRanges describing features}
 }
 \value{
 A GenoSet object
 }
 \description{
-The position information for each probe/feature is stored as an GRanges object.
-The locData functions allow this data to be accessed or re-set.
+The position information for each probe/feature is stored
+as an GRanges object. The locData functions allow this data
+to be accessed or re-set.
 }
 \examples{
 data(genoset)

@@ -16,20 +16,20 @@
 \S4method{[}{GenoSet,ANY,ANY,ANY}(x, i, j, k) <- value
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 
-\item{i}{character, GRanges, logical, integer}
+  \item{i}{character, GRanges, logical, integer}
 
-\item{j}{character, GRanges, logical, integer}
+  \item{j}{character, GRanges, logical, integer}
 
-\item{k}{character or integer}
+  \item{k}{character or integer}
 
-\item{drop}{logical drop levels of space factor?}
+  \item{drop}{logical drop levels of space factor?}
 
-\item{...}{additional subsetting args}
+  \item{...}{additional subsetting args}
 
-\item{value}{typically an array-like \R object of a similar class as
-    \code{x}.}
+  \item{value}{typically an array-like \R object of a
+  similar class as \code{x}.}
 }
 \description{
 Subset a GenoSet

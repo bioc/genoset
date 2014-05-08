@@ -7,7 +7,7 @@
 \S4method{show}{GenoSet}(object)
 }
 \arguments{
-\item{object}{Any R object}
+  \item{object}{Any R object}
 }
 \description{
 Prints out a description of a GenoSet object

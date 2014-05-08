@@ -16,9 +16,9 @@
 \S4method{universe}{GRanges}(x) <- value
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 
-\item{value}{scalar character, new value of universe}
+  \item{value}{scalar character, new value of universe}
 }
 \value{
 scalar character

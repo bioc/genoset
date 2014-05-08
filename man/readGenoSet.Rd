@@ -6,14 +6,14 @@
 readGenoSet(path)
 }
 \arguments{
-\item{path}{character, path to rds or rda file}
+  \item{path}{character, path to rds or rda file}
 }
 \value{
 GenoSet or related object (only object in RData file)
 }
 \description{
-Given a rds file or a rda file with one object (a GenoSet or related object), load it,
-and return.
+Given a rds file or a rda file with one object (a GenoSet
+or related object), load it, and return.
 }
 \examples{
 \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }

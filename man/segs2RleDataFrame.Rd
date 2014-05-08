@@ -6,18 +6,22 @@
 segs2RleDataFrame(seg.list, locs)
 }
 \arguments{
-\item{seg.list}{list, list of data frames, one per sample, each is result from CBS}
+  \item{seg.list}{list, list of data frames, one per
+  sample, each is result from CBS}
 
-\item{locs}{locData from a GenoSet object}
+  \item{locs}{locData from a GenoSet object}
 }
 \value{
-RleDataFrame with nrows same as locs and one column for each sample
+RleDataFrame with nrows same as locs and one column for
+each sample
 }
 \description{
-Given segments, make an RleDataFrame of Rle objects for each sample
+Given segments, make an RleDataFrame of Rle objects for
+each sample
 }
 \details{
-Take table of segments from CBS, convert DataTable of Rle objects for each sample.
+Take table of segments from CBS, convert DataTable of Rle
+objects for each sample.
 }
 \examples{
 data(genoset)
@@ -26,17 +30,17 @@ data(genoset)
 }
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
-  \code{\link{rangeSegMeanLength}},
-  \code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
-  \code{\link{rangeSegMeanLength,GRanges,list-method}};
-  \code{\link{runCBS}}; \code{\link{segPairTable}},
-  \code{\link{segPairTable,DataFrame,DataFrame-method}},
-  \code{\link{segPairTable,Rle,Rle-method}};
-  \code{\link{segTable}},
-  \code{\link{segTable,DataFrame-method}},
-  \code{\link{segTable,Rle-method}};
-  \code{\link{segs2Granges}};
-  \code{\link{segs2RangedData}}; \code{\link{segs2Rle}}
+\code{\link{rangeSegMeanLength}},
+\code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+\code{\link{rangeSegMeanLength,GRanges,list-method}};
+\code{\link{runCBS}}; \code{\link{segPairTable}},
+\code{\link{segPairTable,DataFrame,DataFrame-method}},
+\code{\link{segPairTable,Rle,Rle-method}};
+\code{\link{segTable}},
+\code{\link{segTable,DataFrame-method}},
+\code{\link{segTable,Rle-method}};
+\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2Rle}}
 
 Other segments: \code{\link{segs2RangedData}}
 }

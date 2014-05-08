@@ -34,16 +34,14 @@
 \S4method{featureNames}{RangedData}(object) <- value
 }
 \arguments{
-\item{object}{GRanges or GenoSet}
+  \item{object}{GRanges or GenoSet}
 
-\item{x}{
-    A matrix-like object.
-  }
+  \item{x}{ A matrix-like object.  }
 
-\item{value}{a valid value for that component of
-    \code{\link{dimnames}(x)}.  For a matrix or array this is either
-    \code{NULL} or a character vector of non-zero length equal to the
-    appropriate dimension.}
+  \item{value}{a valid value for that component of
+  \code{\link{dimnames}(x)}.  For a matrix or array this is
+  either \code{NULL} or a character vector of non-zero
+  length equal to the appropriate dimension.}
 }
 \value{
 character vector with names rows/features

@@ -10,13 +10,14 @@ pos(object)
 \S4method{pos}{GenoSetOrGenomicRanges}(object)
 }
 \arguments{
-\item{object}{GRanges GenoSet}
+  \item{object}{GRanges GenoSet}
 }
 \value{
 numeric vector of feature positions within a chromosome
 }
 \description{
-Get chromosome position of features/ranges. Defined as floor of mean of start and end.
+Get chromosome position of features/ranges. Defined as
+floor of mean of start and end.
 }
 \examples{
 data(genoset)

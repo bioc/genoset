@@ -10,7 +10,7 @@
 \S4method{elementLengths}{GRanges}(x)
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 }
 \value{
 character

@@ -7,12 +7,14 @@
 \S4method{names}{GenoSet}(x)
 }
 \arguments{
-\item{x}{GenoSet}
+  \item{x}{GenoSet}
 }
 \value{
 character
 }
 \description{
-Get names of data matrices. For the time being, this is \code{assayDataElementNames}. This function used to do \code{chrNames}.
+Get names of data matrices. For the time being, this is
+\code{assayDataElementNames}. This function used to do
+\code{chrNames}.
 }
 

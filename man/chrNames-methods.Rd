@@ -28,9 +28,9 @@ chrNames(object) <- value
 \S4method{chrNames}{RangedData}(object) <- value
 }
 \arguments{
-\item{object}{GenomicRanges or GenoSet}
+  \item{object}{GenomicRanges or GenoSet}
 
-\item{value}{return value of chrNames}
+  \item{value}{return value of chrNames}
 }
 \value{
 character vector with names of chromosomes

@@ -13,7 +13,7 @@ chr(object)
 \S4method{chr}{GRanges}(object)
 }
 \arguments{
-\item{object}{GRanges GenoSet}
+  \item{object}{GRanges GenoSet}
 }
 \value{
 character vector of chromosome positions for each feature

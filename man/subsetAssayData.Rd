@@ -6,22 +6,25 @@
 subsetAssayData(orig, i, j, ..., drop = FALSE)
 }
 \arguments{
-\item{orig}{assayData environment}
+  \item{orig}{assayData environment}
 
-\item{i}{row indices}
+  \item{i}{row indices}
 
-\item{j}{col indices}
+  \item{j}{col indices}
 
-\item{...}{Additional args to give to subset operator}
+  \item{...}{Additional args to give to subset operator}
 
-\item{drop}{logical, drop dimensions when subsetting with single value?}
+  \item{drop}{logical, drop dimensions when subsetting with
+  single value?}
 }
 \value{
 assayData data structure
 }
 \description{
-Subset or re-order assayData locked environment, environment, or list. Shamelessly stolen
-from "[" method in Biobase version 2.8 along with guts of assayDataStorageMode()
+Subset or re-order assayData locked environment,
+environment, or list. Shamelessly stolen from "[" method in
+Biobase version 2.8 along with guts of
+assayDataStorageMode()
 }
 \examples{
 data(genoset)
