@@ -165,12 +165,11 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = .simple_rbind_dataframe(segs)
+    segs.df = .simple_rbind_dataframe(segs, "Sample")
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
     }
-    segs.df$Sample <- rep(names(segs), vapply(segs,nrow, integer(1)) )
     return(segs.df)
   }
 })
@@ -273,12 +272,11 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = .simple_rbind_dataframe(segs)
+    segs.df = .simple_rbind_dataframe(segs, "Sample")
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
     }
-    segs.df$Sample <- rep(names(segs), vapply(segs,nrow, integer(1)) )
     return(segs.df)
   }
 })
