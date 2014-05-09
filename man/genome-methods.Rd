@@ -2,12 +2,24 @@
 \docType{methods}
 \name{genome,GenoSet-method}
 \alias{genome,GenoSet-method}
+\alias{genome<-,GenoSet-method}
 \title{Genome version}
 \usage{
 \S4method{genome}{GenoSet}(x)
+
+\S4method{genome}{GenoSet}(x) <- value
 }
 \arguments{
   \item{x}{GenoSet}
+
+  \item{value}{ Typically a \link{Seqinfo} object for the
+  \code{seqinfo} setter.
+
+  Either a named or unnamed character vector for the
+  \code{seqlevels} setter.
+
+  A vector containing the sequence information to store for
+  the other setters.  }
 }
 \value{
 character, e.g. hg19
