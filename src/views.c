@@ -25,10 +25,12 @@ SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP 
   double *values_p = REAL(Values);
   int *lengths_p = INTEGER(Lengths);
   int keep_na = !LOGICAL(Na_rm)[0];
-  
+
+  double temp_sum;
   int i, start, width, ans_len, index, lower_run, upper_run, lower_bound, upper_bound, max_index;
   int inner_n, num_na, isna;
   // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  Pass in a char* and the SXP to check, switch on SXP type and loop?
+  max_index = LENGTH(Lengths) - 1;
   index = 0;
   upper_run = *lengths_p;
   for (i = 0; i < length_start; i++) {
@@ -38,7 +40,7 @@ SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP 
       ans_p[i] = R_NaN;
       continue;
     }
-    ans_p[i] = 0;
+    temp_sum = 0;
     num_na = 0;
     // I think doing genoset::binary_bound on the cumsums of start and end would be faster here for finding lowe and upper run.
     // Hmm, looks like bound finding is linear for first, but then looks nearby for subsequent.  Maybe not much gain with binary search with sorted ranges.
@@ -57,10 +59,9 @@ SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP 
     upper_bound = start + width - 1;
     while (lower_run <= upper_bound) {
       isna = ISNA(values_p[index]); // Depends on TYPEOF(Values), abstract to char array of 0,1 with genoset/src/utils.c isNA
-      //      inner_n = (1 + (upper_bound < upper_run ? upper_bound : upper_run) - (lower_bound > lower_run ? lower_bound : lower_run));
       inner_n = 1 + (upper_bound - lower_bound);
       num_na += isna * inner_n;
-      ans_p[i] += values_p[index] * (inner_n * (!isna)); // Depends on typeof(values_p), polymorphism with template?
+      temp_sum += values_p[index] * (inner_n * (!isna)); // Depends on typeof(temp_sum) or typeof(values_p)
       if (index >= max_index) { break; }
       lengths_p++;
       index++;
@@ -69,10 +70,11 @@ SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP 
       upper_run += *lengths_p;
     }
     if ( num_na == width || (keep_na && num_na > 0)) {
-      ans_p[i] = NA_REAL;
+      temp_sum = NA_REAL;
     } else {
-      ans_p[i] /= (width - num_na);
+      temp_sum /= (width - num_na);
     }
+    ans_p[i] = temp_sum;
   }
   UNPROTECT(1);
   return Ans;
