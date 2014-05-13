@@ -28,6 +28,7 @@ Imports:
     graphics
 Suggests:
     RUnit,
+    inline,
     DNAcopy,
     stats,
     BSgenome,

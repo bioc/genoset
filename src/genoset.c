@@ -1,5 +1,6 @@
 #include <R.h>
 #include <Rinternals.h>
+#include "genoset.h"
 
 /* TODO: break out redundant code in binary_bound and binary_bound_by_chr for ease of reading/maintenance */
 

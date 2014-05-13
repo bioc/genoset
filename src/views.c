@@ -1,8 +1,6 @@
 #include <R.h>
 #include <Rinternals.h>
-#include <R_ext/Arith.h>
-#include <R_ext/Utils.h>
-
+#include "genoset.h"
 
 // Computing mean of arbitrary slices of an Rle, assuming slices are within [1,length(rle)] (trimmed)
 // Takes contents of Rle and IRanges rather than taking these or these stuffed into an RleViews
@@ -71,6 +69,75 @@ SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP 
     }
     if ( num_na == width || (keep_na && num_na > 0)) {
       temp_sum = NA_REAL;
+    } else {
+      temp_sum /= (width - num_na);
+    }
+    ans_p[i] = temp_sum;
+  }
+  UNPROTECT(1);
+  return Ans;
+}
+
+SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
+  int keep_na = ! asLogical(Na_rm);
+  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
+  
+  int length_start = LENGTH(Start);
+  int *start_p = INTEGER(Start);
+  int *width_p = INTEGER(Width);
+  double *values_p = REAL(Values);  // Input type dependence
+  int *lengths_p = INTEGER(Lengths);
+  int nrun = LENGTH(Values);
+  int nranges = LENGTH(Start);
+
+  const double na_val = NA_REAL;  // Input type dependence
+  SEXP Ans;
+  PROTECT(Ans = allocVector(REALSXP, length_start ));	
+  double *ans_p = REAL(Ans);
+
+  double temp_sum;
+  int i, start, width;
+  int lower_run, upper_run, run_index = 0;
+  int inner_n, num_na, isna;
+  int mflag = 0; // out of bounds flag for findInterval
+  
+  // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  genoset/src/utils.c isNA
+  for (i = 0; i < length_start; i++) {
+    start = start_p[i];
+    width = width_p[i];
+    temp_sum = 0;
+    num_na = 0;
+
+    // Find run(s) covered by current range using binary search on cumsum(width)
+    double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
+    double* run_last_index = (double *) R_alloc(nrun, sizeof(double));
+    widthToStartEnd(width_p, run_first_index, run_last_index, nrun);
+    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag);
+    upper_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag);  // Yes, search the left index both times
+    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
+      ans_p[i] = values_p[lower_run];
+      continue;
+    } else {
+      // First run
+      isna = ISNA(values_p[lower_run]); // Depends on TYPEOF(Values), abstract to char array of 0,
+      inner_n = 1 + (run_last_index[lower_run] - start_p[i]);
+      num_na += isna * inner_n;
+      temp_sum += values_p[lower_run] * (inner_n * (!isna));
+      // Inner runs
+      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
+	isna = ISNA(values_p[run_index]);
+	inner_n = width_p[i];
+	num_na += isna * inner_n;
+	temp_sum += values_p[lower_run] * (inner_n * (!isna));
+      }
+      // Last run 
+      isna = ISNA(values_p[run_index]);
+      inner_n = 1 + run_first_index[run_index] - (start_p[i] + width_p[i]);
+      num_na += isna * inner_n;
+      temp_sum += values_p[lower_run] * (inner_n * (!isna));
+    }
+    if ( num_na > 0 && (num_na == width || keep_na)) {
+      temp_sum = na_val;
     } else {
       temp_sum /= (width - num_na);
     }
