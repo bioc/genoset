@@ -33,7 +33,7 @@ stacked.basic.segs.after = data.frame(
   loc.start = c(1,4,2,1,3,4,2,6,1,3,4,6,2), loc.end = c(7,6,8,1,7,6,4,8,1,7,4,6,8),
   num.mark = c(4,2,4,1,3,2,2,2,1,3,1,1,4),
   seg.mean = c(5.3,2.3,1.2,1.1,1.4,2.2,3.3,0.5,3.3,4.3,4.3,6.3,7.3),
-  Sample=c(rep("K",3),rep("L",5),rep("M",5)),
+  Sample=factor(c(rep("K",3),rep("L",5),rep("M",5))),
   row.names=NULL,
   stringsAsFactors=FALSE)
 
@@ -116,7 +116,7 @@ test_segPairTable <- function() {
   stacked.segs.df = do.call(rbind,list(a = segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end), b = segPairTable(cn+1,loh+1,chr.ind=chr.ind,start=start,end=end)))
   stacked.segs.df = cbind(
     stacked.segs.df,
-    Sample = rep(c("a","b"),each=8),
+    Sample = factor(rep(c("a","b"),each=8)), 
     stringsAsFactors=FALSE,row.names=NULL)
   checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
 }

@@ -248,7 +248,7 @@ readGenoSet <- function(path) {
 }
 
 .simple_rbind_dataframe <- function(dflist, element.colname) {
-  numrows = vapply(dflist, nrow, integer(1)) > 0
+  numrows = vapply(dflist, nrow, integer(1))
   if (!missing(element.colname)) {
     list.name.col = factor(rep(names(dflist), numrows), levels=names(dflist))
   }
