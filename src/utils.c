@@ -48,6 +48,6 @@ void widthToStartEnd(int* width, double* start, double* end, int n) {
   end[0] = width[0];
   for (int i=1; i < n; i++) {
     start[i] = end[i-1] + 1;
-    end[i] += end[i-1] + width[i];
+    end[i] = end[i-1] + width[i];
   }
 }
