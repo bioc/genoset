@@ -97,7 +97,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   double temp_sum;
   int i, start, width;
   int lower_run, upper_run, run_index = 0;
-  int inner_n, num_na, isna;
+  int inner_n, effective_width, isna;
   int mflag = 0; // out of bounds flag for findInterval
   
   // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  genoset/src/utils.c isNA
@@ -110,7 +110,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     start = start_p[i];
     width = width_p[i];
     temp_sum = 0;
-    num_na = 0;
+    effective_width = 0;
     
     lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
     upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag) - 1;  // Yes, search the left bound both times
@@ -121,29 +121,29 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     } else {
       // First run
       isna = ISNA(values_p[lower_run]); // Depends on TYPEOF(Values), abstract to char array of 0,
-      inner_n = 1 + (run_last_index[lower_run] - start_p[i]);
-      num_na += isna * inner_n;  //  Flip and make "n", use below?
-      temp_sum += values_p[lower_run] * (inner_n * (!isna));
+      inner_n = (1 + (run_last_index[lower_run] - start)) * !isna;
+      effective_width += inner_n;
+      temp_sum += values_p[lower_run] * inner_n;
       //      printf("temp_sum: %.0f\n",temp_sum);
       // Inner runs
       for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
       	isna = ISNA(values_p[run_index]);
-      	inner_n = lengths_p[i];
-      	num_na += isna * inner_n;
-      	temp_sum += values_p[run_index] * (inner_n * (!isna));
+      	inner_n = lengths_p[run_index] * !isna;
+      	effective_width += inner_n;
+      	temp_sum += values_p[run_index] * inner_n;
 	//	printf("temp_sum: %.0f\n",temp_sum);
       }
       // Last run
       isna = ISNA(values_p[upper_run]);
-      inner_n = 2 + run_first_index[upper_run] - (start_p[i] + width_p[i]);  //  +2 is because should also have (start + width) + 1
-      num_na += isna * inner_n;
-      //      printf("inner_n: %i, num_na: %i\n",inner_n,num_na);
-      temp_sum += values_p[upper_run] * (inner_n * (!isna));
+      inner_n = (2 + run_first_index[upper_run] - (start + width)) * !isna;  //  +2 is because should also have ((start + width) - 1)
+      effective_width += inner_n;
+      //      printf("inner_n: %i, effective_width: %i\n",inner_n,effective_width);
+      temp_sum += values_p[upper_run] * inner_n;
       //      printf("temp_sum: %.0f\n",temp_sum);
-      if ( num_na > 0 && (num_na == width || keep_na)) {
+      if ( effective_width != width && (effective_width == 0 || keep_na)) {
 	temp_sum = na_val;
       } else {
-	temp_sum /= (width - num_na);
+	temp_sum /= effective_width;
       }
       ans_p[i] = temp_sum;
     }
