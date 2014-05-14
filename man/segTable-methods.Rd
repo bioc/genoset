@@ -72,7 +72,7 @@ Other "segmented data": \code{\link{bounds2Rle}};
 \code{\link{runCBS}}; \code{\link{segPairTable}},
 \code{\link{segPairTable,DataFrame,DataFrame-method}},
 \code{\link{segPairTable,Rle,Rle-method}};
-\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2Granges}};
 \code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 

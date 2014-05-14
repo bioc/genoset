@@ -1,35 +1,5 @@
 ### All of my deprecated and defunct stuff
 
-##' ##' Get universe annotations
-##'
-##' Get universe annotations
-##' @param x GenoSet
-##' @return scalar character
-##' @rdname universe-methods
-##' @exportMethod universe
-setMethod("universe", "GenoSet", function(x) {
-  .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-} )
-
-##' @rdname universe-methods
-setMethod("universe", "GRanges", function(x) {
-  .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-} )
-
-##' @rdname universe-methods
-##' @exportMethod "universe<-"
-##' @param value scalar character, new value of universe
-setMethod("universe<-", signature(x="GenoSet"),
-                 function(x,value) {
-                   .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-                   })
-
-##' @rdname universe-methods
-setMethod("universe<-", signature(x="GRanges"),
-          function(x,value) {
-            .Defunct(new="genome", msg="RangedData is being replaced with GenomicRanges. Please use the genome method.")
-          })
-
 ##' Deprecated genoset features
 ##'
 ##' GenoSet is moving towards using GenomicRanges instead of RangedData. We are also getting rid of dependencies on eSet for a potential switch to an underlying SummarizedExperiment.
@@ -48,17 +18,3 @@ NULL
 ##' @name genoset-defunct
 ##' @aliases genoset-defunct
 NULL
-
-##' Make a RangedData from segments
-##'
-##' Starting from a data.frame of segments, like from CBS and segTable, organize as a RangedData. Label data "score",
-##' so it can easily be made into various genome browser formats using rtracklayer.
-##' @param segs data.frame, like from segment in DNAcopy or segTable
-##' @return RangedData
-##' @family "segmented data"
-##' @export segs2RangedData
-##' @family segments
-segs2RangedData <- function(segs) {
-  .Defunct("segs2Granges", msg="genoset is moving towards using GenomicRanges instead of RangedData.")
-}
-

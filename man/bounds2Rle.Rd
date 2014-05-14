@@ -38,7 +38,7 @@ Other "segmented data": \code{\link{rangeSegMeanLength}},
 \code{\link{segTable}},
 \code{\link{segTable,DataFrame-method}},
 \code{\link{segTable,Rle-method}};
-\code{\link{segs2Granges}}; \code{\link{segs2RangedData}};
+\code{\link{segs2Granges}};
 \code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 
