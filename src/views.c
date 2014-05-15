@@ -84,26 +84,24 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   
   int *start_p = INTEGER(Start);
   int *width_p = INTEGER(Width);
-  double *values_p = REAL(Values);  // Input type dependence
   int *lengths_p = INTEGER(Lengths);
   int nrun = LENGTH(Values);
   int nranges = LENGTH(Start);
   
-  const double na_val = NA_REAL;  // Input type dependence
+  // Input type dependence
+  double *values_p = REAL(Values);
+  const double na_val = NA_REAL;
   SEXP Ans;
   PROTECT(Ans = allocVector(REALSXP, nranges ));	
   double *ans_p = REAL(Ans);
   
   double temp_sum;
-  int i, start, width;
-  int lower_run, upper_run, run_index = 0;
-  int inner_n, effective_width, isna;
-  int mflag = 0; // out of bounds flag for findInterval
+  int i, start, width, inner_n, effective_width, isna;
+  int lower_run, upper_run, run_index, mflag = 0;
   
-  // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  genoset/src/utils.c isNA
   double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
   double* run_last_index = (double *) R_alloc(nrun, sizeof(double));
-  // Find run(s) covered by current range using binary search on cumsum(width)
+
   widthToStartEnd(lengths_p, run_first_index, run_last_index, nrun);
   
   for (i = 0; i < nranges; i++) {
@@ -111,35 +109,30 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     width = width_p[i];
     temp_sum = 0;
     effective_width = 0;
-    
+    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
     lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
     upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag) - 1;  // Yes, search the left bound both times
-    //    printf("lower: %i, upper: %i\n", lower_run, upper_run);
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
       ans_p[i] = values_p[lower_run];
       continue;
     } else {
       // First run
-      isna = ISNA(values_p[lower_run]); // Depends on TYPEOF(Values), abstract to char array of 0,
+      isna = ISNA(values_p[lower_run]); // Depends on TYPEOF(Values), abstract to char array of 0,1 
       inner_n = (1 + (run_last_index[lower_run] - start)) * !isna;
       effective_width += inner_n;
       temp_sum += values_p[lower_run] * inner_n;
-      //      printf("temp_sum: %.0f\n",temp_sum);
       // Inner runs
       for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
       	isna = ISNA(values_p[run_index]);
       	inner_n = lengths_p[run_index] * !isna;
       	effective_width += inner_n;
       	temp_sum += values_p[run_index] * inner_n;
-	//	printf("temp_sum: %.0f\n",temp_sum);
       }
       // Last run
       isna = ISNA(values_p[upper_run]);
       inner_n = (2 + run_first_index[upper_run] - (start + width)) * !isna;  //  +2 is because should also have ((start + width) - 1)
       effective_width += inner_n;
-      //      printf("inner_n: %i, effective_width: %i\n",inner_n,effective_width);
       temp_sum += values_p[upper_run] * inner_n;
-      //      printf("temp_sum: %.0f\n",temp_sum);
       if ( effective_width != width && (effective_width == 0 || keep_na)) {
 	temp_sum = na_val;
       } else {
