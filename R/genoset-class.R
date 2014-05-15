@@ -19,10 +19,10 @@
 ##' @seealso genoset-datasets GenoSet
 ##' 
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
-##' @importClassesFrom IRanges DataFrame Rle RangedData
+##' @importClassesFrom IRanges DataFrame Rle
 ##' @importClassesFrom GenomicRanges GRanges GenomicRanges GIntervalTree
 ##'
-##' @importMethodsFrom GenomicRanges seqnames seqlevels names "names<-" length width genome "genome<-"
+##' @importMethodsFrom GenomicRanges names "names<-" length width
 ##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean nrow order paste ranges Rle rownames
@@ -32,7 +32,7 @@
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges DataFrame IRanges "%over%"
 ##' @importFrom GenomicRanges GRanges
-##' @importFrom GenomeInfoDb seqlengths
+##' @importFrom GenomeInfoDb seqlengths seqlevels genome "genome<-" seqnames
 ##'
 ##' @import methods
 ##' @import BiocGenerics
@@ -55,13 +55,6 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 setValidity("GenoSet", function(object) {
   return( all( rownames(locData(object)) == rownames(assayData(object)) ) )
 })
-
-##' @exportClass RangedDataOrGenomicRanges
-setClassUnion("RangedDataOrGenomicRanges", c("RangedData", "GenomicRanges"))
-##' @exportClass RangedDataOrGenoset
-setClassUnion("RangedDataOrGenoset", c("RangedData", "GenoSet"))
-##' @exportClass RangedDataOrGenoSetOrGenomicRanges
-setClassUnion("RangedDataOrGenoSetOrGenomicRanges", c("RangedData", "GenoSet", "GenomicRanges"))
 
 ##' Create a GenoSet or derivative object
 ##'
@@ -668,7 +661,7 @@ setMethod("chrNames<-", signature(object="GRanges"),
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 
 ##' @rdname chrInfo-methods
-setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
           function(object) {
             # Get max end value for each chr
             if (class(object) == "GRanges" && !any(is.na(seqlengths(object)))) {
@@ -711,7 +704,7 @@ setMethod("chrInfo", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 
 ##' @rdname chrIndices-methods
-setMethod("chrIndices", signature(object="RangedDataOrGenoSetOrGenomicRanges"),
+setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
             object.lengths = elementLengths(object)
             object.lengths = object.lengths[ object.lengths > 0 ]
@@ -803,32 +796,3 @@ subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
     return(aData)
   }
 }
-
-#### Deprecated RangedData stuff
-
-##' @rdname chrNames-methods
-setMethod("chrNames", signature(object="RangedData"),
-          function(object) {
-            names(object)
-          })
-
-##' @rdname chrNames-methods
-setMethod("chrNames<-", signature(object="RangedData"),
-          function(object,value) {
-            names(object) = value
-            return(object)
-          })
-
-##' @rdname rownames-methods
-setMethod("featureNames", signature(object="RangedData"),
-          function(object) {
-            return(rownames(object))
-          })
-
-##' @rdname rownames-methods
-setMethod("featureNames<-",
-          signature=signature(object="RangedData", value="ANY"),
-          function(object, value) {
-            rownames(object) = value
-            return(object)
-          })

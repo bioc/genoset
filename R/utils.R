@@ -169,7 +169,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf. Currently
 ##' all ranges are tabulated, later I may do letterFrequencyInSlidingWindow for big windows and then
 ##' match to the nearest.
-##' @param object GenomicRanges, GenoSet, or RangedData
+##' @param object GenomicRanges or GenoSet
 ##' @param bsgenome BSgenome, like Hsapiens from BSgenome.Hsapiens.UCSC.hg19
 ##' @param expand scalar integer, amount to expand each range before calculating gc
 ##' @return numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}

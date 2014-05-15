@@ -39,11 +39,11 @@ biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariation
 Roxygen: list(wrap=TRUE)
 Collate:
+    'genoset-class.R'
     'RleDataFrame-class.R'
     'RleDataFrame-methods.R'
     'RleDataFrame-views.R'
     'bounds.R'
-    'genoset-class.R'
     'junk.R'
     'ordering.R'
     'plots.R'

@@ -98,7 +98,7 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
 ##' check for NAs or unsorted data in the subject positions. Also, the positions are
 ##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles.
-##' These assumptions are safe for position info coming from a GenoSet, GRanges, or RangedData.
+##' These assumptions are safe for position info coming from a GenoSet or GRanges.
 ##'
 ##' @param starts integer vector of first base position of each query range
 ##' @param stops integer vector of last base position of each query range
@@ -153,7 +153,7 @@ boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indice
 ##' Both query and subject must be in at least weak genome order (sorted by start within chromosome blocks).
 ##' 
 ##' @param query GRanges or something coercible to GRanges
-##' @param subject RangedData
+##' @param subject GenomicRanges
 ##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
 ##' @export boundingIndicesByChr
 ##' @family "range summaries"

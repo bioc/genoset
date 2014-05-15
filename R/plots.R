@@ -119,7 +119,7 @@ setMethod("genoPlot", signature(x="GenoSetOrGenomicRanges",y="ANY"), function(x,
 ##' Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
 ##'
 ##' @title Label axis with base pair units
-##' @param locs RangedData to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
+##' @param locs GenomicRanges to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
 ##' @param side integer side of plot to put axis
 ##' @param log logical Is axis logged?
 ##' @param do.other.side logical, label non-genome side with data values at tick marks?
