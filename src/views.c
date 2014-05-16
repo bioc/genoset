@@ -174,7 +174,8 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   // Abstract all the NA checking to a simple lookup of a boolean value
   char* isna = (char *) R_alloc(nrun, sizeof(char));
   isNA(Values, isna);
-  
+
+  // From here down all type-dependence could be handled by a template on values_p and na_val
   for (i = 0; i < nranges; i++) {
     start = start_p[i];
     width = width_p[i];

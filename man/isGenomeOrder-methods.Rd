@@ -4,7 +4,6 @@
 \alias{isGenomeOrder}
 \alias{isGenomeOrder,GRanges-method}
 \alias{isGenomeOrder,GenoSet-method}
-\alias{isGenomeOrder,RangedData-method}
 \title{Check if a GRanges orGenoSet is in genome order}
 \usage{
 isGenomeOrder(ds, strict = TRUE)
@@ -12,8 +11,6 @@ isGenomeOrder(ds, strict = TRUE)
 \S4method{isGenomeOrder}{GenoSet}(ds, strict = TRUE)
 
 \S4method{isGenomeOrder}{GRanges}(ds, strict = TRUE)
-
-\S4method{isGenomeOrder}{RangedData}(ds, strict = TRUE)
 }
 \arguments{
   \item{ds}{GenoSet or GRanges}
@@ -39,7 +36,6 @@ data(genoset)
 Other "genome ordering": \code{\link{chrOrder}};
 \code{\link{toGenomeOrder}},
 \code{\link{toGenomeOrder,GRanges-method}},
-\code{\link{toGenomeOrder,GenoSet-method}},
-\code{\link{toGenomeOrder,RangedData-method}}
+\code{\link{toGenomeOrder,GenoSet-method}}
 }
 

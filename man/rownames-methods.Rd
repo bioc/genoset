@@ -3,10 +3,8 @@
 \name{rownames,GRanges-method}
 \alias{featureNames,GRanges-method}
 \alias{featureNames,GenoSet-method}
-\alias{featureNames,RangedData-method}
 \alias{featureNames<-,GRanges-method}
 \alias{featureNames<-,GenoSet-method}
-\alias{featureNames<-,RangedData-method}
 \alias{rownames,GRanges-method}
 \alias{rownames,GenoSet-method}
 \alias{rownames<-,GRanges-method}
@@ -28,18 +26,16 @@
 \S4method{featureNames}{GenoSet}(object) <- value
 
 \S4method{featureNames}{GRanges}(object) <- value
-
-\S4method{featureNames}{RangedData}(object)
-
-\S4method{featureNames}{RangedData}(object) <- value
 }
 \arguments{
   \item{object}{GRanges or GenoSet}
 
   \item{x}{ A matrix-like object.  }
 
-  \item{value}{ Either \code{NULL} or a character vector
-  equal of length equal to the appropriate dimension.  }
+  \item{value}{a valid value for that component of
+  \code{\link{dimnames}(x)}.  For a matrix or array this is
+  either \code{NULL} or a character vector of non-zero
+  length equal to the appropriate dimension.}
 }
 \value{
 character vector with names rows/features

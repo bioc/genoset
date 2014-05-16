@@ -6,7 +6,7 @@
 genomeAxis(locs = NULL, side = 1, log = FALSE, do.other.side = TRUE)
 }
 \arguments{
-  \item{locs}{RangedData to be used to draw chromosome
+  \item{locs}{GenomicRanges to be used to draw chromosome
   boundaries, if necessary.  Usually locData slot from a
   GenoSet.}
 

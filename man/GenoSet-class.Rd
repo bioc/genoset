@@ -3,9 +3,7 @@
 \docType{class}
 \alias{GenoSet-class}
 \alias{GenoSetOrGenomicRanges-class}
-\alias{RangedDataOrGenomicRanges-class}
-\alias{RangedDataOrGenoset-class}
-\alias{RangedDataOrGenoSetOrGenomicRanges-class}
+
 
 \title{Class \code{"GenoSet"}}
 \description{
@@ -48,8 +46,11 @@ Class \code{"\linkS4class{eSet}"}, directly.
     \item{locData}{\code{signature(object = "GenoSet")}: ... }
     \item{names}{\code{signature(x = "GenoSet")}: ... }
     \item{ranges}{\code{signature(x = "GenoSet")}: ... }
+    \item{chrInfo}{\code{signature(x = "GenoSet")}: ... }
+    \item{chrIndices}{\code{signature(x = "GenoSet")}: ... }
     \item{show}{\code{signature(object = "GenoSet")}: ... }
     \item{toGenomeOrder}{\code{signature(ds = "GenoSet")}: ... }
+    \item{isGenomeOrder}{\code{signature(ds = "GenoSet")}: ... }
   }
 }
 

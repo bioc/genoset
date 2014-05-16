@@ -4,7 +4,6 @@
 \alias{toGenomeOrder}
 \alias{toGenomeOrder,GRanges-method}
 \alias{toGenomeOrder,GenoSet-method}
-\alias{toGenomeOrder,RangedData-method}
 \title{Set a GRanges or GenoSet to genome order}
 \usage{
 toGenomeOrder(ds, strict = TRUE)
@@ -12,8 +11,6 @@ toGenomeOrder(ds, strict = TRUE)
 \S4method{toGenomeOrder}{GRanges}(ds, strict = TRUE)
 
 \S4method{toGenomeOrder}{GenoSet}(ds, strict = TRUE)
-
-\S4method{toGenomeOrder}{RangedData}(ds, strict = TRUE)
 }
 \arguments{
   \item{ds}{GenoSet or GRanges}
@@ -47,7 +44,6 @@ data(genoset)
 Other "genome ordering": \code{\link{chrOrder}};
 \code{\link{isGenomeOrder}},
 \code{\link{isGenomeOrder,GRanges-method}},
-\code{\link{isGenomeOrder,GenoSet-method}},
-\code{\link{isGenomeOrder,RangedData-method}}
+\code{\link{isGenomeOrder,GenoSet-method}}
 }
 

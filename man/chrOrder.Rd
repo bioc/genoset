@@ -22,11 +22,9 @@ chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX
 \seealso{
 Other "genome ordering": \code{\link{isGenomeOrder}},
 \code{\link{isGenomeOrder,GRanges-method}},
-\code{\link{isGenomeOrder,GenoSet-method}},
-\code{\link{isGenomeOrder,RangedData-method}};
+\code{\link{isGenomeOrder,GenoSet-method}};
 \code{\link{toGenomeOrder}},
 \code{\link{toGenomeOrder,GRanges-method}},
-\code{\link{toGenomeOrder,GenoSet-method}},
-\code{\link{toGenomeOrder,RangedData-method}}
+\code{\link{toGenomeOrder,GenoSet-method}}
 }
 

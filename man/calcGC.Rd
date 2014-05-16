@@ -6,7 +6,7 @@
 calcGC(object, bsgenome, expand = 1e+06)
 }
 \arguments{
-  \item{object}{GenomicRanges, GenoSet, or RangedData}
+  \item{object}{GenomicRanges or GenoSet}
 
   \item{bsgenome}{BSgenome, like Hsapiens from
   BSgenome.Hsapiens.UCSC.hg19}

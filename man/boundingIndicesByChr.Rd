@@ -8,7 +8,7 @@ boundingIndicesByChr(query, subject)
 \arguments{
   \item{query}{GRanges or something coercible to GRanges}
 
-  \item{subject}{RangedData}
+  \item{subject}{GenomicRanges}
 }
 \value{
 integer matrix with two columns corresponding to indices on

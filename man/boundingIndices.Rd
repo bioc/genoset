@@ -61,7 +61,7 @@ boundingIndices does not check for NAs or unsorted data in
 the subject positions. Also, the positions are kept as
 integer, where boundingIndices2 (and findInterval) convert
 them to doubles. These assumptions are safe for position
-info coming from a GenoSet, GRanges, or RangedData.
+info coming from a GenoSet or GRanges.
 }
 \examples{
 starts = seq(10,100,10)
