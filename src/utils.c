@@ -40,7 +40,42 @@ void isNA(SEXP vec, char* na) {
   }
 }
 
-// Take widths, like from an Rle, compute start and end index for each run.
+// Like the above isNA, but returns the number of NAs.
+//   This may be used to decide proceed with a simpler algorithm 
+//   if == 0 or the sum itself may be used to simplify subsequent
+//   code, like a mean.
+int numNA(SEXP vec, char* na) {
+  int num_na = 0;
+  if (TYPEOF(vec) == REALSXP) {
+    double* vec_p = REAL(vec);    
+    for (int i=0; i < LENGTH(vec); i++) {
+      na[i] = ISNA(vec_p[i]);
+      num_na += na[i];
+    }
+  } else if (TYPEOF(vec) == INTSXP) {
+    int* vec_p = INTEGER(vec);
+    for (int i=0; i < LENGTH(vec); i++) {
+      na[i] = vec_p[i] == NA_INTEGER;
+      num_na += na[i];
+    }
+  } else if (TYPEOF(vec) == LGLSXP) {
+    int* vec_p = INTEGER(vec);
+    for (int i=0; i < LENGTH(vec); i++) {
+      na[i] = vec_p[i] == NA_LOGICAL;
+      num_na += na[i];
+    }
+  } else if (TYPEOF(vec) == STRSXP) {
+    for (int i=0; i < LENGTH(vec); i++) {
+      na[i] = STRING_ELT(vec, i) == NA_STRING; 
+      num_na += na[i];
+    }
+  } else {
+    error("vec must contain either 'integer', 'logical' or 'character' or 'numeric' values");
+  }
+  return(num_na);
+}
+
+// Take widths, like from an Rle, compute start and end index for each run (1-based).
 // Uses doubles as these are likely full-genome positions, that get bigger than int32.
 // Doubles lets us use findInterval. May want to template some day so we can use int, long, or double
 void widthToStartEnd(int* width, double* start, double* end, int n) {
@@ -49,5 +84,15 @@ void widthToStartEnd(int* width, double* start, double* end, int n) {
   for (int i=1; i < n; i++) {
     start[i] = end[i-1] + 1;
     end[i] = end[i-1] + width[i];
+  }
+}
+
+// Take widths, like from an Rle, compute start index for each run (1-based).
+// Uses doubles as these are likely full-genome positions, that get bigger than int32.
+// Doubles lets us use findInterval. May want to template some day so we can use int, long, or double
+void widthToStart(int* width, double* start, int n) {
+  start[0] = 1;
+  for (int i=1; i < n; i++) {
+    start[i] = start[i-1] + width[i];
   }
 }

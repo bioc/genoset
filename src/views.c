@@ -25,7 +25,7 @@
    int keep_na = !LOGICAL(Na_rm)[0];
 
    double temp_sum;
-   int i, start, width, ans_len, index, lower_run, upper_run, lower_bound, upper_bound, max_index;
+   int i, start, width, index, lower_run, upper_run, lower_bound, upper_bound, max_index;
    int inner_n, num_na, isna;
    // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  Pass in a char* and the SXP to check, switch on SXP type and loop?
    max_index = LENGTH(Lengths) - 1;
@@ -77,76 +77,8 @@
    UNPROTECT(1);
    return Ans;
  }
-
+  
 SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
-  int keep_na = ! asLogical(Na_rm);
-  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
-  
-  int *start_p = INTEGER(Start);
-  int *width_p = INTEGER(Width);
-  int *lengths_p = INTEGER(Lengths);
-  int nrun = LENGTH(Values);
-  int nranges = LENGTH(Start);
-  
-  // Input type dependence
-  double *values_p = REAL(Values);
-  const double na_val = NA_REAL;
-  SEXP Ans;
-  PROTECT(Ans = allocVector(REALSXP, nranges ));	
-  double *ans_p = REAL(Ans);
-  
-  double temp_sum;
-  int i, start, width, inner_n, effective_width, isna;
-  int lower_run, upper_run, run_index, mflag = 0;
-  
-  double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
-  double* run_last_index = (double *) R_alloc(nrun, sizeof(double));
-
-  widthToStartEnd(lengths_p, run_first_index, run_last_index, nrun);
-  
-  for (i = 0; i < nranges; i++) {
-    start = start_p[i];
-    width = width_p[i];
-    temp_sum = 0;
-    effective_width = 0;
-    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
-    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
-    upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag) - 1;  // Yes, search the left bound both times
-    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
-      ans_p[i] = values_p[lower_run];
-      continue;
-    } else {
-      // First run
-      isna = ISNA(values_p[lower_run]); // Depends on TYPEOF(Values), abstract to char array of 0,1 
-      inner_n = (1 + (run_last_index[lower_run] - start)) * !isna;
-      effective_width += inner_n;
-      temp_sum += values_p[lower_run] * inner_n;
-      // Inner runs
-      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
-      	isna = ISNA(values_p[run_index]);
-      	inner_n = lengths_p[run_index] * !isna;
-      	effective_width += inner_n;
-      	temp_sum += values_p[run_index] * inner_n;
-      }
-      // Last run
-      isna = ISNA(values_p[upper_run]);
-      inner_n = (2 + run_first_index[upper_run] - (start + width)) * !isna;  //  +2 is because should also have ((start + width) - 1)
-      effective_width += inner_n;
-      temp_sum += values_p[upper_run] * inner_n;
-      if ( effective_width != width && (effective_width == 0 || keep_na)) {
-	temp_sum = na_val;
-      } else {
-	temp_sum /= effective_width;
-      }
-      ans_p[i] = temp_sum;
-    }
-  }
-  UNPROTECT(1);
-  return Ans;
-}
-   
-  
-SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
   int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
@@ -164,12 +96,11 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   double *ans_p = REAL(Ans);
   
   double temp_sum;
-  int i, start, width, inner_n, effective_width;
+  int i, start, width, end, inner_n, effective_width;
   int lower_run, upper_run, run_index, mflag = 0;
   
   double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
-  double* run_last_index = (double *) R_alloc(nrun, sizeof(double));
-  widthToStartEnd(lengths_p, run_first_index, run_last_index, nrun);
+  widthToStart(lengths_p, run_first_index, nrun);
   
   // Abstract all the NA checking to a simple lookup of a boolean value
   char* isna = (char *) R_alloc(nrun, sizeof(char));
@@ -179,8 +110,7 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   for (i = 0; i < nranges; i++) {
     start = start_p[i];
     width = width_p[i];
-    temp_sum = 0;
-    effective_width = 0;
+    end = (start + width) - 1;
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
     lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
     upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag) - 1;  // Yes, search the left bound both times
@@ -189,9 +119,9 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
       continue;
     } else {
       // First run
-      inner_n = (1 + (run_last_index[lower_run] - start)) * !isna[lower_run];
-      effective_width += inner_n;
-      temp_sum += values_p[lower_run] * inner_n;
+      inner_n = (run_first_index[lower_run + 1] - start) * !isna[lower_run];
+      effective_width = inner_n;
+      temp_sum = values_p[lower_run] * inner_n;
       // Inner runs
       for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
       	inner_n = lengths_p[run_index] * !isna[run_index];
@@ -199,9 +129,10 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
       	temp_sum += values_p[run_index] * inner_n;
       }
       // Last run
-      inner_n = (2 + run_first_index[upper_run] - (start + width)) * !isna[upper_run];  //  +2 is because should also have ((start + width) - 1)
+      inner_n = ((end - run_first_index[upper_run]) + 1) * !isna[upper_run];
       effective_width += inner_n;
       temp_sum += values_p[upper_run] * inner_n;
+      printf("sum: %.2f, inner_n: %i", temp_sum, inner_n);
       if ( effective_width != width && (effective_width == 0 || keep_na)) {
 	temp_sum = na_val;
       } else {
@@ -214,4 +145,59 @@ SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   return Ans;
 }
    
+SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
+  int keep_na = ! asLogical(Na_rm);
+  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
+  int *start_p = INTEGER(Start);
+  int *width_p = INTEGER(Width);
+  int *lengths_p = INTEGER(Lengths);
+  int nrun = LENGTH(Values);
+  int nranges = LENGTH(Start);
+  
+  // Input type dependence
+  double *values_p = REAL(Values);
+  SEXP Ans;
+  PROTECT(Ans = allocVector(REALSXP, nranges ));  
+  double *ans_p = REAL(Ans);
+  
+  double temp_sum;
+  int i, start, width, end, inner_n;
+  int lower_run, upper_run, run_index, mflag = 0;
+  
+  double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
+  widthToStart(lengths_p, run_first_index, nrun);
+  
+  // Abstract all the NA checking to a simple lookup of a boolean value
+  char* isna = (char *) R_alloc(nrun, sizeof(char));
+  isNA(Values, isna);
+
+  // From here down all type-dependence could be handled by a template on values_p and na_val
+  for (i = 0; i < nranges; i++) {
+    start = start_p[i];
+    width = width_p[i];
+    end = (start + width) - 1;
+    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
+    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
+    upper_run = findInterval(run_first_index, nrun, end, 0, 0, lower_run, &mflag) - 1;  //   Yes, search the left bound both times
+    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
+      ans_p[i] = values_p[lower_run];
+      continue;
+    } else {
+      // First run
+      inner_n = run_first_index[lower_run + 1] - start;
+      temp_sum = values_p[lower_run] * inner_n;
+      // Inner runs
+      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
+        inner_n = lengths_p[run_index];
+      	temp_sum += values_p[run_index] * inner_n;
+      }
+      // Last run
+      inner_n = (end - run_first_index[upper_run]) + 1;
+      temp_sum += values_p[upper_run] * inner_n;
+      ans_p[i] = temp_sum / width;
+    }
+  }
+  UNPROTECT(1);
+  return Ans;
+}

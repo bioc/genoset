@@ -1,5 +1,6 @@
+library(RUnit)
 #library(inline)
-#
+
 #test_widthToStartEnd <- function() {
 #  w = rep(3, 5)
 #  s = numeric(5)
@@ -23,10 +24,19 @@ test_RleViews_viewMeans <- function(){
     s = start(ir)
     w = width(ir)
     one = .Call2("RleViews_viewMeans", myview, TRUE, PACKAGE = "IRanges")
-#    two = .Call2("RleViews_viewMeans", s, w, as.numeric(runValue(rle)), runLength(rle), TRUE, PACKAGE = "genoset")
-    three = .Call2("RleViews_viewMeans2", s, w, as.numeric(runValue(rle)), runLength(rle), TRUE, PACKAGE = "genoset")
+    #two = .Call2("RleViews_viewMeans2", s, w, as.numeric(runValue(rle)), runLength(rle), TRUE, PACKAGE = "genoset")
+    three = .Call2("RleViews_viewMeans3", s, w, as.numeric(runValue(rle)), runLength(rle), TRUE, PACKAGE = "genoset")
     check = cbind(as.data.frame(ranges(rle)), runValue(rle))
-#    checkEquals(one, two)
+    checkEquals(one, two)
     checkEquals(one, three, checkNames=FALSE)
-    return(TRUE)
+    
+    rle2 = Rle(c(1, NA, 3, NA, 5), rep(2,5))
+    myview2 = Views(rle2, ir)
+    one2 = .Call2("RleViews_viewMeans", myview2, TRUE, PACKAGE = "IRanges")
+    three2 = .Call2("RleViews_viewMeans3", s, w, as.numeric(runValue(rle2)), runLength(rle2), TRUE, PACKAGE = "genoset")
+    checkEquals(one2,three2, checkNames=FALSE)
+    
+    one3 = .Call2("RleViews_viewMeans", myview2, FALSE, PACKAGE = "IRanges")
+    three3 = .Call2("RleViews_viewMeans3", s, w, as.numeric(runValue(rle2)), runLength(rle2), FALSE, PACKAGE = "genoset")
+    checkEquals(one3,three3, checkNames=FALSE)
   }

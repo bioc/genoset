@@ -3,7 +3,9 @@
 
 // utils.c
 void isNA(SEXP vec, char* na);
+int numNA(SEXP vec, char* na); // Would rather overload (C++ only) with int isNA(SEXP vec, char* na);
 void widthToStartEnd(int* width, double* start, double* end, int n);
+void widthToStart(int* width, double* start, int n);
 
 // views.c
 SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm);
