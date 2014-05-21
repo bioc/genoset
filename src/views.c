@@ -101,6 +101,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   PROTECT(Ans = allocVector(REALSXP, nranges ));  
   double *ans_p = REAL(Ans);
   
+  // Just basic C types from here on
   double temp_sum;
   int i, start, width, end, inner_n, effective_width;
   int lower_run, upper_run, run_index, mflag = 0;
@@ -119,7 +120,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     end = (start + width) - 1;
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
     lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag);
-    upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag);  // Yes, search the left bound both times
+    upper_run = findInterval(run_first_index, nrun, end, 0, 0, lower_run, &mflag);  // Yes, search the left bound both times
     lower_run--; upper_run--; // Switch to 0-based indices
 
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
