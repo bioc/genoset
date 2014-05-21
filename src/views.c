@@ -78,6 +78,12 @@
    return Ans;
  }
   
+// Some branching for NA check only necessary for na.rm=TRUE and numeric Values.
+// Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
+//   but this is a minor fraction of the time. 75% of time in findInterval. Could 
+//   make version that does not check target list for NAs (guaranteed
+//   none as coming from rle runLength) gives 0-based result indices (hmm, --pointer 
+//   optionally to switch?) and possibly using long ints for positions to search against.
 SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
   int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
@@ -112,8 +118,10 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     width = width_p[i];
     end = (start + width) - 1;
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
-    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
-    upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag) - 1;  // Yes, search the left bound both times
+    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag);
+    upper_run = findInterval(run_first_index, nrun, (start + width) - 1, 0, 0, lower_run, &mflag);  // Yes, search the left bound both times
+    lower_run--; upper_run--; // Switch to 0-based indices
+
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
       ans_p[i] = values_p[lower_run];
       continue;
@@ -121,81 +129,18 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
       // First run
       inner_n = (run_first_index[lower_run + 1] - start) * !isna[lower_run];
       effective_width = inner_n;
-      temp_sum = values_p[lower_run] * inner_n;
+      temp_sum = isna[lower_run] ? 0 : values_p[lower_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
       // Inner runs
       for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
       	inner_n = lengths_p[run_index] * !isna[run_index];
       	effective_width += inner_n;
-      	temp_sum += values_p[run_index] * inner_n;
+	temp_sum += isna[run_index] ? 0 : values_p[run_index] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
       }
       // Last run
       inner_n = ((end - run_first_index[upper_run]) + 1) * !isna[upper_run];
       effective_width += inner_n;
-      temp_sum += values_p[upper_run] * inner_n;
-      printf("sum: %.2f, inner_n: %i", temp_sum, inner_n);
-      if ( effective_width != width && (effective_width == 0 || keep_na)) {
-	temp_sum = na_val;
-      } else {
-	temp_sum /= effective_width;
-      }
-      ans_p[i] = temp_sum;
-    }
-  }
-  UNPROTECT(1);
-  return Ans;
-}
-   
-SEXP RleViews_viewMeans3(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
-  int keep_na = ! asLogical(Na_rm);
-  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
-  
-  int *start_p = INTEGER(Start);
-  int *width_p = INTEGER(Width);
-  int *lengths_p = INTEGER(Lengths);
-  int nrun = LENGTH(Values);
-  int nranges = LENGTH(Start);
-  
-  // Input type dependence
-  double *values_p = REAL(Values);
-  SEXP Ans;
-  PROTECT(Ans = allocVector(REALSXP, nranges ));  
-  double *ans_p = REAL(Ans);
-  
-  double temp_sum;
-  int i, start, width, end, inner_n;
-  int lower_run, upper_run, run_index, mflag = 0;
-  
-  double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
-  widthToStart(lengths_p, run_first_index, nrun);
-  
-  // Abstract all the NA checking to a simple lookup of a boolean value
-  char* isna = (char *) R_alloc(nrun, sizeof(char));
-  isNA(Values, isna);
-
-  // From here down all type-dependence could be handled by a template on values_p and na_val
-  for (i = 0; i < nranges; i++) {
-    start = start_p[i];
-    width = width_p[i];
-    end = (start + width) - 1;
-    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
-    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag) - 1;
-    upper_run = findInterval(run_first_index, nrun, end, 0, 0, lower_run, &mflag) - 1;  //   Yes, search the left bound both times
-    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
-      ans_p[i] = values_p[lower_run];
-      continue;
-    } else {
-      // First run
-      inner_n = run_first_index[lower_run + 1] - start;
-      temp_sum = values_p[lower_run] * inner_n;
-      // Inner runs
-      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
-        inner_n = lengths_p[run_index];
-      	temp_sum += values_p[run_index] * inner_n;
-      }
-      // Last run
-      inner_n = (end - run_first_index[upper_run]) + 1;
-      temp_sum += values_p[upper_run] * inner_n;
-      ans_p[i] = temp_sum / width;
+      temp_sum += isna[upper_run] ? 0 : values_p[upper_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
+      ans_p[i] = (effective_width != width && (effective_width == 0 || keep_na)) ? na_val : temp_sum / effective_width;
     }
   }
   UNPROTECT(1);
