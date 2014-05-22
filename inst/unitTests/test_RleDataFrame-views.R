@@ -1,4 +1,5 @@
 ### Tests for summaries of views on RleDataFrame
+library(RUnit)
 
 test_RleDataFrame_views <- function() {
   # input

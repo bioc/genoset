@@ -40,7 +40,7 @@
      }
      temp_sum = 0;
      num_na = 0;
-     // I think doing genoset::binary_bound on the cumsums of start and end would be faster here for finding lowe and upper run.
+     // I think doing genoset::binary_bound on the cumsums of start and end would be faster here for finding lower and upper run.
      // Hmm, looks like bound finding is linear for first, but then looks nearby for subsequent.  Maybe not much gain with binary search with sorted ranges.
      while (index > 0 && upper_run > start) {
        upper_run -= *lengths_p;
@@ -84,7 +84,7 @@
 //   make version that does not check target list for NAs (guaranteed
 //   none as coming from rle runLength) gives 0-based result indices (hmm, --pointer 
 //   optionally to switch?) and possibly using long ints for positions to search against.
-SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
+RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
   int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
@@ -100,6 +100,10 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   SEXP Ans;
   PROTECT(Ans = allocVector(REALSXP, nranges ));  
   double *ans_p = REAL(Ans);
+
+  // Abstract all the NA checking to a simple lookup of a boolean value
+  char* isna = (char *) R_alloc(nrun, sizeof(char));
+  isNA(Values, isna);
   
   // Just basic C types from here on
   double temp_sum;
@@ -108,10 +112,6 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
   
   double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
   widthToStart(lengths_p, run_first_index, nrun);
-  
-  // Abstract all the NA checking to a simple lookup of a boolean value
-  char* isna = (char *) R_alloc(nrun, sizeof(char));
-  isNA(Values, isna);
 
   // From here down all type-dependence could be handled by a template on values_p and na_val
   for (i = 0; i < nranges; i++) {
@@ -144,6 +144,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
       ans_p[i] = (effective_width != width && (effective_width == 0 || keep_na)) ? na_val : temp_sum / effective_width;
     }
   }
+
   UNPROTECT(1);
   return Ans;
 }
