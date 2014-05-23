@@ -84,7 +84,7 @@
 //   make version that does not check target list for NAs (guaranteed
 //   none as coming from rle runLength) gives 0-based result indices (hmm, --pointer 
 //   optionally to switch?) and possibly using long ints for positions to search against.
-RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
+SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
   int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
@@ -107,22 +107,18 @@ RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_r
   
   // Just basic C types from here on
   double temp_sum;
-  int i, start, width, end, inner_n, effective_width;
-  int lower_run, upper_run, run_index, mflag = 0;
-  
-  double* run_first_index = (double *) R_alloc(nrun, sizeof(double));
+  int i, start, width, end, inner_n, effective_width, run_index;
+  int lower_run = 0, upper_run = 0;
+  int* run_first_index = (int*) R_alloc(nrun, sizeof(int));
   widthToStart(lengths_p, run_first_index, nrun);
-
   // From here down all type-dependence could be handled by a template on values_p and na_val
   for (i = 0; i < nranges; i++) {
     start = start_p[i];
     width = width_p[i];
     end = (start + width) - 1;
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
-    lower_run = findInterval(run_first_index, nrun, start, 0, 0, lower_run, &mflag);
-    upper_run = findInterval(run_first_index, nrun, end, 0, 0, lower_run, &mflag);  // Yes, search the left bound both times
-    lower_run--; upper_run--; // Switch to 0-based indices
-
+    lower_run = leftBound(run_first_index, start, nrun, lower_run);
+    upper_run = leftBound(run_first_index, end, nrun, lower_run);  // Yes, search the left bound both times
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
       ans_p[i] = values_p[lower_run];
       continue;

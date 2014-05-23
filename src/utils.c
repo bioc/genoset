@@ -76,8 +76,7 @@ int numNA(SEXP vec, char* na) {
 }
 
 // Take widths, like from an Rle, compute start and end index for each run (1-based).
-// Uses doubles as these are likely full-genome positions, that get bigger than int32.
-// Doubles lets us use findInterval. May want to template some day so we can use int, long, or double
+// Doubles lets us use findInterval. Want to switch to unsigned int. Either will fit a human genome pos.
 void widthToStartEnd(int* width, double* start, double* end, int n) {
   start[0] = 1;
   end[0] = width[0];
@@ -88,11 +87,53 @@ void widthToStartEnd(int* width, double* start, double* end, int n) {
 }
 
 // Take widths, like from an Rle, compute start index for each run (1-based).
-// Uses doubles as these are likely full-genome positions, that get bigger than int32.
-// Doubles lets us use findInterval. May want to template some day so we can use int, long, or double
-void widthToStart(int* width, double* start, int n) {
+void widthToStart(int* width, int* start, int n) {
   start[0] = 1;
   for (int i=1; i < n; i++) {
     start[i] = start[i-1] + width[i];
   }
+}
+
+/***********************
+Searching
+***********************/
+// unsigned int is big enough for a position in the human genome, but 32 bits
+// Also consider using unsigned ints to save having to care negative values passed in
+// Fun fact: if you do --positions before you pass it in, you get 1-based indices back, a al findInterval.
+int leftBound(int* positions, int query, int n, int restart) {
+  int probe, low, high, jump;
+  /* If data unsorted, current target may be anywhere left of restart for previous target, just start at 0 */
+//  if (restart < 0 || restart > n-1) {
+//    error("Bad restart. query: %i, restart: %i, n: %i, positions[0]: %i\n", query, restart, n, positions[0]);
+//  }
+  if (query < positions[restart]) {
+    low = 0;
+    high = n;
+  } else {
+    low = high = restart;
+  }
+
+  /* Right bound likely close to previous */
+  for (jump=1; ; jump+=jump) {
+    high += jump;
+    if (high >= n) {
+      high = n;
+      break;
+    }
+    if (query < positions[high]) {  /* Note difference to similar code resetting high after first binary search */
+	break;
+    }
+    low = high;
+  }
+  
+  /* Now binary search for closest left bound */
+  while (high - low > 1) {
+    probe = (high + low) >> 1;
+    if (positions[probe] > query) {
+      high = probe;
+    } else {
+      low = probe;
+    }
+  }
+  return(low);
 }
