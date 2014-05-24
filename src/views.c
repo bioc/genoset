@@ -119,6 +119,7 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
     lower_run = leftBound(run_first_index, start, nrun, lower_run);
     upper_run = leftBound(run_first_index, end, nrun, lower_run);  // Yes, search the left bound both times
+    //    printf("lower_run: %i, upper_run: %i\n", lower_run, upper_run);
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
       ans_p[i] = values_p[lower_run];
       continue;

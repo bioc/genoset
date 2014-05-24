@@ -106,44 +106,44 @@ NULL
 
 
 ##' @export rangeSums
-setGeneric("rangeSums", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeSums") })
+setGeneric("rangeSums", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeSums") })
 setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMeans
-setGeneric("rangeMeans", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMeans") })
+setGeneric("rangeMeans", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_range_summary(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMins
-setGeneric("rangeMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMins") })
+setGeneric("rangeMins", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMins") })
 setMethod("rangeMins", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_mins, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMaxs
-setGeneric("rangeMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeMaxs") })
+setGeneric("rangeMaxs", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMaxs") })
 setMethod("rangeMaxs", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_maxs, FUN.TYPE="numeric")
           })
 
 ##' @export rangeWhichMins
-setGeneric("rangeWhichMins", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
+setGeneric("rangeWhichMins", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
 setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_mins, FUN.TYPE="integer")
           })
 
 ##' @export rangeWhichMaxs
-setGeneric("rangeWhichMaxs", function(x, ir, na.rm=TRUE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
+setGeneric("rangeWhichMaxs", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
 setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=TRUE, simplify=TRUE) {
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_maxs, FUN.TYPE="integer")
           })
 

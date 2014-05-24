@@ -90,7 +90,7 @@ void widthToStartEnd(int* width, double* start, double* end, int n) {
 void widthToStart(int* width, int* start, int n) {
   start[0] = 1;
   for (int i=1; i < n; i++) {
-    start[i] = start[i-1] + width[i];
+    start[i] = start[i-1] + width[i-1];
   }
 }
 
@@ -100,40 +100,40 @@ Searching
 // unsigned int is big enough for a position in the human genome, but 32 bits
 // Also consider using unsigned ints to save having to care negative values passed in
 // Fun fact: if you do --positions before you pass it in, you get 1-based indices back, a al findInterval.
-int leftBound(int* positions, int query, int n, int restart) {
-  int probe, low, high, jump;
-  /* If data unsorted, current target may be anywhere left of restart for previous target, just start at 0 */
-//  if (restart < 0 || restart > n-1) {
-//    error("Bad restart. query: %i, restart: %i, n: %i, positions[0]: %i\n", query, restart, n, positions[0]);
-//  }
-  if (query < positions[restart]) {
-    low = 0;
-    high = n;
-  } else {
-    low = high = restart;
+int leftBound(int* positions, int query, int n, unsigned int restart) {
+  unsigned int probe, low, high, gap, jump;
+  // If data unsorted, current target may be anywhere left of restart for previous target, just start at 0
+  //  printf("\nleftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+  high = low = restart < n ? restart : n - 1;
+  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+  if (query < positions[low]) {
+    low = 0;  // Consider making this -1 for generality
   }
-
-  /* Right bound likely close to previous */
-  for (jump=1; ; jump+=jump) {
+  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+  // Right bound likely close to previous
+  for (jump=1;  ;jump+=jump) {
     high += jump;
     if (high >= n) {
       high = n;
       break;
     }
-    if (query < positions[high]) {  /* Note difference to similar code resetting high after first binary search */
-	break;
+    if (query < positions[high]) {
+      break;
     }
     low = high;
   }
-  
-  /* Now binary search for closest left bound */
-  while (high - low > 1) {
-    probe = (high + low) >> 1;
+  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+  // Now binary search for closest left bound
+  gap = high - low;
+  while (gap > 1) {
+    probe = (gap >> 1) + low;
     if (positions[probe] > query) {
       high = probe;
     } else {
       low = probe;
     }
+    gap = high - low;  // Hack to avoid integer overflow with low + high
   }
+  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n\n", low, high, positions[high], n);
   return(low);
 }
