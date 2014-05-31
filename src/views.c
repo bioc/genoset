@@ -9,82 +9,11 @@
  // Having the plain C part a separate function would allow using that function in a loop, 
  //  like in a loop over many Rle objects and one IRanges.
  // Assuming Values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
- SEXP RleViews_viewMeans(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
-   if (!isLogical(Na_rm) || LENGTH(Na_rm) != 1 || LOGICAL(Na_rm)[0] == NA_LOGICAL) {
-     error("'na.rm' must be TRUE or FALSE");
-   }
 
-   int length_start = LENGTH(Start);
-   SEXP Ans;
-   PROTECT(Ans = allocVector(REALSXP, length_start ));	
-   double *ans_p = REAL(Ans);
-   int *start_p = INTEGER(Start);
-   int *width_p = INTEGER(Width);
-   double *values_p = REAL(Values);
-   int *lengths_p = INTEGER(Lengths);
-   int keep_na = !LOGICAL(Na_rm)[0];
-
-   double temp_sum;
-   int i, start, width, index, lower_run, upper_run, lower_bound, upper_bound, max_index;
-   int inner_n, num_na, isna;
-   // How about abstracting the NA checking to something that just fills out an array of chars with 0,1?  Pass in a char* and the SXP to check, switch on SXP type and loop?
-   max_index = LENGTH(Lengths) - 1;
-   index = 0;
-   upper_run = *lengths_p;
-   for (i = 0; i < length_start; i++) {
-     start = start_p[i];
-     width = width_p[i];
-     if (width <= 0) {
-       ans_p[i] = R_NaN;
-       continue;
-     }
-     temp_sum = 0;
-     num_na = 0;
-     // I think doing genoset::binary_bound on the cumsums of start and end would be faster here for finding lower and upper run.
-     // Hmm, looks like bound finding is linear for first, but then looks nearby for subsequent.  Maybe not much gain with binary search with sorted ranges.
-     while (index > 0 && upper_run > start) {
-       upper_run -= *lengths_p;
-       lengths_p--;
-       index--;
-     }
-     while (upper_run < start) {
-       lengths_p++;
-       index++;
-       upper_run += *lengths_p;
-     }
-     lower_run = upper_run - *lengths_p + 1;
-     lower_bound = start;
-     upper_bound = start + width - 1;
-     while (lower_run <= upper_bound) {
-       isna = ISNA(values_p[index]); // Depends on TYPEOF(Values), abstract to char array of 0,1 with genoset/src/utils.c isNA
-       inner_n = 1 + (upper_bound - lower_bound);
-       num_na += isna * inner_n;
-       temp_sum += values_p[index] * (inner_n * (!isna)); // Depends on typeof(temp_sum) or typeof(values_p)
-       if (index >= max_index) { break; }
-       lengths_p++;
-       index++;
-       lower_run = upper_run + 1;
-       lower_bound = lower_run;
-       upper_run += *lengths_p;
-     }
-     if ( num_na == width || (keep_na && num_na > 0)) {
-       temp_sum = NA_REAL;
-     } else {
-       temp_sum /= (width - num_na);
-     }
-     ans_p[i] = temp_sum;
-   }
-   UNPROTECT(1);
-   return Ans;
- }
-  
 // Some branching for NA check only necessary for na.rm=TRUE and numeric Values.
 // Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
-//   but this is a minor fraction of the time. 75% of time in findInterval. Could 
-//   make version that does not check target list for NAs (guaranteed
-//   none as coming from rle runLength) gives 0-based result indices (hmm, --pointer 
-//   optionally to switch?) and possibly using long ints for positions to search against.
-SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
+//   but this is a minor fraction of the time.
+SEXP rangeMeans_rle(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
   int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
@@ -144,4 +73,68 @@ SEXP RleViews_viewMeans2(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP
 
   UNPROTECT(1);
   return Ans;
+}
+
+SEXP rangeMeans_vector( SEXP bounds, SEXP x ) {
+  SEXP means, bounds_dimnames, x_dimnames, dimnames;
+  int num_cols, num_rows, left, right;
+
+  int num_protected = 0;
+
+  double *x_data = REAL(x);    
+  int *bounds_data = INTEGER(bounds);
+  int num_bounds = length(bounds) / 2;
+  bounds_dimnames = getAttrib(bounds, R_DimNamesSymbol);
+  x_dimnames = getAttrib(x, R_DimNamesSymbol);
+
+  if (isMatrix(x)) {
+    num_cols = ncols(x);
+    num_rows = nrows(x);
+    PROTECT(means = allocMatrix(REALSXP, num_bounds, num_cols)); num_protected++;
+    if ( GetRowNames(bounds_dimnames) != R_NilValue || GetColNames(x_dimnames) != R_NilValue) {
+      PROTECT(dimnames = allocVector(VECSXP, 2)); num_protected++;
+      SET_VECTOR_ELT(dimnames, 0, duplicate(GetRowNames(bounds_dimnames)));
+      SET_VECTOR_ELT(dimnames, 1, duplicate(GetColNames(x_dimnames)));
+      setAttrib(means, R_DimNamesSymbol, dimnames);
+    }
+  } else {
+    num_cols = 1;
+    num_rows = length(x);
+    PROTECT(means = allocVector(REALSXP, num_bounds)); num_protected++;
+    if ( GetRowNames(bounds_dimnames) != R_NilValue ) {
+      setAttrib(means, R_NamesSymbol, duplicate(GetRowNames(bounds_dimnames)));
+    }
+  }
+  double *means_data = REAL(means);
+
+  double sum;
+  int num_na, num_to_sum;
+  int col_offset = 0;
+  int mean_index = 0;
+  for (int col_index = 0; col_index < num_cols; col_index++) {
+    for (int bound_index = 0; bound_index < num_bounds; bound_index++) {
+      sum = 0;
+      num_na = 0;
+      mean_index = (col_index * num_bounds) + bound_index;
+      left = bounds_data[bound_index] + col_offset;
+      right = bounds_data[bound_index + num_bounds] + col_offset;
+      num_to_sum = (right - left) + 1;
+      for (int i = left-1; i < right; i++) {
+  if (! R_FINITE(x_data[i]) ) {
+	  num_na += 1;
+	} else {
+	  sum += x_data[i];
+	}
+      }
+      if (num_na == num_to_sum) {
+	means_data[ mean_index ] = NA_REAL;
+      } else {
+	means_data[ mean_index ] = sum / (num_to_sum - num_na);
+      }
+    }
+    col_offset += num_rows;
+  }
+  
+  UNPROTECT(num_protected);
+  return(means);
 }

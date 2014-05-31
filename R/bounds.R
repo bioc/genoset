@@ -104,7 +104,6 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' @param stops integer vector of last base position of each query range
 ##' @param positions Base positions in which to search
 ##' @param valid.indices logical, TRUE assures that the returned indices don't go off either end of the array, i.e. 0 becomes 1 and n+1 becomes n
-##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
 ##' @param all.indices logical, return a list containing full sequence of indices for each query
 ##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
 ##' @family "range summaries"
@@ -112,13 +111,11 @@ boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
-boundingIndices <- function(starts,stops,positions,valid.indices=TRUE,all.indices=FALSE, offset=0) {
-  bounds = vector("integer",length(starts)*2L)
-  bound.results = .C("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions),
-    as.integer(length(starts)), as.integer(length(positions)), bounds=bounds, as.integer(valid.indices), as.integer(offset),
-    DUP=TRUE, NAOK=TRUE)
-  bounds = bound.results$bounds
-  dim(bounds) = c(length(starts),2)
+boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.indices=FALSE) {
+    if (length(starts) != length(stops)) {
+        stop("strts and stops must be the same length.")
+    }
+  bound = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
 
   if (all.indices == TRUE) { # Return all covered and bounding indices
     return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )

@@ -4,29 +4,52 @@
 
 /* TODO: break out redundant code in binary_bound and binary_bound_by_chr for ease of reading/maintenance */
 
-void binary_bound( int *starts, int *stops, int *positions, int *num_queries, int *num_positions, int *bounds, int *valid_indices, int *offset ) {
+SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices) {
   int query_index, probe, left, right, low, high, jump;
+  int num_positions, num_queries;
+
+  // Get what we need from input
+  int* starts_p = INTEGER(starts);
+  int* stops_p = INTEGER(stops);
+  int* positions_p = INTEGER(positions);
+  num_queries = LENGTH(starts);
+  num_positions = LENGTH(positions);
+
+  // Make results matrix
+  int num_protected = 0;
+  SEXP bounds, dimnames, colnames;
+  PROTECT(bounds = allocMatrix(INTSXP, num_queries, 2)); num_protected++;
+  PROTECT(dimnames = allocVector(VECSXP, 2)); num_protected++;
+  PROTECT(colnames = allocVector(STRSXP, 2)); num_protected++;
+  SET_VECTOR_ELT(dimnames, 0, R_NilValue);
+  SET_STRING_ELT(colnames, 0, mkChar("left"));
+  SET_STRING_ELT(colnames, 1, mkChar("right"));
+  SET_VECTOR_ELT(dimnames, 1, colnames);
+  setAttrib(bounds, R_DimNamesSymbol, dimnames);
+  int *bounds_p = INTEGER(bounds);
+
+  // Initialize
   low = -1; /*  Set low off left end */
-  high = num_positions[0]; /* Set high to off right end */
+  high = num_positions; /* Set high to off right end */
   
-  for (query_index=0; query_index < num_queries[0]; query_index++) {
+  for (query_index=0; query_index < num_queries; query_index++) {
    
     /* Left bound */
-    left = starts[query_index];
+    left = starts_p[query_index];
 
     /* If data unsorted, current target may be anywhere left of low for previous target, just start at left */
-    if (low >= 0 && left < positions[low]) {
+    if (low >= 0 && left < positions_p[low]) {
       low = -1;
     }
     
     /* Right bound likely close to high from previous gene */
     for (jump=1; ; jump*=2) {
       high += jump;
-      if (high >= num_positions[0]) {
-	high = num_positions[0];
+      if (high >= num_positions) {
+	high = num_positions;
 	break;
       }
-      if (left < positions[high]) {  /* Note difference to similar code resetting high after first binary search */
+      if (left < positions_p[high]) {  /* Note difference to similar code resetting high after first binary search */
 	break;
       }
       low = high;
@@ -35,25 +58,25 @@ void binary_bound( int *starts, int *stops, int *positions, int *num_queries, in
     /* Now binary search for right bound */
     while (high - low > 1) {
       probe = (high + low) >> 1;
-      if (positions[probe] > left) {
+      if (positions_p[probe] > left) {
         high = probe;
       } else {
 	low = probe;
       }
     }
-    bounds[query_index] = low;
+    bounds_p[query_index] = low;
     
     /* Right bound */
-    right = stops[query_index];
+    right = stops_p[query_index];
 
     /* Right bound likely close to left bound, relative to length of positions, so expand exponentially, a la findInterval */
     for (jump=1; ; jump*=2) {
       high += jump;
-      if (high >= num_positions[0]) {
-	high = num_positions[0];
+      if (high >= num_positions) {
+	high = num_positions;
 	break;
       }
-      if (right <= positions[high]) {
+      if (right <= positions_p[high]) {
 	break;
       }
       low = high;
@@ -62,95 +85,31 @@ void binary_bound( int *starts, int *stops, int *positions, int *num_queries, in
     /* Now binary search for right bound */
     while (high - low > 1) {
       probe = (high + low) >> 1;
-      if (positions[probe] < right) {
+      if (positions_p[probe] < right) {
         low = probe;
       } else {
         high = probe;
       }
     }
-    bounds[query_index + num_queries[0]] = high; /* Right bound goes in second column of bounds */
+    bounds_p[query_index + num_queries] = high; /* Right bound goes in second column of bounds */
   
-    low = bounds[query_index]; /* Reset low to left end of this query to start next query */
+    low = bounds_p[query_index]; /* Reset low to left end of this query to start next query */
     
   } /* End foreach query */
   
-  offset[0] += 1;
-  for(int i=0; i < num_queries[0]; i++) {
-    if (valid_indices[0] == 1) {
-      if (bounds[i] < 0) {
-	bounds[i] = 0;
+  // Apply valid_indices fix if desired
+  if (valid_indices) {
+    for(int i=0; i < num_queries; i++) {
+      if (bounds_p[i] < 0) {
+	bounds_p[i] = 0;
       }
-      if (bounds[i + num_queries[0]] >= num_positions[0]) {
-	bounds[i + num_queries[0]] = num_positions[0] - 1;
+      if (bounds_p[i + num_queries] >= num_positions)  {
+	bounds_p[i + num_queries] = num_positions - 1;
       }
-    }
-    bounds[i] += offset[0];
-    bounds[i + num_queries[0]] += offset[0];
-  }
-}
-
-SEXP rangeColMeans( SEXP bounds, SEXP x ) {
-  SEXP means, bounds_dimnames, x_dimnames, dimnames;
-  int num_cols, num_rows, left, right;
-
-  int num_protected = 0;
-
-  double *x_data = REAL(x);    
-  int *bounds_data = INTEGER(bounds);
-  int num_bounds = length(bounds) / 2;
-  bounds_dimnames = getAttrib(bounds, R_DimNamesSymbol);
-  x_dimnames = getAttrib(x, R_DimNamesSymbol);
-
-  if (isMatrix(x)) {
-    num_cols = ncols(x);
-    num_rows = nrows(x);
-    PROTECT(means = allocMatrix(REALSXP, num_bounds, num_cols)); num_protected++;
-    if ( GetRowNames(bounds_dimnames) != R_NilValue || GetColNames(x_dimnames) != R_NilValue) {
-      PROTECT(dimnames = allocVector(VECSXP, 2)); num_protected++;
-      SET_VECTOR_ELT(dimnames, 0, duplicate(GetRowNames(bounds_dimnames)));
-      SET_VECTOR_ELT(dimnames, 1, duplicate(GetColNames(x_dimnames)));
-      setAttrib(means, R_DimNamesSymbol, dimnames);
-    }
-  } else {
-    num_cols = 1;
-    num_rows = length(x);
-    PROTECT(means = allocVector(REALSXP, num_bounds)); num_protected++;
-    if ( GetRowNames(bounds_dimnames) != R_NilValue ) {
-      setAttrib(means, R_NamesSymbol, duplicate(GetRowNames(bounds_dimnames)));
     }
   }
-  double *means_data = REAL(means);
-
-  double sum;
-  int num_na, num_to_sum;
-  int col_offset = 0;
-  int mean_index = 0;
-  for (int col_index = 0; col_index < num_cols; col_index++) {
-    for (int bound_index = 0; bound_index < num_bounds; bound_index++) {
-      sum = 0;
-      num_na = 0;
-      mean_index = (col_index * num_bounds) + bound_index;
-      left = bounds_data[bound_index] + col_offset;
-      right = bounds_data[bound_index + num_bounds] + col_offset;
-      num_to_sum = (right - left) + 1;
-      for (int i = left-1; i < right; i++) {
-	if (! R_FINITE(x_data[i]) ) {
-	  num_na += 1;
-	} else {
-	  sum += x_data[i];
-	}
-      }
-      if (num_na == num_to_sum) {
-	means_data[ mean_index ] = NA_REAL;
-      } else {
-	means_data[ mean_index ] = sum / (num_to_sum - num_na);
-      }
-    }
-    col_offset += num_rows;
-  }
-  
   UNPROTECT(num_protected);
-  return(means);
+  return(bounds);
 }
 
 SEXP binary_bound_by_chr(SEXP nquery, SEXP query_chr_indices, SEXP query_starts, SEXP query_ends, SEXP query_names, SEXP subject_chr_indices, SEXP subject_starts, SEXP subject_ends) {
