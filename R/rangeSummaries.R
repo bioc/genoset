@@ -104,19 +104,11 @@ NULL
   return(val)
 }
 
-
 ##' @export rangeSums
 setGeneric("rangeSums", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeSums") })
 setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
           function(x, ir, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
-          })
-
-##' @export rangeMeans
-setGeneric("rangeMeans", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMeans") })
-setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_range_summary(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMins
@@ -147,6 +139,36 @@ setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
             .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_maxs, FUN.TYPE="integer")
           })
 
+
+##' @export rangeMeans
+setGeneric("rangeMeans", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMeans") })
+setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
+          function(x, ir, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_range_summary(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
+          })
+
+setMethod("rangeMeans", signature=signature(x="vector"), 
+          function(x, bounds) {
+              if (! is.matrix(bounds) && ncol(bounds) == 2) {
+                  stop("bounds must be a matrix with 2 columns\n")
+              }
+              if (!is.double(x)) {
+                  storage.mode(x) = "double"
+              }
+              if (!is.integer(bounds)) {
+                  storage.mode(bounds) = "integer"
+              }
+              ans = .Call("rangeMeans_vector", bounds, x)
+              return(ans)
+          })
+
+setMethod("rangeMeans", signature=signature(x="ANY"),
+          function(x, all.indices)
+          range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
+              FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
+              FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
+          return(range.means)
+      })
 
 ### Internal methods to get directly to summary functions, using Views, but skipping trim
 .rle_view_sums <- function(x, na.rm) { .Call("RleViews_viewSums", x, na.rm, PACKAGE = "IRanges") }

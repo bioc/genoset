@@ -165,26 +165,3 @@ rangeSampleMeans <- function(query, subject, assay.element) {
   range.means = rangeMeans(data.matrix, all.indices)
   return(range.means)
 }
-
-setMethod("rangeMeans", signature=signature(x="vector"), 
-          function(x, bounds) {
-              if (! is.matrix(bounds) && ncol(bounds) == 2) {
-                  stop("bounds must be a matrix with 2 columns\n")
-              }
-              if (!is.double(x)) {
-                  storage.mode(x) = "double"
-              }
-              if (!is.integer(bounds)) {
-                  storage.mode(bounds) = "integer"
-              }
-              ans = .Call("rangeMeans_vector", bounds, x)
-              return(ans)
-          })
-
-setMethod("rangeMeans", signature=signature(x="ANY"),
-          function(x, all.indices)
-          range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
-              FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
-              FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
-          return(range.means)
-      })
