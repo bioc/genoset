@@ -76,8 +76,8 @@ int numNA(SEXP vec, char* na) {
 }
 
 // Take widths, like from an Rle, compute start and end index for each run (1-based).
-// Doubles lets us use findInterval. Want to switch to unsigned int. Either will fit a human genome pos.
-void widthToStartEnd(int* width, double* start, double* end, int n) {
+// Want to switch to unsigned int as it will fit a human genome pos.
+void widthToStartEnd(int* width, int* start, int* end, int n) {
   start[0] = 1;
   end[0] = width[0];
   for (int i=1; i < n; i++) {

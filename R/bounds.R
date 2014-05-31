@@ -1,4 +1,3 @@
-
 ##' Convert bounding indices into a Rle
 ##'
 ##' Given a matrix of first/last indices, like from boundingIndicesByChr, and values for
@@ -34,49 +33,6 @@ bounds2Rle <- function( bounds, values, n ) {
   }
   return( Rle( run.value, run.length ) )
 }
-
-##' Find indices of features bounding a set of chromosome ranges/genes
-##'
-##' This function is similar to findOverlaps but it guarantees at least two features will be
-##' covered. This is useful in the case of finding features corresponding to a set of genes.
-##' Some genes will fall entirely between two features and thus would not return any ranges
-##' with findOverlaps. Specifically, this function will find the indices of the features
-##' (first and last) bounding the ends of a range/gene (start and stop) such that
-##' first <= start <= stop <= last. Equality is necessary so that multiple conversions between
-##' indices and genomic positions will not expand with each conversion. This function uses
-##' findIntervals, which is for k queries and n features is O(k * log(n)) generally and
-##' ~O(k) for sorted queries. Therefore will be dramatically faster for sets of query genes
-##' that are sorted by start position within each chromosome.  This should give performance
-##' for k genes and n features that is ~O(k) for starts and O(k * log(n)) for stops and
-##' ~O(k * log(n)) overall.  Ranges/genes that are outside the range of feature positions will
-##' be given the indices of the corresponding first or last index rather than 0 or n + 1 so
-##' that genes can always be connected to some data.
-##'
-##' @param starts numeric or integer, first base position of each query range
-##' @param stops numeric or integer, last base position of each query range
-##' @param positions Base positions in which to search
-##' @param offset integer, value to add to all returned indices. For the case where positions represents a portion of some larger array (e.g. a chr in a genome)
-##' @return integer matrix of 2 columms for start and stop index of range in data
-##' @family "range summaries"
-##' @export boundingIndices2
-##' @examples
-##'   starts = seq(10,100,10)
-##'   boundingIndices2( starts=starts, stops=starts+5, positions = 1:100 )
-boundingIndices2 <- function(starts, stops, positions, offset=NULL) {
-  indices = c(findInterval(starts,positions,rightmost.closed=FALSE), findInterval(stops,positions,rightmost.closed=FALSE))
-  dim(indices) = c(length(starts),2)
-  indices[ indices == 0L ] = 1L  # If off left end, set to 1
-
-  right.bounds.to.expand = positions[indices[,2]] < stops
-  indices[ right.bounds.to.expand,2 ] = indices[ right.bounds.to.expand,2 ] + 1L  # Right end index moves right one unless it is an exact match
-  indices[ indices > length(positions) ] = length(positions)  # If off right end, set to right end
-  
-  if (!is.null(offset)) {  # Convert indices back to indices in full positions before subsetting by initial.bounds
-    indices = indices + as.integer(offset)
-  }
-  return(indices)
-}
-
 
 ##' Find indices of features bounding a set of chromosome ranges/genes
 ##'
@@ -205,53 +161,30 @@ boundingIndicesByChr <-function(query, subject) {
 rangeSampleMeans <- function(query, subject, assay.element) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
   all.indices = boundingIndicesByChr(query, subject)
-
-  # Temporary hack for DataFrame of Rle
   data.matrix = assayDataElement(subject,assay.element)
-
-  if (class(data.matrix) == "DataFrameRle") {
-    viewMethod = getMethod("Views", "Rle")
-    meanMethod = getMethod("viewMeans", "RleViews")
-    ranges = IRanges(start=all.indices[, 1], end=all.indices[, 2], names=rownames(all.indices))
-    range.means = vapply(as.list(data.matrix), function(x) {
-      myview = viewMethod(subject=x, start=ranges)
-      meanMethod(myview, na.rm=TRUE)
-    }, USE.NAMES=TRUE, FUN.VALUE=numeric(nrow(all.indices)))
-  } else if (is.matrix(data.matrix)) {
-    range.means = rangeColMeans( all.indices, data.matrix )
-  } else {
-    range.means = matrix(ncol=ncol(data.matrix),nrow=nrow(all.indices),dimnames=list(rownames(all.indices),colnames(data.matrix)))
-    for (i in seq.int(length.out=ncol(data.matrix))) {
-      range.means[,i] = rangeColMeans( all.indices, as.numeric(data.matrix[,i]) )  # as.numeric makes this work on an Rle if it needs to
-    }
-  }
+  range.means = rangeMeans(data.matrix, all.indices)
   return(range.means)
 }
 
-##' Calculate column means for multiple ranges
-##'
-##' Essentially colMeans with a loop, all in a .Call. Designed to take a
-##' 2-column matrix of row indices, bounds, for a matrix, x, and calculate
-##' mean for each range in each column (or along a single vector). bounds
-##' matrix need not cover all rows.
-##' 
-##' @param bounds A two column integer matrix of row indices
-##' @param x A numeric matrix with rows corresponding to indices in bounds.
-##' @return A numeric matrix or vector, matching the form of x. One row for
-##' each row in bounds, one col for each col of x and appropriate dimnames.
-##' If x is a vector, just a vector with names from the rownames of bounds.
-##' @export rangeColMeans
-##' @family "range summaries"
-rangeColMeans <- function( bounds, x ) {
-  if (! is.matrix(bounds) && ncol(bounds) == 2) {
-    stop("bounds must be a matrix with 2 columns\n")
-  }
-  if (!is.double(x)) {
-    storage.mode(x) = "double"
-  }
-  if (!is.integer(bounds)) {
-    storage.mode(bounds) = "integer"
-  }
-  ans = .Call("rangeColMeans", bounds, x)
-  return(ans)
-}
+setMethod("rangeMeans", signature=signature(x="vector"), 
+          function(x, bounds) {
+              if (! is.matrix(bounds) && ncol(bounds) == 2) {
+                  stop("bounds must be a matrix with 2 columns\n")
+              }
+              if (!is.double(x)) {
+                  storage.mode(x) = "double"
+              }
+              if (!is.integer(bounds)) {
+                  storage.mode(bounds) = "integer"
+              }
+              ans = .Call("rangeMeans_vector", bounds, x)
+              return(ans)
+          })
+
+setMethod("rangeMeans", signature=signature(x="ANY"),
+          function(x, all.indices)
+          range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
+              FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
+              FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
+          return(range.means)
+      })
