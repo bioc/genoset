@@ -25,7 +25,7 @@ NULL
 ##' @family views
 .do_rledf_views <- function(x, bounds, na.rm=FALSE, simplify=TRUE, RLEFUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
   # Make an IRanges from ranges matrix if necessary
-  if (is.matrix(ir)) {
+  if (is.matrix(bounds)) {
     bounds = IRanges(start=bounds[, 1], end=bounds[, 2], names=rownames(bounds))
   }
   # Trim IRanges once if necessary
@@ -141,7 +141,7 @@ setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
 
 
 ##' @export rangeMeans
-setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, ...) { standardGeneric("rangeMeans") })
+setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, simplify=TRUE, ...) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_range_summary(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
@@ -172,7 +172,7 @@ setMethod("rangeMeans", signature=signature(x="ANY"),
 
 ##' @export rangeColMeans
 rangeColMeans <- function(x, all.indices) {
-  .Deprecated("rangeMeans", "rangeColMeans has changed to rangeMeans.")
+  .Deprecated("rangeMeans", msg="rangeColMeans has changed to rangeMeans.")
   rangeMeans(x, all.indices, na.rm=TRUE)
 }
 
@@ -186,5 +186,5 @@ rangeColMeans <- function(x, all.indices) {
 
 ### Internal methods to get directly to summary functions, skipping trim and Views
 .rle_range_means <- function(start, end, values, lengths, na.rm) {
-  .Call("rangeMeans_rle", start, end, as.numeric(values), lengths, na.rm=na.rm, PACKAGE = "genoset")
+  .Call("rangeMeans_rle", as.integer(start), as.integer(end), as.numeric(values), lengths, na.rm=na.rm, PACKAGE = "genoset")
 }

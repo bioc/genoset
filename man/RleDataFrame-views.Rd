@@ -9,11 +9,13 @@
 \alias{rangeWhichMaxs}
 \alias{rangeSums,RleDataFrame-method}
 \alias{rangeMeans,RleDataFrame-method}
+\alias{rangeMeans,numeric-method}
+\alias{rangeMeans,ANY-method}
 \alias{rangeMins,RleDataFrame-method}
 \alias{rangeMaxs,RleDataFrame-method}
 \alias{rangeWhichMins,RleDataFrame-method}
 \alias{rangeWhichMaxs,RleDataFrame-method}
-
+\alias{rangeColMeans}
 \title{Calculate summary statistics on views of an RleDataFrame}
 
 \description{
@@ -35,7 +37,7 @@
 
 \usage{
 rangeSums(x, bounds, na.rm=FALSE, simplify=TRUE)
-rangeMeans(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeMeans(x, bounds, na.rm=FALSE, simplify=TRUE, ...)
 rangeMins(x, bounds, na.rm=FALSE, simplify=TRUE)
 rangeMaxs(x, bounds, na.rm=FALSE, simplify=TRUE)
 rangeWhichMins(x, bounds, na.rm=FALSE, simplify=TRUE)
@@ -63,7 +65,12 @@ rangeWhichMaxs(x, bounds, na.rm=FALSE, simplify=TRUE)
   returned. Otherwise a matrix with one row per view and one column per
   column of x will be returned. If FALSE, the return value will be a
   list of length \code{ncol(x)} of vectors of length \code{nrow(bounds)}.
-  }
+}
+\item{...}{
+  Additional arguments for other methods.
+}
+}
+
 }
 
 \value{
@@ -72,7 +79,6 @@ otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where
 }
 
 \examples{
-
 df = RleDataFrame(list(a=Rle(1:5, rep(2, 5))), b=Rle(1:5, rep(2, 5)),
 row.names=LETTERS[1:10])
 mat = matrix(c(1,4,3,5),ncol=2,dimnames=list(c("Gene1","Gene2"),c("start","end")))

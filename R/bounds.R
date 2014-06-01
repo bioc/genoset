@@ -52,9 +52,8 @@ bounds2Rle <- function( bounds, values, n ) {
 ##' The index of the stop position for each gene is found using the left bound from the start
 ##' of the gene reducing the search space for the stop position somewhat. This function has
 ##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
-##' check for NAs or unsorted data in the subject positions. Also, the positions are
-##' kept as integer, where boundingIndices2 (and findInterval) convert them to doubles.
-##' These assumptions are safe for position info coming from a GenoSet or GRanges.
+##' check for NAs or unsorted data in the subject positions. These assumptions are safe for
+##' position info coming from a GenoSet or GRanges.
 ##'
 ##' @param starts integer vector of first base position of each query range
 ##' @param stops integer vector of last base position of each query range
@@ -71,7 +70,7 @@ boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.in
     if (length(starts) != length(stops)) {
         stop("strts and stops must be the same length.")
     }
-  bound = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
+  bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
 
   if (all.indices == TRUE) { # Return all covered and bounding indices
     return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )
