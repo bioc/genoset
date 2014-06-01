@@ -28,7 +28,6 @@ Imports:
     graphics
 Suggests:
     RUnit,
-    inline,
     DNAcopy,
     stats,
     BSgenome,
@@ -42,7 +41,7 @@ Collate:
     'genoset-class.R'
     'RleDataFrame-class.R'
     'RleDataFrame-methods.R'
-    'RleDataFrame-views.R'
+    'rangeSummaries.R'
     'bounds.R'
     'junk.R'
     'ordering.R'

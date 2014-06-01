@@ -9,8 +9,8 @@ void widthToStart(int* width, int* start, int n);
 int leftBound(int* positions, int query, int n, unsigned int restart);
 
 // views.c
-SEXP rangeMeans_rle(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm);
-SEXP rangeMeans_vector(SEXP bounds, SEXP x);
+SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_rm);
+SEXP rangeMeans_vector(SEXP bounds, SEXP x, SEXP na_rm);
 
 // bounds.c
 SEXP binary_bound( SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices);

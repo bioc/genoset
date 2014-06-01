@@ -1,34 +1,34 @@
- #include <R.h>
- #include <Rinternals.h>
- #include "genoset.h"
+#include <R.h>
+#include <Rinternals.h>
+#include "genoset.h"
 
- // Computing mean of arbitrary slices of an Rle, assuming slices are within [1,length(rle)] (trimmed)
- // Takes contents of Rle and IRanges rather than taking these or these stuffed into an RleViews
- // The body of this function is nearly independent of special R types, so could perhaps
- //   become a separate function, perhaps templated on type of pointer to Values data.
- // Having the plain C part a separate function would allow using that function in a loop, 
- //  like in a loop over many Rle objects and one IRanges.
- // Assuming Values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
+// Computing mean of arbitrary slices of an Rle, assuming slices are within [1,length(rle)] (trimmed)
+// Takes contents of Rle and IRanges rather than taking these or these stuffed into an RleViews
+// The body of this function is nearly independent of special R types, so could perhaps
+//   become a separate function, perhaps templated on type of pointer to Values data.
+// Having the plain C part a separate function would allow using that function in a loop, 
+//  like in a loop over many Rle objects and one IRanges.
+// Assuming Values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
 
 // Some branching for NA check only necessary for na.rm=TRUE and numeric Values.
 // Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
 //   but this is a minor fraction of the time.
-SEXP rangeMeans_rle(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_rm) {
-  int keep_na = ! asLogical(Na_rm);
+SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_rm) {
+  int keep_na = ! asLogical(na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
-  int *start_p = INTEGER(Start);
-  int *width_p = INTEGER(Width);
-  int *lengths_p = INTEGER(Lengths);
-  int nrun = LENGTH(Values);
-  int nranges = LENGTH(Start);
+  int *start_p = INTEGER(start);
+  int *width_p = INTEGER(width);
+  int *lengths_p = INTEGER(lengths);
+  int nrun = LENGTH(values);
+  int nranges = LENGTH(start);
   
   // Input type dependence
-  double *values_p = REAL(Values);
+  double *values_p = REAL(values);
   const double na_val = NA_REAL;
-  SEXP Ans;
-  PROTECT(Ans = allocVector(REALSXP, nranges ));  
-  double *ans_p = REAL(Ans);
+  SEXP ans;
+  PROTECT(ans = allocVector(REALSXP, nranges ));  
+  double *ans_p = REAL(ans);
 
   // Abstract all the NA checking to a simple lookup of a boolean value
   char* isna = (char *) R_alloc(nrun, sizeof(char));
@@ -72,10 +72,13 @@ SEXP rangeMeans_rle(SEXP Start, SEXP Width, SEXP Values, SEXP Lengths, SEXP Na_r
   }
 
   UNPROTECT(1);
-  return Ans;
+  return ans;
 }
 
-SEXP rangeMeans_vector( SEXP bounds, SEXP x ) {
+SEXP rangeMeans_vector( SEXP bounds, SEXP x , SEXP na_rm) {
+  int keep_na = ! asLogical(na_rm);
+  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
+
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows, left, right;
 
@@ -120,7 +123,7 @@ SEXP rangeMeans_vector( SEXP bounds, SEXP x ) {
       right = bounds_data[bound_index + num_bounds] + col_offset;
       num_to_sum = (right - left) + 1;
       for (int i = left-1; i < right; i++) {
-  if (! R_FINITE(x_data[i]) ) {
+	if (! R_FINITE(x_data[i]) ) {
 	  num_na += 1;
 	} else {
 	  sum += x_data[i];
@@ -129,6 +132,7 @@ SEXP rangeMeans_vector( SEXP bounds, SEXP x ) {
       if (num_na == num_to_sum) {
 	means_data[ mean_index ] = NA_REAL;
       } else {
+	//      ans_p[i] = (effective_width != width && (effective_width == 0 || keep_na)) ? na_val : temp_sum / effective_width;
 	means_data[ mean_index ] = sum / (num_to_sum - num_na);
       }
     }

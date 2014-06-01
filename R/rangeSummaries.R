@@ -148,7 +148,7 @@ setMethod("rangeMeans", signature=signature(x="RleDataFrame"),
           })
 
 setMethod("rangeMeans", signature=signature(x="vector"), 
-          function(x, bounds) {
+          function(x, bounds, na.rm=FALSE) {
               if (! is.matrix(bounds) && ncol(bounds) == 2) {
                   stop("bounds must be a matrix with 2 columns\n")
               }
@@ -158,17 +158,23 @@ setMethod("rangeMeans", signature=signature(x="vector"),
               if (!is.integer(bounds)) {
                   storage.mode(bounds) = "integer"
               }
-              ans = .Call("rangeMeans_vector", bounds, x)
+              ans = .Call("rangeMeans_vector", x, bounds)
               return(ans)
           })
 
 setMethod("rangeMeans", signature=signature(x="ANY"),
-          function(x, all.indices)
-          range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
-              FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
-              FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
+          function(x, all.indices, na.rm=FALSE) {
+              range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
+                  FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
+                  FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
           return(range.means)
       })
+
+##' @export rangeColMeans
+rangeColMeans <- function(x, all.indices) {
+.Deprecated("rangeMeans", "rangeColMeans has changed to rangeMeans.")
+rangeMeans(x, all.indices)
+}
 
 ### Internal methods to get directly to summary functions, using Views, but skipping trim
 .rle_view_sums <- function(x, na.rm) { .Call("RleViews_viewSums", x, na.rm, PACKAGE = "IRanges") }
