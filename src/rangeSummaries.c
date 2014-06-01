@@ -5,34 +5,34 @@
 // Computing mean of arbitrary slices of an Rle, assuming slices are within [1,length(rle)] (trimmed)
 // Takes contents of Rle and IRanges rather than taking these or these stuffed into an RleViews
 // The body of this function is nearly independent of special R types, so could perhaps
-//   become a separate function, perhaps templated on type of pointer to Values data.
+//   become a separate function, perhaps templated on type of pointer to values data.
 // Having the plain C part a separate function would allow using that function in a loop, 
 //  like in a loop over many Rle objects and one IRanges.
-// Assuming Values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
+// Assuming values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
 
-// Some branching for NA check only necessary for na.rm=TRUE and numeric Values.
+// Some branching for NA check only necessary for na.rm=TRUE and numeric values.
 // Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
 //   but this is a minor fraction of the time.
-SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_rm) {
-  int keep_na = ! asLogical(na_rm);
+SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Na_rm) {
+  int keep_na = ! asLogical(Na_rm);
   if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
-  int *start_p = INTEGER(start);
-  int *width_p = INTEGER(width);
-  int *lengths_p = INTEGER(lengths);
-  int nrun = LENGTH(values);
-  int nranges = LENGTH(start);
+  int *start_p = INTEGER(Start);
+  int *end_p = INTEGER(End);
+  int *lengths_p = INTEGER(RunLengths);
+  int nrun = LENGTH(RunValues);
+  int nranges = LENGTH(Start);
   
   // Input type dependence
-  double *values_p = REAL(values);
+  double *values_p = REAL(RunValues);
   const double na_val = NA_REAL;
-  SEXP ans;
-  PROTECT(ans = allocVector(REALSXP, nranges ));  
-  double *ans_p = REAL(ans);
+  SEXP Ans;
+  PROTECT(Ans = allocVector(REALSXP, nranges ));  
+  double *ans_p = REAL(Ans);
 
   // Abstract all the NA checking to a simple lookup of a boolean value
   char* isna = (char *) R_alloc(nrun, sizeof(char));
-  isNA(Values, isna);
+  isNA(RunValues, isna);
   
   // Just basic C types from here on
   double temp_sum;
@@ -43,8 +43,8 @@ SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_r
   // From here down all type-dependence could be handled by a template on values_p and na_val
   for (i = 0; i < nranges; i++) {
     start = start_p[i];
-    width = width_p[i];
-    end = (start + width) - 1;
+    end= end_p[i];
+    width = (start - end) + 1;
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
     lower_run = leftBound(run_first_index, start, nrun, lower_run);
     upper_run = leftBound(run_first_index, end, nrun, lower_run);  // Yes, search the left bound both times
@@ -72,7 +72,7 @@ SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_r
   }
 
   UNPROTECT(1);
-  return ans;
+  return Ans;
 }
 
 SEXP rangeMeans_vector( SEXP bounds, SEXP x , SEXP na_rm) {

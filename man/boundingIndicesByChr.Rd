@@ -48,8 +48,7 @@ Both query and subject must be in at least weak genome
 order (sorted by start within chromosome blocks).
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices2}};
-\code{\link{boundingIndices}}; \code{\link{rangeColMeans}};
+Other "range summaries": \code{\link{boundingIndices}};
 \code{\link{rangeSampleMeans}}
 }
 

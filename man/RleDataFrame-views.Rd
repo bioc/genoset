@@ -34,24 +34,25 @@
 }
 
 \usage{
-rangeSums(x, ir, na.rm=TRUE, simplify=TRUE)
-rangeMeans(x, ir, na.rm=TRUE, simplify=TRUE)
-rangeMins(x, ir, na.rm=TRUE, simplify=TRUE)
-rangeMaxs(x, ir, na.rm=TRUE, simplify=TRUE)
-rangeWhichMins(x, ir, na.rm=TRUE, simplify=TRUE)
-rangeWhichMaxs(x, ir, na.rm=TRUE, simplify=TRUE)
+rangeSums(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeMeans(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeMins(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeMaxs(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeWhichMins(x, bounds, na.rm=FALSE, simplify=TRUE)
+rangeWhichMaxs(x, bounds, na.rm=FALSE, simplify=TRUE)
 }
 
 \arguments{
   \item{x}{
     RleDataFrame
   }
-  \item{ir}{
+  \item{bounds}{
     Matrix with two columns or IRanges representing ranges of rows of
-  \code{x} to process. if \code{ir} is a matrix, an IRanges is
+  \code{x} to process. If \code{bounds} is a matrix, an IRanges is
   constructed assuming the first two columns represent the start and end
   of the ranges. The names for the IRanges is taken from the rownames of
-  the matrix. Such a matrix can constructed with \code{boundingIndicesByChr}.
+  the matrix. Such a matrix can constructed with
+  \code{boundingIndicesByChr} and is the preferred input.
   }
   \item{na.rm}{
     Scalar logical. Ignore NAs in calculations?
@@ -61,13 +62,13 @@ rangeWhichMaxs(x, ir, na.rm=TRUE, simplify=TRUE)
   vector or matrix. For a single view, a vector will be
   returned. Otherwise a matrix with one row per view and one column per
   column of x will be returned. If FALSE, the return value will be a
-  list of length \code{ncol(x)} of vectors of length \code{nrow(ir)}.
+  list of length \code{ncol(x)} of vectors of length \code{nrow(bounds)}.
   }
 }
 
 \value{
    With \code{simplify == TRUE}, a vector for single view or a matrix
-otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(ir)}.
+otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(bounds)}.
 }
 
 \examples{
@@ -75,21 +76,21 @@ otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where
 df = RleDataFrame(list(a=Rle(1:5, rep(2, 5))), b=Rle(1:5, rep(2, 5)),
 row.names=LETTERS[1:10])
 mat = matrix(c(1,4,3,5),ncol=2,dimnames=list(c("Gene1","Gene2"),c("start","end")))
-ir = IRanges(start=c(1, 4), end=c(3, 5), names=c("Gene1","Gene2"))
+bounds = IRanges(start=c(1, 4), end=c(3, 5), names=c("Gene1","Gene2"))
 
-rangeMeans(df,ir,simplify=FALSE)
-rangeMeans(df,ir,simplify=TRUE)
+rangeMeans(df,bounds,simplify=FALSE)
+rangeMeans(df,bounds,simplify=TRUE)
 rangeMeans(df,mat,simplify=TRUE)
 
-rangeMeans(df,ir)
-rangeSums(df,ir)
-rangeMins(df,ir)
-rangeMaxs(df,ir)
-rangeWhichMins(df,ir)
-rangeWhichMaxs(df,ir)
+rangeMeans(df,bounds)
+rangeSums(df,bounds)
+rangeMins(df,bounds)
+rangeMaxs(df,bounds)
+rangeWhichMins(df,bounds)
+rangeWhichMaxs(df,bounds)
 
 # RleDataFrame isa SimpleRleList, so all the IRanges view* methods work too:
-viewMeans( Views( df, ir) )
+viewMeans( Views( df, bounds) )
 }
 
 \seealso{

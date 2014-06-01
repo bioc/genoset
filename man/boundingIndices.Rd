@@ -4,7 +4,7 @@
 \title{Find indices of features bounding a set of chromosome ranges/genes}
 \usage{
 boundingIndices(starts, stops, positions, valid.indices = TRUE,
-  all.indices = FALSE, offset = 0)
+  all.indices = FALSE)
 }
 \arguments{
   \item{starts}{integer vector of first base position of
@@ -18,10 +18,6 @@ boundingIndices(starts, stops, positions, valid.indices = TRUE,
   \item{valid.indices}{logical, TRUE assures that the
   returned indices don't go off either end of the array,
   i.e. 0 becomes 1 and n+1 becomes n}
-
-  \item{offset}{integer, value to add to all returned
-  indices. For the case where positions represents a
-  portion of some larger array (e.g. a chr in a genome)}
 
   \item{all.indices}{logical, return a list containing full
   sequence of indices for each query}
@@ -68,8 +64,8 @@ starts = seq(10,100,10)
   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices2}};
+Other "range summaries":
 \code{\link{boundingIndicesByChr}};
-\code{\link{rangeColMeans}}; \code{\link{rangeSampleMeans}}
+\code{\link{rangeSampleMeans}}
 }
 

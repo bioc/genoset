@@ -3,14 +3,14 @@
 \alias{.do_rledf_views}
 \title{Calculate min/max/sum/mean/whichmin/whichmax over each view on each column of an RleDataFrame.}
 \usage{
-.do_rledf_views(x, ir, na.rm = FALSE, simplify = TRUE, RLEFUN,
+.do_rledf_views(x, bounds, na.rm = FALSE, simplify = TRUE, RLEFUN,
   FUN.TYPE = c("numeric", "double", "integer", "logical"))
 }
 \arguments{
   \item{x}{RleDataFrame}
 
-  \item{ir}{IRanges or matrix, views on every Rle. If
-  \code{ir} is a matrix, it is converted to an IRanges
+  \item{bounds}{IRanges or matrix, views on every Rle. If
+  \code{bounds} is a matrix, it is converted to an IRanges
   using the first two columns as the starts and stops.
   Names for the IRanges are taken from the rownames of the
   matrix. Such a matrix can be constructed with
@@ -32,7 +32,7 @@
 With \code{simplify == TRUE}, a vector for single view or a
 matrix otherwise. When \code{simplify == FALSE}, a list of
 vectors length ncol(x) where each element is of length
-\code{nrows(ir)}.
+\code{nrows(bounds)}.
 }
 \description{
 Loop over the Rle objects in an RleDataFrame, calculate the
@@ -40,7 +40,7 @@ appropriate statistic for each view. If simplify == FALSE,
 this function returns a vector for each Rle. If simplify ==
 TRUE, it returns a vector for the case of a single view,
 otherwise, a matrix. Rownames for the matrix are taken from
-the names of the argument \code{ir}.
+the names of the argument \code{bounds}.
 }
 \seealso{
 RleDataFrame boundingIndicesByChr

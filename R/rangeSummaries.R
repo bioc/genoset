@@ -8,9 +8,9 @@ NULL
 ##'
 ##' Loop over the Rle objects in an RleDataFrame, calculate the appropriate statistic for each view. If simplify == FALSE,
 ##' this function returns a vector for each Rle. If simplify == TRUE, it returns a vector for the case of a single view, otherwise,
-##' a matrix. Rownames for the matrix are taken from the names of the argument \code{ir}.
+##' a matrix. Rownames for the matrix are taken from the names of the argument \code{bounds}.
 ##' @param x RleDataFrame
-##' @param ir IRanges or matrix, views on every Rle. If \code{ir} is a matrix, it is converted to an IRanges using the first
+##' @param bounds IRanges or matrix, views on every Rle. If \code{bounds} is a matrix, it is converted to an IRanges using the first
 ##' two columns as the starts and stops. Names for the IRanges are taken from the rownames of the matrix. Such a matrix can be
 ##' constructed with \code{boundingIndicesByChr}.
 ##' @param na.rm scalar logical, ignore NAs in calculations?
@@ -18,34 +18,34 @@ NULL
 ##' @param RLEFUN function, internal rle view summary function like .rle_view_means
 ##' @param FUN.TYPE scalar character, the storage mode for the returned vector or matrix (when simplify==TRUE).
 ##' @return With \code{simplify == TRUE}, a vector for single view or a matrix
-##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(ir)}.
+##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(bounds)}.
 ##' @keywords internal
 ##' @rdname do_rledf_views
 ##' @seealso RleDataFrame boundingIndicesByChr
 ##' @family views
-.do_rledf_views <- function(x, ir, na.rm=FALSE, simplify=TRUE, RLEFUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
+.do_rledf_views <- function(x, bounds, na.rm=FALSE, simplify=TRUE, RLEFUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
   # Make an IRanges from ranges matrix if necessary
   if (is.matrix(ir)) {
-    ir = IRanges(start=ir[, 1], end=ir[, 2], names=rownames(ir))
+    bounds = IRanges(start=bounds[, 1], end=bounds[, 2], names=rownames(bounds))
   }
   # Trim IRanges once if necessary
-  start(ir)[ start(ir) < 1L ] = 1L
-  end(ir)[ end(ir) > nrow(x) ] = nrow(x)
+  start(bounds)[ start(bounds) < 1L ] = 1L
+  end(bounds)[ end(bounds) > nrow(x) ] = nrow(x)
   # Hoist the Views dispatch
   myviewfun = getMethod("Views", "Rle", where="IRanges")
   # Calculate the view stats
   if (simplify == TRUE) {
     FUN.TYPE = match.arg(FUN.TYPE)
-    nviews = length(ir)
+    nviews = length(bounds)
     val = vapply(x,   	 
            FUN=function(rle) {
-             RLEFUN(myviewfun(rle, ir), na.rm=na.rm)
+             RLEFUN(myviewfun(rle, bounds), na.rm=na.rm)
            }, USE.NAMES=TRUE, 
-           FUN.VALUE=structure( vector( FUN.TYPE, nviews ), names=names(ir) ) )
+           FUN.VALUE=structure( vector( FUN.TYPE, nviews ), names=names(bounds) ) )
   } else {
     val = lapply(x,   	 
       function(rle) {
-        RLEFUN(myviewfun(rle, ir), na.rm=na.rm)
+        RLEFUN(myviewfun(rle, bounds), na.rm=na.rm)
       })
     }
   return(val)
@@ -55,9 +55,9 @@ NULL
 ##'
 ##' Loop over the Rle objects in an RleDataFrame, calculate the appropriate statistic for each view. If simplify == FALSE,
 ##' this function returns a vector for each Rle. If simplify == TRUE, it returns a vector for the case of a single range, otherwise,
-##' a matrix. Rownames for the matrix are taken from the names of the argument \code{ir}.
+##' a matrix. Rownames for the matrix are taken from the names of the argument \code{bounds}.
 ##' @param x RleDataFrame
-##' @param ir IRanges or matrix, views on every Rle. If \code{ir} is a matrix, the first
+##' @param bounds IRanges or matrix, views on every Rle. If \code{bounds} is a matrix, the first
 ##' two columns are used as as the starts and stops. Names for the ranges are taken from rownames of the matrix. Such a matrix can be
 ##' constructed with \code{boundingIndicesByChr}.
 ##' @param na.rm scalar logical, ignore NAs in calculations?
@@ -65,21 +65,21 @@ NULL
 ##' @param RLEFUN function, internal rle view summary function like .rle_range_means
 ##' @param FUN.TYPE scalar character, the storage mode for the returned vector or matrix (when simplify==TRUE).
 ##' @return With \code{simplify == TRUE}, a vector for single view or a matrix
-##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(ir)}.
+##' otherwise. When \code{simplify == FALSE}, a list of vectors length ncol(x) where each element is of length \code{nrows(bounds)}.
 ##' @keywords internal
 ##' @rdname do_rledf_range_summary
 ##' @seealso RleDataFrame boundingIndicesByChr
 ##' @family views
-.do_rledf_range_summary <- function(x, ir, na.rm=FALSE, simplify=TRUE, RLEFUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
+.do_rledf_range_summary <- function(x, bounds, na.rm=FALSE, simplify=TRUE, RLEFUN, FUN.TYPE=c("numeric", "double", "integer", "logical")) {
   # Make an IRanges from ranges matrix if necessary
-  if (is.matrix(ir)) {
-    start=ir[, 1]
-    end=ir[, 2]
-    names=rownames(ir)
-  } else if (is(ir, "IRanges")) {
-    start = start(ir)
-    end = end(ir)
-    names = names(ir)
+  if (is.matrix(bounds)) {
+    start=bounds[, 1]
+    end=bounds[, 2]
+    names=rownames(bounds)
+  } else if (is(bounds, "IRanges")) {
+    start = start(bounds)
+    end = end(bounds)
+    names = names(bounds)
   } else {
     stop("x must be a two-column matrix or an IRanges.")
   }
@@ -92,62 +92,62 @@ NULL
     FUN.TYPE = match.arg(FUN.TYPE)
     val = vapply(x,   	 
            FUN=function(rle) {
-             RLEFUN(start, width, runValue(rle), runLength(rle), na.rm=na.rm)
+             RLEFUN(start, end, runValue(rle), runLength(rle), na.rm=na.rm)
            }, USE.NAMES=TRUE, 
            FUN.VALUE=structure( vector( FUN.TYPE, length(start) ), names=names) )
   } else {
     val = lapply(x,   	 
       function(rle) {
-        structure( RLEFUN(start, width, runValue(rle), runLength(rle), na.rm=na.rm), names=names)
+        structure( RLEFUN(start, end, runValue(rle), runLength(rle), na.rm=na.rm), names=names)
       })
     }
   return(val)
 }
 
 ##' @export rangeSums
-setGeneric("rangeSums", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeSums") })
+setGeneric("rangeSums", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeSums") })
 setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMins
-setGeneric("rangeMins", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMins") })
+setGeneric("rangeMins", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMins") })
 setMethod("rangeMins", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_mins, FUN.TYPE="numeric")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_mins, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMaxs
-setGeneric("rangeMaxs", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMaxs") })
+setGeneric("rangeMaxs", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMaxs") })
 setMethod("rangeMaxs", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_maxs, FUN.TYPE="numeric")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_maxs, FUN.TYPE="numeric")
           })
 
 ##' @export rangeWhichMins
-setGeneric("rangeWhichMins", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
+setGeneric("rangeWhichMins", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
 setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_mins, FUN.TYPE="integer")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_mins, FUN.TYPE="integer")
           })
 
 ##' @export rangeWhichMaxs
-setGeneric("rangeWhichMaxs", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
+setGeneric("rangeWhichMaxs", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
 setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_views(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_maxs, FUN.TYPE="integer")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_maxs, FUN.TYPE="integer")
           })
 
 
 ##' @export rangeMeans
-setGeneric("rangeMeans", function(x, ir, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMeans") })
+setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, ...) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
-          function(x, ir, na.rm=FALSE, simplify=TRUE) {
-            .do_rledf_range_summary(x, ir, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
+          function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            .do_rledf_range_summary(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 
-setMethod("rangeMeans", signature=signature(x="vector"), 
+setMethod("rangeMeans", signature=signature(x="numeric"), 
           function(x, bounds, na.rm=FALSE) {
               if (! is.matrix(bounds) && ncol(bounds) == 2) {
                   stop("bounds must be a matrix with 2 columns\n")
@@ -163,17 +163,17 @@ setMethod("rangeMeans", signature=signature(x="vector"),
           })
 
 setMethod("rangeMeans", signature=signature(x="ANY"),
-          function(x, all.indices, na.rm=FALSE) {
-              range.means = vapply( structure(seq.int(length.out=ncol(data.matrix)), names=colnames(data.matrix)),
-                  FUN=function(x) { rangeMeans(as.numeric(data.matrix[, x])) },
-                  FUN.VALUE = structure(numeric(nrow(data.matrix)), names=rownames(all.indices)) )
+          function(x, bounds, na.rm=FALSE) {
+              range.means = vapply( structure(seq.int(length.out=ncol(x)), names=colnames(x)),
+                  FUN=function(col) { rangeMeans(as.numeric(x[, col]), bounds) },
+                  FUN.VALUE = structure(numeric(nrow(x)), names=rownames(bounds)) )
           return(range.means)
       })
 
 ##' @export rangeColMeans
 rangeColMeans <- function(x, all.indices) {
-.Deprecated("rangeMeans", "rangeColMeans has changed to rangeMeans.")
-rangeMeans(x, all.indices)
+  .Deprecated("rangeMeans", "rangeColMeans has changed to rangeMeans.")
+  rangeMeans(x, all.indices, na.rm=TRUE)
 }
 
 ### Internal methods to get directly to summary functions, using Views, but skipping trim
@@ -185,4 +185,6 @@ rangeMeans(x, all.indices)
 .rle_view_which_maxs <- function(x, na.rm) { .Call("RleViews_viewWhichMaxs", x, na.rm, PACKAGE = "IRanges") }
 
 ### Internal methods to get directly to summary functions, skipping trim and Views
-.rle_range_means <- function(start, width, values, lengths, na.rm) {.Call("RleViews_viewMeans2", start, width, as.numeric(values), lengths, na.rm=na.rm, PACKAGE = "genoset") }
+.rle_range_means <- function(start, end, values, lengths, na.rm) {
+  .Call("rangeMeans_rle", start, end, as.numeric(values), lengths, na.rm=na.rm, PACKAGE = "genoset")
+}

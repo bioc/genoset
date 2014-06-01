@@ -36,8 +36,8 @@ data(genoset)
   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices2}};
+Other "range summaries":
 \code{\link{boundingIndicesByChr}};
-\code{\link{boundingIndices}}; \code{\link{rangeColMeans}}
+\code{\link{boundingIndices}}
 }
 

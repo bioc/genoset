@@ -3,16 +3,16 @@
 \alias{.do_rledf_range_summary}
 \title{Calculate min/max/sum/mean/whichmin/whichmax over ranges on each column of an RleDataFrame.}
 \usage{
-.do_rledf_range_summary(x, ir, na.rm = FALSE, simplify = TRUE, RLEFUN,
+.do_rledf_range_summary(x, bounds, na.rm = FALSE, simplify = TRUE, RLEFUN,
   FUN.TYPE = c("numeric", "double", "integer", "logical"))
 }
 \arguments{
   \item{x}{RleDataFrame}
 
-  \item{ir}{IRanges or matrix, views on every Rle. If
-  \code{ir} is a matrix, the first two columns are used as
-  as the starts and stops. Names for the ranges are taken
-  from rownames of the matrix. Such a matrix can be
+  \item{bounds}{IRanges or matrix, views on every Rle. If
+  \code{bounds} is a matrix, the first two columns are used
+  as as the starts and stops. Names for the ranges are
+  taken from rownames of the matrix. Such a matrix can be
   constructed with \code{boundingIndicesByChr}.}
 
   \item{na.rm}{scalar logical, ignore NAs in calculations?}
@@ -31,7 +31,7 @@
 With \code{simplify == TRUE}, a vector for single view or a
 matrix otherwise. When \code{simplify == FALSE}, a list of
 vectors length ncol(x) where each element is of length
-\code{nrows(ir)}.
+\code{nrows(bounds)}.
 }
 \description{
 Loop over the Rle objects in an RleDataFrame, calculate the
@@ -39,7 +39,7 @@ appropriate statistic for each view. If simplify == FALSE,
 this function returns a vector for each Rle. If simplify ==
 TRUE, it returns a vector for the case of a single range,
 otherwise, a matrix. Rownames for the matrix are taken from
-the names of the argument \code{ir}.
+the names of the argument \code{bounds}.
 }
 \seealso{
 RleDataFrame boundingIndicesByChr
