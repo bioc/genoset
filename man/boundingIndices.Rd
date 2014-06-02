@@ -54,10 +54,8 @@ from the start of the gene reducing the search space for
 the stop position somewhat. This function has important
 differences from boundingIndices2, which uses findInterval:
 boundingIndices does not check for NAs or unsorted data in
-the subject positions. Also, the positions are kept as
-integer, where boundingIndices2 (and findInterval) convert
-them to doubles. These assumptions are safe for position
-info coming from a GenoSet or GRanges.
+the subject positions. These assumptions are safe for
+position info coming from a GenoSet or GRanges.
 }
 \examples{
 starts = seq(10,100,10)

@@ -406,5 +406,5 @@ setMethod("rangeSegMeanLength", signature=signature(range.gr="GRanges", segs="da
 .rangeSegMeanLength <- function(range.gr, segs) {
   segs.gr = segs2Granges(segs)
   bounds = boundingIndicesByChr(range.gr, segs.gr)
-  rangeMeans(bounds, width(segs.gr))
+  rangeMeans(width(segs.gr), bounds)
 }

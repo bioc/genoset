@@ -68,7 +68,7 @@ bounds2Rle <- function( bounds, values, n ) {
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.indices=FALSE) {
     if (length(starts) != length(stops)) {
-        stop("strts and stops must be the same length.")
+        stop("starts and stops must be the same length.")
     }
   bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
 
@@ -150,6 +150,7 @@ boundingIndicesByChr <-function(query, subject) {
 ##' @param query GRanges object representing genomic regions (genes) to be averaged.
 ##' @param subject A GenoSet object or derivative
 ##' @param assay.element character, name of element in assayData to use to extract data
+##' @param na.rm scalar logical, ignore NAs?
 ##' @return numeric matrix of features in each range averaged by sample
 ##' @family "range summaries"
 ##' @export rangeSampleMeans
@@ -157,10 +158,10 @@ boundingIndicesByChr <-function(query, subject) {
 ##'   data(genoset)
 ##'   my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), seqnames=c("chr17","chr8") )
 ##'   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
-rangeSampleMeans <- function(query, subject, assay.element) {
+rangeSampleMeans <- function(query, subject, assay.element, na.rm=FALSE) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
   all.indices = boundingIndicesByChr(query, subject)
   data.matrix = assayDataElement(subject,assay.element)
-  range.means = rangeMeans(data.matrix, all.indices)
+  range.means = rangeMeans(data.matrix, all.indices, na.rm=na.rm)
   return(range.means)
 }

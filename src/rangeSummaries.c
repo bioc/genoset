@@ -14,8 +14,8 @@
 // Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
 //   but this is a minor fraction of the time.
 SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Na_rm) {
-  int keep_na = ! asLogical(Na_rm);
-  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
+  int tolerate_na = ! asLogical(Na_rm);
+  if (tolerate_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
   
   int *start_p = INTEGER(Start);
   int *end_p = INTEGER(End);
@@ -67,7 +67,7 @@ SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP 
       inner_n = ((end - run_first_index[upper_run]) + 1) * !isna[upper_run];
       effective_width += inner_n;
       temp_sum += isna[upper_run] ? 0 : values_p[upper_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
-      ans_p[i] = (effective_width != width && (effective_width == 0 || keep_na)) ? na_val : temp_sum / effective_width;
+      ans_p[i] = (effective_width != width && (effective_width == 0 || tolerate_na)) ? na_val : temp_sum / effective_width;
     }
   }
 
@@ -75,9 +75,12 @@ SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP 
   return Ans;
 }
 
-SEXP rangeMeans_vector( SEXP bounds, SEXP x , SEXP na_rm) {
-  int keep_na = ! asLogical(na_rm);
-  if (keep_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
+SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm) {
+  if (!isMatrix(bounds) || !isInteger(bounds) || ncols(bounds) != 2) {
+    error("'bounds' argument must be a two-column integer matrix.");
+  }
+  int tolerate_na = ! asLogical(na_rm);
+  if (tolerate_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
 
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows, left, right;
@@ -86,7 +89,7 @@ SEXP rangeMeans_vector( SEXP bounds, SEXP x , SEXP na_rm) {
 
   double *x_data = REAL(x);    
   int *bounds_data = INTEGER(bounds);
-  int num_bounds = length(bounds) / 2;
+  int num_bounds = nrows(bounds);
   bounds_dimnames = getAttrib(bounds, R_DimNamesSymbol);
   x_dimnames = getAttrib(x, R_DimNamesSymbol);
 
@@ -132,7 +135,7 @@ SEXP rangeMeans_vector( SEXP bounds, SEXP x , SEXP na_rm) {
       if (num_na == num_to_sum) {
 	means_data[ mean_index ] = NA_REAL;
       } else {
-	//      ans_p[i] = (effective_width != width && (effective_width == 0 || keep_na)) ? na_val : temp_sum / effective_width;
+	//      ans_p[i] = (effective_width != width && (effective_width == 0 || tolerate_na)) ? na_val : temp_sum / effective_width;
 	means_data[ mean_index ] = sum / (num_to_sum - num_na);
       }
     }

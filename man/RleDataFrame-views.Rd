@@ -10,7 +10,7 @@
 \alias{rangeSums,RleDataFrame-method}
 \alias{rangeMeans,RleDataFrame-method}
 \alias{rangeMeans,numeric-method}
-\alias{rangeMeans,ANY-method}
+\alias{rangeMeans,matrix-method}
 \alias{rangeMins,RleDataFrame-method}
 \alias{rangeMaxs,RleDataFrame-method}
 \alias{rangeWhichMins,RleDataFrame-method}
@@ -61,16 +61,14 @@ rangeWhichMaxs(x, bounds, na.rm=FALSE, simplify=TRUE)
   }
   \item{simplify}{
     Scalar logical. Simplify result? If TRUE, the return value will be a
-  vector or matrix. For a single view, a vector will be
-  returned. Otherwise a matrix with one row per view and one column per
-  column of x will be returned. If FALSE, the return value will be a
-  list of length \code{ncol(x)} of vectors of length \code{nrow(bounds)}.
-}
-\item{...}{
-  Additional arguments for other methods.
-}
-}
-
+    vector or matrix. For a single view, a vector will be
+    returned. Otherwise a matrix with one row per view and one column per
+    column of x will be returned. If FALSE, the return value will be a
+    list of length \code{ncol(x)} of vectors of length \code{nrow(bounds)}.
+  }
+  \item{...}{
+    Additional arguments for other methods.
+  }
 }
 
 \value{

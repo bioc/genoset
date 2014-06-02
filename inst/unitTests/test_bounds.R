@@ -1,4 +1,5 @@
 # Tests for functions utilizing boundingIndices
+library(RUnit)
 
 test_bounds2Rle <- function() {
   locs = GRanges(IRanges(start=1:20,width=1),seqnames=c(rep("1",5),rep("2",5),rep("3",5),rep("4",5)))
@@ -38,7 +39,6 @@ test_boundingIndices <- function() {
 
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
-  checkEquals( boundingIndices2(gene.starts, gene.stops, probes), valid.bounds)
 
   # Test random order input with some exact matches
   gene.starts = c(6,2,9,1,14,7,50)
@@ -49,7 +49,6 @@ test_boundingIndices <- function() {
 
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
-  checkEquals( boundingIndices2(gene.starts, gene.stops, probes), valid.bounds)
 
   # Test with some not matching exactly
   gene.starts = seq(1,16,4)
@@ -61,8 +60,6 @@ test_boundingIndices <- function() {
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
   checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE, offset=2), bounds + 2)
-  checkEquals( boundingIndices2(gene.starts, gene.stops, probes), valid.bounds)
-  
 }
 
 test_rangeSampleMeans <- function() {
@@ -84,39 +81,36 @@ test_rangeSampleMeans <- function() {
   
   rle.genoset = GenoSet(
     locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
-    cn=DataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
+    cn=RleDataFrame(K=Rle(1:10),L=Rle(11:20),M=Rle(21:30),row.names=probe.names),
     pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
     annotation="SNP6"
     )
   rle.means = matrix(c(2.5,3.5,7.5,8.5,12.5,13.5,17.5,18.5,22.5,23.5,27.5,28.5), nrow=nrow(query.gr), ncol=ncol(rle.genoset), dimnames=list(rownames(query.gr),sampleNames(rle.genoset)))
-  checkEquals( rangeSampleMeans( query.gr, rle.genoset, "cn" ), rle.means, "DataFrame of Rle")
-
-  checkEquals( rangeSampleMeans( query.gr, subject, "cn" ), means)
-  locData(rle.genoset) = as(locData(rle.genoset),"GRanges")
-  checkEquals( rangeSampleMeans( query.gr, rle.genoset, "cn" ), rle.means, "DataFrame of Rle")
+  checkEquals( rangeSampleMeans( query.gr, rle.genoset, "cn", na.rm=TRUE), rle.means, "RleDataFrame")
+  checkEquals( rangeSampleMeans( query.gr, subject, "cn", na.rm=TRUE ), means)
 }
 
-test_rangeColMeans <- function() {
-  bounds = matrix(c(2,3,3,5,7,8,9,10),ncol=2,byrow=TRUE)
+test_rangeMeans <- function() {
+  bounds = matrix(as.integer(c(2,3,3,5,7,8,9,10)),ncol=2,byrow=TRUE)
   x = matrix(31:60,nrow=10,ncol=3)
   means = matrix(c(32.5,34,37.5,39.5,42.5,44,47.5,49.5,52.5,54,57.5,59.5),nrow=nrow(bounds),ncol=ncol(x))
-  checkEquals( rangeColMeans( bounds, x), means, "Matrix without dimnames")
-  checkEquals( rangeColMeans( bounds, x[,1]), means[,1], "Vector without dimnames")
+  checkEquals( rangeMeans( x, bounds), means, "Matrix without dimnames")
+  checkEquals( rangeMeans( x[,1], bounds), means[,1], "Vector without dimnames")
   
   rownames(x) = letters[1:nrow(x)]
   colnames(x) = letters[1:ncol(x)]
   rownames(bounds) = LETTERS[1:nrow(bounds)]
   rownames(means) = rownames(bounds)
   colnames(means) = colnames(x)
-  checkEquals( rangeColMeans( bounds, x), means, "Matrix with dimnames")
-  checkEquals( rangeColMeans( bounds, x[,1]), means[,1], "Vector without dimnames")
+  checkEquals( rangeMeans(x, bounds), means, "Matrix with dimnames")
+  checkEquals( rangeMeans(x[, 1], bounds), means[,1], "Vector without dimnames")
 
   na.cells = matrix(c(3,1,4,2,8,1,8,3,2,3,3,3),ncol=2,byrow=TRUE)
   x.w.na = x
   x.w.na[ na.cells ] = NA
   x.w.na[ 8,3 ] = NaN
   means.w.na = matrix(c(32,34.5,37,39.5, 42.5,44,47.5,49.5, NA,54.5,57,59.5),nrow=nrow(bounds),ncol=ncol(x),dimnames=dimnames(means))
-  checkEquals( rangeColMeans( bounds, x.w.na), means.w.na, "Matrix with dimnames and NAs")
+  checkEquals( rangeMeans( x.w.na, bounds), means.w.na, "Matrix with dimnames and NAs")
 }
 
 test_boundingIndicesByChr <- function() {

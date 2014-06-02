@@ -3,7 +3,7 @@
 \alias{rangeSampleMeans}
 \title{Average features in ranges per sample}
 \usage{
-rangeSampleMeans(query, subject, assay.element)
+rangeSampleMeans(query, subject, assay.element, na.rm = FALSE)
 }
 \arguments{
   \item{query}{GRanges object representing genomic regions
@@ -13,6 +13,8 @@ rangeSampleMeans(query, subject, assay.element)
 
   \item{assay.element}{character, name of element in
   assayData to use to extract data}
+
+  \item{na.rm}{scalar logical, ignore NAs?}
 }
 \value{
 numeric matrix of features in each range averaged by sample

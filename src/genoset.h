@@ -7,10 +7,11 @@ int numNA(SEXP vec, char* na); // Would rather overload (C++ only) with int isNA
 void widthToStartEnd(int* width, int* start, int* end, int n);
 void widthToStart(int* width, int* start, int n);
 int leftBound(int* positions, int query, int n, unsigned int restart);
+int leftBound2(int* first, int* last, int query, int* probe);
 
 // views.c
 SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_rm);
-SEXP rangeMeans_vector(SEXP bounds, SEXP x, SEXP na_rm);
+SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm);
 
 // bounds.c
 SEXP binary_bound( SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices);

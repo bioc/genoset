@@ -86,7 +86,7 @@ NULL
   # Trim IRanges once if necessary
   start[ start < 1L ] = 1L
   end[ end > nrow(x) ] = nrow(x)
-  width = (end - start) + 1L
+
   # Calculate the view stats
   if (simplify == TRUE) {
     FUN.TYPE = match.arg(FUN.TYPE)
@@ -144,35 +144,31 @@ setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
 setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, simplify=TRUE, ...) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
+            cat("Tried rledf\n")
             .do_rledf_range_summary(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 
 setMethod("rangeMeans", signature=signature(x="numeric"), 
           function(x, bounds, na.rm=FALSE) {
-              if (! is.matrix(bounds) && ncol(bounds) == 2) {
-                  stop("bounds must be a matrix with 2 columns\n")
-              }
               if (!is.double(x)) {
                   storage.mode(x) = "double"
               }
-              if (!is.integer(bounds)) {
-                  storage.mode(bounds) = "integer"
-              }
-              ans = .Call("rangeMeans_vector", x, bounds)
+              ans = .Call("rangeMeans_numeric", bounds, x, na.rm)
               return(ans)
           })
 
-setMethod("rangeMeans", signature=signature(x="ANY"),
+setMethod("rangeMeans", signature=signature(x="matrix"), # S4 does not see a class relationship between numeric and matrix. Hulk smash S4.
           function(x, bounds, na.rm=FALSE) {
-              range.means = vapply( structure(seq.int(length.out=ncol(x)), names=colnames(x)),
-                  FUN=function(col) { rangeMeans(as.numeric(x[, col]), bounds) },
-                  FUN.VALUE = structure(numeric(nrow(x)), names=rownames(bounds)) )
-          return(range.means)
-      })
+              if (!is.double(x)) {
+                  storage.mode(x) = "double"
+              }
+              ans = .Call("rangeMeans_numeric", bounds, x, na.rm)
+              return(ans)
+          })
 
 ##' @export rangeColMeans
 rangeColMeans <- function(x, all.indices) {
-  .Deprecated("rangeMeans", msg="rangeColMeans has changed to rangeMeans.")
+  .Deprecated("rangeMeans", msg="rangeColMeans has changed to rangeMeans. Please note that the order of arguments is different too.")
   rangeMeans(x, all.indices, na.rm=TRUE)
 }
 

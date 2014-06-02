@@ -1,6 +1,7 @@
 #########################################
 # Test for segmentation-related functions
 #########################################
+library(RUnit)
 sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 locData.gr = GRanges(ranges=IRanges(start=c(1,3,5,7,4,6,2,4,6,8),width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
