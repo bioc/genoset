@@ -137,3 +137,39 @@ int leftBound(int* positions, int query, int n, unsigned int restart) {
   //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n\n", low, high, positions[high], n);
   return(low);
 }
+
+//int leftBound2(int* first int* last, int query, int* probe) {
+//  unsigned int gap, jump;
+//  // If data unsorted, current target may be anywhere left of restart for previous target, just start at 0
+//  //  printf("\nleftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+//  probe = probe < last ? probe : last;
+//  probe = probe >= first && *probe > *first ? probe : first;
+//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+//
+//  // Right bound likely close to previous
+//  for (jump=1;  ;jump+=jump) {
+//    high += jump;
+//    if (high >= n) {
+//      high = n;
+//      break;
+//    }
+//    if (query < positions[high]) {
+//      break;
+//    }
+//    low = high;
+//  }
+//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
+//  // Now binary search for closest left bound
+//  gap = high - low;
+//  while (gap > 1) {
+//    probe = (gap >> 1) + low;
+//    if (positions[probe] > query) {
+//      high = probe;
+//    } else {
+//      low = probe;
+//    }
+//    gap = high - low;  // Hack to avoid integer overflow with low + high
+//  }
+//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n\n", low, high, positions[high], n);
+//  return(low);
+//}

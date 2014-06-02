@@ -50,15 +50,13 @@ bounds2Rle <- function( bounds, values, n ) {
 ##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
 ##' faster for sets of query genes that are sorted by start position within each chromosome.
 ##' The index of the stop position for each gene is found using the left bound from the start
-##' of the gene reducing the search space for the stop position somewhat. This function has
-##' important differences from boundingIndices2, which uses findInterval: boundingIndices does not
+##' of the gene reducing the search space for the stop position somewhat. boundingIndices does not
 ##' check for NAs or unsorted data in the subject positions. These assumptions are safe for
 ##' position info coming from a GenoSet or GRanges.
 ##'
 ##' @param starts integer vector of first base position of each query range
 ##' @param stops integer vector of last base position of each query range
 ##' @param positions Base positions in which to search
-##' @param valid.indices logical, TRUE assures that the returned indices don't go off either end of the array, i.e. 0 becomes 1 and n+1 becomes n
 ##' @param all.indices logical, return a list containing full sequence of indices for each query
 ##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
 ##' @family "range summaries"
@@ -67,9 +65,9 @@ bounds2Rle <- function( bounds, values, n ) {
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.indices=FALSE) {
-    if (length(starts) != length(stops)) {
-        stop("starts and stops must be the same length.")
-    }
+  if (length(starts) != length(stops)) {
+    stop("starts and stops must be the same length.")
+  }
   bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
 
   if (all.indices == TRUE) { # Return all covered and bounding indices

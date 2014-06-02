@@ -51,11 +51,10 @@ dramatically faster for sets of query genes that are sorted
 by start position within each chromosome. The index of the
 stop position for each gene is found using the left bound
 from the start of the gene reducing the search space for
-the stop position somewhat. This function has important
-differences from boundingIndices2, which uses findInterval:
-boundingIndices does not check for NAs or unsorted data in
-the subject positions. These assumptions are safe for
-position info coming from a GenoSet or GRanges.
+the stop position somewhat. boundingIndices does not check
+for NAs or unsorted data in the subject positions. These
+assumptions are safe for position info coming from a
+GenoSet or GRanges.
 }
 \examples{
 starts = seq(10,100,10)

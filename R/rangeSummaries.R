@@ -144,7 +144,6 @@ setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
 setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, simplify=TRUE, ...) { standardGeneric("rangeMeans") })
 setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
-            cat("Tried rledf\n")
             .do_rledf_range_summary(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 

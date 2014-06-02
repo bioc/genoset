@@ -34,32 +34,27 @@ test_boundingIndices <- function() {
   gene.starts = seq( 0, 42, 2)
   gene.stops = gene.starts + 2
   probes = 1:40
-  bounds = matrix( c(c(seq(0,40,2),40),c(seq(2,40,2),41,41)), ncol=2)
-  valid.bounds = matrix( c(c(1,seq(2,40,2),40),c(seq(2,40,2),40,40)), ncol=2)
+  bounds = matrix( c(c(seq(0,40,2),40),c(seq(2,40,2),40,40)), ncol=2, dimnames=list(NULL, c("left", "right")))
+  bounds[1] = 1
+  bounds[21:22, 1] = 39
 
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
+  checkEquals( boundingIndices(gene.starts, gene.stops, probes), bounds)
 
   # Test random order input with some exact matches
   gene.starts = c(6,2,9,1,14,7,50)
   gene.stops = gene.starts + 2
   probes = seq(3,39,3)
-  bounds = matrix( c(c(2,0,3,0,4,2,13),c(3,2,4,1,6,3,14)), ncol=2)
-  valid.bounds = matrix( c(c(2,1,3,1,4,2,13),c(3,2,4,1,6,3,13)), ncol=2)
+  bounds = matrix( c(c(2,1,3,1,4,2,12),c(3,2,4,2,6,3,13)), ncol=2, dimnames=list(NULL, c("left", "right")))
 
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
+  checkEquals( boundingIndices(gene.starts, gene.stops, probes), bounds)
 
   # Test with some not matching exactly
   gene.starts = seq(1,16,4)
   gene.stops = seq(1,16,4) + 1
   probes = seq(2,14,3)
-  valid.bounds = matrix(c(1,2,3,4,1,3,4,5),ncol=2)
-  bounds = matrix(c(0,2,3,4,1,3,4,5),ncol=2)
+  bounds = matrix(c(1,2,3,4,2,3,4,5),ncol=2, dimnames=list(NULL, c("left", "right")))
   
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=TRUE), valid.bounds)
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE), bounds)
-  checkEquals( boundingIndices(gene.starts, gene.stops, probes, valid.indices=FALSE, offset=2), bounds + 2)
+  checkEquals( boundingIndices(gene.starts, gene.stops, probes), bounds)
 }
 
 test_rangeSampleMeans <- function() {

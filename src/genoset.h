@@ -14,7 +14,7 @@ SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_r
 SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm);
 
 // bounds.c
-SEXP binary_bound( SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices);
+SEXP binary_bound( SEXP starts, SEXP stops, SEXP positions);
 SEXP binary_bound_by_chr(SEXP nquery, SEXP query_chr_indices, SEXP query_starts, SEXP query_ends, SEXP query_names, SEXP subject_chr_indices, SEXP subject_starts, SEXP subject_ends);
 
 #endif

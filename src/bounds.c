@@ -4,16 +4,16 @@
 
 /* TODO: break out redundant code in binary_bound and binary_bound_by_chr for ease of reading/maintenance */
 
-SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices) {
+SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions) {
   int query_index, probe, left, right, low, high, jump;
-  int num_positions, num_queries;
 
   // Get what we need from input
   int* starts_p = INTEGER(starts);
   int* stops_p = INTEGER(stops);
   int* positions_p = INTEGER(positions);
-  num_queries = LENGTH(starts);
-  num_positions = LENGTH(positions);
+  int num_queries = LENGTH(starts);
+  int num_positions = LENGTH(positions);
+  --positions_p;  // Hack for 1-based indices
 
   // Make results matrix
   int num_protected = 0;
@@ -29,7 +29,7 @@ SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices) {
   int *bounds_p = INTEGER(bounds);
 
   // Initialize
-  low = -1; /*  Set low off left end */
+  low = 1;
   high = num_positions; /* Set high to off right end */
   
   for (query_index=0; query_index < num_queries; query_index++) {
@@ -38,8 +38,8 @@ SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices) {
     left = starts_p[query_index];
 
     /* If data unsorted, current target may be anywhere left of low for previous target, just start at left */
-    if (low >= 0 && left < positions_p[low]) {
-      low = -1;
+    if (low > 0 && left < positions_p[low]) {
+      low = 1;
     }
     
     /* Right bound likely close to high from previous gene */
@@ -96,18 +96,6 @@ SEXP binary_bound(SEXP starts, SEXP stops, SEXP positions, SEXP valid_indices) {
     low = bounds_p[query_index]; /* Reset low to left end of this query to start next query */
     
   } /* End foreach query */
-  
-  // Apply valid_indices fix if desired
-  if (valid_indices) {
-    for(int i=0; i < num_queries; i++) {
-      if (bounds_p[i] < 0) {
-	bounds_p[i] = 0;
-      }
-      if (bounds_p[i + num_queries] >= num_positions)  {
-	bounds_p[i + num_queries] = num_positions - 1;
-      }
-    }
-  }
   UNPROTECT(num_protected);
   return(bounds);
 }
