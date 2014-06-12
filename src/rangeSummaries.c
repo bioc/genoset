@@ -2,17 +2,6 @@
 #include <Rinternals.h>
 #include "genoset.h"
 
-// Computing mean of arbitrary slices of an Rle, assuming slices are within [1,length(rle)] (trimmed)
-// Takes contents of Rle and IRanges rather than taking these or these stuffed into an RleViews
-// The body of this function is nearly independent of special R types, so could perhaps
-//   become a separate function, perhaps templated on type of pointer to values data.
-// Having the plain C part a separate function would allow using that function in a loop, 
-//  like in a loop over many Rle objects and one IRanges.
-// Assuming values gets as.numeric on the way in. No support for complex type.  For mean, we have to cast to double one at a time anyway.
-
-// Some branching for NA check only necessary for na.rm=TRUE and numeric values.
-// Could let the NaNs contaminate for na.rm=FALSE or use x * !na[i] for int types, 
-//   but this is a minor fraction of the time.
 SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Na_rm) {
   int tolerate_na = ! asLogical(Na_rm);
   if (tolerate_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
@@ -20,8 +9,8 @@ SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP 
   int *start_p = INTEGER(Start);
   int *end_p = INTEGER(End);
   int *lengths_p = INTEGER(RunLengths);
-  int nrun = LENGTH(RunValues);
-  int nranges = LENGTH(Start);
+  int nrun = (size_t) LENGTH(RunValues);
+  int nranges = (size_t) LENGTH(Start);
   
   // Input type dependence
   double *values_p = REAL(RunValues);
@@ -36,25 +25,24 @@ SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP 
   
   // Just basic C types from here on
   double temp_sum;
-  int i, start, width, end, inner_n, effective_width, run_index;
-  int lower_run = 0, upper_run = 0;
-  int* run_first_index = (int*) R_alloc(nrun, sizeof(int));
-  widthToStart(lengths_p, run_first_index, nrun);
+  size_t i, start, end, inner_n, sufficient_width, effective_width, run_index;
+  size_t lower_run = 0, upper_run = 0;
+  size_t* run_start_indices = (size_t*) R_alloc(nrun, sizeof(size_t));
+  widthToStart(lengths_p, run_start_indices, nrun);
+  size_t last_run = nrun - 1;
   // From here down all type-dependence could be handled by a template on values_p and na_val
   for (i = 0; i < nranges; i++) {
     start = start_p[i];
-    end= end_p[i];
-    width = (start - end) + 1;
+    end = end_p[i];
     // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
-    lower_run = leftBound(run_first_index, start, nrun, lower_run);
-    upper_run = leftBound(run_first_index, end, nrun, lower_run);  // Yes, search the left bound both times
-    //    printf("lower_run: %i, upper_run: %i\n", lower_run, upper_run);
+    lower_run = leftBound(run_start_indices, lower_run, last_run, start);
+    upper_run = leftBound(run_start_indices, lower_run, last_run, end); // Yes, search the left bound both times
     if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
       ans_p[i] = values_p[lower_run];
       continue;
     } else {
       // First run
-      inner_n = (run_first_index[lower_run + 1] - start) * !isna[lower_run];
+      inner_n = (run_start_indices[lower_run + 1] - start) * !isna[lower_run];
       effective_width = inner_n;
       temp_sum = isna[lower_run] ? 0 : values_p[lower_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
       // Inner runs
@@ -64,13 +52,14 @@ SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP 
 	temp_sum += isna[run_index] ? 0 : values_p[run_index] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
       }
       // Last run
-      inner_n = ((end - run_first_index[upper_run]) + 1) * !isna[upper_run];
+      inner_n = ((end - run_start_indices[upper_run]) + 1) * !isna[upper_run];
       effective_width += inner_n;
       temp_sum += isna[upper_run] ? 0 : values_p[upper_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
-      ans_p[i] = (effective_width != width && (effective_width == 0 || tolerate_na)) ? na_val : temp_sum / effective_width;
+      // Calculate mean, handling NAs
+      sufficient_width = ((start - end) * tolerate_na) + 1;  // Less than this many non-NA values and we return na_val
+      ans_p[i] = effective_width < sufficient_width ? na_val : temp_sum / effective_width;
     }
   }
-
   UNPROTECT(1);
   return Ans;
 }
@@ -117,6 +106,7 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm) {
   int num_na, num_to_sum;
   int col_offset = 0;
   int mean_index = 0;
+  // track left_bound_p, right_bound_p, means_p
   for (int col_index = 0; col_index < num_cols; col_index++) {
     for (int bound_index = 0; bound_index < num_bounds; bound_index++) {
       sum = 0;
@@ -124,18 +114,18 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm) {
       mean_index = (col_index * num_bounds) + bound_index;
       left = bounds_data[bound_index] + col_offset;
       right = bounds_data[bound_index + num_bounds] + col_offset;
-      num_to_sum = (right - left) + 1;
+      num_to_sum = (right - left) + 1;  // sufficient_width
       for (int i = left-1; i < right; i++) {
-	if (! R_FINITE(x_data[i]) ) {
+	if (! R_FINITE(x_data[i]) ) {  // just NA instead?
 	  num_na += 1;
 	} else {
-	  sum += x_data[i];
+	  sum += x_data[i];  // effective_width
 	}
       }
       if (num_na == num_to_sum) {
 	means_data[ mean_index ] = NA_REAL;
       } else {
-	//      ans_p[i] = (effective_width != width && (effective_width == 0 || tolerate_na)) ? na_val : temp_sum / effective_width;
+	//ans_p[i] = effective_width < sufficient_width ? na_val : temp_sum / effective_width;
 	means_data[ mean_index ] = sum / (num_to_sum - num_na);
       }
     }
@@ -144,4 +134,66 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm) {
   
   UNPROTECT(num_protected);
   return(means);
+}
+
+SEXP rangeMeans_rle2(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Na_rm) {
+  int tolerate_na = ! asLogical(Na_rm);
+  if (tolerate_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
+  
+  int *start_p = INTEGER(Start);
+  int *end_p = INTEGER(End);
+  int *lengths_p = INTEGER(RunLengths);
+  int nrun = (size_t) LENGTH(RunValues);
+  int nranges = (size_t) LENGTH(Start);
+  
+  // Input type dependence
+  double *values_p = REAL(RunValues);
+  const double na_val = NA_REAL;
+  SEXP Ans;
+  PROTECT(Ans = allocVector(REALSXP, nranges ));  
+  double *ans_p = REAL(Ans);
+
+  // Abstract all the NA checking to a simple lookup of a boolean value
+  char* isna = (char *) R_alloc(nrun, sizeof(char));
+  isNA(RunValues, isna);
+  
+  // Just basic C types from here on
+  double temp_sum;
+  size_t i, start, end, inner_n, sufficient_width, effective_width, run_index;
+  size_t lower_run = 0, upper_run = 0;
+  size_t* run_first_index = (size_t*) R_alloc(nrun, sizeof(size_t));
+  widthToStart(lengths_p, run_first_index, nrun);
+  size_t last_index = nrun - 1;
+  // From here down all type-dependence could be handled by a template on values_p and na_val
+  for (i = 0; i < nranges; i++) {
+    start = start_p[i];
+    end = end_p[i];
+    sufficient_width = ((start - end) * tolerate_na) + 1;  // Less than this many non-NA values and we return na_val
+    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
+    LEFT_BOUND(run_first_index, lower_run, last_index, start);
+    LEFT_BOUND(run_first_index, lower_run, last_index, end); // Yes, search the left bound both times
+    upper_run = lower_run;
+    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
+      ans_p[i] = values_p[lower_run];
+      continue;
+    } else {
+      // First run
+      inner_n = (run_first_index[lower_run + 1] - start) * !isna[lower_run];
+      effective_width = inner_n;
+      temp_sum = isna[lower_run] ? 0 : values_p[lower_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
+      // Inner runs
+      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
+      	inner_n = lengths_p[run_index] * !isna[run_index];
+      	effective_width += inner_n;
+	temp_sum += isna[run_index] ? 0 : values_p[run_index] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
+      }
+      // Last run
+      inner_n = ((end - run_first_index[upper_run]) + 1) * !isna[upper_run];
+      effective_width += inner_n;
+      temp_sum += isna[upper_run] ? 0 : values_p[upper_run] * inner_n;   // floating point NA/Nan contaminate, so have to branch. For na.rm=FALSE, could let them ride. For int types, x * !na would work.
+      ans_p[i] = effective_width < sufficient_width ? na_val : temp_sum / effective_width;
+    }
+  }
+  UNPROTECT(1);
+  return Ans;
 }

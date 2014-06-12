@@ -15,7 +15,7 @@
 // Argh, just noticed that Hadley thought of doing an isna C function, but his 
 //   is inside out and returns INTSXP.
 //  This could alternatively be implemented as vec<bool>. Probably very similar speed, but smaller.
-void isNA(SEXP vec, char* na) {
+inline void isNA(SEXP vec, char* na) {
   if (TYPEOF(vec) == REALSXP) {
     double* vec_p = REAL(vec);    
     for (int i=0; i < LENGTH(vec); i++) {
@@ -44,7 +44,7 @@ void isNA(SEXP vec, char* na) {
 //   This may be used to decide proceed with a simpler algorithm 
 //   if == 0 or the sum itself may be used to simplify subsequent
 //   code, like a mean.
-int numNA(SEXP vec, char* na) {
+inline int numNA(SEXP vec, char* na) {
   int num_na = 0;
   if (TYPEOF(vec) == REALSXP) {
     double* vec_p = REAL(vec);    
@@ -76,8 +76,7 @@ int numNA(SEXP vec, char* na) {
 }
 
 // Take widths, like from an Rle, compute start and end index for each run (1-based).
-// Want to switch to unsigned int as it will fit a human genome pos.
-void widthToStartEnd(int* width, int* start, int* end, int n) {
+inline void widthToStartEnd(int* width, size_t* start, size_t* end, size_t n) {
   start[0] = 1;
   end[0] = width[0];
   for (int i=1; i < n; i++) {
@@ -87,7 +86,7 @@ void widthToStartEnd(int* width, int* start, int* end, int n) {
 }
 
 // Take widths, like from an Rle, compute start index for each run (1-based).
-void widthToStart(int* width, int* start, int n) {
+inline void widthToStart(int* width, size_t* start, size_t n) {
   start[0] = 1;
   for (int i=1; i < n; i++) {
     start[i] = start[i-1] + width[i-1];
@@ -97,79 +96,28 @@ void widthToStart(int* width, int* start, int n) {
 /***********************
 Searching
 ***********************/
-// unsigned int is big enough for a position in the human genome, but 32 bits
-// Also consider using unsigned ints to save having to care negative values passed in
-// Fun fact: if you do --positions before you pass it in, you get 1-based indices back, a al findInterval.
-int leftBound(int* positions, int query, int n, unsigned int restart) {
-  unsigned int probe, low, high, gap, jump;
-  // If data unsorted, current target may be anywhere left of restart for previous target, just start at 0
-  //  printf("\nleftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-  high = low = restart < n ? restart : n - 1;
-  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-  if (query < positions[low]) {
-    low = 0;  // Consider making this -1 for generality
+// Fun fact: if you do --values before you pass it in, you get 1-based indices back, a la findInterval.
+// To take advantage of a searching for a previous value in a sorted array, start 'low' at that location
+
+inline size_t leftBound(size_t* values, size_t low, size_t high, size_t query) {
+  // Right bound likely close to previous (low)
+  size_t probe = low + 1;
+  size_t jump = 2;
+  //printf("cast pre low: %u, probe%u, high:%u, values[probe]: %u, query: %u\n", low, probe, high, values[probe], query);
+  while (probe <= high && values[probe] <= query) {
+    low = probe;
+    probe += jump;
+    jump = jump << 1;
   }
-  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-  // Right bound likely close to previous
-  for (jump=1;  ;jump+=jump) {
-    high += jump;
-    if (high >= n) {
-      high = n;
-      break;
-    }
-    if (query < positions[high]) {
-      break;
-    }
-    low = high;
-  }
-  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-  // Now binary search for closest left bound
-  gap = high - low;
-  while (gap > 1) {
-    probe = (gap >> 1) + low;
-    if (positions[probe] > query) {
+  high = probe > high ? high + 1 : probe;
+  probe = ((high-low) >> 1) + low; // Hack to avoid overflow 
+  while (low < probe) {
+    if (values[probe] > query) {
       high = probe;
     } else {
       low = probe;
     }
-    gap = high - low;  // Hack to avoid integer overflow with low + high
+    probe = ((high-low) >> 1) + low; // Hack to avoid overflow 
   }
-  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n\n", low, high, positions[high], n);
   return(low);
 }
-
-//int leftBound2(int* first int* last, int query, int* probe) {
-//  unsigned int gap, jump;
-//  // If data unsorted, current target may be anywhere left of restart for previous target, just start at 0
-//  //  printf("\nleftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-//  probe = probe < last ? probe : last;
-//  probe = probe >= first && *probe > *first ? probe : first;
-//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-//
-//  // Right bound likely close to previous
-//  for (jump=1;  ;jump+=jump) {
-//    high += jump;
-//    if (high >= n) {
-//      high = n;
-//      break;
-//    }
-//    if (query < positions[high]) {
-//      break;
-//    }
-//    low = high;
-//  }
-//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n", low, high, positions[high], n);
-//  // Now binary search for closest left bound
-//  gap = high - low;
-//  while (gap > 1) {
-//    probe = (gap >> 1) + low;
-//    if (positions[probe] > query) {
-//      high = probe;
-//    } else {
-//      low = probe;
-//    }
-//    gap = high - low;  // Hack to avoid integer overflow with low + high
-//  }
-//  //  printf("leftBound. low: %i, high: %i, positions[high]: %i, n: %i\n\n", low, high, positions[high], n);
-//  return(low);
-//}

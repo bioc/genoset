@@ -4,18 +4,28 @@
 // utils.c
 void isNA(SEXP vec, char* na);
 int numNA(SEXP vec, char* na); // Would rather overload (C++ only) with int isNA(SEXP vec, char* na);
-void widthToStartEnd(int* width, int* start, int* end, int n);
-void widthToStart(int* width, int* start, int n);
-int leftBound(int* positions, int query, int n, unsigned int restart);
-int leftBound2(int* first, int* last, int query, int* probe);
+void widthToStartEnd(int* width, size_t* start, size_t* end, size_t n);
+void widthToStart(int* width, size_t* start, size_t n);
+size_t leftBound(size_t* values, size_t low, size_t high, size_t query);
 
-// views.c
-SEXP rangeMeans_rle(SEXP start, SEXP width, SEXP values, SEXP lengths, SEXP na_rm);
-SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm);
-
-// bounds.c
-SEXP binary_bound( SEXP starts, SEXP stops, SEXP positions);
-SEXP binary_bound_by_chr(SEXP nquery, SEXP query_chr_indices, SEXP query_starts, SEXP query_ends, SEXP query_names, SEXP subject_chr_indices, SEXP subject_starts, SEXP subject_ends);
-
+#define LEFT_BOUND(values, low, high, query) do { \
+  size_t probe = low + 1; \
+  size_t jump = 2; \
+  while (probe <= high && values[probe] <= query) { \
+    low = probe; \
+    probe += jump; \
+    jump = jump << 1; \
+  } \
+  high = probe > high ? high + 1 : probe; \
+  probe = ((high-low) >> 1) + low;   \
+  while (low < probe) { \
+    if (values[probe] > query) { \
+      high = probe; \
+    } else { \
+      low = probe; \
+    } \
+    probe = ((high-low) >> 1) + low; \
+    } \
+  } while (0)
 #endif
 
