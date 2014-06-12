@@ -36,10 +36,10 @@ test_RleViews_viewMeans <- function(){
   rle2 = Rle(c(1, NA, 3, NA, 5), rep(2,5))
   myview2 = Views(rle2, ir)
   one2 = .Call("RleViews_viewMeans", myview2, TRUE, PACKAGE = "IRanges")
-  two2 = .Call("rangeMeans_rle2", s, e, as.numeric(runValue(rle2)), runLength(rle2), TRUE, PACKAGE = "genoset")
+  two2 = .Call("rangeMeans_rle", s, e, as.numeric(runValue(rle2)), runLength(rle2), TRUE, PACKAGE = "genoset")
   checkEquals(one2,two2, checkNames=FALSE)
   
   one3 = .Call("RleViews_viewMeans", myview2, FALSE, PACKAGE = "IRanges")
-  two3 = .Call("rangeMeans_rle2", s, e, as.numeric(runValue(rle2)), runLength(rle2), FALSE, PACKAGE = "genoset")
+  two3 = .Call("rangeMeans_rle", s, e, as.numeric(runValue(rle2)), runLength(rle2), FALSE, PACKAGE = "genoset")
   checkEquals(one3,two3, checkNames=FALSE)
 }

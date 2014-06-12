@@ -121,3 +121,27 @@ inline size_t leftBound(size_t* values, size_t low, size_t high, size_t query) {
   }
   return(low);
 }
+
+// Like leftBound above, but works on just pointers. Not any faster. Convenient if you don't need the indices.
+inline int* leftBoundPointer(int* low, int* high, int query) {
+  // Right bound likely close to previous
+  int* probe = low + 1;
+  int jump = 2;
+  while (probe <= high && *probe <= query) {
+    low = probe;
+    probe += jump;
+    jump = jump << 1;
+  }
+  high = probe > high ? high + 1 : probe;
+  // Now binary search for closest left bound
+  probe = ((high-low) >> 1) + low; // Hack to avoid overflow 
+  while (low < probe) {
+    if (*probe > query) {
+      high = probe;
+    } else {
+      low = probe;
+    }
+    probe = ((high-low) >> 1) + low; // Hack to avoid overflow 
+  }
+  return(low);
+}
