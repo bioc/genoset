@@ -19,7 +19,7 @@ inline void isNA(SEXP vec, char* na) {
   if (TYPEOF(vec) == REALSXP) {
     double* vec_p = REAL(vec);    
     for (int i=0; i < LENGTH(vec); i++) {
-      na[i] = ISNA(vec_p[i]);
+      na[i] = isnan(vec_p[i]);
     }
   } else if (TYPEOF(vec) == INTSXP) {
     int* vec_p = INTEGER(vec);

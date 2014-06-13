@@ -136,6 +136,8 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP na_rm) {
   return(means);
 }
 
+// No performance gain for na_rm=TRUE case by doing na_rm TRUE/FALSE versions separately
+// 50% speedup for not checking NA.  (branching or the ISNA macro?)
 SEXP rangeMeans_numeric2(SEXP bounds, SEXP x, SEXP na_rm) {
   if (!isMatrix(bounds) || !isInteger(bounds) || ncols(bounds) != 2) {
     error("'bounds' argument must be a two-column integer matrix.");
@@ -146,10 +148,10 @@ SEXP rangeMeans_numeric2(SEXP bounds, SEXP x, SEXP na_rm) {
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows, left, right;
   int num_protected = 0;
-
   double *x_p = REAL(x);    
-  int *bounds_data = INTEGER(bounds);
   int num_bounds = nrows(bounds);
+  int* left_bound_p = INTEGER(bounds);
+  int* right_bound_p = left_bound_p + num_bounds;
   bounds_dimnames = getAttrib(bounds, R_DimNamesSymbol);
   x_dimnames = getAttrib(x, R_DimNamesSymbol);
 
@@ -174,22 +176,20 @@ SEXP rangeMeans_numeric2(SEXP bounds, SEXP x, SEXP na_rm) {
   double *means_p = REAL(means);
 
   double sum;
-  int num_na, num_to_sum;
   const double na_val = NA_REAL;
-  for (int col_index = 0; col_index < num_cols; col_index++) {
-    for (int bound_index = 0; bound_index < num_bounds; means_p++, left_bound++, righ_bound++, bound_index++) {
-      sum = 0;
-      effective_width = 0;
-      left = *left_bound;
-      right = *right_bound;
-      sufficient_width = ((right - left)*keep_na) + 1;
-      for (int i = left-1; i < right; i++) {
-	if (! ISNA(x_p[i]) ) {
+  int effective_width, sufficient_width;
+  for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
+    for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
+      effective_width = sum = 0;
+      sufficient_width = ((right - left)*tolerate_na) + 1;
+      for (int i = left_bound_p[bound_index] - 1; i < right_bound_p[bound_index]; i++) {
+	if (! isnan(x_p[i]) ) {
 	  effective_width += 1;
 	  sum += x_p[i];
 	}
       }
-      x_p[i] = effective_width < sufficient_width ? na_val : sum / effective_width;
+      *means_p = effective_width < sufficient_width ? na_val : sum / effective_width;
+      //      *means_p = effective_width > 0 ? na_val : sum / effective_width;
     }
   }
   
