@@ -105,7 +105,9 @@ test_rangeMeans <- function() {
   x.w.na[ na.cells ] = NA
   x.w.na[ 8,3 ] = NaN
   means.w.na = matrix(c(32,34.5,37,39.5, 42.5,44,47.5,49.5, NA,54.5,57,59.5),nrow=nrow(bounds),ncol=ncol(x),dimnames=dimnames(means))
-  checkEquals( rangeMeans( x.w.na, bounds), means.w.na, "Matrix with dimnames and NAs")
+  means.w.any.na = matrix(c(NA,NA,NA,39.5, 42.5,NA,47.5,49.5, NA,NA,NA,59.5),nrow=nrow(bounds),ncol=ncol(x),dimnames=dimnames(means))
+  checkEquals( rangeMeans( x.w.na, bounds, na.rm=TRUE), means.w.na, "Matrix with dimnames and NAs, na.rm=TRUE")
+  checkEquals( rangeMeans( x.w.na, bounds, na.rm=FALSE), means.w.any.na, "Matrix with dimnames and NAs, na.rm=FALSE")
 }
 
 test_boundingIndicesByChr <- function() {
