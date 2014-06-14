@@ -73,7 +73,6 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
   int na_rm = asLogical(Na_rm);
   if (na_rm == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
 
-  printf("na_rm: %i\n", na_rm);
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows;
   int num_protected = 0;
@@ -148,7 +147,6 @@ SEXP rangeMeans_numeric2(SEXP bounds, SEXP x, SEXP Na_rm) {
   int na_rm = asLogical(Na_rm);
   if (na_rm == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
 
-  printf("na_rm: %i\n", na_rm);
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows;
   int num_protected = 0;
