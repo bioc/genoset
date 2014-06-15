@@ -161,7 +161,7 @@ setMethod("rangeMeans", signature=signature(x="matrix"), # S4 does not see a cla
               if (!is.double(x)) {
                   storage.mode(x) = "double"
               }
-              ans = .Call("rangeMeans_numeric", bounds, x, na.rm)
+              ans = .Call("rangeMeans_numeric2", bounds, x, na.rm)
               return(ans)
           })
 

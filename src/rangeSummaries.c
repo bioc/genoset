@@ -102,16 +102,18 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
     }
   }
   double *means_p = REAL(means);
-
-  double sum;
   const double na_val = NA_REAL;
-  int effective_width, left, right;
+
+  x_p--; // bounds are 1-based indices from the R side. This lets us use 1-based indices with C arrays.
+  double sum;
+
+  int effective_width, left, right, na;
   if (na_rm) {
     for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
       for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
 	effective_width = sum = 0;
-	left = left_bound_p[bound_index] - 1;
-	right = right_bound_p[bound_index] - 1;
+	left = left_bound_p[bound_index];
+	right = right_bound_p[bound_index];
 	for (int i = left; i <= right; i++) {
 	  if (! isnan(x_p[i]) ) {
 	    effective_width += 1;
@@ -125,82 +127,8 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
     for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
       for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
 	effective_width = sum = 0;
-	left = left_bound_p[bound_index] - 1;
-	right = right_bound_p[bound_index] - 1;
-	for (int i = left; i <= right; i++) {
-	  sum += x_p[i];
-	}
-	*means_p = sum / (double) ((right - left)+1) ;
-      }
-    }	
-  }
-  UNPROTECT(num_protected);
-  return(means);
-}
-
-// No performance gain for na_rm=TRUE case by doing na_rm TRUE/FALSE versions separately
-// 50% speedup for not checking NA.  (branching or the ISNA macro?)
-SEXP rangeMeans_numeric2(SEXP bounds, SEXP x, SEXP Na_rm) {
-  if (!isMatrix(bounds) || !isInteger(bounds) || ncols(bounds) != 2) {
-    error("'bounds' argument must be a two-column integer matrix.");
-  }
-  int na_rm = asLogical(Na_rm);
-  if (na_rm == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
-
-  SEXP means, bounds_dimnames, x_dimnames, dimnames;
-  int num_cols, num_rows;
-  int num_protected = 0;
-  double *x_p = REAL(x);    
-  int num_bounds = nrows(bounds);
-  int* left_bound_p = INTEGER(bounds);
-  int* right_bound_p = left_bound_p + num_bounds;
-  bounds_dimnames = getAttrib(bounds, R_DimNamesSymbol);
-  x_dimnames = getAttrib(x, R_DimNamesSymbol);
-
-  if (isMatrix(x)) {
-    num_cols = ncols(x);
-    num_rows = nrows(x);
-    PROTECT(means = allocMatrix(REALSXP, num_bounds, num_cols)); num_protected++;
-    if ( GetRowNames(bounds_dimnames) != R_NilValue || GetColNames(x_dimnames) != R_NilValue) {
-      PROTECT(dimnames = allocVector(VECSXP, 2)); num_protected++;
-      SET_VECTOR_ELT(dimnames, 0, duplicate(GetRowNames(bounds_dimnames)));
-      SET_VECTOR_ELT(dimnames, 1, duplicate(GetColNames(x_dimnames)));
-      setAttrib(means, R_DimNamesSymbol, dimnames);
-    }
-  } else {
-    num_cols = 1;
-    num_rows = length(x);
-    PROTECT(means = allocVector(REALSXP, num_bounds)); num_protected++;
-    if ( GetRowNames(bounds_dimnames) != R_NilValue ) {
-      setAttrib(means, R_NamesSymbol, duplicate(GetRowNames(bounds_dimnames)));
-    }
-  }
-  double *means_p = REAL(means);
-
-  double sum;
-  const double na_val = NA_REAL;
-  int effective_width, left, right;
-  if (na_rm) {
-    for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
-      for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
-	effective_width = sum = 0;
-	left = left_bound_p[bound_index] - 1;
-	right = right_bound_p[bound_index] - 1;
-	for (int i = left; i <= right; i++) {
-	  if (! isnan(x_p[i]) ) {
-	    effective_width += 1;
-	    sum += x_p[i];
-	  }
-	}
-	*means_p = effective_width > 0 ? sum / (double) effective_width : na_val;
-      }
-    } 
-  } else {
-    for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
-      for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
-	effective_width = sum = 0;
-	left = left_bound_p[bound_index] - 1;
-	right = right_bound_p[bound_index] - 1;
+	left = left_bound_p[bound_index];
+	right = right_bound_p[bound_index];
 	for (int i = left; i <= right; i++) {
 	  sum += x_p[i];
 	}

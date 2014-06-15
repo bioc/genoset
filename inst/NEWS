@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.19.27
+--------------------------
+
+IMPROVEMENTS
+	o rangeMeans for numeric gets a na.rm argument and uses 50% less time for 
+	na.rm = FALSE ands 25% less time for na.rm=TRUE.
+
 CHANGES IN VERSION 1.19.7
 -------------------------
 
