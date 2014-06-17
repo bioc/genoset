@@ -15,10 +15,6 @@ boundingIndices(starts, stops, positions, valid.indices = TRUE,
 
   \item{positions}{Base positions in which to search}
 
-  \item{valid.indices}{logical, TRUE assures that the
-  returned indices don't go off either end of the array,
-  i.e. 0 becomes 1 and n+1 becomes n}
-
   \item{all.indices}{logical, return a list containing full
   sequence of indices for each query}
 }

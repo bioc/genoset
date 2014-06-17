@@ -3,13 +3,12 @@
 \alias{rangeColMeans}
 \title{Calculate column means for multiple ranges}
 \usage{
-rangeColMeans(bounds, x)
+rangeColMeans(x, all.indices)
 }
 \arguments{
-  \item{bounds}{A two column integer matrix of row indices}
-
   \item{x}{A numeric matrix with rows corresponding to
-  indices in bounds.}
+    indices in bounds.}
+  \item{all.indices}{A two column integer matrix of row indices}
 }
 \value{
 A numeric matrix or vector, matching the form of x. One row
@@ -25,9 +24,8 @@ matrix, x, and calculate mean for each range in each column
 all rows.
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndices2}};
+Other "range summaries":
 \code{\link{boundingIndicesByChr}};
 \code{\link{boundingIndices}};
 \code{\link{rangeSampleMeans}}
 }
-
