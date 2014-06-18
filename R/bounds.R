@@ -27,7 +27,7 @@ bounds2Rle <- function( bounds, values, n ) {
   run.length[data.indices] = widths
   run.value[data.indices] = values
   run.length[data.indices+1] = diff(c(bounds[, 2], n)) - c(widths[-1], 0)
-  
+
   if (sum(run.length) != n) {
     stop("Rle is the wrong length. Look for double counted features in your bounds table.")
   }
@@ -64,18 +64,18 @@ bounds2Rle <- function( bounds, values, n ) {
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
-boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.indices=FALSE) {
+boundingIndices <- function(starts, stops, positions, all.indices=FALSE) {
   if (length(starts) != length(stops)) {
     stop("starts and stops must be the same length.")
   }
-  bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions), as.logical(valid.indices)[1])
+  bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions))
 
   if (all.indices == TRUE) { # Return all covered and bounding indices
     return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )
   } else {  # Just return left and right indices
     return(bounds)
   }
-  
+
 }
 
 ##' Find indices of features bounding a set of chromosome ranges/genes, across chromosomes
@@ -89,19 +89,19 @@ boundingIndices <- function(starts, stops, positions, valid.indices=TRUE, all.in
 ##' first or last index on that chromosome, rather than 0 or n + 1 so that genes can always be
 ##' connected to some data. Checking the left and right bound for equality will tell you when
 ##' a query is off the end of a chromosome.
-##' 
+##'
 ##' This function uses some tricks from findIntervals, where is for k queries and n features it
 ##' is O(k * log(n)) generally and ~O(k) for sorted queries. Therefore will be dramatically
 ##' faster for sets of query genes that are sorted by start position within each chromosome.
 ##' The index of the stop position for each gene is found using the left bound from the start
 ##' of the gene reducing the search space for the stop position somewhat.
-##' 
+##'
 ##' This function differs from boundingIndices in that 1. it uses both start and end positions for
 ##' the subject, and 2. query and subject start and end positions are processed in blocks corresponding
 ##' to chromosomes.
 ##'
 ##' Both query and subject must be in at least weak genome order (sorted by start within chromosome blocks).
-##' 
+##'
 ##' @param query GRanges or something coercible to GRanges
 ##' @param subject GenomicRanges
 ##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
@@ -136,7 +136,7 @@ boundingIndicesByChr <-function(query, subject) {
   return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))
 }
 
-##' Average features in ranges per sample 
+##' Average features in ranges per sample
 ##'
 ##' This function takes per-feature genomic data and returns averages for each of a set of genomic ranges.
 ##' The most obvious application is determining the copy number of a set of genes. The features
@@ -144,7 +144,7 @@ boundingIndicesByChr <-function(query, subject) {
 ##' of a gene (overlaps). The features on either side of the gene unless those positions
 ##' exactly match the first or last base covered by the gene.  Therefore, genes falling between two features
 ##' will at least cover two features. Range bounding is performed by the boundingIndices function.
-##' 
+##'
 ##' @param query GRanges object representing genomic regions (genes) to be averaged.
 ##' @param subject A GenoSet object or derivative
 ##' @param assay.element character, name of element in assayData to use to extract data

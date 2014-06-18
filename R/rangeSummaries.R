@@ -37,13 +37,13 @@ NULL
   if (simplify == TRUE) {
     FUN.TYPE = match.arg(FUN.TYPE)
     nviews = length(bounds)
-    val = vapply(x,   	 
+    val = vapply(x,
            FUN=function(rle) {
              RLEFUN(myviewfun(rle, bounds), na.rm=na.rm)
-           }, USE.NAMES=TRUE, 
+           }, USE.NAMES=TRUE,
            FUN.VALUE=structure( vector( FUN.TYPE, nviews ), names=names(bounds) ) )
   } else {
-    val = lapply(x,   	 
+    val = lapply(x,
       function(rle) {
         RLEFUN(myviewfun(rle, bounds), na.rm=na.rm)
       })
@@ -90,13 +90,13 @@ NULL
   # Calculate the view stats
   if (simplify == TRUE) {
     FUN.TYPE = match.arg(FUN.TYPE)
-    val = vapply(x,   	 
+    val = vapply(x,
            FUN=function(rle) {
              RLEFUN(start, end, runValue(rle), runLength(rle), na.rm=na.rm)
-           }, USE.NAMES=TRUE, 
+           }, USE.NAMES=TRUE,
            FUN.VALUE=structure( vector( FUN.TYPE, length(start) ), names=names) )
   } else {
-    val = lapply(x,   	 
+    val = lapply(x,
       function(rle) {
         structure( RLEFUN(start, end, runValue(rle), runLength(rle), na.rm=na.rm), names=names)
       })
@@ -106,35 +106,35 @@ NULL
 
 ##' @export rangeSums
 setGeneric("rangeSums", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeSums") })
-setMethod("rangeSums", signature=signature(x="RleDataFrame"), 
+setMethod("rangeSums", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_sums, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMins
 setGeneric("rangeMins", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMins") })
-setMethod("rangeMins", signature=signature(x="RleDataFrame"), 
+setMethod("rangeMins", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_mins, FUN.TYPE="numeric")
           })
 
 ##' @export rangeMaxs
 setGeneric("rangeMaxs", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeMaxs") })
-setMethod("rangeMaxs", signature=signature(x="RleDataFrame"), 
+setMethod("rangeMaxs", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_maxs, FUN.TYPE="numeric")
           })
 
 ##' @export rangeWhichMins
 setGeneric("rangeWhichMins", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMins") })
-setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"), 
+setMethod("rangeWhichMins", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_mins, FUN.TYPE="integer")
           })
 
 ##' @export rangeWhichMaxs
 setGeneric("rangeWhichMaxs", function(x, bounds, na.rm=FALSE, simplify=TRUE) { standardGeneric("rangeWhichMaxs") })
-setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"), 
+setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_views(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_view_which_maxs, FUN.TYPE="integer")
           })
@@ -142,12 +142,12 @@ setMethod("rangeWhichMaxs", signature=signature(x="RleDataFrame"),
 
 ##' @export rangeMeans
 setGeneric("rangeMeans", function(x, bounds, na.rm=FALSE, simplify=TRUE, ...) { standardGeneric("rangeMeans") })
-setMethod("rangeMeans", signature=signature(x="RleDataFrame"), 
+setMethod("rangeMeans", signature=signature(x="RleDataFrame"),
           function(x, bounds, na.rm=FALSE, simplify=TRUE) {
             .do_rledf_range_summary(x, bounds, na.rm=na.rm, simplify=simplify, RLEFUN=.rle_range_means, FUN.TYPE="numeric")
           })
 
-setMethod("rangeMeans", signature=signature(x="numeric"), 
+setMethod("rangeMeans", signature=signature(x="numeric"),
           function(x, bounds, na.rm=FALSE) {
               if (!is.double(x)) {
                   storage.mode(x) = "double"
@@ -161,7 +161,7 @@ setMethod("rangeMeans", signature=signature(x="matrix"), # S4 does not see a cla
               if (!is.double(x)) {
                   storage.mode(x) = "double"
               }
-              ans = .Call("rangeMeans_numeric2", bounds, x, na.rm)
+              ans = .Call("rangeMeans_numeric", bounds, x, na.rm)
               return(ans)
           })
 

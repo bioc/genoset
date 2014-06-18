@@ -3,8 +3,7 @@
 \alias{boundingIndices}
 \title{Find indices of features bounding a set of chromosome ranges/genes}
 \usage{
-boundingIndices(starts, stops, positions, valid.indices = TRUE,
-  all.indices = FALSE)
+boundingIndices(starts, stops, positions, all.indices = FALSE)
 }
 \arguments{
   \item{starts}{integer vector of first base position of
