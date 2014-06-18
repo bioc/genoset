@@ -5,24 +5,24 @@
 SEXP rangeMeans_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Na_rm) {
   int tolerate_na = ! asLogical(Na_rm);
   if (tolerate_na == NA_LOGICAL) { error("'na.rm' must be TRUE or FALSE"); }
-  
+
   int *start_p = INTEGER(Start);
   int *end_p = INTEGER(End);
   int *lengths_p = INTEGER(RunLengths);
   int nrun = (size_t) LENGTH(RunValues);
   int nranges = (size_t) LENGTH(Start);
-  
+
   // Input type dependence
   double *values_p = REAL(RunValues);
   const double na_val = NA_REAL;
   SEXP Ans;
-  PROTECT(Ans = allocVector(REALSXP, nranges ));  
+  PROTECT(Ans = allocVector(REALSXP, nranges ));
   double *ans_p = REAL(Ans);
 
   // Abstract all the NA checking to a simple lookup of a boolean value
   char* isna = (char *) R_alloc(nrun, sizeof(char));
   isNA(RunValues, isna);
-  
+
   // Just basic C types from here on
   double temp_sum;
   size_t i, start, end, inner_n, sufficient_width, effective_width, run_index;
@@ -76,7 +76,7 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
   SEXP means, bounds_dimnames, x_dimnames, dimnames;
   int num_cols, num_rows;
   int num_protected = 0;
-  double *x_p = REAL(x);    
+  double *x_p = REAL(x);
   int num_bounds = nrows(bounds);
   int* left_bound_p = INTEGER(bounds);
   int* right_bound_p = left_bound_p + num_bounds;
@@ -107,7 +107,7 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
   x_p--; // bounds are 1-based indices from the R side. This lets us use 1-based indices with C arrays.
   double sum;
 
-  int effective_width, left, right, na;
+  int effective_width, left, right;
   if (na_rm) {
     for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
       for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
@@ -122,7 +122,7 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
 	}
 	*means_p = effective_width > 0 ? sum / (double) effective_width : na_val;
       }
-    } 
+    }
   } else {
     for (int col_index = 0; col_index < num_cols; col_index++, x_p += num_rows) {
       for (int bound_index = 0; bound_index < num_bounds; bound_index++, means_p++) {
@@ -134,7 +134,7 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
 	}
 	*means_p = sum / (double) ((right - left)+1) ;
       }
-    }	
+    }
   }
   UNPROTECT(num_protected);
   return(means);
