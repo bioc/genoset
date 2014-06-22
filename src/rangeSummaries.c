@@ -139,3 +139,53 @@ SEXP rangeMeans_numeric(SEXP bounds, SEXP x, SEXP Na_rm) {
   UNPROTECT(num_protected);
   return(means);
 }
+
+// Number of values >= min in sorted ranges in an Rle, like number of callable bases in a coverage Rle
+// Coverage Rle haven't any NAs, by defenition
+SEXP numCallable_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP Min) {
+  int *start_p = INTEGER(Start);
+  int *end_p = INTEGER(End);
+  int *lengths_p = INTEGER(RunLengths);
+  int nrun = (size_t) LENGTH(RunValues);
+  int nranges = (size_t) LENGTH(Start);
+
+  // Input type dependence
+  int *values_p = INTEGER(RunValues);
+  int min = asInteger(Min);
+  SEXP Ans;
+  PROTECT(Ans = allocVector(INTSXP, nranges ));
+  int *ans_p = INTEGER(Ans);
+
+  // Just basic C types from here on
+  int temp_sum;
+  size_t i, start, end, inner_n, sufficient_width, effective_width, run_index;
+  size_t lower_run = 0, upper_run = 0;
+  size_t* run_start_indices = (size_t*) R_alloc(nrun, sizeof(size_t));
+  widthToStart(lengths_p, run_start_indices, nrun);
+  size_t last_run = nrun - 1;
+  // From here down all type-dependence could be handled by a template on values_p
+  for (i = 0; i < nranges; i++) {
+    start = start_p[i];
+    end = end_p[i];
+    // Find run(s) covered by current range using something like findOverlaps(IRanges(start,width), ranges(rle))
+    lower_run = leftBound(run_start_indices, lower_run, last_run, start);
+    upper_run = leftBound(run_start_indices, lower_run, last_run, end); // Yes, search the left bound both times
+    if (lower_run == upper_run) {  // Range all in one run, special case here allows simpler logic below
+      ans_p[i] = values_p[lower_run] >= min ? (end - start) + 1 : 0;
+      continue;
+    } else {
+      // First run
+      temp_sum = values_p[lower_run] >= min ? (run_start_indices[lower_run + 1] - start) : 0;
+      // Inner runs
+      for (run_index = lower_run + 1; run_index < upper_run; run_index++) {
+      	temp_sum += values_p[run_index] >= min ? lengths_p[run_index] : 0;
+      }
+      // Last run
+      temp_sum += values_p[upper_run] >= min ? ((end - run_start_indices[upper_run]) + 1) : 0;
+      // Update array
+      ans_p[i] = temp_sum;
+    }
+  }
+  UNPROTECT(1);
+  return Ans;
+}

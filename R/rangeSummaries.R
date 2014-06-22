@@ -183,3 +183,26 @@ rangeColMeans <- function(x, all.indices) {
 .rle_range_means <- function(start, end, values, lengths, na.rm) {
   .Call("rangeMeans_rle", as.integer(start), as.integer(end), as.numeric(values), lengths, na.rm=na.rm, PACKAGE = "genoset")
 }
+
+##' Count Rle positions >= min
+##'
+##' For Rle coverage vector, count number of positions where value >= min, think callable bases.
+##' @param rle integer Rle, no NAs
+##' @param bounds IRanges or matrix, positions in Rle to consider. If \code{bounds} is a matrix, the first
+##' two columns are used as start and end.
+##' @param min scalar integer, count Rle positions >= this value.
+##' @return integer vector of length nrow(bounds)
+##' @export
+numCallable <- function(rle, bounds, min) {
+    if (is.matrix(bounds)) {
+        if (storage.mode(bounds) != "integer") { storage.mode(bounds) = "integer" }
+        start=bounds[, 1]
+        end=bounds[, 2]
+    } else if (is(bounds, "IRanges")) {
+        start = start(bounds)
+        end = end(bounds)
+    } else {
+        stop("x must be a two-column matrix or an IRanges.")
+    }
+    .Call("numCallable_rle", s, e, runValue(rle), runLength(rle), as.integer(min), PACKAGE = "genoset")
+}
