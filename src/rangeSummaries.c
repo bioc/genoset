@@ -158,7 +158,7 @@ SEXP numCallable_rle(SEXP Start, SEXP End, SEXP RunValues, SEXP RunLengths, SEXP
 
   // Just basic C types from here on
   int temp_sum;
-  size_t i, start, end, inner_n, sufficient_width, effective_width, run_index;
+  size_t i, start, end, run_index;
   size_t lower_run = 0, upper_run = 0;
   size_t* run_start_indices = (size_t*) R_alloc(nrun, sizeof(size_t));
   widthToStart(lengths_p, run_start_indices, nrun);

@@ -46,10 +46,10 @@ test_RleViews_viewMeans <- function(){
 
 test_numCallable_rle <- function(){
   rle = Rle(c(3L, 4L, 1L, 5L, 9L), c(4, 2, 3, 4, 5))
-  ir = IRanges(start=c(3, 4, 9), end=c(4, 8, 17), names=c("GENE1", "GENE2", "GENE3"))
+  ir = IRanges(start=c(3, 4, 7, 9), end=c(4, 8, 8, 17), names=c("GENE1", "GENE2", "GENE3", "GENE4"))
   s = start(ir)
   e = end(ir)
-  one = c(2L, 3L, 8L)
+  one = c(2L, 3L, 0L, 8L)
   two = .Call("numCallable_rle", s, e, runValue(rle), runLength(rle), 3L, PACKAGE = "genoset")
   checkEquals(one, two, checkNames=FALSE)
   checkEquals(one, numCallable(rle, ir, 3L), checkNames=FALSE)

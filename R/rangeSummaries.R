@@ -194,6 +194,7 @@ rangeColMeans <- function(x, all.indices) {
 ##' @return integer vector of length nrow(bounds)
 ##' @export
 numCallable <- function(rle, bounds, min) {
+    #### disjoin !
     if (is.matrix(bounds)) {
         if (storage.mode(bounds) != "integer") { storage.mode(bounds) = "integer" }
         start=bounds[, 1]
@@ -204,5 +205,5 @@ numCallable <- function(rle, bounds, min) {
     } else {
         stop("x must be a two-column matrix or an IRanges.")
     }
-    .Call("numCallable_rle", s, e, runValue(rle), runLength(rle), as.integer(min), PACKAGE = "genoset")
+    .Call("numCallable_rle", start, end, runValue(rle), runLength(rle), as.integer(min), PACKAGE = "genoset")
 }
