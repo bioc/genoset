@@ -1,4 +1,5 @@
 ### Tests for summaries of views on RleDataFrame
+library(genoset)
 library(RUnit)
 
 test_RleDataFrame_views <- function() {

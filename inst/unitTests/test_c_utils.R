@@ -53,8 +53,8 @@ test_numCallable_rle <- function(){
   two = .Call("numCallable_rle", s, e, runValue(rle), runLength(rle), 3L, PACKAGE = "genoset")
   checkEquals(one, two, checkNames=FALSE)
   checkEquals(one, numCallable(rle, ir, 3L), checkNames=FALSE)
-  checkEquals(one, numCallable(rle, as.matrix(ir), 3L), checkNames=FALSE)
-  real.mat = as.matrix(ir)
+  checkEquals(one, numCallable(rle, cbind(start(ir), end(ir)), 3L), checkNames=FALSE)
+  real.mat = cbind(start(ir), end(ir))
   storage.mode(real.mat) = "double"
   checkEquals(one, numCallable(rle, real.mat, 3L), checkNames=FALSE)
 }

@@ -1,4 +1,4 @@
-####  Class definition for GenoSet, which will extend eSet
+######  Class definition for GenoSet, which will extend eSet
 ######   GenoSet will provide a locData slot containing a GenomicRanges object from the GenomicRanges
 ######   package to hold genome locations of the features and allow for easy subsetting
 ######   by location.
@@ -6,7 +6,7 @@
 ######   the assayData slot.
 
 ##' GenoSet: An eSet for data with genome locations
-##' 
+##'
 ##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
 ##' extends eSet by adding a "locData" slot for a GenomicRanges object.
 ##' This object contains feature genome location data and
@@ -17,13 +17,13 @@
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
 ##' @seealso genoset-datasets GenoSet
-##' 
+##'
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom IRanges DataFrame Rle
 ##' @importClassesFrom GenomicRanges GRanges GenomicRanges GIntervalTree
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
-##' @importMethodsFrom Biobase annotation experimentData exprs fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
+##' @importMethodsFrom Biobase annotation fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect is.unsorted lapply levels mean nrow order paste ranges Rle rownames
 ##' @importMethodsFrom IRanges "rownames<-" runLength runValue sapply space start unlist universe "universe<-" viewMeans Views
@@ -36,7 +36,7 @@
 ##'
 ##' @import methods
 ##' @import BiocGenerics
-##' 
+##'
 ##' @useDynLib genoset
 NULL
 
@@ -65,7 +65,7 @@ setValidity("GenoSet", function(object) {
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
 ##' order can be disrupted by "[" calls and will be checked by methods that
 ##' require it.
-##' 
+##'
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
 ##' @param locData A GRanges specifying feature chromosome
 ##' locations. rownames are required to match assayData.
@@ -75,7 +75,7 @@ setValidity("GenoSet", function(object) {
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object or derivative as specified by "type" arg
-##' @examples 
+##' @examples
 ##'   test.sample.names = LETTERS[11:13]
 ##'   probe.names = letters[1:10]
 ##'   gs = GenoSet(
@@ -124,7 +124,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
       stop("Row name set mismatch for locData and assayData")
     } else {
       for (  ad.name in assayDataElementNames(ad) ) {
-        ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]        
+        ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]
       }
     }
   }
@@ -144,7 +144,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 
   # Done editing assayData members, lock
   lockEnvironment(ad, bindings=TRUE)
-  
+
   # Create or check phenoData
   if (is.null(pData)) {
     pData = data.frame(row.names=sampleNames(ad),check.names=FALSE)
@@ -157,7 +157,6 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
     }
   }
   pd = new("AnnotatedDataFrame",data=pData)
-
   # Create object
   rownames(locData) = NULL
   object = new(type, locData=locData, annotation=annotation, phenoData=pd, assayData=ad)
@@ -174,7 +173,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##' dimname matching among relevant slots and sets everything to genome order. Genome
 ##' order can be disrupted by "[" calls and will be checked by methods that
 ##' require it.
-##' 
+##'
 ##' @param locData A GRanges object specifying feature chromosome
 ##' locations. Rownames are required to match featureNames.
 ##' @param pData A data frame with rownames matching all data matrices
@@ -253,6 +252,7 @@ setMethod("colnames<-", signature(x="GenoSet"),
 ##' @exportMethod sampleNames
 setMethod("sampleNames", signature(object="GenoSet"),
           function(object) {
+              .Deprecated("colnames")
             colnames(object)
           })
 
@@ -260,6 +260,7 @@ setMethod("sampleNames", signature(object="GenoSet"),
 ##' @exportMethod "sampleNames<-"
 setMethod("sampleNames<-", signature(object="GenoSet"),
           function(object, value) {
+              .Deprecated("colnames<-")
             colnames(object) = value
             return(object)
           })
@@ -308,12 +309,14 @@ setMethod("rownames<-",
 ##' @exportMethod "featureNames<-"
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
+              .Deprecated("rownames")
             rownames(object)
           })
 
 ##' @rdname rownames-methods
 setMethod("featureNames", signature(object="GRanges"),
           function(object) {
+              .Deprecated("rownames")
             names(object)
           })
 
@@ -321,6 +324,7 @@ setMethod("featureNames", signature(object="GRanges"),
 setMethod("featureNames<-",
           signature=signature(object="GenoSet", value="ANY"),
           function(object, value) {
+              .Deprecated("rownames<-")
             rownames(object) = value
             return(object)
           })
@@ -329,6 +333,7 @@ setMethod("featureNames<-",
 setMethod("featureNames<-",
           signature=signature(object="GRanges", value="ANY"),
           function(object, value) {
+              .Deprecated("rownames<-")
             names(object) = value
             return(object)
           })
@@ -603,7 +608,7 @@ setMethod("pos", "GenoSetOrGenomicRanges",
 ##' Get list of unique chromosome names
 ##'
 ##' Get list of unique chromosome names
-##' 
+##'
 ##' @param object GenomicRanges or GenoSet
 ##' @param value return value of chrNames
 ##' @return character vector with names of chromosomes
@@ -680,7 +685,7 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
             chr.info[,"stop"]    = cumsum(as.numeric(max.val))
             chr.info[,"offset"]  = c(0, chr.info[- nrow(chr.info),"stop"])
             chr.info[,"start"]   = chr.info[,"offset"] + 1
-            
+
             return(chr.info)
           })
 
@@ -691,7 +696,7 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
 ##' This is like chrInfo but for feature indices rather than chromosome
 ##' locations. If chr is specified, the function will return a sequence
 ##' of integers representing the row indices of features on that chromosome.
-##' 
+##'
 ##' @param object GenoSet or GRanges
 ##' @param chr character, specific chromosome name
 ##' @return data.frame with "first" and "last" columns
@@ -747,7 +752,7 @@ setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
             ### Add offset to pos by chr
             offset = chrInfo(object)[,"offset"]
             genopos = pos(object) + unlist(offset[chr(object)])
-            
+
             return(genopos)
           })
 
