@@ -50,3 +50,4 @@ Collate:
     'segments.R'
     'test_genoset_package.R'
     'utils.R'
+URL: https://github.com/phaverty/genoset-release
