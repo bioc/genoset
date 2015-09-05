@@ -86,3 +86,29 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
             colnames(object) = value
             return(object)
           })
+
+##' @exportMethod "assays"
+setMethod("assays", signature(x="GenoSet"),
+          function(x) {
+              x@assayData
+          })
+
+##' @exportMethod "assayData"
+setMethod("assayData", signature(object="GenoSet"),
+          function(object) {
+              .Deprecated("assays")
+              object@assayData
+          })
+
+##' @exportMethod "assay"
+setMethod("assay", signature(x="GenoSet"),
+          function(x,i) {
+              x@assayData[[i]]
+          })
+
+##' @exportMethod "assayDataElement"
+setMethod("assayDataElement", signature(object="GenoSet"),
+          function(object,elt) {
+              .Deprecated("assay")
+              object@assayData[[elt]]
+          })
