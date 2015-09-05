@@ -62,6 +62,7 @@ setMethod("featureNames<-",
 
 ##' @rdname locData-methods
 ##' @export "locData"
+##' @importFrom GenomicRanges rowRanges
 setMethod("rowRanges",
           signature=signature(x="GenoSet"),
           function(x) {
