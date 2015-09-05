@@ -4,7 +4,11 @@
 
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
-
+##' .. content for \description{} (no empty lines) ..
+##'
+##' .. content for \details{} ..
+##' @export 
+##' @return 
 test_creation <- function() {
 
   pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))

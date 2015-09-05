@@ -18,3 +18,70 @@ NULL
 ##' @name genoset-defunct
 ##' @aliases genoset-defunct
 NULL
+
+##' @export "pData"
+setMethod("pData",
+          signature=signature(object="GenoSet"),
+          function(object) {
+              .Deprecated("colData")
+              pData(object)
+          })
+
+##' @export "colData"
+setMethod("colData",
+          signature=signature(x="GenoSet"),
+          function(x) {
+              pData(x)
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames", signature(object="GenomicRanges"),
+          function(object) {
+              .Deprecated("rownames")
+            names(object)
+          })
+
+##' @rdname rownames-methods
+##' @param object GenoSet
+##' @exportMethod featureNames
+##' @exportMethod "featureNames<-"
+setMethod("featureNames", signature(object="GenoSet"),
+          function(object) {
+              .Deprecated("rownames")
+            rownames(object)
+          })
+
+##' @rdname rownames-methods
+setMethod("featureNames<-",
+          signature=signature(object="GenomicRanges", value="ANY"),
+          function(object, value) {
+              .Deprecated("rownames<-")
+            names(object) = value
+            return(object)
+          })
+
+##' @rdname locData-methods
+##' @export "locData"
+setMethod("rowRanges",
+          signature=signature(x="GenoSet"),
+          function(x) {
+              locData(x)
+          })
+
+##' @rdname colnames
+##' @param object a Genoset
+##' @exportMethod sampleNames
+setMethod("sampleNames", signature(object="GenoSet"),
+          function(object) {
+              .Deprecated("colnames")
+            colnames(object)
+          })
+
+##' @rdname colnames
+##' @exportMethod "sampleNames<-"
+setMethod("sampleNames<-", signature(object="GenoSet"),
+          function(object, value) {
+              .Deprecated("colnames<-")
+            colnames(object) = value
+            return(object)
+          })
