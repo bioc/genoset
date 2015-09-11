@@ -68,7 +68,7 @@ setValidity("GenoSet", function(object) {
 ##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
 ##' @param locData A GRanges specifying feature chromosome
 ##' locations. rownames are required to match assayData.
-##' @param pData A data frame with rownames matching colnames of all assayDataElements
+##' @param pData A data frame with rownames matching colnames of all assays
 ##' @param annotation character, string to specify chip/platform type
 ##' @param universe character, a string to specify the genome universe for locData, overrides universe/genome data in locData
 ##' @param assayData assayData, usually an environment
@@ -125,7 +125,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
     if (! setequal(clean.loc.rownames, clean.rownames)) {
       stop("Row name set mismatch for locData and assayData")
     } else {
-      for (  ad.name in assayDataElementNames(ad) ) {
+      for (  ad.name in assayNames(ad) ) {
         ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]
       }
     }
@@ -133,8 +133,8 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 
   # Check colnames of all data matrices identical and set to same order if necessary
   # AssayDataValidMembers does not do this for some reason
-  first.name = assayDataElementNames(ad)[1]
-  for (mat.name in assayDataElementNames(ad)[-1]) {
+  first.name = assayNames(ad)[1]
+  for (mat.name in assayNames(ad)[-1]) {
     if ( ! all( colnames(ad[[mat.name]]) == colnames(ad[[first.name]])) ) {
       if (! setequal(colnames(ad[[mat.name]]), colnames(ad[[first.name]]) ) ) {
         stop(paste("Mismatch between rownames of first data matrix and", mat.name))
@@ -362,12 +362,12 @@ setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
 
 ##' Get data matrix names
 ##'
-##' Get names of data matrices. For the time being, this is \code{assayDataElementNames}. This function used to do \code{chrNames}.
+##' Get names of data matrices. For the time being, this is \code{assayNames}. This function used to do \code{chrNames}.
 ##' @param x GenoSet
 ##' @return character
 ##' @exportMethod names
 setMethod("names", "GenoSet", function(x) {
-  return( assayDataElementNames(x) )
+  return( assayNames(x) )
 } )
 
 ##' Get elementLengths from locData slot
@@ -427,22 +427,22 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
               if (is.numeric(k)) {
-                if (k > length(assayDataElementNames(x))) {
+                if (k > length(assayNames(x))) {
                   stop("Numeric index k exceeds the number of assayDataElements.\n")
                 }
-                k = assayDataElementNames(x)[k]
+                k = assayNames(x)[k]
               }
-              if (!k %in% assayDataElementNames(x)) {
-                stop("Index k is not a member of assayDataElementNames.\n")
+              if (!k %in% assayNames(x)) {
+                stop("Index k is not a member of assayNames.\n")
               }
               if (missing(i) && missing(j)) {
-                return(assayDataElement(x,k)) # Necessary to get whole big.matrix object
+                return(assay(x,k)) # Necessary to get whole big.matrix object
               } else if (missing(i)) {
-                return(assayDataElement(x,k)[,j])
+                return(assay(x,k)[,j])
               } else if (missing(j)) {
-                return(assayDataElement(x,k)[i,])
+                return(assay(x,k)[i,])
               } else {
-                return(assayDataElement(x,k)[i,j])
+                return(assay(x,k)[i,j])
               }
             }
             if ( ! missing(i) ) {
@@ -479,31 +479,31 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               stop("Must specify k to replace data in the GenoSet")
             }
             if (is.numeric(k)) {
-                if (k > length(assayDataElementNames(x))) {
-                  stop("Numeric index k exceeds the number of assayDataElements.\n")
+                if (k > length(assayNames(x))) {
+                  stop("Numeric index k exceeds the number of assays.\n")
                 }
-                k = assayDataElementNames(x)[k]
+                k = assayNames(x)[k]
               }
             if (missing(i) && missing(j)) {
               if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
-                stop("Dimnames for incoming assayDataElement must match this genoset.\n")
+                stop("Dimnames for incoming assay must match this genoset.\n")
               }
               return(assayDataElementReplace(x,k,value))
             }
-            if (!k %in% assayDataElementNames(x)) {
-                stop("Index k is not a member of assayDataElementNames.\n")
+            if (!k %in% assayNames(x)) {
+                stop("Index k is not a member of assayNames.\n")
             }
             if (missing(i)) {
-              assayDataElement(x,k)[,j] = value
+              assay(x,k)[,j] = value
               return(x)
             }
             if (is(i,"RangedData") || is(i,"GenomicRanges")) {
               i = unlist(locData(x) %over% i)
             }
             if (missing(j)) {
-              assayDataElement(x,k)[i,] = value
+              assay(x,k)[i,] = value
             } else {
-              assayDataElement(x,k)[i,j] = value
+              assay(x,k)[i,j] = value
             }
             return(x)
           })

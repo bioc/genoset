@@ -159,7 +159,7 @@ boundingIndicesByChr <-function(query, subject) {
 rangeSampleMeans <- function(query, subject, assay.element, na.rm=FALSE) {
   ## Find feature bounds of each query in subject genoset, get feature data average for each sample
   all.indices = boundingIndicesByChr(query, subject)
-  data.matrix = assayDataElement(subject,assay.element)
+  data.matrix = assay(subject,assay.element)
   range.means = rangeMeans(data.matrix, all.indices, na.rm=na.rm)
   return(range.means)
 }

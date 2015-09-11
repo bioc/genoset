@@ -101,7 +101,7 @@ segs2Granges <- function(segs) {
 ##'   data(genoset)
 ##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
 ##'   df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-##'   assayDataElement( genoset.ds, "lrr.segs" ) = df
+##'   assay( genoset.ds, "lrr.segs" ) = df
 ##'   segTable( df, locData(genoset.ds) )
 ##'   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
 ##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )

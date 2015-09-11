@@ -106,6 +106,12 @@ setMethod("assay", signature(x="GenoSet"),
               x@assayData[[i]]
           })
 
+##' @exportMethod "assayNames"
+setMethod("assayNames", signature(x="GenoSet"),
+          function(x) {
+              names(x@assayData)
+          })
+
 ##' @exportMethod "assayDataElement"
 setMethod("assayDataElement", signature(object="GenoSet"),
           function(object,elt) {
