@@ -14,24 +14,22 @@ toGenomeOrder(ds, strict = TRUE)
 \S4method{toGenomeOrder}{GenoSet}(ds, strict = TRUE)
 }
 \arguments{
-  \item{ds}{GenoSet or GRanges} \item{strict}{logical, should
-  chromosomes be in order specified by chrOrder?}
+\item{ds}{GenoSet or GRanges}
+
+\item{strict}{logical, should chromosomes be in order specified by chrOrder?}
 }
 \value{
 re-ordered ds
 }
 \description{
-Returns a re-ordered object sorted by chromosome and
-start position. If strict=TRUE, then chromosomes must be
-in order specified by chrOrder. If ds is already ordered,
-no re-ordering is done. Therefore, checking order with
-isGenomeOrder, is unnecessary if order will be corrected if
-isGenomeOrder is FALSE.
+Returns a re-ordered object sorted by chromosome and start position. If strict=TRUE, then
+chromosomes must be in order specified by chrOrder.
+If ds is already ordered, no re-ordering is done. Therefore, checking order with isGenomeOrder,
+is unnecessary if order will be corrected if isGenomeOrder is FALSE.
 }
 \details{
-toGenomeOrder for GRanges differs from sort in that it
-orders by chromsome and start position only, rather than
-chromsome, strand, start, and width.
+toGenomeOrder for GRanges differs from sort in that it orders by chromsome and start position only,
+rather than chromsome, strand, start, and width.
 }
 \examples{
 data(genoset)
@@ -41,8 +39,8 @@ data(genoset)
 }
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}};
-\code{\link{isGenomeOrder}},
-\code{\link{isGenomeOrder,GRanges-method}},
-\code{\link{isGenomeOrder,GenoSet-method}}
+  \code{\link{isGenomeOrder}},
+  \code{\link{isGenomeOrder,GRanges-method}},
+  \code{\link{isGenomeOrder,GenoSet-method}}
 }
 

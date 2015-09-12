@@ -26,8 +26,11 @@
 \S4method{featureNames}{GenomicRanges}(object) <- value
 }
 \arguments{
-  \item{x}{GRanges or GenoSet} \item{value}{character,
-  incoming rownames} \item{object}{GenoSet}
+\item{x}{GRanges or GenoSet}
+
+\item{value}{character, incoming rownames}
+
+\item{object}{GenoSet}
 }
 \value{
 character vector with names rows/features

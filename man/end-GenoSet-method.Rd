@@ -8,7 +8,7 @@
 \S4method{end}{GenoSet}(x)
 }
 \arguments{
-  \item{x}{GenoSet}
+\item{x}{GenoSet}
 }
 \value{
 integer

@@ -22,7 +22,7 @@ setMethod("colSums", "RleDataFrame",
           })
 ##' @export rowMeans
 setGeneric("rowMeans", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowMeans") )
-setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
+#setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
 setMethod("rowMeans", signature(x="RleDataFrame"),
           function(x, na.rm=FALSE, dims=1L) {
             if (na.rm==TRUE) {
@@ -51,7 +51,7 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
 
 ##' @export rowSums
 setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
-setMethod("rowSums", signature(x="ANY"), base::rowSums)
+#setMethod("rowSums", signature(x="ANY"), base::rowSums)
 setMethod("rowSums", signature(x="RleDataFrame"),
           function(x, na.rm=FALSE, dims=1L) {
           if (na.rm==TRUE) {

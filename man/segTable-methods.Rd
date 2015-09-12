@@ -16,55 +16,58 @@ segTable(object, ...)
   stack = FALSE)
 }
 \arguments{
-  \item{object}{Rle or RleDataFrame} \item{...}{in generic,
-  for extra args in methods} \item{locs}{GenomicRanges with
-  rows corresponding to rows of df} \item{chr.ind}{matrix,
-  like from chrIndices method} \item{start}{integer, vector
-  of feature start positions} \item{end}{integer, vector of
-  feature end positions} \item{factor.chr}{scalar logical,
-  make 'chrom' column a factor?} \item{stack}{logical, rbind
-  list of segment tables for each sample and add "Sample"
-  column?}
+\item{object}{Rle or RleDataFrame}
+
+\item{...}{in generic, for extra args in methods}
+
+\item{locs}{GenomicRanges with rows corresponding to rows of df}
+
+\item{chr.ind}{matrix, like from chrIndices method}
+
+\item{start}{integer, vector of feature start positions}
+
+\item{end}{integer, vector of feature end positions}
+
+\item{factor.chr}{scalar logical, make 'chrom' column a factor?}
+
+\item{stack}{logical, rbind list of segment tables for each sample and add "Sample" column?}
 }
 \value{
-one or a list of data.frames with columns chrom, loc.start,
-loc.end, num.mark, seg.mean
+one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
 }
 \description{
-Like the inverse of segs2Rle and segs2RleDataFrame. Takes
-a Rle or a RleDataFrame and the locData both from a GenoSet
-object and makes a list of data.frames each like the result
-of CBS's segment. Note the loc.start and loc.stop will
-correspond exactly to probe locations in locData and the
-input to segs2RleDataFrame are not necessarily so. For a
-DataFrame, the argument \code{stack} combines all of the
-individual data.frames into one large data.frame and adds a
-"Sample" column of sample ids.
+Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
+Rle or a RleDataFrame and the locData both from a GenoSet object
+and makes a list of data.frames each like the result of CBS's
+segment.  Note the loc.start and loc.stop will correspond
+exactly to probe locations in locData and the input to
+segs2RleDataFrame are not necessarily so. For a DataFrame, the
+argument \code{stack} combines all of the individual data.frames
+into one large data.frame and adds a "Sample" column of sample ids.
 }
 \details{
-For a Rle, the user can provide \code{locs} or
-\code{chr.ind}, \code{start} and \code{stop}. The latter is
-surprisingly much faster and this is used in the DataFrame
-version.
+For a Rle, the user can provide \code{locs} or \code{chr.ind},
+\code{start} and \code{stop}.  The latter is surprisingly much faster
+and this is used in the DataFrame version.
 }
 \examples{
 data(genoset)
   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
   df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-  assayDataElement( genoset.ds, "lrr.segs" ) = df
+  genoset.ds[ , , "lrr.segs"] = df
   segTable( df, locData(genoset.ds) )
   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
 }
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}};
-\code{\link{rangeSegMeanLength}},
-\code{\link{rangeSegMeanLength,GRanges,data.frame-
-method}}, \code{\link{rangeSegMeanLength,GRanges,list-
-method}}; \code{\link{runCBS}}; \code{\link{segPairTable}},
-\code{\link{segPairTable,DataFrame,DataFrame-
-method}}, \code{\link{segPairTable,Rle,Rle-method}};
-\code{\link{segs2Granges}}; \code{\link{segs2RleDataFrame}};
-\code{\link{segs2Rle}}
+  \code{\link{rangeSegMeanLength}},
+  \code{\link{rangeSegMeanLength,GRanges,data.frame-method}},
+  \code{\link{rangeSegMeanLength,GRanges,list-method}};
+  \code{\link{runCBS}}; \code{\link{segPairTable}},
+  \code{\link{segPairTable,DataFrame,DataFrame-method}},
+  \code{\link{segPairTable,Rle,Rle-method}};
+  \code{\link{segs2Granges}};
+  \code{\link{segs2RleDataFrame}}; \code{\link{segs2Rle}}
 }
 

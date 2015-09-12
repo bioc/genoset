@@ -11,16 +11,14 @@ genoPos(object)
 \S4method{genoPos}{GenoSetOrGenomicRanges}(object)
 }
 \arguments{
-  \item{object}{A GenoSet object or a GenomicRanges object}
+\item{object}{A GenoSet object or a GenomicRanges object}
 }
 \value{
-numeric position of each feature in whole genome units, in
-original order
+numeric position of each feature in whole genome units, in original order
 }
 \description{
-Get base positions of array features in bases counting
-from the start of the genome. Chromosomes are ordered
-numerically, when possible, then lexically.
+Get base positions of array features in bases counting from the start of the
+genome. Chromosomes are ordered numerically, when possible, then lexically.
 }
 \examples{
 data(genoset)

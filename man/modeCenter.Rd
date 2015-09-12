@@ -7,18 +7,16 @@
 modeCenter(ds)
 }
 \arguments{
-  \item{ds}{numeric matrix}
+\item{ds}{numeric matrix}
 }
 \value{
 numeric matrix
 }
 \description{
-Copynumber data distributions are generally multi-modal. It
-is often assumed that the tallest peak represents "normal"
-and should therefore be centered on a log2ratio of zero.
-This function uses the density function to find the mode of
-the dominant peak and subtracts that value from the input
-data.
+Copynumber data distributions are generally multi-modal. It is often assumed that
+the tallest peak represents "normal" and should therefore be centered on a
+log2ratio of zero. This function uses the density function to find the mode of
+the dominant peak and subtracts that value from the input data.
 }
 \examples{
 modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))

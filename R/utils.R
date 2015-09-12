@@ -199,7 +199,7 @@ calcGC <- function(object, bsgenome, expand=1e6, bases=c("G", "C")) {
     range = seq.int(chr.ind[chr.name, 1], chr.ind[chr.name, 2])
     seq = bsgenome[[chr.name]]
     v = suppressWarnings( Views(seq,  start=start[range], end=end[range]) )
-    alf = alphabetFrequency(v, as.prob = TRUE)
+    alf = Biostrings::alphabetFrequency(v, as.prob = TRUE)
     gc = rowSums(alf[, bases, drop=FALSE])
   })
   gc = do.call(c, gc.list)
@@ -215,20 +215,22 @@ calcGC <- function(object, bsgenome, expand=1e6, bases=c("G", "C")) {
 ##' http://www.bioconductor.org/help/course-materials/2012/useR2012/Bioconductor-tutorial.pdf.
 ##' Values are as.integer( 1e4 * fraction ) for space reasons.
 ##' @param dna BSgenome or DNAStringSet
-##' @param window scalar integer, calculate GC content in a sliding (by one base) window of this size.
 ##' @return SimpleRleList, integer 1e4 * GC fraction, chromosomes 1:22, X and Y
 ##' @examples
 ##' \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
 ##' \dontrun{ gc = calcGC2(Hsapiens) }
 ##' @export
 calcGC2 <- function(dna) {
-    dna = as(gmapGenome, "DNAStringSet")
+    if (!requireNamespace("Biostrings",quietly=TRUE)) {
+        stop("Failed to require Biostrings package.\n")
+    }
+    dna = as(dna, "DNAStringSet")
     dna = dna[ c(1:22, "X", "Y") ]
     window = 1e6
     gc.list = RleList(
         lapply( dna,
                function(x) {
-                   gc = rowSums( letterFrequencyInSlidingView(x, window, c("G", "C"), as.prob=TRUE), na.rm=TRUE )
+                   gc = rowSums( Biostrings::letterFrequencyInSlidingView(x, window, c("G", "C"), as.prob=TRUE), na.rm=TRUE )
                    Rle(as.integer(1e4 * gc))
                }), compress=FALSE)
     return(gc.list)

@@ -11,14 +11,13 @@ chrInfo(object)
 \S4method{chrInfo}{GenoSetOrGenomicRanges}(object)
 }
 \arguments{
-  \item{object}{A GenoSet object or similar}
+\item{object}{A GenoSet object or similar}
 }
 \value{
 list with start and stop position, by ordered chr
 }
 \description{
-Provides a matrix of start, stop and offset, in base numbers
-for each chromosome.
+Provides a matrix of start, stop and offset, in base numbers for each chromosome.
 }
 \examples{
 data(genoset)

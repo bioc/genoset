@@ -11,7 +11,7 @@
 \S4method{elementLengths}{GenomicRanges}(x)
 }
 \arguments{
-  \item{x}{GenoSet}
+\item{x}{GenoSet}
 }
 \value{
 character

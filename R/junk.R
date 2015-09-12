@@ -20,18 +20,18 @@ NULL
 NULL
 
 ##' @export "pData"
-setMethod("pData",
-          signature=signature(object="GenoSet"),
-          function(object) {
-              .Deprecated("colData")
-              pData(object)
-          })
+#setMethod("pData",
+#          signature=signature(object="GenoSet"),
+#          function(object) {
+#              .Deprecated("colData")
+#              object@phenoData@data
+#          })
 
 ##' @export "colData"
 setMethod("colData",
           signature=signature(x="GenoSet"),
           function(x) {
-              pData(x)
+              x@phenoData@data
           })
 
 ##' @rdname rownames-methods
@@ -56,13 +56,14 @@ setMethod("featureNames<-",
           signature=signature(object="GenomicRanges", value="ANY"),
           function(object, value) {
               .Deprecated("rownames<-")
-            names(object) = value
+              names(object) = value
             return(object)
           })
 
 ##' @rdname locData-methods
 ##' @export "locData"
-##' @importFrom GenomicRanges rowRanges
+##' @importFrom SummarizedExperiment rowRanges
+##' @param x GenoSet object
 setMethod("rowRanges",
           signature=signature(x="GenoSet"),
           function(x) {
@@ -96,14 +97,20 @@ setMethod("assays", signature(x="GenoSet"),
 ##' @exportMethod "assayData"
 setMethod("assayData", signature(object="GenoSet"),
           function(object) {
-              .Deprecated("assays")
               object@assayData
           })
 
 ##' @exportMethod "assay"
-setMethod("assay", signature(x="GenoSet"),
+setMethod("assay", signature(x="GenoSet",i="ANY"),
           function(x,i) {
               x@assayData[[i]]
+          })
+
+
+##' @exportMethod "assay<-"
+setMethod("assay<-", signature(x="GenoSet",i="ANY",value="ANY"),
+          function(x,i,value) {
+              assayDataElement(x,i) <- value
           })
 
 ##' @exportMethod "assayNames"
@@ -113,7 +120,7 @@ setMethod("assayNames", signature(x="GenoSet"),
           })
 
 ##' @exportMethod "assayDataElement"
-setMethod("assayDataElement", signature(object="GenoSet"),
+setMethod("assayDataElement", signature(object="GenoSet",elt="ANY"),
           function(object,elt) {
               .Deprecated("assay")
               object@assayData[[elt]]

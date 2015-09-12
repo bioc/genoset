@@ -8,7 +8,7 @@
 \S4method{nrow}{GenomicRanges}(x)
 }
 \arguments{
-  \item{x}{GRanges or GenoSet}
+\item{x}{GRanges or GenoSet}
 }
 \value{
 integer

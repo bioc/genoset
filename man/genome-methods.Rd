@@ -11,15 +11,15 @@
 \S4method{genome}{GenoSet}(x) <- value
 }
 \arguments{
-  \item{x}{GenoSet} \item{value}{scalar character, incoming
-  genome string}
+\item{x}{GenoSet}
+
+\item{value}{scalar character, incoming genome string}
 }
 \value{
 character, e.g. hg19
 }
 \description{
-The genome positions of the features in locData. The UCSC
-notation (e.g. hg18, hg19, etc.) should be used.
+The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used.
 }
 \examples{
 data(genoset)

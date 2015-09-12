@@ -14,13 +14,13 @@ chr(object)
 \S4method{chr}{GenomicRanges}(object)
 }
 \arguments{
-  \item{object}{GRanges GenoSet}
+\item{object}{GRanges GenoSet}
 }
 \value{
 character vector of chromosome positions for each feature
 }
 \description{
-Get chromosome name for each feature. Returns character.
+Get chromosome name for each feature.  Returns character.
 }
 \examples{
 data(genoset)

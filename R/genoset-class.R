@@ -19,23 +19,23 @@
 ##' @seealso genoset-datasets GenoSet
 ##'
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
-##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges
+##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList GIntervalTree
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
-##' @importMethodsFrom Biobase annotation fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-"
+##' @importMethodsFrom Biobase annotation fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" pData
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect lapply mean nrow order ranges rownames
 ##'
-##' @importFrom Biobase assayDataElement assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom
+##' @importFrom Biobase assayDataElement "assayDataElement<-" assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom assayData assayDataValidMembers featureData "fData<-" "pData<-"
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
-##' @importFrom IRanges IRanges "%over%"
+##' @importFrom IRanges IRanges "%over%" Views RleList
 ##' @importFrom GenomicRanges GRanges
 ##'
 ##' @import methods
 ##' @import BiocGenerics
 ##' @import S4Vectors
 ##' @import GenomeInfoDb
-##'
+##' @import SummarizedExperiment
 ##' @useDynLib genoset, .registration=TRUE
 NULL
 
@@ -52,7 +52,7 @@ setClass("GenoSet", contains=c("eSet"),
 setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
 setValidity("GenoSet", function(object) {
-  return( all( rownames(locData(object)) == rownames(assayData(object)) ) )
+  return( all( rownames(locData(object)) == rownames(assays(object)) ) )
 })
 
 ##' Create a GenoSet or derivative object
@@ -70,7 +70,6 @@ setValidity("GenoSet", function(object) {
 ##' locations. rownames are required to match assayData.
 ##' @param pData A data frame with rownames matching colnames of all assays
 ##' @param annotation character, string to specify chip/platform type
-##' @param universe character, a string to specify the genome universe for locData, overrides universe/genome data in locData
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object or derivative as specified by "type" arg
@@ -85,14 +84,9 @@ setValidity("GenoSet", function(object) {
 ##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 ##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'      annotation="SNP6" )
-initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
+initGenoSet <- function(type, locData, pData=NULL, annotation="", assayData=NULL, ...) {
   # Function to clean up items for slots and call new for GenoSet and its children
   # ... will be the matrices that end up in assayData
-
-  if (! missing(universe)) {
-    warning("Use of the universe argument for GenoSet creation is deprecated. Please note the genome in the location data object.")
-    universe(locData) = universe
-  }
 
   # Check/set genome order of locData
   if ( ! isGenomeOrder(locData, strict=TRUE) ) {
@@ -125,7 +119,7 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
     if (! setequal(clean.loc.rownames, clean.rownames)) {
       stop("Row name set mismatch for locData and assayData")
     } else {
-      for (  ad.name in assayNames(ad) ) {
+      for (  ad.name in names(ad) ) {
         ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]
       }
     }
@@ -133,8 +127,8 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 
   # Check colnames of all data matrices identical and set to same order if necessary
   # AssayDataValidMembers does not do this for some reason
-  first.name = assayNames(ad)[1]
-  for (mat.name in assayNames(ad)[-1]) {
+  first.name = names(ad)[1]
+  for (mat.name in names(ad)[-1]) {
     if ( ! all( colnames(ad[[mat.name]]) == colnames(ad[[first.name]])) ) {
       if (! setequal(colnames(ad[[mat.name]]), colnames(ad[[first.name]]) ) ) {
         stop(paste("Mismatch between rownames of first data matrix and", mat.name))
@@ -180,7 +174,6 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##' locations. Rownames are required to match featureNames.
 ##' @param pData A data frame with rownames matching all data matrices
 ##' @param annotation character, string to specify chip/platform type
-##' @param universe character, a string to specify the genome universe for locData
 ##' @param assayData assayData, usually an environment
 ##' @param ... More matrix or DataFrame objects to include in assayData
 ##' @return A GenoSet object
@@ -193,8 +186,8 @@ initGenoSet <- function(type, locData, pData=NULL, annotation="", universe, assa
 ##'    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
 ##'    annotation="SNP6" )
 ##' @export GenoSet
-GenoSet <- function(locData, pData=NULL, annotation="", universe, assayData=NULL, ...) {
-  object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, universe=universe, assayData=assayData,...)
+GenoSet <- function(locData, pData=NULL, annotation="", assayData=NULL, ...) {
+  object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, assayData=assayData,...)
   return(object)
 }
 
@@ -240,15 +233,15 @@ setMethod("genome<-", "GenoSet", function(x, value) {
 ##' @exportMethod colnames
 setMethod("colnames", signature(x="GenoSet"),
           function(x) {
-            rownames(pData(x))
+            rownames(colData(x))
           })
 ##' @exportMethod "colnames<-"
 ##' @rdname colnames
 ##' @param value character, incoming colnames
 setMethod("colnames<-", signature(x="GenoSet"),
           function(x, value) {
-            rownames(pData(x)) = value
-            sampleNames(assayData(x)) = value
+            rownames(x@phenoData) = value
+            sampleNames(x@assayData) = value
             return(x)
           })
 
@@ -288,7 +281,7 @@ setMethod("rownames<-",
                  function(x, value) {
                    names(x@locData) = value
                    rownames(fData(x)) = value
-                   featureNames(assayData(x)) = value
+                   featureNames(x@assayData) = value
                    return(x)
                  })
 
@@ -444,7 +437,7 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               } else {
                 return(assay(x,k)[i,j])
               }
-            }
+          }
             if ( ! missing(i) ) {
               # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
               locs = locData(x)[i,,drop=TRUE]
@@ -728,11 +721,8 @@ setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
 ##' @param drop logical, drop dimensions when subsetting with single value?
 ##' @return assayData data structure
 ##' @export subsetAssayData
-##' @examples
-##'   data(genoset)
-##'   ad = assayData(genoset.ds)
-##'   small.ad = subsetAssayData(ad,1:5,2:3)
 subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
+    .Deprecated()
   if (is(orig, "list")) {
     if (missing(i))                     # j must be present
       return(lapply(orig, function(obj) obj[, j, ..., drop = drop]))

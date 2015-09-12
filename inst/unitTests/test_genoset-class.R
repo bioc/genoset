@@ -1,14 +1,13 @@
+library(RUnit)
+library(genoset)
+
 ### TO DO
 # tidy up genome order tests
 # GRanges tests for subsetting
 
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
-##' .. content for \description{} (no empty lines) ..
-##'
-##' .. content for \details{} ..
-##' @export 
-##' @return 
+
 test_creation <- function() {
 
   pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
@@ -67,7 +66,6 @@ test_featureNames <- function() {
   rownames(gr) = new.fnames
   checkEquals( rownames(ds), new.fnames, "Set rownames in GenoSet")
   checkEquals( rownames(gr), new.fnames, "Set rownames in GRanges")
-
 }
 
 test_sampleNames <- function() {
@@ -346,9 +344,9 @@ test_subset_w_granges <- function() {
   checkEquals( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE)
   
   # Subsetting assayData / extracting
-  checkEquals( ds[ 5, 3, "baf"], assayDataElement(ds,"baf")[5,3])
-  checkEquals( ds[ 5, 3, 1], assayDataElement(ds,"baf")[5,3])
-  checkEquals( ds[ , , "lrr"], assayDataElement(ds,"lrr"), "Extract whole matrix" )
+  checkEquals( ds[ 5, 3, "baf"], assay(ds,"baf")[5,3])
+  checkEquals( ds[ 5, 3, 1], assay(ds,"baf")[5,3])
+  checkEquals( ds[ , , "lrr"], assay(ds,"lrr"), "Extract whole matrix" )
   
   # Test subsetting by location
   checkEquals( test.ds[test.gr,], expected.ds, check.attributes=FALSE)

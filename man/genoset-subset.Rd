@@ -17,12 +17,19 @@
 \S4method{[}{GenoSet,ANY,ANY,ANY}(x, i, j, k) <- value
 }
 \arguments{
-  \item{x}{GenoSet} \item{i}{character, GRanges, logical,
-  integer} \item{j}{character, GRanges, logical, integer}
-  \item{k}{character or integer} \item{...}{additional
-  subsetting args} \item{drop}{logical drop levels of space
-  factor?} \item{value}{incoming data for assay "k", rows "i"
-  and cols "j"}
+\item{x}{GenoSet}
+
+\item{i}{character, GRanges, logical, integer}
+
+\item{j}{character, GRanges, logical, integer}
+
+\item{k}{character or integer}
+
+\item{...}{additional subsetting args}
+
+\item{drop}{logical drop levels of space factor?}
+
+\item{value}{incoming data for assay "k", rows "i" and cols "j"}
 }
 \description{
 Subset a GenoSet

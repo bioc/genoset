@@ -7,14 +7,13 @@
 lr2cn(x)
 }
 \arguments{
-  \item{x}{numeric data in log2ratio values}
+\item{x}{numeric data in log2ratio values}
 }
 \value{
 data of same type as "x" transformed into copynumber units
 }
 \description{
-Utility function for converting log2ratio units (zero is
-normal) to copynumber units (two is normal)
+Utility function for converting log2ratio units (zero is normal) to copynumber units (two is normal)
 }
 \seealso{
 cn2lr
