@@ -19,15 +19,28 @@ NULL
 ##' @aliases genoset-defunct
 NULL
 
-##' @export "pData"
-#setMethod("pData",
-#          signature=signature(object="GenoSet"),
-#          function(object) {
-#              .Deprecated("colData")
-#              object@phenoData@data
-#          })
+##' @name API
+##' @title Converting eSet API to RangedSummarizedExperiment
+##' @param x GenoSet
+##' @param object GenoSet
+##' @param i name or index of assay to select
+##' @param value new value to insert in assays, a matrix-like object
+##' @param ... extra arguments
+##' @param withDimnames scalar logical, should assays be returned with dimnames? Currently always TRUE for GenoSet.
+##' @rdname api
+NULL
 
-##' @export "colData"
+##' @exportMethod pData
+##' @rdname api
+setMethod("pData",
+          signature=signature(object="GenoSet"),
+          function(object) {
+              .Deprecated("colData")
+              object@phenoData@data
+          })
+
+##' @exportMethod colData
+##' @rdname api
 setMethod("colData",
           signature=signature(x="GenoSet"),
           function(x) {
@@ -35,6 +48,7 @@ setMethod("colData",
           })
 
 ##' @rdname rownames-methods
+##' @exportMethod featureNames
 setMethod("featureNames", signature(object="GenomicRanges"),
           function(object) {
               .Deprecated("rownames")
@@ -44,13 +58,13 @@ setMethod("featureNames", signature(object="GenomicRanges"),
 ##' @rdname rownames-methods
 ##' @param object GenoSet
 ##' @exportMethod featureNames
-##' @exportMethod "featureNames<-"
 setMethod("featureNames", signature(object="GenoSet"),
           function(object) {
               .Deprecated("rownames")
             rownames(object)
           })
 
+##' @exportMethod "featureNames<-"
 ##' @rdname rownames-methods
 setMethod("featureNames<-",
           signature=signature(object="GenomicRanges", value="ANY"),
@@ -61,7 +75,7 @@ setMethod("featureNames<-",
           })
 
 ##' @rdname locData-methods
-##' @export "locData"
+##' @exportMethod rowRanges
 ##' @importFrom SummarizedExperiment rowRanges
 ##' @param x GenoSet object
 setMethod("rowRanges",
@@ -79,8 +93,8 @@ setMethod("sampleNames", signature(object="GenoSet"),
             colnames(object)
           })
 
-##' @rdname colnames
 ##' @exportMethod "sampleNames<-"
+##' @rdname colnames
 setMethod("sampleNames<-", signature(object="GenoSet"),
           function(object, value) {
               .Deprecated("colnames<-")
@@ -88,19 +102,15 @@ setMethod("sampleNames<-", signature(object="GenoSet"),
             return(object)
           })
 
-##' @exportMethod "assays"
+##' @exportMethod assayData
+##' @rdname api
 setMethod("assays", signature(x="GenoSet"),
-          function(x) {
+          function(x, ..., withDimnames=TRUE) {
               x@assayData
           })
 
-##' @exportMethod "assayData"
-setMethod("assayData", signature(object="GenoSet"),
-          function(object) {
-              object@assayData
-          })
-
-##' @exportMethod "assay"
+##' @exportMethod assay
+##' @rdname api
 setMethod("assay", signature(x="GenoSet",i="ANY"),
           function(x,i) {
               x@assayData[[i]]
@@ -108,21 +118,16 @@ setMethod("assay", signature(x="GenoSet",i="ANY"),
 
 
 ##' @exportMethod "assay<-"
+##' @rdname api
 setMethod("assay<-", signature(x="GenoSet",i="ANY",value="ANY"),
           function(x,i,value) {
               assayDataElement(x,i) <- value
               return(x)
           })
 
-##' @exportMethod "assayNames"
+##' @exportMethod assayNames
+##' @rdname api
 setMethod("assayNames", signature(x="GenoSet"),
           function(x) {
               names(x@assayData)
-          })
-
-##' @exportMethod "assayDataElement"
-setMethod("assayDataElement", signature(object="GenoSet",elt="ANY"),
-          function(object,elt) {
-              .Deprecated("assay")
-              object@assayData[[elt]]
           })

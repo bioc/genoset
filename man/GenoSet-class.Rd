@@ -62,34 +62,6 @@ Class \code{\linkS4class{eSet}}, directly.
   }
 }
 
-\alias{assay,GenoSet,ANY-method}
-\alias{assay<-,GenoSet,ANY,ANY-method}
-\alias{assays,GenoSet-method}
-\alias{assayData,GenoSet-method}
-\alias{pData,GenoSet-method}
-\alias{colData,GenoSet-method}
-\alias{assayDataElement,GenoSet-method}
-\alias{assayNames,GenoSet-method}
-
-\arguments{
-  \item{x}{GenoSet}
-  \item{object}{GenoSet}
-  \item{elt}{Name of assay}
-  \item{i}{Name or index of assay}
-  \item{value}{New assay matrix}
-}
-
-\usage{
-\S4method{assay}{GenoSet,ANY}(x,i)
-\S4method{"assay<-"}{GenoSet,ANY,ANY}(x,i,value)
-\S4method{assays}{GenoSet}(x)
-\S4method{assayData}{GenoSet}(object)
-\S4method{pData}{GenoSet}(object)
-\S4method{colData}{GenoSet}(x)
-\S4method{assayDataElement}{GenoSet}(object,elt)
-\S4method{assayNames}{GenoSet}(x)
-}
-
 \seealso{
 \code{\link{GenoSet}}
 }

@@ -22,11 +22,11 @@
 ##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList GIntervalTree
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
-##' @importMethodsFrom Biobase annotation fData featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" pData
+##' @importMethodsFrom Biobase annotation featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" pData fData "fData<-" "pData<-" featureData "featureData<-" assayData
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect lapply mean nrow order ranges rownames
 ##'
-##' @importFrom Biobase assayDataElement "assayDataElement<-" assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom assayData assayDataValidMembers featureData "fData<-" "pData<-"
+##' @importFrom Biobase assayDataElement "assayDataElement<-" assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom assayData assayDataValidMembers
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges IRanges "%over%" Views RleList
 ##' @importFrom GenomicRanges GRanges

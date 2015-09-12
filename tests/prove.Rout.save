@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2015-03-16 r67993) -- "Unsuffered Consequences"
+R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
@@ -28,18 +28,18 @@ The following objects are masked from 'package:parallel':
     clusterExport, clusterMap, parApply, parCapply, parLapply,
     parLapplyLB, parRapply, parSapply, parSapplyLB
 
-The following object is masked from 'package:stats':
+The following objects are masked from 'package:stats':
 
-    xtabs
+    IQR, mad, xtabs
 
 The following objects are masked from 'package:base':
 
     Filter, Find, Map, Position, Reduce, anyDuplicated, append,
     as.data.frame, as.vector, cbind, colnames, do.call, duplicated,
-    eval, evalq, get, intersect, is.unsorted, lapply, mapply, match,
-    mget, order, paste, pmax, pmax.int, pmin, pmin.int, rank, rbind,
-    rep.int, rownames, sapply, setdiff, sort, table, tapply, union,
-    unique, unlist, unsplit
+    eval, evalq, get, grep, grepl, intersect, is.unsorted, lapply,
+    mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    rank, rbind, rep.int, rownames, sapply, setdiff, sort, table,
+    tapply, union, unique, unlist, unsplit
 
 Loading required package: Biobase
 Welcome to Bioconductor
@@ -53,6 +53,13 @@ Loading required package: S4Vectors
 Loading required package: stats4
 Loading required package: IRanges
 Loading required package: GenomeInfoDb
+Loading required package: SummarizedExperiment
+
+*** Genoset API Changes ***
+The genoset class is transitioning to extending 
+RangedSummarizedExperiment rather than eSet. For this release, 
+please use the RSE API as the eSet API has been deprecated
+ (e.g. colnames instead of sampleNames). ***
 [1] TRUE
 > genoset:::.test()
 Using mclapply for segmentation ...
@@ -72,20 +79,20 @@ Working on segmentation for sample number 1 : a1
 Working on segmentation for sample number 2 : a2
 
 
-RUNIT TEST PROTOCOL -- Tue Mar 17 12:16:04 2015 
+RUNIT TEST PROTOCOL -- Sat Sep 12 10:57:59 2015 
 *********************************************** 
-Number of test functions: 33 
+Number of test functions: 36 
 Number of errors: 0 
 Number of failures: 0 
 
  
 1 Test Suite : 
-genoset RUnit Tests - 33 test functions, 0 errors, 0 failures
-Number of test functions: 33 
+genoset RUnit Tests - 36 test functions, 0 errors, 0 failures
+Number of test functions: 36 
 Number of errors: 0 
 Number of failures: 0 
-There were 16 warnings (use warnings() to see them)
+There were 19 warnings (use warnings() to see them)
 > 
 > proc.time()
    user  system elapsed 
- 17.524   0.325  15.827 
+ 20.799   1.830  20.257 
