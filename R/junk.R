@@ -111,6 +111,7 @@ setMethod("assay", signature(x="GenoSet",i="ANY"),
 setMethod("assay<-", signature(x="GenoSet",i="ANY",value="ANY"),
           function(x,i,value) {
               assayDataElement(x,i) <- value
+              return(x)
           })
 
 ##' @exportMethod "assayNames"
