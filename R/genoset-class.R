@@ -11,7 +11,8 @@
 ##' extends eSet by adding a "locData" slot for a GenomicRanges object.
 ##' This object contains feature genome location data and
 ##' provides for efficient subsetting on genome location.
-##' Genoset also implements an number of  convenience functions for processing of copy number and B-Allele Frequency data and for working with segmented data.
+##' Genoset also implements an number of  convenience functions for processing
+##' of copy number and B-Allele Frequency data and for working with segmented data.
 ##'
 ##' @docType package
 ##' @name genoset-package
@@ -19,7 +20,7 @@
 ##' @seealso genoset-datasets GenoSet
 ##'
 ##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
-##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList GIntervalTree
+##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
 ##' @importMethodsFrom Biobase annotation featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" pData fData "fData<-" "pData<-" featureData "featureData<-" assayData
