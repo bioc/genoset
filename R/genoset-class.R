@@ -1,33 +1,20 @@
-######  Class definition for GenoSet, which will extend eSet
-######   GenoSet will provide a locData slot containing a GenomicRanges object from the GenomicRanges
-######   package to hold genome locations of the features and allow for easy subsetting
-######   by location.
-######   Intended to be subset by other classes to add one or more data matrices to
-######   the assayData slot.
+######  Class definition for GenoSet, which will extend RangedSummarizedExperiment
 
 ##' GenoSet: An eSet for data with genome locations
 ##'
-##' Load, manipulate, and plot copynumber and BAF data. GenoSet class
-##' extends eSet by adding a "locData" slot for a GenomicRanges object.
-##' This object contains feature genome location data and
-##' provides for efficient subsetting on genome location.
-##' Genoset also implements an number of  convenience functions for processing
-##' of copy number and B-Allele Frequency data and for working with segmented data.
-##'
+##' Load, manipulate, and plot copynumber and BAF data.
+##' 
 ##' @docType package
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
 ##' @seealso genoset-datasets GenoSet
 ##'
-##' @importClassesFrom Biobase AnnotatedDataFrame AssayData eSet ExpressionSet MIAME Versioned VersionedBiobase
 ##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
-##' @importMethodsFrom Biobase annotation featureNames "featureNames<-" phenoData sampleNames "sampleNames<-" pData fData "fData<-" "pData<-" featureData "featureData<-" assayData
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect lapply mean nrow order ranges rownames
 ##'
-##' @importFrom Biobase assayDataElement "assayDataElement<-" assayDataElementNames assayDataElementReplace assayDataNew annotatedDataFrameFrom assayData assayDataValidMembers
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
 ##' @importFrom IRanges IRanges "%over%" Views RleList
 ##' @importFrom GenomicRanges GRanges
@@ -45,355 +32,38 @@ NULL
 ###############
 
 ##' @exportClass GenoSet
-setClass("GenoSet", contains=c("eSet"),
-         prototype=list(locData=GRanges()),
-         representation=representation(locData="GenomicRanges"))
+setClass("GenoSet", contains="RangedSummarizedExperiment")
 
 ##' @exportClass GenoSetOrGenomicRanges
 setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
-setValidity("GenoSet", function(object) {
-  return( all( rownames(locData(object)) == rownames(assays(object)) ) )
-})
-
-##' Create a GenoSet or derivative object
-##'
-##' This function is the preferred method for creating a new GenoSet object. Users are
-##' generally discouraged from calling "new" directly. The "..." argument is for any number of matrices of matching size that will
-##' become part of the assayData slot of the resulting object. This function passes
-##' control to the "genoSet" object which performs argument checking including
-##' dimname matching among relevant slots and sets everything to genome order. Genome
-##' order can be disrupted by "[" calls and will be checked by methods that
-##' require it.
-##'
-##' @param type character, the type of object (e.g. GenoSet, BAFSet, CNSet) to be created
-##' @param locData A GRanges specifying feature chromosome
-##' locations. rownames are required to match assayData.
-##' @param pData A data frame with rownames matching colnames of all assays
-##' @param annotation character, string to specify chip/platform type
-##' @param assayData assayData, usually an environment
-##' @param ... More matrix or DataFrame objects to include in assayData
-##' @return A GenoSet object or derivative as specified by "type" arg
-##' @examples
-##'   save.image("genoset.image.rda")
-##'   genoset.session.info = sessionInfo()
-##'   save(genoset.session.info,file="genoset.session.info.rda")
-##'   test.sample.names = LETTERS[11:13]
-##'   probe.names = letters[1:10]
-##'   gs = GenoSet(
-##'      locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
-##'      cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'      pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'      annotation="SNP6" )
-initGenoSet <- function(type, locData, pData=NULL, annotation="", assayData=NULL, ...) {
-  # Function to clean up items for slots and call new for GenoSet and its children
-  # ... will be the matrices that end up in assayData
-
-  # Check/set genome order of locData
-  if ( ! isGenomeOrder(locData, strict=TRUE) ) {
-    locData = toGenomeOrder(locData, strict=TRUE )
-  }
-  clean.loc.rownames = rownames(locData)
-
-  # Create assayData
-  if (is.null(assayData)) {
-    # Crib most of assayDataNew, skipping unnaming of dimnames to keep BigMatrix happy
-    ad = new.env(parent=emptyenv())
-    arglist <- list(...)
-    if ((length(arglist) > 0L) && ((is.null(names(arglist))) || any(names(arglist) == ""))) { stop("all arguments must be named") }
-    for (nm in names(arglist)) {
-      ad[[nm]] <- arglist[[nm]]
-    }
-    msg <- assayDataValidMembers(ad)
-    if (!is.logical(msg)) { stop(msg) }
-  } else {
-    ad = assayData
-  }
-  clean.rownames = featureNames(ad)
-
-  if (length(clean.rownames) != length(clean.loc.rownames)) {
-    stop("Row number mismatch for assayData and locData")
-  }
-
-  # Set row order to match locData, already know all ad elements have same row names
-  if ( ! all(clean.loc.rownames == clean.rownames) ) {
-    if (! setequal(clean.loc.rownames, clean.rownames)) {
-      stop("Row name set mismatch for locData and assayData")
-    } else {
-      for (  ad.name in names(ad) ) {
-        ad[[ad.name]] = ad[[ad.name]][clean.loc.rownames,]
-      }
-    }
-  }
-
-  # Check colnames of all data matrices identical and set to same order if necessary
-  # AssayDataValidMembers does not do this for some reason
-  first.name = names(ad)[1]
-  for (mat.name in names(ad)[-1]) {
-    if ( ! all( colnames(ad[[mat.name]]) == colnames(ad[[first.name]])) ) {
-      if (! setequal(colnames(ad[[mat.name]]), colnames(ad[[first.name]]) ) ) {
-        stop(paste("Mismatch between rownames of first data matrix and", mat.name))
-      } else {
-        ad[[mat.name]] == ad[[mat.name]][,colnames(ad[[first.name]])]
-      }
-    }
-  }
-
-  # Done editing assayData members, lock
-  lockEnvironment(ad, bindings=TRUE)
-
-  # Create or check phenoData
-  if (is.null(pData)) {
-    pData = data.frame(row.names=sampleNames(ad),check.names=FALSE)
-  } else {
-    if ( ! setequal( rownames(pData), sampleNames(ad) ) ) {
-      stop( "Mismatch between sampleNames and rownames of pData" )
-    }
-    if ( any( sampleNames(ad) != rownames(pData) ) ) {
-      pData = pData[ sampleNames(ad), ]
-    }
-  }
-  pd = new("AnnotatedDataFrame",data=pData)
-  # Create object
-  rownames(locData) = NULL
-  object = new(type, locData=locData, annotation=annotation, phenoData=pd, assayData=ad)
-  return(object)
-}
-
 ##' Create a GenoSet object
 ##'
-##' This function is the preferred method for creating a new GenoSet object. Users are
-##' generally discouraged from calling "new" directly. Any "..." arguments will
-##' become part of the assayData slot of the resulting object. "..." can be matrices
-##' or DataFrame objects (from IRanges). This function passes
-##' control to the "initGenoSet" method which performs argument checking including
-##' dimname matching among relevant slots and sets everything to genome order. Genome
-##' order can be disrupted by "[" calls and will be checked by methods that
-##' require it.
-##'
-##' @param locData A GRanges object specifying feature chromosome
+##' This function is the preferred method for creating a new GenoSet object. Currently,
+##' a GenoSet is simply a RangedSummarizedExperiment with some API changes and extra
+##' methods. Therefore, a GenoSet must always have a rowRanges.
+##' 
 ##' locations. Rownames are required to match featureNames.
-##' @param pData A data frame with rownames matching all data matrices
-##' @param annotation character, string to specify chip/platform type
-##' @param assayData assayData, usually an environment
-##' @param ... More matrix or DataFrame objects to include in assayData
+##' @param assays list, SimpleList or matrix-like object
+##' @param rowRanges GenomicRanges, not a GenomicRangesList.
+##' @param ... one or more more assay matrix-like objects
 ##' @return A GenoSet object
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
-##' gs = GenoSet(
-##'    locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
-##'    cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-##'    pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-##'    annotation="SNP6" )
+##' gs = SummarizedExperiment(
+##'    assays=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+##'    rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
+##'    colData=DataFrame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+##' )
 ##' @export GenoSet
-GenoSet <- function(locData, pData=NULL, annotation="", assayData=NULL, ...) {
-  object = initGenoSet(type="GenoSet", locData=locData, pData=pData, annotation=annotation, assayData=assayData,...)
-  return(object)
+GenoSet <- function(assays, rowRanges, colData, elementMetadata=NULL) {
+    if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
+    if (is.null(elementMetadata)) { elementMetadata = DataFrame() }
+    assays <- Assays(assays)
+    new("GenoSet", rowRanges=rowRanges, assays=assays, colData=colData, NAMES=names(rowRanges), elementMetadata=elementMetadata)
+    new("SummarizedExperiment0", assays=assays, colData=colData, NAMES=NULL, elementMetadata=elementMetadata)
 }
-
-#########
-# Methods
-#########
-
-#####################
-# Getters and Setters
-#####################
-
-##' Genome version
-##'
-##' The genome positions of the features in locData. The UCSC notation (e.g. hg18, hg19, etc.) should be used.
-##' @param x GenoSet
-##' @return character, e.g. hg19
-##' @exportMethod genome
-##' @examples
-##'   data(genoset)
-##'   genome(genoset.ds)
-##'   genome(genoset.ds) = "hg19"
-##' @rdname genome-methods
-setMethod("genome", "GenoSet", function(x) {
-  return(genome(x@locData))
-})
-##' @exportMethod "genome<-"
-##' @rdname genome-methods
-##' @param value scalar character, incoming genome string
-setMethod("genome<-", "GenoSet", function(x, value) {
-  genome(x@locData) = value
-  return(x)
-})
-
-##' Get colnames from a GenoSet
-##'
-##' Get colnames from a GenoSet
-##' @param x GenoSet
-##' @return character vector with names of samples
-##' @examples
-##'   data(genoset)
-##'   head(colnames(genoset.ds))
-##' @rdname colnames
-##' @exportMethod colnames
-setMethod("colnames", signature(x="GenoSet"),
-          function(x) {
-            rownames(colData(x))
-          })
-##' @exportMethod "colnames<-"
-##' @rdname colnames
-##' @param value character, incoming colnames
-setMethod("colnames<-", signature(x="GenoSet"),
-          function(x, value) {
-            rownames(x@phenoData) = value
-            sampleNames(x@assayData) = value
-            return(x)
-          })
-
-##' Get rownames from GRanges, or GenoSet
-##'
-##' Get rownames from GRanges or GenoSet.
-##' @param x GRanges or GenoSet
-##' @return character vector with names rows/features
-##' @examples
-##'   data(genoset)
-##'   head(rownames(locData.gr))
-##'   head(rownames(genoset.ds))
-##' @exportMethod rownames
-##' @exportMethod "rownames<-"
-##' @rdname rownames-methods
-setMethod("rownames", signature(x="GenomicRanges"),
-          function(x) {
-            names(x)
-          })
-##' @rdname rownames-methods
-setMethod("rownames", signature(x="GenoSet"),
-          function(x) {
-            return(unname(featureNames(featureData(x))))
-          })
-##' @rdname rownames-methods
-##' @param value character, incoming rownames
-setMethod("rownames<-",
-                 signature=signature(x="GenomicRanges", value="ANY"),
-                 function(x, value) {
-                   names(x) = value
-                   return(x)
-                 })
-
-##' @rdname rownames-methods
-setMethod("rownames<-",
-                 signature=signature(x="GenoSet", value="ANY"),
-                 function(x, value) {
-                   names(x@locData) = value
-                   rownames(fData(x)) = value
-                   featureNames(x@assayData) = value
-                   return(x)
-                 })
-
-##' Access the feature genome position info
-##'
-##' The position information for each probe/feature is stored as an GRanges object.
-##' The locData functions allow this data to be accessed or re-set.
-##' @param object GenoSet
-##' @param value GRanges describing features
-##' @examples
-##' data(genoset)
-##' rd = locData(genoset.ds)
-##' locData(genoset.ds) = rd
-##' @return A GenoSet object
-##' @rdname locData-methods
-##' @export "locData"
-setGeneric("locData", function(object) standardGeneric("locData"))
-
-##' @rdname locData-methods
-setMethod("locData", "GenoSet", function(object) {
-  locs = slot(object,"locData")
-  rownames(locs) = rownames(object)
-  return(locs)
-} )
-
-##' @rdname locData-methods
-##' @export "locData<-"
-setGeneric("locData<-", function(object,value) standardGeneric("locData<-") )
-
-##' @rdname locData-methods
-setMethod("locData<-", signature(object="GenoSet", value="GenomicRanges"),
-                 function(object,value) {
-                   if (! all( rownames(value) %in% rownames(object))) {
-                       stop("Can not replace locData using rownames not in this GenoSet")
-                     }
-                   if (! all(rownames(value) == rownames(object))) {
-                     object = object[rownames(value), ]
-                   }
-                   rownames(value) = NULL
-                   slot(object,"locData") = value
-                   return(object)
-                   })
-
-##############################################
-# Shared API between GenoSet and GenomicRanges
-##############################################
-
-##' Get start of location for each feature
-##'
-##' Get start of location for each feature
-##' @param x GenoSet
-##' @return integer
-##' @exportMethod start
-setMethod("start", "GenoSet", function(x) { return(start(locData(x))) } )
-
-##' Get end of location for each feature
-##'
-##' Get end of location for each feature
-##' @param x GenoSet
-##' @return integer
-##' @exportMethod end
-setMethod("end", "GenoSet", function(x) { return(end(locData(x))) } )
-
-##' Get width of location for each feature
-##'
-##' Get width of location for each feature
-##' @param x GenoSet
-##' @return integer
-##' @exportMethod width
-setMethod("width", "GenoSet", function(x) { return(width(locData(x))) } )
-
-##' Get data matrix names
-##'
-##' Get names of data matrices. For the time being, this is \code{assayNames}. This function used to do \code{chrNames}.
-##' @param x GenoSet
-##' @return character
-##' @exportMethod names
-setMethod("names", "GenoSet", function(x) {
-  return( assayNames(x) )
-} )
-
-##' Get elementLengths from locData slot
-##'
-##' Get elementLengths from locData slot
-##' @param x GenoSet
-##' @return character
-##' @exportMethod elementLengths
-##' @rdname elementLengths-methods
-setMethod("elementLengths", "GenoSet", function(x) { return( elementLengths(locData(x)) ) } )
-
-##' @rdname elementLengths-methods
-setMethod("elementLengths", "GenomicRanges", function(x) {
-  if ( any(duplicated(runValue(seqnames(x)))) ) {  stop("GenomicRanges not ordered by chromosome.") }
-  return( structure(runLength(seqnames(x)),names=as.character(runValue(seqnames(x)))) )
-})
-
-##' Number of rows
-##'
-##' Number of rows
-##' @param x GRanges or GenoSet
-##' @return integer
-##' @exportMethod nrow
-setMethod("nrow", "GenomicRanges", function(x) { length(x) })
-
-##' Dimensions
-##'
-##' Dimensions
-##' @param x GenoSet
-##' @return integer
-##' @exportMethod dim
-setMethod("dim", "GenoSet", function(x) { c(nrow(unname(featureData(x))),nrow(unname(phenoData(x))))})
 
 #############
 # Sub-setters
@@ -441,8 +111,8 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           }
             if ( ! missing(i) ) {
               # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
-              locs = locData(x)[i,,drop=TRUE]
-              x@locData = locs
+              locs = rowRanges(x)[i,,drop=TRUE]
+              x@rowRanges = locs
               i = match(rownames(locs),rownames(x))
             }
             callNextMethod(x,i,j,...,drop=drop)
@@ -461,7 +131,7 @@ setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
 ##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet", i="GenomicRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
-            indices = unlist(x@locData %over% i)
+            indices = unlist(x@rowRanges %over% i)
             callNextMethod(x,indices,j,...,drop=drop)
           })
 
@@ -492,7 +162,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               return(x)
             }
             if (is(i,"RangedData") || is(i,"GenomicRanges")) {
-              i = unlist(locData(x) %over% i)
+              i = unlist(rowRanges(x) %over% i)
             }
             if (missing(j)) {
               assay(x,k)[i,] = value
@@ -500,23 +170,6 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               assay(x,k)[i,j] = value
             }
             return(x)
-          })
-
-#######
-# Other
-#######
-
-##' Print a GenoSet
-##'
-##' Prints out a description of a GenoSet object
-##' @exportMethod show
-##' @aliases show,GenoSet-method
-##' @param object a GenoSet
-setMethod("show","GenoSet",
-          function(object) {
-            callNextMethod(object)
-            cat("Feature Locations:\n")
-            show(locData(object))
           })
 
 ########################
@@ -531,12 +184,12 @@ setMethod("show","GenoSet",
 ##' @examples
 ##'   data(genoset)
 ##'   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
-##'   chr(locData(genoset.ds))  # The same
+##'   chr(rowRanges(genoset.ds))  # The same
 ##' @export chr
 ##' @rdname chr-methods
 setGeneric("chr", function(object) standardGeneric("chr"))
 ##' @rdname chr-methods
-setMethod("chr", "GenoSet", function(object) { return(chr(slot(object,"locData"))) } )
+setMethod("chr", "GenoSet", function(object) { return(chr(slot(object,"rowRanges"))) } )
 ##' @rdname chr-methods
 setMethod("chr", "GenomicRanges", function(object) { return(as.character(seqnames(object))) })
 
@@ -549,7 +202,7 @@ setMethod("chr", "GenomicRanges", function(object) { return(as.character(seqname
 ##' @examples
 ##'   data(genoset)
 ##'   pos(genoset.ds)  # 1:10
-##'   pos(locData(genoset.ds))  # The same
+##'   pos(rowRanges(genoset.ds))  # The same
 ##' @rdname pos-methods
 setGeneric("pos", function(object) standardGeneric("pos"))
 ##' @rdname pos-methods
@@ -566,7 +219,7 @@ setMethod("pos", "GenoSetOrGenomicRanges",
 ##' @examples
 ##'   data(genoset)
 ##'   chrNames(genoset.ds) # c("chr1","chr3","chrX")
-##'   chrNames(locData(genoset.ds))  # The same
+##'   chrNames(rowRanges(genoset.ds))  # The same
 ##'   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 ##' @rdname chrNames-methods
 ##' @export "chrNames"
@@ -576,7 +229,7 @@ setGeneric("chrNames", function(object) standardGeneric("chrNames") )
 ##' @rdname chrNames-methods
 setMethod("chrNames", signature(object="GenoSet"),
           function(object) {
-            chrNames(locData(object))
+            chrNames(rowRanges(object))
           })
 
 ##' @rdname chrNames-methods
@@ -592,7 +245,7 @@ setGeneric("chrNames<-", function(object,value) standardGeneric("chrNames<-") )
 ##' @rdname chrNames-methods
 setMethod("chrNames<-", signature(object="GenoSet"),
           function(object,value) {
-            chrNames(locData(object)) = value
+            chrNames(rowRanges(object)) = value
             return(object)
           })
 
@@ -612,7 +265,7 @@ setMethod("chrNames<-", signature(object="GenomicRanges"),
 ##' @examples
 ##'   data(genoset)
 ##'   chrInfo(genoset.ds)
-##'   chrInfo(locData(genoset.ds))  # The same
+##'   chrInfo(rowRanges(genoset.ds))  # The same
 ##' @rdname chrInfo-methods
 setGeneric("chrInfo", function(object) standardGeneric("chrInfo") )
 
@@ -655,7 +308,7 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
 ##' @examples
 ##'   data(genoset)
 ##'   chrIndices(genoset.ds)
-##'   chrIndices(locData(genoset.ds))  # The same
+##'   chrIndices(rowRanges(genoset.ds))  # The same
 ##' @rdname chrIndices-methods
 setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices") )
 
@@ -686,7 +339,7 @@ setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
 ##' @examples
 ##'   data(genoset)
 ##'   head(genoPos(genoset.ds))
-##'   head(genoPos(locData(genoset.ds)))  # The same
+##'   head(genoPos(rowRanges(genoset.ds)))  # The same
 ##' @export genoPos
 ##' @rdname genoPos-methods
 setGeneric("genoPos", function(object) standardGeneric("genoPos") )
@@ -706,46 +359,3 @@ setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
 
             return(genopos)
           })
-
-###########
-# Functions
-###########
-
-##' Subset or re-order assayData
-##'
-##' Subset or re-order assayData locked environment, environment, or list. Shamelessly stolen
-##' from "[" method in Biobase version 2.8 along with guts of assayDataStorageMode()
-##' @param orig assayData environment
-##' @param i row indices
-##' @param j col indices
-##' @param ... Additional args to give to subset operator
-##' @param drop logical, drop dimensions when subsetting with single value?
-##' @return assayData data structure
-##' @export subsetAssayData
-subsetAssayData <- function(orig, i, j, ..., drop=FALSE) {
-    .Deprecated()
-  if (is(orig, "list")) {
-    if (missing(i))                     # j must be present
-      return(lapply(orig, function(obj) obj[, j, ..., drop = drop]))
-    else {                              # j may or may not be present
-      if (missing(j))
-        return(lapply(orig, function(obj) obj[i,, ..., drop = drop]))
-      else
-        return(lapply(orig, function(obj) obj[i, j, ..., drop = drop]))
-    }
-  } else {
-    aData <- new.env(parent=emptyenv())
-    if (missing(i))                     # j must be present
-      for(nm in ls(orig)) aData[[nm]] <- orig[[nm]][, j, ..., drop = drop]
-    else {                              # j may or may not be present
-      if (missing(j))
-        for(nm in ls(orig)) aData[[nm]] <- orig[[nm]][i,, ..., drop = drop]
-      else
-        for(nm in ls(orig)) aData[[nm]] <- orig[[nm]][i, j, ..., drop = drop]
-    }
-    if (environmentIsLocked(orig)) {
-      lockEnvironment(aData, bindings=TRUE)
-    }
-    return(aData)
-  }
-}
