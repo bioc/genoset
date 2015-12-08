@@ -49,8 +49,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GenoSet"),
               }
             }
             # Check each chr for ordered start
-            chr.ind = chrIndices(ds)
-            return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
+            return(!any(is.unsorted(relist(start(ds), chrPartitioning(ds)))))
           })
 
 ##' @rdname isGenomeOrder-methods
@@ -62,8 +61,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
                 return(FALSE)
               }
             }
-            chr.ind = chrIndices(ds)
-            return(!any(aggregate( start(ds), start=chr.ind[,1], end=chr.ind[,2], FUN=is.unsorted)))
+            return(!any(is.unsorted(relist(start(ds), chrPartitioning(ds)))))
           })
 
 ##' Set a GRanges or GenoSet to genome order

@@ -276,8 +276,7 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
             if (is(object, "GenomicRanges") && !any(is.na(seqlengths(object)))) {
               max.val = seqlengths(object)
             } else {
-              chr.ind=chrIndices(object)
-              max.val = aggregate(end(object), start=chr.ind[,1], end=chr.ind[,2], FUN=max)
+              max.val = max(relist(end(object), chrPartitioning(object)))
             }
             if (length(max.val) == 1) {
               names(max.val) = chrNames(object)
@@ -293,6 +292,16 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
             return(chr.info)
           })
 
+chrPartitioning <- function(object, chr=NULL) {
+    ans <- PartitioningByEnd(end(seqnames(object)))
+    if (!is.null(chr)) {
+        if (!chr %in% names(ans)) {
+            stop("Must specify a valid chromosome name")
+        }
+        ans <- as.integer(as(ans, "IRanges")[chr])
+    }
+    ans
+}
 
 ##' Get a matrix of first and last index of features in each chromosome
 ##'
