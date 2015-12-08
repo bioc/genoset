@@ -62,7 +62,7 @@ GenoSet <- function(assays, rowRanges, colData, elementMetadata=NULL) {
     if (is.null(elementMetadata)) { elementMetadata = DataFrame() }
     assays <- Assays(assays)
     new("GenoSet", rowRanges=rowRanges, assays=assays, colData=colData, NAMES=names(rowRanges), elementMetadata=elementMetadata)
-    new("SummarizedExperiment0", assays=assays, colData=colData, NAMES=NULL, elementMetadata=elementMetadata)
+    new("SummarizedExperiment", assays=assays, colData=colData, NAMES=NULL, elementMetadata=elementMetadata)
 }
 
 #############
