@@ -59,7 +59,9 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' @export GenoSet
 GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
     if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
-    assays <- Assays(assays)
+    if (! is(assays,"Assays")) {
+        assays <- Assays(assays)
+    }
     elementMetadata <- new("DataFrame", nrows=length(rowRanges))
     new("GenoSet", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
 #    new("RangedSummarizedExperiment", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
