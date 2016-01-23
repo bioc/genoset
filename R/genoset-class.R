@@ -51,18 +51,18 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
-##' gs = SummarizedExperiment(
+##' gs = GenoSet(
 ##'    assays=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 ##'    rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
 ##'    colData=DataFrame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
 ##' )
 ##' @export GenoSet
-GenoSet <- function(assays, rowRanges, colData, elementMetadata=NULL) {
+GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
     if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
-    if (is.null(elementMetadata)) { elementMetadata = DataFrame() }
     assays <- Assays(assays)
-    new("GenoSet", rowRanges=rowRanges, assays=assays, colData=colData, NAMES=names(rowRanges), elementMetadata=elementMetadata)
-    new("SummarizedExperiment", assays=assays, colData=colData, NAMES=NULL, elementMetadata=elementMetadata)
+    elementMetadata <- new("DataFrame", nrows=length(rowRanges))
+    new("GenoSet", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
+#    new("RangedSummarizedExperiment", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
 }
 
 #############
