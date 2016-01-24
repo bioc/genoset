@@ -1,3 +1,13 @@
+CHANGES IN VERSION 1.27.0
+--------------------------
+
+  o GenoSet objects now inherit from RangedSummarizedExperiment (RSE) rather than eSet. Use
+    the RSE API rather than that for eSet (e.g. colnames rather than sampleNames and assays
+    rather than assayData). All Biobase-related content has been removed including
+    annotatedDataFrameFrom. This means that BigMatrix objects can no longer be added to
+    eSet/ExpressionSet/GenoSet objects.
+
+
 CHANGES IN VERSION 1.21.10
 --------------------------
 
