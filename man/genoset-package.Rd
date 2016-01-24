@@ -9,6 +9,6 @@
 Load, manipulate, and plot copynumber and BAF data.
 }
 \seealso{
-genoset-datasets GenoSet
+genoset-datasets
 }
 

@@ -36,7 +36,7 @@ chrOrder <- function(chr.names) {
 ##' @family "genome ordering"
 ##' @examples
 ##'   data(genoset)
-##'   isGenomeOrder( locData(genoset.ds) )
+##'   isGenomeOrder( rowRanges(genoset.ds) )
 ##' @rdname isGenomeOrder-methods
 setGeneric("isGenomeOrder", function(ds, strict=TRUE) standardGeneric("isGenomeOrder"))
 
@@ -82,7 +82,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##'   data(genoset)
 ##'   toGenomeOrder( genoset.ds, strict=TRUE )
 ##'   toGenomeOrder( genoset.ds, strict=FALSE )
-##'   toGenomeOrder( locData(genoset.ds) )
+##'   toGenomeOrder( rowRanges(genoset.ds) )
 ##' @docType methods
 ##' @family "genome ordering"
 ##' @rdname toGenomeOrder-methods
@@ -106,6 +106,6 @@ setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
 ##' @rdname toGenomeOrder-methods
 setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
           function(ds,strict=TRUE) {
-            locData(ds) = toGenomeOrder(locData(ds),strict=strict) # locData<- fixes row ordering in ds
+            rowRanges(ds) = toGenomeOrder(rowRanges(ds),strict=strict) # rowRanges<- fixes row ordering in ds
             return(ds)
           })

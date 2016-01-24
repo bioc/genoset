@@ -4,11 +4,14 @@
 \name{genoPos}
 \alias{genoPos}
 \alias{genoPos,GenoSetOrGenomicRanges-method}
+\alias{lengths,GenoSet-method}
 \title{Get base positions of features in genome-scale units}
 \usage{
 genoPos(object)
 
 \S4method{genoPos}{GenoSetOrGenomicRanges}(object)
+
+\S4method{lengths}{GenoSet}(x)
 }
 \arguments{
 \item{object}{A GenoSet object or a GenomicRanges object}

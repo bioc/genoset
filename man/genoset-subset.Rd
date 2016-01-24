@@ -18,7 +18,7 @@
 
 \item{i}{character, GRanges, logical, integer}
 
-\item{j}{character, GRanges, logical, integer}
+\item{j}{character, logical, integer}
 
 \item{k}{character or integer}
 

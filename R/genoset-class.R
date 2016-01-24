@@ -7,9 +7,10 @@
 ##' @docType package
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
-##' @seealso genoset-datasets GenoSet
+##' @seealso genoset-datasets
 ##'
 ##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList
+##' @importClassesFrom SummarizedExperiment SummarizedExperiment RangedSummarizedExperiment
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
 ##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
@@ -54,18 +55,31 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' gs = GenoSet(
 ##'    assays=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
 ##'    rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
-##'    colData=DataFrame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+##'    colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
 ##' )
 ##' @export GenoSet
+##' @family GenoSet
+##' @rdname genoset-methods
 GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
     if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
+    if (!is(colData,"DataFrame")) {
+        colData = as(colData,"DataFrame")
+    }
     if (! is(assays,"Assays")) {
         assays <- Assays(assays)
     }
     elementMetadata <- new("DataFrame", nrows=length(rowRanges))
     new("GenoSet", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
-#    new("RangedSummarizedExperiment", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
 }
+
+##' as("SummarizedExperiment", "GenoSet")
+##'
+##' @name as
+##' @rdname genoset-methods
+setAs(from="GenoSet",to="SummarizedExperiment",
+      def=function(from) {
+          SummarizedExperiment(assays=assays(from), rowRanges=rowRanges(from), colData=colData(from), metadata=metadata(from))
+      })
 
 #############
 # Sub-setters
@@ -78,7 +92,7 @@ GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
 ##' @exportMethod "[<-"
 ##' @param x GenoSet
 ##' @param i character, GRanges, logical, integer
-##' @param j character, GRanges, logical, integer
+##' @param j character, logical, integer
 ##' @param k character or integer
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
@@ -108,8 +122,8 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
 ##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet", i="GenomicRanges", j="ANY"),
           function(x,i,j,...,drop=FALSE) {
-            indices = unlist(x@rowRanges %over% i)
-            callNextMethod(x,indices,j,...,drop=drop)
+            i = unlist(x@rowRanges %over% i)
+            callNextMethod(x,i,j,...,drop=drop)
           })
 
 ##' @param value incoming data for assay "k", rows "i" and cols "j"
@@ -335,4 +349,11 @@ setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
             genopos = pos(object) + unlist(offset[chr(object)])
 
             return(genopos)
+          })
+
+##' @rdname genoPos-methods
+##' @export lengths
+setMethod("lengths", signature(x="GenoSet"),
+          function(x) {
+              lengths(rowRanges(x))
           })
