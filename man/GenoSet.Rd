@@ -4,40 +4,33 @@
 \alias{GenoSet}
 \title{Create a GenoSet object}
 \usage{
-GenoSet(locData, pData = NULL, annotation = "", assayData = NULL, ...)
+GenoSet(assays, rowRanges, colData, metadata = list())
 }
 \arguments{
-\item{locData}{A GRanges object specifying feature chromosome
-locations. Rownames are required to match featureNames.}
+\item{assays}{list, SimpleList or matrix-like object}
 
-\item{pData}{A data frame with rownames matching all data matrices}
+\item{rowRanges}{GenomicRanges, not a GenomicRangesList.}
 
-\item{annotation}{character, string to specify chip/platform type}
-
-\item{assayData}{assayData, usually an environment}
-
-\item{...}{More matrix or DataFrame objects to include in assayData}
+\item{...}{one or more more assay matrix-like objects}
 }
 \value{
 A GenoSet object
 }
 \description{
-This function is the preferred method for creating a new GenoSet object. Users are
-generally discouraged from calling "new" directly. Any "..." arguments will
-become part of the assayData slot of the resulting object. "..." can be matrices
-or DataFrame objects (from IRanges). This function passes
-control to the "initGenoSet" method which performs argument checking including
-dimname matching among relevant slots and sets everything to genome order. Genome
-order can be disrupted by "[" calls and will be checked by methods that
-require it.
+This function is the preferred method for creating a new GenoSet object. Currently,
+a GenoSet is simply a RangedSummarizedExperiment with some API changes and extra
+methods. Therefore, a GenoSet must always have a rowRanges.
+}
+\details{
+locations. Rownames are required to match featureNames.
 }
 \examples{
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 gs = GenoSet(
-   locData=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),
-   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
-   pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5]))),
-   annotation="SNP6" )
+   assays=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+   rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
+   colData=DataFrame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+)
 }
 

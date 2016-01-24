@@ -22,6 +22,6 @@ Provides a matrix of start, stop and offset, in base numbers for each chromosome
 \examples{
   data(genoset)
   chrInfo(genoset.ds)
-  chrInfo(locData(genoset.ds))  # The same
+  chrInfo(rowRanges(genoset.ds))  # The same
 }
 

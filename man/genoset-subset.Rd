@@ -4,13 +4,10 @@
 \name{[,GenoSet,ANY-method}
 \alias{[,GenoSet,ANY-method}
 \alias{[,GenoSet,GenomicRanges-method}
-\alias{[,GenoSet,character-method}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
 \title{Subset a GenoSet}
 \usage{
 \S4method{[}{GenoSet,ANY}(x, i, j, k, ..., drop = FALSE)
-
-\S4method{[}{GenoSet,character}(x, i, j, ..., drop = FALSE)
 
 \S4method{[}{GenoSet,GenomicRanges}(x, i, j, ..., drop = FALSE)
 

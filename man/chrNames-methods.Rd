@@ -36,7 +36,7 @@ Get list of unique chromosome names
 \examples{
   data(genoset)
   chrNames(genoset.ds) # c("chr1","chr3","chrX")
-  chrNames(locData(genoset.ds))  # The same
+  chrNames(rowRanges(genoset.ds))  # The same
   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 }
 

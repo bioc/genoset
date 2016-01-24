@@ -2,7 +2,7 @@ Package: genoset
 Type: Package
 Title: Provides classes similar to ExpressionSet for copy number
     analysis
-Version: 1.25.4
+Version: 1.25.5
 Date: 2016-01-23
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -19,7 +19,6 @@ LazyLoad: yes
 Depends:
     R (>= 2.10),
     BiocGenerics (>= 0.11.3),
-    Biobase (>= 2.15.1),
     GenomicRanges (>= 1.17.19),
     SummarizedExperiment (>= 1.1.6)
 Imports:
@@ -56,4 +55,4 @@ Collate:
 VignetteBuilder: knitr
 URL: https://github.com/phaverty/genoset
 Packaged: 2014-10-08 19:15:54 UTC; dtenenba
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

@@ -27,6 +27,6 @@ of integers representing the row indices of features on that chromosome.
 \examples{
   data(genoset)
   chrIndices(genoset.ds)
-  chrIndices(locData(genoset.ds))  # The same
+  chrIndices(rowRanges(genoset.ds))  # The same
 }
 

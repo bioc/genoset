@@ -22,6 +22,6 @@ Get chromosome position of features/ranges. Defined as floor of mean of start an
 \examples{
   data(genoset)
   pos(genoset.ds)  # 1:10
-  pos(locData(genoset.ds))  # The same
+  pos(rowRanges(genoset.ds))  # The same
 }
 

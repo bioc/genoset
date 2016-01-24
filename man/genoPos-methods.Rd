@@ -23,6 +23,6 @@ genome. Chromosomes are ordered numerically, when possible, then lexically.
 \examples{
   data(genoset)
   head(genoPos(genoset.ds))
-  head(genoPos(locData(genoset.ds)))  # The same
+  head(genoPos(rowRanges(genoset.ds)))  # The same
 }
 

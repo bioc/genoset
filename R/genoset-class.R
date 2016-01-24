@@ -92,15 +92,6 @@ GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
             if (! missing(k)) {
-              if (is.numeric(k)) {
-                if (k > length(assayNames(x))) {
-                  stop("Numeric index k exceeds the number of assayDataElements.\n")
-                }
-                k = assayNames(x)[k]
-              }
-              if (!k %in% assayNames(x)) {
-                stop("Index k is not a member of assayNames.\n")
-              }
               if (missing(i) && missing(j)) {
                 return(assay(x,k)) # Necessary to get whole big.matrix object
               } else if (missing(i)) {
@@ -110,24 +101,8 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
               } else {
                 return(assay(x,k)[i,j])
               }
-          }
-            if ( ! missing(i) ) {
-              # Re-ordering of RangedData can silently disobey in order to keep its desired order of chromosomes
-              locs = rowRanges(x)[i,,drop=TRUE]
-              x@rowRanges = locs
-              i = match(rownames(locs),rownames(x))
             }
             callNextMethod(x,i,j,...,drop=drop)
-          })
-
-# eSet uses pmatch, which is dog-slow
-##' @rdname genoset-subset
-setMethod("[", signature=signature(x="GenoSet",i="character",j="ANY"),
-          function(x,i,j,...,drop=FALSE) {
-            if ( ! missing(i) ) {
-              indices = match(i,rownames(x))
-            }
-            callNextMethod(x,indices,j,...,drop=drop)
           })
 
 ##' @rdname genoset-subset
@@ -144,26 +119,17 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
             if ( missing(k)) {
               stop("Must specify k to replace data in the GenoSet")
             }
-            if (is.numeric(k)) {
-                if (k > length(assayNames(x))) {
-                  stop("Numeric index k exceeds the number of assays.\n")
-                }
-                k = assayNames(x)[k]
-              }
             if (missing(i) && missing(j)) {
               if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
                 stop("Dimnames for incoming assay must match this genoset.\n")
               }
               return(assayDataElementReplace(x,k,value))
             }
-            if (!k %in% assayNames(x)) {
-                stop("Index k is not a member of assayNames.\n")
-            }
             if (missing(i)) {
               assay(x,k)[,j] = value
               return(x)
             }
-            if (is(i,"RangedData") || is(i,"GenomicRanges")) {
+            if (is(i,"GenomicRanges")) {
               i = unlist(rowRanges(x) %over% i)
             }
             if (missing(j)) {
