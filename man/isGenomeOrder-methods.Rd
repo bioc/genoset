@@ -29,7 +29,7 @@ rather than chromsome, strand, start, and width.
 }
 \examples{
   data(genoset)
-  isGenomeOrder( locData(genoset.ds) )
+  isGenomeOrder( rowRanges(genoset.ds) )
 }
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}},

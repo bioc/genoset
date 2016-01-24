@@ -35,7 +35,7 @@ rather than chromsome, strand, start, and width.
   data(genoset)
   toGenomeOrder( genoset.ds, strict=TRUE )
   toGenomeOrder( genoset.ds, strict=FALSE )
-  toGenomeOrder( locData(genoset.ds) )
+  toGenomeOrder( rowRanges(genoset.ds) )
 }
 \seealso{
 Other "genome ordering": \code{\link{chrOrder}},
