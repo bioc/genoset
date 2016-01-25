@@ -70,9 +70,3 @@ setMethod("rowSums", signature(x="RleDataFrame"),
             }
             return(sums)
         })
-
-# Allow eSet constructor to make featureNames from other types as if they were matrices
-##' @export annotatedDataFrameFrom
-setMethod("annotatedDataFrameFrom",
-          signature(object="DataFrame"),
-          Biobase:::annotatedDataFrameFromMatrix)

@@ -17,7 +17,7 @@
 ##' @importMethodsFrom IRanges intersect lapply mean nrow order ranges rownames
 ##'
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
-##' @importFrom IRanges IRanges "%over%" Views RleList
+##' @importFrom IRanges IRanges "%over%" Views RleList PartitioningByEnd
 ##' @importFrom GenomicRanges GRanges
 ##'
 ##' @import methods
@@ -45,15 +45,17 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' methods. Therefore, a GenoSet must always have a rowRanges.
 ##' 
 ##' locations. Rownames are required to match featureNames.
+##' @param x A GenoSet
+##' @param colData a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays.
 ##' @param assays list, SimpleList or matrix-like object
 ##' @param rowRanges GenomicRanges, not a GenomicRangesList.
-##' @param ... one or more more assay matrix-like objects
+##' @param metadata a list of any other data you want to attach to the GenoSet object.
 ##' @return A GenoSet object
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
 ##' gs = GenoSet(
-##'    assays=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)),
+##'    assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))),
 ##'    rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
 ##'    colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
 ##' )
@@ -61,6 +63,7 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' @family GenoSet
 ##' @rdname genoset-methods
 GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
+    browser()
     if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
     if (!is(colData,"DataFrame")) {
         colData = as(colData,"DataFrame")
@@ -137,7 +140,8 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
               if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
                 stop("Dimnames for incoming assay must match this genoset.\n")
               }
-              return(assayDataElementReplace(x,k,value))
+              assays(x,k) = value
+              return(x)
             }
             if (missing(i)) {
               assay(x,k)[,j] = value
@@ -351,7 +355,7 @@ setMethod("genoPos", signature(object="GenoSetOrGenomicRanges"),
             return(genopos)
           })
 
-##' @rdname genoPos-methods
+##' @rdname genoset-methods
 ##' @export lengths
 setMethod("lengths", signature(x="GenoSet"),
           function(x) {

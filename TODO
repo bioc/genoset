@@ -130,3 +130,7 @@ I want to move in a direction where I could swap out eSet for SummarizedExperime
 Add viewMeans and viewSums for RleDataFrame, base on rangeSampleMeans.
 
 Coercion for RleDataFrame to matrix, with examples and section in class Rd.
+
+
+# Mon 01-25-2016 - 09:59
+Document (and grok) Michael Lawrence's chrPartitioning.
