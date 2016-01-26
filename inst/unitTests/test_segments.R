@@ -2,6 +2,7 @@
 # Test for segmentation-related functions
 #########################################
 library(RUnit)
+library(genoset)
 sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 locData.gr = GRanges(ranges=IRanges(start=c(1,3,5,7,4,6,2,4,6,8),width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
@@ -12,11 +13,11 @@ basic.rle.df = RleDataFrame(
     row.names=rownames(locData.gr))
 
 basic.segs = list(
-  K = data.frame( ID = "K", chrom = factor(c("chr1","chr3","chrX"),levels=names(locData.gr)), loc.start = c(1,1,1), loc.end = c(10,10,10),
+  K = data.frame( ID = "K", chrom = factor(c("chr1","chr3","chrX"),levels=chrNames(locData.gr)), loc.start = c(1,1,1), loc.end = c(10,10,10),
     num.mark = c(4,2,4), seg.mean = c(5.3,2.3,1.2), stringsAsFactors=FALSE ),
-  L = data.frame( ID = "L", chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=names(locData.gr)), loc.start = c(1,3,1,1,5), loc.end = c(2,10,10,4,10),
+  L = data.frame( ID = "L", chrom = factor(c("chr1","chr1","chr3","chrX","chrX"),levels=chrNames(locData.gr)), loc.start = c(1,3,1,1,5), loc.end = c(2,10,10,4,10),
     num.mark = c(1,3,2,2,2), seg.mean = c(1.1,1.4,2.2,3.3,0.5), stringsAsFactors=FALSE ),
-  M = data.frame( ID = "M", chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=names(locData.gr)), loc.start = c(1,3,4,5,1), loc.end = c(2,10,5,6,10),
+  M = data.frame( ID = "M", chrom = factor(c("chr1","chr1","chr3","chr3","chrX"),levels=chrNames(locData.gr)), loc.start = c(1,3,4,5,1), loc.end = c(2,10,5,6,10),
     num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3), stringsAsFactors=FALSE )
   )
 

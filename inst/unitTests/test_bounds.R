@@ -1,5 +1,6 @@
 # Tests for functions utilizing boundingIndices
 library(RUnit)
+library(genoset)
 
 test_bounds2Rle <- function() {
   locs = GRanges(IRanges(start=1:20,width=1),seqnames=c(rep("1",5),rep("2",5),rep("3",5),rep("4",5)))

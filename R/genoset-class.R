@@ -361,3 +361,11 @@ setMethod("lengths", signature(x="GenoSet"),
           function(x) {
               lengths(rowRanges(x))
           })
+
+##' @rdname genomicranges-methods
+##' @export nrow
+setMethod("nrow", signature(x="GenomicRanges"),
+          function(x) {
+              length(x)
+          })
+
