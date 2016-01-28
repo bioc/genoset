@@ -362,6 +362,11 @@ setMethod("lengths", signature(x="GenoSet"),
               lengths(rowRanges(x))
           })
 
+##' GenomicRanges API Additions
+##'
+##' I have extended the API for GenomicRanges a bit so that genoset
+##' and GenomicRanges can have the same API, at least as far as
+##' genome location based features go.
 ##' @rdname genomicranges-methods
 ##' @export nrow
 setMethod("nrow", signature(x="GenomicRanges"),

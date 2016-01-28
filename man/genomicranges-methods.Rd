@@ -3,7 +3,13 @@
 \docType{methods}
 \name{nrow,GenomicRanges-method}
 \alias{nrow,GenomicRanges-method}
+\title{GenomicRanges API Additions}
 \usage{
 \S4method{nrow}{GenomicRanges}(x)
+}
+\description{
+I have extended the API for GenomicRanges a bit so that genoset
+and GenomicRanges can have the same API, at least as far as
+genome location based features go.
 }
 
