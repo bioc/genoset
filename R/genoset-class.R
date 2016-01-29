@@ -36,7 +36,7 @@ NULL
 setClass("GenoSet", contains="RangedSummarizedExperiment")
 
 ##' @exportClass GenoSetOrGenomicRanges
-#setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
+setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
 ##' Create a GenoSet object
 ##'
@@ -46,17 +46,16 @@ setClass("GenoSet", contains="RangedSummarizedExperiment")
 ##' 
 ##' locations. Rownames are required to match featureNames.
 ##' @param x A GenoSet
-##' @param colData a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays.
+##' @param rowRanges GenomicRanges, not a GenomicRangesList
 ##' @param assays list, SimpleList or matrix-like object
-##' @param rowRanges GenomicRanges, not a GenomicRangesList.
-##' @param metadata a list of any other data you want to attach to the GenoSet object.
+##' @param colData a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays
+##' @param metadata a list of any other data you want to attach to the GenoSet object
 ##' @return A GenoSet object
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
 ##' assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)))
 ##' rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-##' metadata=list(version="1.0.0")
 ##' colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
 ##' rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
 ##' gs = GenoSet(rowRanges, assays, colData)
@@ -278,15 +277,15 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
             return(chr.info)
           })
 
-chrPartitioning <- function(object, chr=NULL) {
-    ans <- PartitioningByEnd(end(seqnames(object)))
-    if (!is.null(chr)) {
-        if (!chr %in% names(ans)) {
-            stop("Must specify a valid chromosome name")
-        }
-        ans <- as.integer(as(ans, "IRanges")[chr])
-    }
-    ans
+##' Partitioning by Chromosome
+##'
+##' Get indices of first and last element in each chromosome.
+##' @param object GenoSet or GenomicRanges
+##' @return PartitioningByEnd
+##' @export 
+chrPartitioning <- function(object) {
+    ends = structure( end(seqnames(object)), names=seqlevels(object) )
+    return(PartitioningByEnd(ends))
 }
 
 ##' Get a matrix of first and last index of features in each chromosome
@@ -310,13 +309,10 @@ setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices")
 ##' @rdname chrIndices-methods
 setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
-            object.lengths = elementNROWS(object)
-            object.lengths = object.lengths[ object.lengths > 0 ]
-            chr.last = cumsum(object.lengths)
-            chr.last = chr.last[ chr.last > 0 ]
-            chr.names = names(chr.last)
-            chr.first = c(1,chr.last[- length(chr.last)] + 1)
-            chr.info = matrix(c(chr.first,chr.last, chr.first-1), ncol=3,nrow=length(chr.names), dimnames=list(chr.names,c("first","last","offset")))
+              partitions = chrPartitioning(object)
+              chr.first = start(partitions)
+              chr.last = end(partitions)
+            chr.info = matrix(c(chr.first, chr.last, chr.first-1), ncol=3,nrow=length(chr.first), dimnames=list(names(partitions),c("first","last","offset")))
             if (!is.null(chr)) {
               if (! chr %in% rownames(chr.info)) { stop("Must specify a valid chromosome name in chrIndices.\n") }
               return( seq.int( chr.info[chr,"first"], chr.info[chr,"last"]) )
@@ -367,6 +363,7 @@ setMethod("lengths", signature(x="GenoSet"),
 ##' I have extended the API for GenomicRanges a bit so that genoset
 ##' and GenomicRanges can have the same API, at least as far as
 ##' genome location based features go.
+##' @param x A GenomicRanges
 ##' @rdname genomicranges-methods
 ##' @export nrow
 setMethod("nrow", signature(x="GenomicRanges"),

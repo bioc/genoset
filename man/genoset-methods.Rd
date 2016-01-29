@@ -7,18 +7,18 @@
 \alias{lengths,GenoSet-method}
 \title{Create a GenoSet object}
 \usage{
-GenoSet(assays, rowRanges, colData, metadata = list())
+GenoSet(rowRanges, assays, colData, metadata = list())
 
 \S4method{lengths}{GenoSet}(x)
 }
 \arguments{
+\item{rowRanges}{GenomicRanges, not a GenomicRangesList}
+
 \item{assays}{list, SimpleList or matrix-like object}
 
-\item{rowRanges}{GenomicRanges, not a GenomicRangesList.}
+\item{colData}{a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays}
 
-\item{colData}{a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays.}
-
-\item{metadata}{a list of any other data you want to attach to the GenoSet object.}
+\item{metadata}{a list of any other data you want to attach to the GenoSet object}
 
 \item{x}{A GenoSet}
 }
@@ -38,10 +38,10 @@ locations. Rownames are required to match featureNames.
 \examples{
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
-gs = GenoSet(
-   assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))),
-   rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
-   colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
-)
+assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)))
+rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
+colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
+gs = GenoSet(rowRanges, assays, colData)
 }
 

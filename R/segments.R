@@ -371,7 +371,7 @@ runCBS <- function(data, locs, return.segs=FALSE, n.cores=1, smooth.region=2, ou
   if (return.segs == TRUE) {
     return(segs)
   } else {
-    return( RleDataFrame(segs, row.names=rownames(locs) ) )
+    return( RleDataFrame(segs, row.names=names(locs) ) )
   }
 }
 
