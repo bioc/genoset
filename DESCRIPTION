@@ -22,7 +22,7 @@ Depends:
     GenomicRanges (>= 1.17.19),
     SummarizedExperiment (>= 1.1.6)
 Imports:
-    S4Vectors (>= 0.2.3),
+    S4Vectors (>= 0.9.25),
     GenomeInfoDb (>= 1.1.3),
     IRanges (>= 2.5.12),
     methods,

@@ -17,7 +17,7 @@ New methods defined for DataFrame to allow usage as assayData element:
 
 Methods that get genome information from a GenoSet now work on RangedData too.  RangedData and 
 GenoSet now share some API to make this easier. RangedData gets chr and pos, GenoSet gets names, 
-ranges, and elementLengths. Now chrInfo, chrIndices, genoPos, etc. can work on either object type.
+ranges, and elementNROWS. Now chrInfo, chrIndices, genoPos, etc. can work on either object type.
 
 pos and genoPos now defined as floor of mean of start and end positions.
 

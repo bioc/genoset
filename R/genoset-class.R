@@ -13,7 +13,7 @@
 ##' @importClassesFrom SummarizedExperiment SummarizedExperiment RangedSummarizedExperiment
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
-##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" elementLengths end findOverlaps gsub
+##' @importMethodsFrom IRanges as.data.frame as.list as.matrix cbind colnames "colnames<-" end findOverlaps gsub
 ##' @importMethodsFrom IRanges intersect lapply mean nrow order ranges rownames
 ##'
 ##' @importFrom graphics abline axis axTicks box mtext plot.new plot.window points segments
@@ -310,7 +310,7 @@ setGeneric("chrIndices", function(object,chr=NULL) standardGeneric("chrIndices")
 ##' @rdname chrIndices-methods
 setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
           function(object,chr=NULL) {
-            object.lengths = elementLengths(object)
+            object.lengths = elementNROWS(object)
             object.lengths = object.lengths[ object.lengths > 0 ]
             chr.last = cumsum(object.lengths)
             chr.last = chr.last[ chr.last > 0 ]

@@ -86,7 +86,7 @@ chrNames(gs)
 chrOrder(c("chr12","chr12","chrX","chr8","chr7","chrY"))
 chrInfo(gs)
 chrIndices(gs)
-elementLengths(gs)
+elementNROWS(gs)
 
 head(chr(gs))
 head(start(gs))
