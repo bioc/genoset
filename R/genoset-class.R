@@ -36,7 +36,7 @@ NULL
 setClass("GenoSet", contains="RangedSummarizedExperiment")
 
 ##' @exportClass GenoSetOrGenomicRanges
-setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
+#setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 
 ##' Create a GenoSet object
 ##'
@@ -54,16 +54,16 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]
 ##' probe.names = letters[1:10]
-##' gs = GenoSet(
-##'    assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))),
-##'    rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4))),   
-##'    colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
-##' )
+##' assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)))
+##' rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
+##' metadata=list(version="1.0.0")
+##' colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+##' rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
+##' gs = GenoSet(rowRanges, assays, colData)
 ##' @export GenoSet
 ##' @family GenoSet
 ##' @rdname genoset-methods
-GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
-    browser()
+GenoSet <- function(rowRanges, assays, colData, metadata=list()) {
     if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
     if (!is(colData,"DataFrame")) {
         colData = as(colData,"DataFrame")
@@ -71,8 +71,8 @@ GenoSet <- function(assays, rowRanges, colData, metadata=list()) {
     if (! is(assays,"Assays")) {
         assays <- Assays(assays)
     }
-    elementMetadata <- new("DataFrame", nrows=length(rowRanges))
-    new("GenoSet", assays=assays, rowRanges=rowRanges, colData=colData, elementMetadata=elementMetadata, metadata=metadata)
+    rse = SummarizedExperiment(assays=assays, rowRanges=rowRanges, colData=colData, metadata=metadata)
+    new("GenoSet", rse)
 }
 
 ##' as("SummarizedExperiment", "GenoSet")

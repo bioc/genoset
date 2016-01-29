@@ -1,5 +1,5 @@
 library(RUnit)
-#library(genoset)
+library(genoset)
 
 ### TO DO
 # tidy up genome order tests
