@@ -51,6 +51,7 @@
 ##' genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 ##' @rdname genoPlot-methods
+##' @importFrom graphics plot
 setGeneric("genoPlot", function(x,y,...) { standardGeneric("genoPlot") } )
 
 ##' @rdname genoPlot-methods

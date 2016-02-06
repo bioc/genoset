@@ -71,16 +71,26 @@ GenoSet <- function(rowRanges, assays, colData, metadata=list()) {
         assays <- Assays(assays)
     }
     rse = SummarizedExperiment(assays=assays, rowRanges=rowRanges, colData=colData, metadata=metadata)
-    new("GenoSet", rse)
+    as(rse,"GenoSet") # new("GenoSet", rse) generates an infinite recursion
 }
 
 ##' as("SummarizedExperiment", "GenoSet")
 ##'
 ##' @name as
 ##' @rdname genoset-methods
+##' @examples
+##' test.sample.names = LETTERS[11:13]
+##' probe.names = letters[1:10]
+##' assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)))
+##' rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
+##' colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
+##' rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
+##' gs = GenoSet(rowRanges, assays, colData)
+##' as(gs,"SummarizedExperiment")
+##' as(gs,"RangedSummarizedExperiment")
 setAs(from="GenoSet",to="SummarizedExperiment",
       def=function(from) {
-          SummarizedExperiment(assays=assays(from), rowRanges=rowRanges(from), colData=colData(from), metadata=metadata(from))
+          as(from,"RangedSummarizedExperiment")
       })
 
 #############

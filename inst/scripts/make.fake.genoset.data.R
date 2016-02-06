@@ -1,20 +1,20 @@
 #!/usr/bin/env Rscript
 
-library(genoset)
 library(GenomicRanges)
 library(SummarizedExperiment)
+library(genoset)
 
 sample.names = LETTERS[11:13]
 probe.names = paste("p", 1:1000, sep="")
 num.samples = length(sample.names)
 num.probes  = length(probe.names)
 
-locData.gr = GRanges(
+locs = GRanges(
   ranges= IRanges(
     start=c(seq(from=125e6,by=3e4,length=400), seq(from=1,length=400,by=3.25e4),seq(from=30e6,length=200,by=3e4)),width=1,names=probe.names),
   seqnames=factor(c(rep("chr8",400), rep("chr12",400),rep("chr17",200)),levels=c("chr8","chr12","chr17")))
 
-genome(locData.gr) = "hg19"
+genome(locs) = "hg19"
 fake.baf  = sample(c(0,0.5,1), length(probe.names), replace=TRUE) + rnorm(length(probe.names),0,0.01)
 fake.baf[ fake.baf > 1 ] = fake.baf[ fake.baf > 1 ] - 1
 fake.baf[ fake.baf < 0 ] = fake.baf[ fake.baf < 0 ] + 1
@@ -31,6 +31,6 @@ fake.pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(sample.na
 fake.cn = fake.lrr
 
 assays = Assays(list(lrr=fake.lrr, baf=fake.baf))
-genoset.ds = GenoSet( locData.gr, assays, fake.pData )
+genoset.ds = GenoSet( locs, assays, fake.pData )
 
-save(locData.gr, fake.baf, fake.lrr, fake.cn, fake.pData, genoset.ds, file="genoset.RData", compression_level=9, compress="xz")
+save(locs, fake.baf, fake.lrr, fake.cn, fake.pData, genoset.ds, file="genoset.RData", compression_level=9, compress="xz")
