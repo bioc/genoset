@@ -37,10 +37,10 @@ one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, s
 }
 \description{
 Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
-Rle or a RleDataFrame and the locData both from a GenoSet object
+Rle or a RleDataFrame and the rowRanges both from a GenoSet object
 and makes a list of data.frames each like the result of CBS's
 segment.  Note the loc.start and loc.stop will correspond
-exactly to probe locations in locData and the input to
+exactly to probe locations in rowRanges and the input to
 segs2RleDataFrame are not necessarily so. For a DataFrame, the
 argument \code{stack} combines all of the individual data.frames
 into one large data.frame and adds a "Sample" column of sample ids.
@@ -52,12 +52,12 @@ and this is used in the DataFrame version.
 }
 \examples{
   data(genoset)
-  seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-  df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+  seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  df = segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
   genoset.ds[ , , "lrr.segs"] = df
-  segTable( df, locData(genoset.ds) )
-  segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
-  segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
+  segTable( df, rowRanges(genoset.ds) )
+  segTable( genoset.ds[ , , "lrr.segs"], rowRanges(genoset.ds) )
+  segTable( genoset.ds[ , 1, "lrr.segs"], rowRanges(genoset.ds), colnames(genoset.ds)[1] )
 }
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}},

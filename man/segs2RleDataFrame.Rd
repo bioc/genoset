@@ -9,7 +9,7 @@ segs2RleDataFrame(seg.list, locs)
 \arguments{
 \item{seg.list}{list, list of data frames, one per sample, each is result from CBS}
 
-\item{locs}{locData from a GenoSet object}
+\item{locs}{rowRanges from a GenoSet object}
 }
 \value{
 RleDataFrame with nrows same as locs and one column for each sample
@@ -22,8 +22,8 @@ Take table of segments from CBS, convert DataTable of Rle objects for each sampl
 }
 \examples{
   data(genoset)
-  seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-  segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+  seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}},

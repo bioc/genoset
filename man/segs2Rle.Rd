@@ -9,7 +9,7 @@ segs2Rle(segs, locs)
 \arguments{
 \item{segs}{data.frame of segments, formatted as output of segment function from DNAcopy package}
 
-\item{locs}{GenomicRanges, like locData slot of a GenoSet}
+\item{locs}{GenomicRanges, like rowRanges slot of a GenoSet}
 }
 \value{
 Rle with run lengths and run values covering all features in the data set.
@@ -23,8 +23,8 @@ and the location of each feature, we can make a Rle that represents all features
 }
 \examples{
   data(genoset)
-  segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-  segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
+  segs = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  segs2Rle( segs[[1]], rowRanges(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
 \seealso{
 Other "segmented data": \code{\link{bounds2Rle}},

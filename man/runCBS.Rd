@@ -11,7 +11,7 @@ runCBS(data, locs, return.segs = FALSE, n.cores = 1, smooth.region = 2,
 \arguments{
 \item{data}{numeric matrix with continuous data in one or more columns}
 
-\item{locs}{GenomicRanges, like locData slot of GenoSet}
+\item{locs}{GenomicRanges, like rowRanges slot of GenoSet}
 
 \item{return.segs}{logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.}
 

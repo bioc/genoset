@@ -32,7 +32,7 @@
 ##' 
 ##' @param x GenoSet (or descendant) or GRanges
 ##' @param y numeric or Rle
-##' @param locs GRanges, like locData slot of GenoSet
+##' @param locs GRanges, like rowRanges slot of GenoSet
 ##' @param chr Chromosome to plot, NULL by default for full genome
 ##' @param add Add plot to existing plot
 ##' @param xlab character, label for x-axis of plot
@@ -48,7 +48,7 @@
 ##' @examples
 ##' data(genoset)
 ##' genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
-##' genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
+##' genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=rowRanges(genoset.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 ##' @rdname genoPlot-methods
 ##' @importFrom graphics plot
@@ -120,7 +120,7 @@ setMethod("genoPlot", signature(x="GenoSetOrGenomicRanges",y="ANY"), function(x,
 ##' Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
 ##'
 ##' @title Label axis with base pair units
-##' @param locs GenomicRanges to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.
+##' @param locs GenomicRanges to be used to draw chromosome boundaries, if necessary.  Usually rowRanges slot from a GenoSet.
 ##' @param side integer side of plot to put axis
 ##' @param log logical Is axis logged?
 ##' @param do.other.side logical, label non-genome side with data values at tick marks?
@@ -130,8 +130,8 @@ setMethod("genoPlot", signature(x="GenoSetOrGenomicRanges",y="ANY"), function(x,
 ##' @examples
 ##'   data(genoset)
 ##'   genoPlot(genoPos(genoset.ds), genoset.ds[,1, "baf"])
-##'   genomeAxis( locs=locData(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
-##'   genomeAxis( locs=locData(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
+##'   genomeAxis( locs=rowRanges(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
+##'   genomeAxis( locs=rowRanges(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
 ##'   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 genomeAxis <- function(locs=NULL, side=1, log=FALSE, do.other.side=TRUE) {
   if (is.null(locs)) {

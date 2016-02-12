@@ -117,7 +117,8 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
-            if (! missing(k)) {
+              if (! missing(k)) {
+                  browser()
               if (missing(i) && missing(j)) {
                 return(assay(x,k)) # Necessary to get whole big.matrix object
               } else if (missing(i)) {

@@ -13,14 +13,14 @@
 ##' and the location of each feature, we can make a Rle that represents all features.
 ##'
 ##' @param segs data.frame of segments, formatted as output of segment function from DNAcopy package
-##' @param locs GenomicRanges, like locData slot of a GenoSet
+##' @param locs GenomicRanges, like rowRanges slot of a GenoSet
 ##' @return Rle with run lengths and run values covering all features in the data set.
 ##' @export segs2Rle
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   segs = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-##'   segs2Rle( segs[[1]], locData(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
+##'   segs = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+##'   segs2Rle( segs[[1]], rowRanges(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 segs2Rle <- function(segs, locs) {
   if ("num.mark" %in% colnames(segs)) {
     if (sum(segs[,"num.mark"]) == nrow(locs)) {
@@ -40,14 +40,14 @@ segs2Rle <- function(segs, locs) {
 ##' Take table of segments from CBS, convert DataTable of Rle objects for each sample.
 ##' @title CBS segments to probe matrix
 ##' @param seg.list list, list of data frames, one per sample, each is result from CBS
-##' @param locs locData from a GenoSet object
+##' @param locs rowRanges from a GenoSet object
 ##' @return RleDataFrame with nrows same as locs and one column for each sample
 ##' @export segs2RleDataFrame
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-##'   segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+##'   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+##'   segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
@@ -75,10 +75,10 @@ segs2Granges <- function(segs) {
 ##' Convert Rle objects to tables of segments
 ##'
 ##' Like the inverse of segs2Rle and segs2RleDataFrame. Takes a
-##' Rle or a RleDataFrame and the locData both from a GenoSet object
+##' Rle or a RleDataFrame and the rowRanges both from a GenoSet object
 ##' and makes a list of data.frames each like the result of CBS's
 ##' segment.  Note the loc.start and loc.stop will correspond
-##' exactly to probe locations in locData and the input to
+##' exactly to probe locations in rowRanges and the input to
 ##' segs2RleDataFrame are not necessarily so. For a DataFrame, the
 ##' argument \code{stack} combines all of the individual data.frames
 ##' into one large data.frame and adds a "Sample" column of sample ids.
@@ -99,12 +99,12 @@ segs2Granges <- function(segs) {
 ##' @family "segmented data"
 ##' @examples
 ##'   data(genoset)
-##'   seg.list = runCBS( genoset.ds[, , "lrr"], locData(genoset.ds), return.segs=TRUE )
-##'   df = segs2RleDataFrame( seg.list, locData(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
+##'   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+##'   df = segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##'   genoset.ds[ , , "lrr.segs"] = df
-##'   segTable( df, locData(genoset.ds) )
-##'   segTable( genoset.ds[ , , "lrr.segs"], locData(genoset.ds) )
-##'   segTable( genoset.ds[ , 1, "lrr.segs"], locData(genoset.ds), colnames(genoset.ds)[1] )
+##'   segTable( df, rowRanges(genoset.ds) )
+##'   segTable( genoset.ds[ , , "lrr.segs"], rowRanges(genoset.ds) )
+##'   segTable( genoset.ds[ , 1, "lrr.segs"], rowRanges(genoset.ds), colnames(genoset.ds)[1] )
 ##' @docType methods
 ##' @rdname segTable-methods
 setGeneric("segTable", function(object, ...) standardGeneric("segTable"))
@@ -309,7 +309,7 @@ fixSegNAs <- function(x,max.na.run=3) {
 ##' @title Run CBS Segmentation
 ##' @aliases runCBS
 ##' @param data numeric matrix with continuous data in one or more columns
-##' @param locs GenomicRanges, like locData slot of GenoSet
+##' @param locs GenomicRanges, like rowRanges slot of GenoSet
 ##' @param return.segs logical, if true list of segment data.frames return, otherwise a DataFrame of Rle vectors. One Rle per sample.
 ##' @param n.cores numeric, number of cores to ask mclapply to use
 ##' @param smooth.region number of positions to left and right of individual positions to consider when smoothing single point outliers

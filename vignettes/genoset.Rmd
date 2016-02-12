@@ -21,28 +21,42 @@ BiocStyle::markdown()
 ```
 
 # Introduction
-The `r Biocpkg("genoset")` package offers an extension of the familiar Bioconductor `eSet` object for genome
-assays: the `GenoSet` class. The `GenoSet`
-class adds location meta-data to the existing feature and phenotype meta-data. 
-This 'locData' allows for various queries, summaries, plots and subsetting operations 
-by genome position. The genoset package also provides a number of convenient functions for working 
-with data associated with with genome locations.
+The `r Biocpkg("genoset")` package offers an extension of the familiar
+Bioconductor `RangedSummarizedExperiment` object for genome assays:
+the `GenoSet` class. The `GenoSet` class provides additional API
+features (e.g. indexing by genome position). The genoset package also
+provides a number of convenient functions for working with data
+associated with with genome locations.
+
 
 ## Creating Objects
 
 In typical Bioconductor style, `GenoSet` objects, and derivatives, can be created using the functions
-with the same name.  Let's load up some fake data to experiment
-with. Don't worry too much about how the fake data gets made. Notice how assayData
-elements can be matrices or `RleDataFrames`. They can also
+with the same name.  Let's create some fake data to experiment
+with. Don't worry too much about how the fake data gets made. Notice
+how assays  can be matrices or `RleDataFrames`. They can also
 be `BigMatrix` or `BigMatrixFactor` objects (from `r Biocpkg("bigmemoryExtras")`).
 
 ```{r objectcreation}
 library(genoset)
-data(genoset)
-gs = GenoSet( locData=locData.gr, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
+
+locs = GRanges(
+  ranges= IRanges(
+    start=c(seq(from=125e6,by=3e4,length=400), seq(from=1,length=400,by=3.25e4),seq(from=30e6,length=200,by=3e4)),width=1,names=probe.names),
+  seqnames=factor(c(rep("chr8",400), rep("chr12",400),rep("chr17",200)),levels=c("chr8","chr12","chr17")))
+
+fake.cn = matrix(c(
+  c(rnorm(200,.4,0.05),rnorm(200,.2,0.05),rnorm(200,0.23,0.05),rnorm(200,.15,0.05),rnorm(200,2.,0.05)), 
+  c(rnorm(200,0,0.05), rnorm(200,3,0.05),rnorm(200,14,0.05),rnorm(200,.1,0.05),rnorm(200,-0.05,0.05)),
+  c(rnorm(200,.1,0.05),rnorm(200,1,0.05),rnorm(200,-.5,0.05),rnorm(200,3,0.05),rnorm(200,3,0.05))
+  ),
+  nrow=num.probes,ncol=num.samples,dimnames=list(probe.names,sample.names))
+fake.pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(sample.names,letters[1:5])))
+
+gs = GenoSet( locData=locs, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
 gs
 
-rle.ds = GenoSet( locData=locData.gr,
+rle.ds = GenoSet( locData=locs,
   cn = fake.cn,
   cn.segments=RleDataFrame(
     K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ),
@@ -64,8 +78,8 @@ Note that `names` lists the data matrices.
 
 ## Accessing Genome Information
 Now lets look at some special functions for accessing genome
-information from a genoset object. These functions are all defined for `GenoSet`, `RangedData`
-and `GRanges` objects. We can access per-feature information
+information from a genoset object. These functions are all defined for
+`GenoSet` and `GenomicRanges` objects. We can access per-feature information
 as well as summaries of chromosome boundaries in base-pair or
 row-index units.
 
@@ -96,7 +110,7 @@ head(genoPos(gs))
 ``` 
 
 ## Genome Order
-`GenoSet`, `GRanges`, and `RangedData` objects can be set to, and checked for, genome
+`GenoSet` and `GenomicRanges` objects can be set to, and checked for, genome
 order. Weak genome order requires that features be ordered within each
 chromosome. Strong genome order requires a certain order of chromosomes
 as well. Features must be ordered so that features from the same
@@ -104,8 +118,7 @@ chromosome are in contiguous blocks.
 
 Certain methods on `GenoSet` objects expect the rows to be in genome
 order. Users are free to rearrange rows within
-chromosome as they please, although if the locData is a `RangedData`,
- mixing rows from different chromosomes is not possible.
+chromosome as they please.
 
 The proper order of chromosomes is desirable for full-genome plots and is specified by the
 `chrOrder` function. The object creation method `Genoset` creates objects in strict genome order. 
@@ -264,7 +277,7 @@ takes a while, so we don't do that by default.
 Analyses usually start with SNP or probeset level data. Often it is desirable to get
 summaries of assayData matrices over an arbitrary set of ranges, like
 exons, genes or cytobands. The function `rangeSampleMeans` serves this
-purpose. Given a `RangedData` or `GRanges` of arbitrary genome ranges and a
+purpose. Given a `GenomicRanges` of arbitrary genome ranges and a
 `GenoSet` object, `rangeSampleMeans` will return a matrix of values
 with a row for each range. 
 
@@ -301,7 +314,7 @@ Genoset has some handy functions for plotting data along the genome.
 Segmented data ``knows'' it should be plotted as lines, rather than
 points. One often wants to plot just one chromosome, so a convenience
 argument for chromosome subsetting is provided. Like `plot`, `genoPlot` plots x against y. 
-'x' can be some form of location data, like a `GenoSet`, `RangedData`, or`GRanges`. 'y' is some 
+'x' can be some form of location data, like a `GenoSet` or `GenomicRanges`. 'y' is some 
 form of data along those coordinates, like a numeric vector or `Rle`. `genoPlot` marks 
 chromosome boundaries and labels positions in ``bp'', ``kb'', ``Mb'', 
 or ``Gb'' units as appropriate.
@@ -337,7 +350,14 @@ suggested for Affymetrix arrays and 0.95 for Illumina arrays, following Staaf, e
 Return data as a matrix:
 
 ```{r mbafcutoff}
-baf.ds = GenoSet( locData=locData.gr, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+fake.baf  = sample(c(0,0.5,1), length(probe.names), replace=TRUE) + rnorm(length(probe.names),0,0.01)
+fake.baf[ fake.baf > 1 ] = fake.baf[ fake.baf > 1 ] - 1
+fake.baf[ fake.baf < 0 ] = fake.baf[ fake.baf < 0 ] + 1
+hets = fake.baf < 0.75 & fake.baf > 0.25
+fake.baf[ 101:200 ][ hets[101:200] ] = fake.baf[ 101:200 ][ hets[101:200] ] + rep(c(-0.2,0.2),50)[hets[101:200]]
+fake.baf = matrix(fake.baf,nrow=num.probes,ncol=num.samples,dimnames=list(probe.names,sample.names))
+
+baf.ds = GenoSet( locData=locs, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
 baf.ds[, , "mbaf"] = baf2mbaf(baf.ds[, , "baf"], hom.cutoff = 0.90)
 ``` 
 
@@ -402,7 +422,7 @@ gain.freq = rowMeans(gain.mat,na.rm=TRUE)
 GISTIC (by Behroukhim and Getz of the Broad Institute) is the standard 
 method for assessing significance of such summaries. You'll find 
 `segTable` convenient for getting your data formatted for input. I 
-find it convenient to load GISTIC output as a RangedData for 
+find it convenient to load GISTIC output as a `GRanges` for 
 intersection with gene locations.
 
 # Big Data and bigmemoryExtras
