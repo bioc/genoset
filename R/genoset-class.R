@@ -133,7 +133,9 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY"),
                   i = unlist(x@rowRanges %over% i)
               }
               if (missing(k)) {
-                  callNextMethod(x,i,j,...,drop=drop)
+                  rval = callNextMethod(x,i,j,...,drop=drop)
+                  rval = as(rval,"GenoSet")  # Grr
+                  return(rval)
               } else {
                   if (missing(i) && missing(j)) {
                       return(assay(x,k))
@@ -305,7 +307,8 @@ setMethod("chrInfo", signature(object="GenoSetOrGenomicRanges"),
 ##' @return PartitioningByEnd
 ##' @export 
 chrPartitioning <- function(object) {
-    ends = structure( end(seqnames(object)), names=seqlevels(object) )
+    rle = Rle(seqnames(object)) # Redundant in some cases
+    ends = structure( cumsum(runLength(rle)), names=as.character(runValue(rle)) )
     return(PartitioningByEnd(ends))
 }
 
@@ -321,7 +324,7 @@ chrPartitioning <- function(object) {
 ##' @return data.frame with "first" and "last" columns
 ##' @export chrIndices
 ##' @examples
-##'   data(genoset,package="genoset")
+##'   data(genposet,package="genoset")
 ##'   chrIndices(genoset.ds)
 ##'   chrIndices(rowRanges(genoset.ds))  # The same
 ##' @rdname chrIndices-methods
@@ -333,7 +336,8 @@ setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
               partitions = chrPartitioning(object)
               chr.first = start(partitions)
               chr.last = end(partitions)
-            chr.info = matrix(c(chr.first, chr.last, chr.first-1), ncol=3,nrow=length(chr.first), dimnames=list(names(partitions),c("first","last","offset")))
+              chr.info = matrix(c(chr.first, chr.last, chr.first-1), ncol=3,nrow=length(chr.first),
+                                dimnames=list(names(partitions),c("first","last","offset")))
             if (!is.null(chr)) {
               if (! chr %in% rownames(chr.info)) { stop("Must specify a valid chromosome name in chrIndices.\n") }
               return( seq.int( chr.info[chr,"first"], chr.info[chr,"last"]) )

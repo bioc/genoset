@@ -84,7 +84,7 @@ test_gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( chrIndices( point.rowRanges ), chrIndices( gs ) )
   checkEquals( chrIndices( point.rowRanges ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
   checkEquals( chrIndices( point.rowRanges ), chrIndices(point.rowRanges.gr) )
-#  checkEquals( chrIndices( point.rowRanges[1:6,] ), chrIndices(point.rowRanges.gr)[1:2,], "Empty levels ignored" )
+  checkEquals( chrIndices( point.rowRanges[1:6,] ), chrIndices(point.rowRanges.gr)[1:2,], "Empty levels ignored" )
   checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
   checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
 }
