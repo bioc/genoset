@@ -10,7 +10,7 @@ basic.rle.df = RleDataFrame(
   K = Rle(c(5.3,2.3,1.20),c(4,2,4)),
   L = Rle(c(1.1,1.4,2.2,3.3,0.5),c(1,3,2,2,2)),
   M = Rle(c(3.3,4.3,4.3,6.3,7.3),c(1,3,1,1,4)),
-    row.names=rownames(locData.gr))
+    row.names=names(locData.gr))
 
 basic.segs = list(
   K = data.frame( ID = "K", chrom = factor(c("chr1","chr3","chrX"),levels=chrNames(locData.gr)), loc.start = c(1,1,1), loc.end = c(10,10,10),

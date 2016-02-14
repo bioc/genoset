@@ -96,6 +96,8 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ### It seems that some setters inherited from SummarizedExpement drop the GenoSet class to RangedSummarizedExperiment
 
 ##' @rdname genoset-methods
+##' @param ... extra args
+##' @param value incoming value for replacement methods
 ##' @export
 setMethod("rowRanges<-", "GenoSet",
           function (x, ..., value) {
@@ -324,7 +326,7 @@ chrPartitioning <- function(object) {
 ##' @return data.frame with "first" and "last" columns
 ##' @export chrIndices
 ##' @examples
-##'   data(genposet,package="genoset")
+##'   data(genoset,package="genoset")
 ##'   chrIndices(genoset.ds)
 ##'   chrIndices(rowRanges(genoset.ds))  # The same
 ##' @rdname chrIndices-methods

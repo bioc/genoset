@@ -24,6 +24,10 @@ GenoSet(rowRanges, assays, colData, metadata = list())
 \item{metadata}{a list of any other data you want to attach to the GenoSet object}
 
 \item{x}{A GenoSet}
+
+\item{...}{extra args}
+
+\item{value}{incoming value for replacement methods}
 }
 \value{
 A GenoSet object
