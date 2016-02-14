@@ -6,15 +6,12 @@ output:
   BiocStyle::html_document:
     toc: true
     toc_depth: 2
-knit: rmarkdown::render
+vignette: >
+  %\VignetteIndexEntry{genoset}
+  %\VignetteDepends{}
+  %\VignetteKeywords{genoset}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
-
-<!--
-%\VignetteIndexEntry{genoset}
-%\VignetteDepends{}
-%\VignetteKeywords{genoset}
-%\VignetteEngine{rmarkdown::render}
--->
 
 ```{r style, echo = FALSE, results='hide'}
 BiocStyle::markdown()
