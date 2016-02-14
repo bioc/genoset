@@ -27,13 +27,15 @@ test_creation <- function() {
         ),
     colData=colData)
   
-  misordered.genoset = GenoSet( rowRanges=locs, assays=list(cn=cn[ rev(probe.names), ], foo=cn[ rev(probe.names),]), colData=colData[rev(test.sample.names),] )
+    checkException(
+        GenoSet( rowRanges=locs, assays=list(cn=cn[ rev(probe.names), ], foo=cn[ rev(probe.names),]),
+                colData=colData[rev(test.sample.names),]
+                ),
+        silent=TRUE
+        )
 
   checkTrue(validObject(tom),"Regular GenoSet")
   checkTrue(validObject(rle.genoset),"GenoSet with Rle data")
-  checkTrue(validObject(misordered.genoset),"Starting with some sample name and feature name misordering")
-#  checkTrue( identical(misordered.genoset[,,"cn"],cn) && identical(misordered.genoset[,,"foo"],cn))
-#  checkIdentical( colData, colData(misordered.genoset), "Misordered colData gets fixed" )
 }
 
 test_gs.shared.api.and.getting.genome.info <- function() {
@@ -71,30 +73,20 @@ test_gs.shared.api.and.getting.genome.info <- function() {
   checkEquals( chrNames( point.rowRanges2 ), c("1","3","X") )
   gs2 = gs
   rowRanges(gs2) = point.rowRanges2
-  checkEquals( chrNames( gs2 ), c("1","3","X") )
   checkEquals( chrNames( point.rowRanges ), c("chr1","chr3","chrX") )
   checkEquals( lengths( point.rowRanges ), lengths( gs ) )
   checkEquals( lengths( point.rowRanges ), lengths( point.rowRanges.gr ) )
   checkEquals( chrInfo( point.rowRanges ), chrInfo( gs ) )
   checkEquals( chrInfo( point.rowRanges ), chrInfo( gr ) )
-#  checkEquals( chrInfo( point.rowRanges ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
-#  checkEquals( chrIndices( point.rowRanges, "chr3"), c(5,6) )
+  checkEquals( chrInfo( point.rowRanges ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
+  checkEquals( chrIndices( point.rowRanges, "chr3"), c(5,6) )
   checkException( chrIndices( point.rowRanges, "chrFOO"), silent=TRUE )
-#  checkEquals( chrIndices( point.rowRanges ), chrIndices( gs ) )
-#  checkEquals( chrIndices( point.rowRanges ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
+  checkEquals( chrIndices( point.rowRanges ), chrIndices( gs ) )
+  checkEquals( chrIndices( point.rowRanges ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
   checkEquals( chrIndices( point.rowRanges ), chrIndices(point.rowRanges.gr) )
 #  checkEquals( chrIndices( point.rowRanges[1:6,] ), chrIndices(point.rowRanges.gr)[1:2,], "Empty levels ignored" )
   checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
   checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
-
-  # Universe
-  gr.uni = GRanges(IRanges(start=1:4,width=1),seqnames=c("chr1","chr2","chr3","chr4"))
-  genome(gr.uni) = c("hg18","hg19","hg19","hg19")
-  genome(gr.uni) = c("hg19")
-  geno = rep("hg19", 3)
-  rowRanges(gs) = gr
-  genome(gs) = geno
-  checkEquals(geno, genome(gs), "Get and set genome of GenoSet", checkNames=FALSE)
 }
 
 test_subset <- function() {
@@ -168,7 +160,6 @@ test_subset <- function() {
   
   # Subsetting assayData / extracting
   checkEquals( ds[ 5, 3, "baf"], assay(ds,"baf")[5,3])
-  checkEquals( ds[ 5, 3, 1], assay(ds,"baf")[5,3])
   checkEquals( ds[ , , "lrr"], assay(ds,"lrr"), "Extract whole matrix" )
   
   # Test subsetting by location

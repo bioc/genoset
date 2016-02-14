@@ -5,9 +5,12 @@
 \alias{GenoSet}
 \alias{as}
 \alias{lengths,GenoSet-method}
+\alias{rowRanges<-,GenoSet,ANY-method}
 \title{Create a GenoSet object}
 \usage{
 GenoSet(rowRanges, assays, colData, metadata = list())
+
+\S4method{rowRanges}{GenoSet,ANY}(x, ...) <- value
 
 \S4method{lengths}{GenoSet}(x)
 }

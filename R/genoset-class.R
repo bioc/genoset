@@ -90,6 +90,20 @@ setAs(from="GenoSet",to="SummarizedExperiment",
           as(from,"RangedSummarizedExperiment")
       })
 
+#####################
+# Getters and Setters
+#####################
+### It seems that some setters inherited from SummarizedExpement drop the GenoSet class to RangedSummarizedExperiment
+
+##' @rdname genoset-methods
+##' @export
+setMethod("rowRanges<-", "GenoSet",
+          function (x, ..., value) {
+              rowRanges(x) = value
+              x = as(x,"GenoSet")
+              return(x)
+          })
+
 #############
 # Sub-setters
 #############
@@ -139,8 +153,11 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY"),
 ##' @rdname genoset-subset
 setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
           function(x,i,j,k,value) {
-              if ( missing(k)) {
+              if (missing(k)) {
                   stop("Must specify k to replace data in the GenoSet")
+              }
+              if (!missing(i) && is(i,"GenomicRanges")) {
+                  i = unlist(x@rowRanges %over% i)
               }
               if (missing(i) && missing(j)) {
                   if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
@@ -148,7 +165,14 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
                   }
                   assay(x,k) = value
               } else {
-                  assay(x,k)[i,j] = value
+                  if (missing(i)) {
+
+                      assay(x,k)[,j] = value
+                  } else if (missing(j)) {
+                      assay(x,k)[i,] = value
+                  } else {
+                      assay(x,k)[i,j] = value
+                  }
               }
               x = as(x,"GenoSet")  # Arg, why does it become a RangedSummarizedExperiment?
               return(x)
