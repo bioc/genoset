@@ -4,12 +4,10 @@
 \name{[,GenoSet,ANY-method}
 \alias{[,GenoSet,ANY-method}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
-\alias{assays<-,GenoSet,ANY-method}
 \title{Subset a GenoSet}
 \usage{
-\S4method{[}{GenoSet,ANY}(x, i, j, k, ..., drop = FALSE)
-
-\S4method{assays}{GenoSet,ANY}(x, ..., withDimnames = TRUE) <- value
+\S4method{[}{GenoSet,ANY}(x, i, j, k, ..., withDimnames = TRUE,
+  drop = FALSE)
 
 \S4method{[}{GenoSet,ANY,ANY,ANY}(x, i, j, k) <- value
 }
@@ -23,6 +21,8 @@
 \item{k}{character or integer}
 
 \item{...}{additional subsetting args}
+
+\item{withDimnames}{scalar logical, put dimnames on returned assay?}
 
 \item{drop}{logical drop levels of space factor?}
 

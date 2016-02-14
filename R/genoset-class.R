@@ -103,6 +103,7 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ##' @param i character, GRanges, logical, integer
 ##' @param j character, logical, integer
 ##' @param k character or integer
+##' @param withDimnames scalar logical, put dimnames on returned assay?
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
 ##' @examples
@@ -113,7 +114,7 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ##'   genoset.ds[ gr, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 ##' @rdname genoset-subset
 setMethod("[", signature=signature(x="GenoSet",i="ANY"),
-          function(x,i,j,k,...,drop=FALSE) {
+          function(x,i,j,k,...,withDimnames=TRUE,drop=FALSE) {
               if (!missing(i) && is(i,"GenomicRanges")) {
                   i = unlist(x@rowRanges %over% i)
               }
