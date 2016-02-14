@@ -28,7 +28,7 @@ in that it orders by chromsome and start position only,
 rather than chromsome, strand, start, and width.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   isGenomeOrder( rowRanges(genoset.ds) )
 }
 \seealso{

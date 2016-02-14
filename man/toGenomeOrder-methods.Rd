@@ -32,7 +32,7 @@ toGenomeOrder for GRanges differs from sort in that it orders by chromsome and s
 rather than chromsome, strand, start, and width.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   toGenomeOrder( genoset.ds, strict=TRUE )
   toGenomeOrder( genoset.ds, strict=FALSE )
   toGenomeOrder( rowRanges(genoset.ds) )

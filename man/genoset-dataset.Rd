@@ -1,30 +1,13 @@
 \name{genoset-datasets}
 \docType{data}
 \alias{genoset-datasets}
-\alias{fake.lrr}
-\alias{fake.baf}
-\alias{fake.cn}
-\alias{fake.pData}
 \alias{genoset.ds}
-\alias{locs}
-\title{Example GenoSet, BAFSet, and CNSet objects and the data to create them.}
-\description{Fake LRR, BAF, pData and location data were generated and saved as
-  fake.lrr, fake.cn, fake.baf, fake.pData and locData.rd. These were used to
-  construct the objects genoset.ds, baf.ds, and cn.ds}
-\usage{data(genoset)}
-\format{
-  \describe{
-    \item{fake.lrr}{A matrix with some randomly generated LRR (log2ratio copynumber) data}
-    \item{fake.cn}{A matrix with some randomly generated LRR (log2ratio copynumber) data}
-    \item{fake.baf}{A matrix with some randomly generated BAF (B-Allele
-      Frequency) data}
-    \item{fake.pData}{A data.frame of sample annotation to go with fake.lrr
-      and fake.baf}
-    \item{locs}{A GRanges object describing the genomic locations
-      of the probes in fake.baf and fake.lrr}
-    \item{genoset.ds}{A GenoSet object created with fake.lrr as the "foo"
-      element, locData.rd as the locData, and fake.pData as the phenoData}
-  }
+\title{Example GenoSet object}
+\description{A GenoSet object the 'baf' (B-Allele Frequency) and 'lrr' (Log-R Ratio)
+assay matrices. The 'lrr' assay matrix contains DNA copy number on the
+scale of tumor/ploidy and the 'baf' assay matrix contains data in the
+range 0 to 1 where 0 indicates the AA genotype, 0.5 indicates the AB
+genotype and 1 indicates the BB genotype.
 }
-\source{Fake data generated using rnorm and the like.}
+\source{Simulated data}
 \keyword{datasets}

@@ -3,13 +3,13 @@
 \docType{methods}
 \name{[,GenoSet,ANY-method}
 \alias{[,GenoSet,ANY-method}
-\alias{[,GenoSet,GenomicRanges-method}
 \alias{[<-,GenoSet,ANY,ANY,ANY-method}
+\alias{assays<-,GenoSet,ANY-method}
 \title{Subset a GenoSet}
 \usage{
 \S4method{[}{GenoSet,ANY}(x, i, j, k, ..., drop = FALSE)
 
-\S4method{[}{GenoSet,GenomicRanges}(x, i, j, ..., drop = FALSE)
+\S4method{assays}{GenoSet,ANY}(x, ..., withDimnames = TRUE) <- value
 
 \S4method{[}{GenoSet,ANY,ANY,ANY}(x, i, j, k) <- value
 }
@@ -32,7 +32,7 @@
 Subset a GenoSet
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
   genoset.ds[ , "K"]  # Sample called K
   gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep("chr17",7))

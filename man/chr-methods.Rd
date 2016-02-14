@@ -23,7 +23,7 @@ character vector of chromosome positions for each feature
 Get chromosome name for each feature.  Returns character.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
   chr(rowRanges(genoset.ds))  # The same
 }

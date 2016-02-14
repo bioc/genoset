@@ -27,7 +27,7 @@ a matched normal) are provided as the matrix 'calls' additional HOMs can be set 
 argument 'call.pairs' is used to match columns in 'calls' to columns in 'baf'.
 }
 \examples{
-   data(genoset)
+   data(genoset,package="genoset")
    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 )
    calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(rownames(genoset.ds),c("K","L")))
    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff

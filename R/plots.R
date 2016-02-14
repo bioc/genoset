@@ -46,7 +46,7 @@
 ##' @export genoPlot
 ##' @family "genome plots"
 ##' @examples
-##' data(genoset)
+##' data(genoset,package="genoset")
 ##' genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
 ##' genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=rowRanges(genoset.ds) ) # The same
 ##' genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
@@ -128,7 +128,7 @@ setMethod("genoPlot", signature(x="GenoSetOrGenomicRanges",y="ANY"), function(x,
 ##' @export genomeAxis
 ##' @family "genome plots"
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   genoPlot(genoPos(genoset.ds), genoset.ds[,1, "baf"])
 ##'   genomeAxis( locs=rowRanges(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
 ##'   genomeAxis( locs=rowRanges(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks

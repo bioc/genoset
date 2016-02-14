@@ -21,7 +21,7 @@ Get base positions of array features in bases counting from the start of the
 genome. Chromosomes are ordered numerically, when possible, then lexically.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   head(genoPos(genoset.ds))
   head(genoPos(rowRanges(genoset.ds)))  # The same
 }

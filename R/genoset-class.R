@@ -9,7 +9,7 @@
 ##' @aliases genoset genoset-package
 ##' @seealso genoset-datasets
 ##'
-##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList
+##' @importClassesFrom GenomicRanges GRanges GenomicRanges DelegatingGenomicRanges GNCList GPos
 ##' @importClassesFrom SummarizedExperiment SummarizedExperiment RangedSummarizedExperiment
 ##'
 ##' @importMethodsFrom GenomicRanges names "names<-" length width
@@ -63,12 +63,9 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' @family GenoSet
 ##' @rdname genoset-methods
 GenoSet <- function(rowRanges, assays, colData, metadata=list()) {
-    if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a subclass of 'GenomicRanges'.") }
+    if (! is(rowRanges,"GenomicRanges")) { stop("'rowRanges' must be a 'GenomicRanges' or one of its subclasses.") }
     if (!is(colData,"DataFrame")) {
         colData = as(colData,"DataFrame")
-    }
-    if (! is(assays,"Assays")) {
-        assays <- Assays(assays)
     }
     rse = SummarizedExperiment(assays=assays, rowRanges=rowRanges, colData=colData, metadata=metadata)
     as(rse,"GenoSet") # new("GenoSet", rse) generates an infinite recursion
@@ -109,63 +106,41 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ##' @param drop logical drop levels of space factor?
 ##' @param ... additional subsetting args
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
 ##'   genoset.ds[ , "K"]  # Sample called K
 ##'   gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep("chr17",7))
 ##'   genoset.ds[ gr, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 ##' @rdname genoset-subset
-setMethod("[", signature=signature(x="GenoSet",i="ANY",j="ANY"),
+setMethod("[", signature=signature(x="GenoSet",i="ANY"),
           function(x,i,j,k,...,drop=FALSE) {
-              if (! missing(k)) {
-                  browser()
-              if (missing(i) && missing(j)) {
-                return(assay(x,k)) # Necessary to get whole big.matrix object
-              } else if (missing(i)) {
-                return(assay(x,k)[,j])
-              } else if (missing(j)) {
-                return(assay(x,k)[i,])
-              } else {
-                return(assay(x,k)[i,j])
+              if (!missing(i) && is(i,"GenomicRanges")) {
+                  i = unlist(x@rowRanges %over% i)
               }
-            }
-            callNextMethod(x,i,j,...,drop=drop)
-          })
-
-##' @rdname genoset-subset
-setMethod("[", signature=signature(x="GenoSet", i="GenomicRanges", j="ANY"),
-          function(x,i,j,...,drop=FALSE) {
-            i = unlist(x@rowRanges %over% i)
-            callNextMethod(x,i,j,...,drop=drop)
+              if (missing(k)) {
+                  callNextMethod(x,i,j,...,drop=drop)
+              } else {
+                  rval = assay(x,k)[i,j]
+              }
           })
 
 ##' @param value incoming data for assay "k", rows "i" and cols "j"
 ##' @rdname genoset-subset
-setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
+setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
           function(x,i,j,k,value) {
-            if ( missing(k)) {
-              stop("Must specify k to replace data in the GenoSet")
-            }
-            if (missing(i) && missing(j)) {
-              if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
-                stop("Dimnames for incoming assay must match this genoset.\n")
+              if ( missing(k)) {
+                  stop("Must specify k to replace data in the GenoSet")
               }
-              assays(x,k) = value
+              if (missing(i) && missing(j)) {
+                  if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
+                      stop("Dimnames for incoming assay must match this genoset.\n")
+                  }
+                  assay(x,k) = value
+              } else {
+                  assay(x,k)[i,j] = value
+              }
+              x = as(x,"GenoSet") # This seems to be necessary for some reason
               return(x)
-            }
-            if (missing(i)) {
-              assay(x,k)[,j] = value
-              return(x)
-            }
-            if (is(i,"GenomicRanges")) {
-              i = unlist(rowRanges(x) %over% i)
-            }
-            if (missing(j)) {
-              assay(x,k)[i,] = value
-            } else {
-              assay(x,k)[i,j] = value
-            }
-            return(x)
           })
 
 ########################
@@ -178,7 +153,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY", j="ANY"),
 ##' @param object GRanges GenoSet
 ##' @return character vector of chromosome positions for each feature
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
 ##'   chr(rowRanges(genoset.ds))  # The same
 ##' @export chr
@@ -196,7 +171,7 @@ setMethod("chr", "GenomicRanges", function(object) { return(as.character(seqname
 ##' @return numeric vector of feature positions within a chromosome
 ##' @export pos
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   pos(genoset.ds)  # 1:10
 ##'   pos(rowRanges(genoset.ds))  # The same
 ##' @rdname pos-methods
@@ -213,7 +188,7 @@ setMethod("pos", "GenoSetOrGenomicRanges",
 ##' @param value return value of chrNames
 ##' @return character vector with names of chromosomes
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   chrNames(genoset.ds) # c("chr1","chr3","chrX")
 ##'   chrNames(rowRanges(genoset.ds))  # The same
 ##'   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
@@ -259,7 +234,7 @@ setMethod("chrNames<-", signature(object="GenomicRanges"),
 ##' @return list with start and stop position, by ordered chr
 ##' @export chrInfo
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   chrInfo(genoset.ds)
 ##'   chrInfo(rowRanges(genoset.ds))  # The same
 ##' @rdname chrInfo-methods
@@ -311,7 +286,7 @@ chrPartitioning <- function(object) {
 ##' @return data.frame with "first" and "last" columns
 ##' @export chrIndices
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   chrIndices(genoset.ds)
 ##'   chrIndices(rowRanges(genoset.ds))  # The same
 ##' @rdname chrIndices-methods
@@ -339,7 +314,7 @@ setMethod("chrIndices", signature(object="GenoSetOrGenomicRanges"),
 ##' @param object A GenoSet object or a GenomicRanges object
 ##' @return numeric position of each feature in whole genome units, in original order
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   head(genoPos(genoset.ds))
 ##'   head(genoPos(rowRanges(genoset.ds)))  # The same
 ##' @export genoPos

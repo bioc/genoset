@@ -25,7 +25,7 @@ locations. If chr is specified, the function will return a sequence
 of integers representing the row indices of features on that chromosome.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   chrIndices(genoset.ds)
   chrIndices(rowRanges(genoset.ds))  # The same
 }

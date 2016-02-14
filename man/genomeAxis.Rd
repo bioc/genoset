@@ -7,7 +7,7 @@
 genomeAxis(locs = NULL, side = 1, log = FALSE, do.other.side = TRUE)
 }
 \arguments{
-\item{locs}{GenomicRanges to be used to draw chromosome boundaries, if necessary.  Usually locData slot from a GenoSet.}
+\item{locs}{GenomicRanges to be used to draw chromosome boundaries, if necessary.  Usually rowRanges slot from a GenoSet.}
 
 \item{side}{integer side of plot to put axis}
 
@@ -25,10 +25,10 @@ Label an axis with base positions
 Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   genoPlot(genoPos(genoset.ds), genoset.ds[,1, "baf"])
-  genomeAxis( locs=locData(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
-  genomeAxis( locs=locData(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
+  genomeAxis( locs=rowRanges(genoset.ds) )  # Add chromosome names and boundaries to a plot assuming genome along x-axis
+  genomeAxis( locs=rowRanges(genoset.ds), do.other.side=FALSE ) # As above, but do not label y-axis with data values at tickmarks
   genomeAxis()           # Add nucleotide position in sensible units assuming genome along x-axis
 }
 \seealso{

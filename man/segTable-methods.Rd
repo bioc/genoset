@@ -51,7 +51,7 @@ For a Rle, the user can provide \code{locs} or \code{chr.ind},
 and this is used in the DataFrame version.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
   df = segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
   genoset.ds[ , , "lrr.segs"] = df

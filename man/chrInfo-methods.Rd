@@ -20,7 +20,7 @@ list with start and stop position, by ordered chr
 Provides a matrix of start, stop and offset, in base numbers for each chromosome.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   chrInfo(genoset.ds)
   chrInfo(rowRanges(genoset.ds))  # The same
 }

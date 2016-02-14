@@ -34,7 +34,7 @@ genoPlot(x, y, ...)
 
 \item{col}{character, color to plot lines or points}
 
-\item{locs}{GRanges, like locData slot of GenoSet}
+\item{locs}{GRanges, like rowRanges slot of GenoSet}
 
 \item{lwd}{numeric, line width for segment plots from an Rle}
 
@@ -75,9 +75,9 @@ Plot numeric location and a vector of Rle data. Uses lines for Rle runs.
 }
 }
 \examples{
-data(genoset)
+data(genoset,package="genoset")
 genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
-genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=locData(genoset.ds) ) # The same
+genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=rowRanges(genoset.ds) ) # The same
 genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 }
 \seealso{

@@ -121,7 +121,7 @@ gcCorrect <- function(ds, gc, retain.mean=TRUE) {
 ##' @param call.pairs list, names represent target samples for HOMs to set to NA. Values represent columns in "calls" matrix.
 ##' @return numeric matix of mBAF values
 ##' @examples
-##'    data(genoset)
+##'    data(genoset,package="genoset")
 ##'    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 )
 ##'    calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(rownames(genoset.ds),c("K","L")))
 ##'    mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
@@ -175,7 +175,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' @param bases character, alphabet to count, usually c("G", "C"), but "N" is useful too
 ##' @return numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}
 ##' @examples
-##  \dontrun{ data(genoset) }
+##  \dontrun{ data(genoset,package="genoset") }
 ##' \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
 ##' \dontrun{ gc = calcGC(genoset.ds, Hsapiens) }
 ##' @export calcGC

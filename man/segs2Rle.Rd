@@ -22,7 +22,7 @@ necessarily cover all features in every sample. Using the start and top position
 and the location of each feature, we can make a Rle that represents all features.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   segs = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
   segs2Rle( segs[[1]], rowRanges(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }

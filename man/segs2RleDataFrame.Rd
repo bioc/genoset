@@ -21,7 +21,7 @@ Given segments, make an RleDataFrame of Rle objects for each sample
 Take table of segments from CBS, convert DataTable of Rle objects for each sample.
 }
 \examples{
-  data(genoset)
+  data(genoset,package="genoset")
   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
   segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }

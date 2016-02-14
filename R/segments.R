@@ -18,7 +18,7 @@
 ##' @export segs2Rle
 ##' @family "segmented data"
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   segs = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
 ##'   segs2Rle( segs[[1]], rowRanges(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 segs2Rle <- function(segs, locs) {
@@ -45,13 +45,13 @@ segs2Rle <- function(segs, locs) {
 ##' @export segs2RleDataFrame
 ##' @family "segmented data"
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
 ##'   segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##' @family segments
 segs2RleDataFrame <- function(seg.list, locs) {
   rle.list = lapply(seg.list, segs2Rle, locs)
-  rle.data.frame = RleDataFrame(rle.list, row.names=rownames(locs))
+  rle.data.frame = RleDataFrame(rle.list, row.names=names(locs))
   return(rle.data.frame)
 }
 
@@ -98,7 +98,7 @@ segs2Granges <- function(segs) {
 ##' @export segTable
 ##' @family "segmented data"
 ##' @examples
-##'   data(genoset)
+##'   data(genoset,package="genoset")
 ##'   seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
 ##'   df = segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 ##'   genoset.ds[ , , "lrr.segs"] = df
