@@ -37,6 +37,11 @@ be `BigMatrix` or `BigMatrixFactor` objects (from `r Biocpkg("bigmemoryExtras")`
 ```{r objectcreation}
 library(genoset)
 
+sample.names = LETTERS[11:13]
+probe.names = paste("p", 1:1000, sep="")
+num.samples = length(sample.names)
+num.probes  = length(probe.names)
+
 locs = GRanges(
   ranges= IRanges(
     start=c(seq(from=125e6,by=3e4,length=400), seq(from=1,length=400,by=3.25e4),seq(from=30e6,length=200,by=3e4)),width=1,names=probe.names),
