@@ -99,9 +99,19 @@ setAs(from="GenoSet",to="SummarizedExperiment",
 ##' @param ... extra args
 ##' @param value incoming value for replacement methods
 ##' @export
-setMethod("rowRanges<-", "GenoSet",
-          function (x, ..., value) {
+setMethod("rowRanges<-", c("GenoSet"),
+          function(x, ..., value) {
               rowRanges(x) = value
+              x = as(x,"GenoSet")
+              return(x)
+          })
+
+##' @rdname genoset-methods
+##' @param force scalar logical, force setting?
+##' @export
+setMethod("seqlevels<-", "GenoSet",
+          function(x, force = FALSE, value) {
+              seqlevels(rowRanges(x),force=force) = value
               x = as(x,"GenoSet")
               return(x)
           })

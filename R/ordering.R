@@ -85,12 +85,7 @@ setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
 ##'   toGenomeOrder( rowRanges(genoset.ds) )
 ##' @docType methods
 ##' @family "genome ordering"
-##' @rdname toGenomeOrder-methods
-setGeneric("toGenomeOrder", function(ds, strict=TRUE) standardGeneric("toGenomeOrder"))
-
-##' @rdname toGenomeOrder-methods
-setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
-          function(ds, strict=TRUE) {
+toGenomeOrder <- function(ds, strict=TRUE) {
             if (strict == TRUE) {
               if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
                 seqlevels(ds) = chrOrder(seqlevels(ds))
@@ -101,11 +96,4 @@ setMethod("toGenomeOrder",signature=signature(ds="GRanges"),
               ds = ds[row.order,,drop=FALSE]
             }
             return(ds)
-          })
-
-##' @rdname toGenomeOrder-methods
-setMethod("toGenomeOrder", signature=signature(ds="GenoSet"),
-          function(ds,strict=TRUE) {
-            rowRanges(ds) = toGenomeOrder(rowRanges(ds),strict=strict) # rowRanges<- fixes row ordering in ds
-            return(ds)
-          })
+}

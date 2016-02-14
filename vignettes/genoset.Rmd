@@ -44,7 +44,8 @@ num.probes  = length(probe.names)
 
 locs = GRanges(
   ranges= IRanges(
-    start=c(seq(from=125e6,by=3e4,length=400), seq(from=1,length=400,by=3.25e4),seq(from=30e6,length=200,by=3e4)),width=1,names=probe.names),
+      start=c(seq(from=125e6,by=3e4,length=400), seq(from=1,length=400,by=3.25e4),
+              seq(from=30e6,length=200,by=3e4)),width=1,names=probe.names),
   seqnames=factor(c(rep("chr8",400), rep("chr12",400),rep("chr17",200)),levels=c("chr8","chr12","chr17")))
 
 fake.cn = matrix(c(
@@ -55,28 +56,26 @@ fake.cn = matrix(c(
   nrow=num.probes,ncol=num.samples,dimnames=list(probe.names,sample.names))
 fake.pData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(sample.names,letters[1:5])))
 
-gs = GenoSet( locData=locs, cn=fake.cn, pData=fake.pData, annotation="SNP6" )
+gs = GenoSet( rowRanges=locs, assays=list(cn=fake.cn), colData=fake.pData )
 gs
 
-rle.ds = GenoSet( locData=locs,
-  cn = fake.cn,
-  cn.segments=RleDataFrame(
-    K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ),
-    M=Rle(rep(1.1,1000)),row.names=rownames(fake.cn)),
-  pData=fake.pData,
-  annotation="SNP6"
+rle.ds = GenoSet( rowRanges=locs,
+                 assays=list(cn = fake.cn,
+                             cn.segments=RleDataFrame(
+                                 K=Rle(c(rep(1.5,300),rep(2.3,700))),L=Rle( c(rep(3.2,700),rep(2.1,300)) ),
+                                 M=Rle(rep(1.1,1000)),row.names=rownames(fake.cn))),
+                             colData=fake.pData
   )
+
 ``` 
 
 Let's have look at what's inside these objects.
 
 ```{r objectassaydata}
-names(rle.ds)
+names(assays(rle.ds))
 head( rle.ds[,,"cn"] )
 head( rle.ds[,,"cn.segments"] )
 ``` 
-
-Note that `names` lists the data matrices.
 
 ## Accessing Genome Information
 Now lets look at some special functions for accessing genome
@@ -97,12 +96,11 @@ and `genoPos` are defined as the floor of the average of each
 features start and end positions.
 
 ```{r accessgenomeinfo}
-head( locData(gs) )
+head( rowRanges(gs) )
 chrNames(gs)
 chrOrder(c("chr12","chr12","chrX","chr8","chr7","chrY"))
 chrInfo(gs)
 chrIndices(gs)
-elementNROWS(gs)
 
 head(chr(gs))
 head(start(gs))
@@ -172,7 +170,7 @@ typing, you can directly use a set of ranges to subset the
 assayDataElement.
 
 ```{r subsetassaydata}
-all( gs[ 1:4,1:2,"cn"] == assayDataElement(gs,"cn")[1:4,1:2] )
+all( gs[ 1:4,1:2,"cn"] == assay(gs,"cn")[1:4,1:2] )
 ``` 
 
 # Processing Data
@@ -220,13 +218,13 @@ cbs.segs = segment( cbs.cna )
 
 Or use the convenience function `runCBS`
 ```{r runCBS}
-gs[,,"cn.segs"] = runCBS(gs[,,"cn"],locData(gs))
+gs[,,"cn.segs"] = runCBS(gs[,,"cn"],rowRanges(gs))
 ``` 
 
 Try it with `r Biocpkg("parallel")`
 ```{r cbsmulticore,eval=FALSE}
 library(parallel)
-gs[,,"cn.segs"] = runCBS(gs[, , "cn"],locData(gs), n.cores=3)
+gs[,,"cn.segs"] = runCBS(gs[, , "cn"],rowRanges(gs), n.cores=3)
 gs[,,"cn.segs"][1:5,1:3]
 ``` 
 
@@ -251,13 +249,13 @@ the whole collection of samples.
 ```{r segments}
 head( gs[,,"cn.segs"] )
 
-segs = segTable( gs[,2,"cn.segs"], locData(gs) )
-list.of.segs = segTable( gs[,,"cn.segs"], locData(gs) )
-rbind.list.of.segs = segTable( gs[,,"cn.segs"], locData(gs), stack=TRUE )
-two.kinds.of.segs = segPairTable( gs[,2,"cn.segs"], gs[,3,"cn.segs"], locData(gs) )
+segs = segTable( gs[,2,"cn.segs"], rowRanges(gs) )
+list.of.segs = segTable( gs[,,"cn.segs"], rowRanges(gs) )
+rbind.list.of.segs = segTable( gs[,,"cn.segs"], rowRanges(gs), stack=TRUE )
+two.kinds.of.segs = segPairTable( gs[,2,"cn.segs"], gs[,3,"cn.segs"], rowRanges(gs) )
 
-rle = segs2Rle( segs, locData(gs) )
-rle.df = segs2RleDataFrame( list.of.segs, locData(gs) )
+rle = segs2Rle( segs, rowRanges(gs) )
+rle.df = segs2RleDataFrame( list.of.segs, rowRanges(gs) )
 
 bounds = matrix( c(1,3,4,6,7,10),ncol=2,byrow=TRUE)
 cn = c(1,3,2)
@@ -307,7 +305,7 @@ favorite genes from the subsetting example:
 
 Get the gene-level summary:
 <<genelevel, eval=TRUE>>=
-boundingIndicesByChr( gene.gr, locData(gs) )
+boundingIndicesByChr( gene.gr, rowRanges(gs) )
 rangeSampleMeans(gene.gr, gs, "cn.segs")
 ``` 
 
@@ -338,7 +336,7 @@ Plot data without a `GenoSet` object using numeric or `Rle` data:
 
 ```{r plotchrsimple, eval=FALSE}
 chr12.ds = gs[chr(gs) == "chr12",]
-genoPlot(pos(chr12.ds),chr12.ds[,1,"cn"],locs=locData(chr12.ds))  # Numeric data and location
+genoPlot(pos(chr12.ds),chr12.ds[,1,"cn"],locs=rowRanges(chr12.ds))  # Numeric data and location
 genoPlot(pos(chr12.ds),chr12.ds[,1,"cn.segs"],add=TRUE, col="red") # Rle data and numeric position
 ``` 
 
@@ -359,7 +357,7 @@ hets = fake.baf < 0.75 & fake.baf > 0.25
 fake.baf[ 101:200 ][ hets[101:200] ] = fake.baf[ 101:200 ][ hets[101:200] ] + rep(c(-0.2,0.2),50)[hets[101:200]]
 fake.baf = matrix(fake.baf,nrow=num.probes,ncol=num.samples,dimnames=list(probe.names,sample.names))
 
-baf.ds = GenoSet( locData=locs, lrr=fake.lrr, baf=fake.baf, pData=fake.pData, annotation="SNP6" )
+baf.ds = GenoSet( rowRanges=locs, assays=list(lrr=fake.cn, baf=fake.baf), colData=fake.pData )
 baf.ds[, , "mbaf"] = baf2mbaf(baf.ds[, , "baf"], hom.cutoff = 0.90)
 ``` 
 
@@ -387,8 +385,8 @@ as an RleDataFrame as only the ~1/1000 HET positions are being used
 and all those NA HOM positions will compress nicely.
 
 ```{r segment}
-baf.ds[,,"baf.segs"] = runCBS( baf.ds[, ,"mbaf"], locData(baf.ds) )
-baf.ds[,,"lrr.segs"] = runCBS( baf.ds[, , "lrr"], locData(baf.ds) )
+baf.ds[,,"baf.segs"] = runCBS( baf.ds[, ,"mbaf"], rowRanges(baf.ds) )
+baf.ds[,,"lrr.segs"] = runCBS( baf.ds[, , "lrr"], rowRanges(baf.ds) )
 ``` 
 
 ## Plots

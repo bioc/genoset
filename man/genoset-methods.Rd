@@ -6,11 +6,14 @@
 \alias{as}
 \alias{lengths,GenoSet-method}
 \alias{rowRanges<-,GenoSet,ANY-method}
+\alias{seqlevels<-,GenoSet-method}
 \title{Create a GenoSet object}
 \usage{
 GenoSet(rowRanges, assays, colData, metadata = list())
 
 \S4method{rowRanges}{GenoSet,ANY}(x, ...) <- value
+
+\S4method{seqlevels}{GenoSet}(x, force = FALSE) <- value
 
 \S4method{lengths}{GenoSet}(x)
 }
@@ -28,6 +31,8 @@ GenoSet(rowRanges, assays, colData, metadata = list())
 \item{...}{extra args}
 
 \item{value}{incoming value for replacement methods}
+
+\item{force}{scalar logical, force setting?}
 }
 \value{
 A GenoSet object
