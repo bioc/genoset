@@ -120,7 +120,17 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY"),
               if (missing(k)) {
                   callNextMethod(x,i,j,...,drop=drop)
               } else {
-                  rval = assay(x,k)[i,j]
+                  if (missing(i) && missing(j)) {
+                      return(assay(x,k))
+                  } else {
+                      if (missing(i)) {
+                          return(assay(x,k)[,j])
+                      } else if (missing(j)) {
+                          return(assay(x,k)[i,])
+                      } else {
+                          return(assay(x,k)[i,j])
+                      }
+                  }
               }
           })
 
@@ -139,7 +149,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
               } else {
                   assay(x,k)[i,j] = value
               }
-              x = as(x,"GenoSet") # This seems to be necessary for some reason
+              x = as(x,"GenoSet")  # Arg, why does it become a RangedSummarizedExperiment?
               return(x)
           })
 
