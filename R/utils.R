@@ -288,7 +288,11 @@ readGenoSet <- function(path) {
 ##' Performs the same action as do.call(rbind, list_of_dataframes), but dramatically faster. Part
 ##' of the speed comes from assuming that all of the data.frames have the same column names and
 ##' types. If desirved an additional factor column can be added that specifies the original list
-##' element associated with each row. The argument `element.colname` is used to 
+##' element associated with each row. The argument `element.colname` is used to name this column.
+##'
+##' For a list of 1000 data.frames with 884 rows and 12 columns `rbindDataframe` takes 0.553s and
+##' `do.call(rbind,x)` takes 327.304s, a 600X speedup. This pure-R solution is made possible by
+##' the lovely shallow copy features Michael Lawrence has added to base R.
 ##' @param dflist list of data.frames
 ##' @param element.colname scalar character, name for additional factor column giving the name
 ##' of the element of `dflist` corresponding to each row. `dflist` must be named to use this feature.
