@@ -113,3 +113,9 @@ test_modeCenter <- function() {
 test_lr2cn <- function() {
     checkEquals( lr2cn(c(-1, 0, 1)), c(1, 2, 4) )
 }
+
+test_rbindDataframe <- function() {
+    df = data.frame(a=letters,b=LETTERS,c=1:length(letters),d=factor(letters), stringAsFactors=FALSE)
+    df_list = lapply(paste0(letters,LETTERS), function(x) { return(df) })
+    checkEquals( rbindDataframe(df_list), do.call(rbind,df_list) )
+}
