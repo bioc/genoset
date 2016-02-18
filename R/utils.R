@@ -283,7 +283,18 @@ readGenoSet <- function(path) {
   return( object )
 }
 
-.simple_rbind_dataframe <- function(dflist, element.colname) {
+##' A fast method for concatenating data.frames
+##'
+##' Performs the same action as do.call(rbind, list_of_dataframes), but dramatically faster. Part
+##' of the speed comes from assuming that all of the data.frames have the same column names and
+##' types. If desirved an additional factor column can be added that specifies the original list
+##' element associated with each row. The argument `element.colname` is used to 
+##' @param dflist list of data.frames
+##' @param element.colname scalar character, name for additional factor column giving the name
+##' of the element of `dflist` corresponding to each row. `dflist` must be named to use this feature.
+##' @return data.frame
+##' @export
+rbindDataframe <- function(dflist, element.colname) {
   numrows = vapply(dflist, nrow, integer(1))
   if (!missing(element.colname)) {
     list.name.col = factor(rep(names(dflist), numrows), levels=names(dflist))
@@ -296,8 +307,7 @@ readGenoSet <- function(path) {
   big <- mylapply(inds,
                 function(x) {
                   myunlist(
-#                    mylapply(dflist, function(y) { y[[x]] }),
-                    mylapply(dflist, function(y) { .subset2(y, x) }),
+                    mylapply(dflist, function(y) { .subset2(y, x) }), # Probably [[ would be more appropriate
                     recursive=FALSE, use.names=FALSE)
                 })
   if (!missing(element.colname)) {

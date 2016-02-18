@@ -165,7 +165,7 @@ setMethod("segTable", signature(object="DataFrame"), function(object,locs,factor
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = .simple_rbind_dataframe(segs, "Sample")
+    segs.df = rbindDataframe(segs, "Sample")
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
@@ -272,7 +272,7 @@ setMethod("segPairTable", signature(x="DataFrame",y="DataFrame"), function(x,y,l
   if (stack == FALSE) {
     return(segs)
   } else {
-    segs.df = .simple_rbind_dataframe(segs, "Sample")
+    segs.df = rbindDataframe(segs, "Sample")
     if (factor.chr == TRUE) {
       chr.names = chrNames(locs)
       segs.df$chrom = factor(segs.df$chrom,levels=chr.names)
