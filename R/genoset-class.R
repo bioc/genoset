@@ -68,53 +68,8 @@ GenoSet <- function(rowRanges, assays, colData, metadata=list()) {
         colData = as(colData,"DataFrame")
     }
     rse = SummarizedExperiment(assays=assays, rowRanges=rowRanges, colData=colData, metadata=metadata)
-    as(rse,"GenoSet") # new("GenoSet", rse) generates an infinite recursion
+    new("GenoSet",rse)
 }
-
-##' as("SummarizedExperiment", "GenoSet")
-##'
-##' @name as
-##' @rdname genoset-methods
-##' @examples
-##' test.sample.names = LETTERS[11:13]
-##' probe.names = letters[1:10]
-##' assays=list(matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names)))
-##' rowRanges=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-##' colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
-##' rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
-##' gs = GenoSet(rowRanges, assays, colData)
-##' as(gs,"SummarizedExperiment")
-##' as(gs,"RangedSummarizedExperiment")
-setAs(from="GenoSet",to="SummarizedExperiment",
-      def=function(from) {
-          as(from,"RangedSummarizedExperiment")
-      })
-
-#####################
-# Getters and Setters
-#####################
-### It seems that some setters inherited from SummarizedExpement drop the GenoSet class to RangedSummarizedExperiment
-
-##' @rdname genoset-methods
-##' @param ... extra args
-##' @param value incoming value for replacement methods
-##' @export
-setMethod("rowRanges<-", c("GenoSet"),
-          function(x, ..., value) {
-              rowRanges(x) = value
-              x = as(x,"GenoSet")
-              return(x)
-          })
-
-##' @rdname genoset-methods
-##' @param force scalar logical, force setting?
-##' @export
-setMethod("seqlevels<-", "GenoSet",
-          function(x, force = FALSE, value) {
-              seqlevels(rowRanges(x),force=force) = value
-              x = as(x,"GenoSet")
-              return(x)
-          })
 
 #############
 # Sub-setters
@@ -146,7 +101,6 @@ setMethod("[", signature=signature(x="GenoSet",i="ANY"),
               }
               if (missing(k)) {
                   rval = callNextMethod(x,i,j,...,drop=drop)
-                  rval = as(rval,"GenoSet")  # Grr
                   return(rval)
               } else {
                   if (missing(i) && missing(j)) {
@@ -188,7 +142,6 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
                       assay(x,k)[i,j] = value
                   }
               }
-              x = as(x,"GenoSet")  # Arg, why does it become a RangedSummarizedExperiment?
               return(x)
           })
 

@@ -1,19 +1,17 @@
 Package: genoset
 Type: Package
-Title: Provides classes similar to ExpressionSet for copy number
-    analysis
-Version: 1.27.35
+Title: A RangedSummarizedExperiment with methods for copy number analysis
+Version: 1.27.36
 Date: 2016-02-23
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
-Description: Load, manipulate, and plot copynumber and BAF data.
-    GenoSet class extends eSet by adding a "locData" slot for a
-    GRanges object. This object contains feature
-    genome location data and provides for efficient subsetting on
-    genome location.
-    Provides convenience functions for processing of copy number and
-    B-Allele Frequency data. Provides the class RleDataFrame to
-    store runs of data along the genome for multiple samples.
+Description: GenoSet provides an extension of the RangedSummarizedExperiment class
+    with additional API
+    features. This class provides convenient and fast methods for working with
+    segmented genomic data. Additionally,
+    GenoSet provides the class RleDataFrame which stores runs of data along the
+    genome for multiple samples and provides very fast summaries of arbitrary
+    row sets (regions of the genome).
 License: Artistic-2.0
 LazyLoad: yes
 Depends:
