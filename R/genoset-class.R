@@ -45,11 +45,11 @@ setClassUnion("GenoSetOrGenomicRanges",c("GenoSet","GenomicRanges"))
 ##' methods. Therefore, a GenoSet must always have a rowRanges.
 ##' 
 ##' locations. Rownames are required to match featureNames.
-##' @param x A GenoSet
 ##' @param rowRanges GenomicRanges, not a GenomicRangesList
 ##' @param assays list, SimpleList or matrix-like object
 ##' @param colData a data.frame or DataFrame of sample metadata with rownames matching the colnames of the matrices in assays
 ##' @param metadata a list of any other data you want to attach to the GenoSet object
+##' @param x A GenoSet
 ##' @return A GenoSet object
 ##' @examples
 ##' test.sample.names = LETTERS[11:13]

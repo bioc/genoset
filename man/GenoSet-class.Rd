@@ -36,6 +36,8 @@ Class \code{\linkS4class{RangedSummarizedExperiment}}, directly.
     \item{assay<-}{\code{signature(x = "GenoSet", i="ANY",value="ANY")}: ... }
     \item{assayNames}{\code{signature(x = "GenoSet")}: ... }
     \item{colData}{\code{signature(x = "GenoSet")}: ... }
+    \item{locData}{\code{signature(x = "GenoSet")}: ... }
+    \item{locData<-}{\code{signature(x = "GenoSet",value="GenomicRanges")}: ... }
   }
 }
 
