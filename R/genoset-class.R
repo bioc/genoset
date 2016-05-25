@@ -97,7 +97,7 @@ GenoSet <- function(rowRanges, assays, colData, metadata=list()) {
 setMethod("[", signature=signature(x="GenoSet",i="ANY"),
           function(x,i,j,k,...,withDimnames=TRUE,drop=FALSE) {
               if (!missing(i) && is(i,"GenomicRanges")) {
-                  i = unlist(x@rowRanges %over% i)
+                  i = unlist(rowRanges(x) %over% i)
               }
               if (missing(k)) {
                   rval = callNextMethod(x,i,j,...,drop=drop)
@@ -125,7 +125,7 @@ setMethod("[<-", signature=signature(x="GenoSet", i="ANY"),
                   stop("Must specify k to replace data in the GenoSet")
               }
               if (!missing(i) && is(i,"GenomicRanges")) {
-                  i = unlist(x@rowRanges %over% i)
+                  i = unlist(rowRanges(x) %over% i)
               }
               if (missing(i) && missing(j)) {
                   if (! all( colnames(x) == colnames(value)) || ! all( rownames(x) == rownames(value))) {
