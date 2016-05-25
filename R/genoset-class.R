@@ -169,7 +169,7 @@ setMethod("chr", "GenomicRanges", function(object) { return(as.character(seqname
 ##' Chromosome position of features
 ##'
 ##' Get chromosome position of features/ranges. Defined as floor of mean of start and end.
-##' @param object GRanges GenoSet
+##' @param x GRanges GenoSet
 ##' @return numeric vector of feature positions within a chromosome
 ##' @export pos
 ##' @examples
@@ -177,10 +177,9 @@ setMethod("chr", "GenomicRanges", function(object) { return(as.character(seqname
 ##'   pos(genoset.ds)  # 1:10
 ##'   pos(rowRanges(genoset.ds))  # The same
 ##' @rdname pos-methods
-setGeneric("pos", function(object) standardGeneric("pos"))
-##' @rdname pos-methods
+##' @importFrom GenomicRanges pos
 setMethod("pos", "GenoSetOrGenomicRanges",
-          function(object) { return( start(object) + (width(object) - 1L) %/% 2L) } )
+          function(x) { return( start(x) + (width(x) - 1L) %/% 2L) } )
 
 ##' Get list of unique chromosome names
 ##'
