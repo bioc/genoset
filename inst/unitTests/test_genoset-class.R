@@ -205,6 +205,10 @@ test_genomeOrder <- function() {
   bad.locs.bad.chr = GRanges( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr2","chr1","chr10")))
   checkTrue( ! isGenomeOrder(bad.locs, strict=TRUE), "Bad within chr, OK chr levels, fail")
 
+  bad.locs2 = GRanges( ranges = IRanges(start=c(1:10),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr2","chr1","chr10")))
+  checkTrue( isGenomeOrder(bad.locs2,strict=FALSE) )
+  checkTrue( ! isGenomeOrder(bad.locs2,strict=TRUE) )
+  
   good.ds = GenoSet(
     rowRanges=ok.locs,
     assays=list(

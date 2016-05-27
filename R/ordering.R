@@ -37,32 +37,15 @@ chrOrder <- function(chr.names) {
 ##' @examples
 ##'   data(genoset,package="genoset")
 ##'   isGenomeOrder( rowRanges(genoset.ds) )
-##' @rdname isGenomeOrder-methods
-setGeneric("isGenomeOrder", function(ds, strict=TRUE) standardGeneric("isGenomeOrder"))
-
-##' @rdname isGenomeOrder-methods
-setMethod("isGenomeOrder",signature=signature(ds="GenoSet"),
-          function(ds, strict=TRUE) {
-            if (strict) {
-              if ( ! all( chrNames(ds) == chrOrder( chrNames(ds) ) ) ) {
-                return(FALSE)
-              }
-            }
-            # Check each chr for ordered start
-            return(!any(is.unsorted(relist(start(ds), chrPartitioning(ds)))))
-          })
-
-##' @rdname isGenomeOrder-methods
-setMethod("isGenomeOrder",signature=signature(ds="GRanges"),
-          function(ds, strict=TRUE) {
-            if ( any(duplicated(runValue(seqnames(ds)))) ) { return(FALSE) }
-            if (strict == TRUE) {
-              if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
-                return(FALSE)
-              }
-            }
-            return(!any(is.unsorted(relist(start(ds), chrPartitioning(ds)))))
-          })
+isGenomeOrder <- function(ds, strict=TRUE) {
+    if ( any(duplicated(runValue(seqnames(ds)))) ) { return(FALSE) }
+    if (strict == TRUE) {
+        if (!isTRUE(all.equal(chrOrder(seqlevels(ds)), seqlevels(ds)))) {
+            return(FALSE)
+        }
+    }
+    return(!any(is.unsorted(relist(start(ds), chrPartitioning(ds)))))
+}
 
 ##' Set a GRanges or GenoSet to genome order
 ##'

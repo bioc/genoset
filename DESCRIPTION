@@ -1,8 +1,8 @@
 Package: genoset
 Type: Package
 Title: A RangedSummarizedExperiment with methods for copy number analysis
-Version: 1.29.4
-Date: 2016-05-25
+Version: 1.29.5
+Date: 2016-05-27
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
 Description: GenoSet provides an extension of the RangedSummarizedExperiment class
