@@ -13,8 +13,9 @@ readGenoSet(path)
 GenoSet or related object (only object in RData file)
 }
 \description{
-Given a rds file or a rda file with one object (a GenoSet or related object), load it,
-and return.
+Given a rds file or a rda file with one GenoSet, load it,
+and return. Objects that pre-date the switch to a RangedSummarizedExperiment internal representation (V
+1.29.0) are automatically switched to the new format.
 }
 \examples{
 \dontrun{ ds = readGenoSet("/path/to/genoset.RData") }

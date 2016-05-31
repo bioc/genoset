@@ -263,8 +263,9 @@ modeCenter <- function(ds) {
 
 ##' Load a GenoSet from a RData file
 ##'
-##' Given a rds file or a rda file with one object (a GenoSet or related object), load it,
-##' and return.
+##' Given a rds file or a rda file with one GenoSet, load it,
+##' and return. Objects that pre-date the switch to a RangedSummarizedExperiment internal representation (V
+##' 1.29.0) are automatically switched to the new format.
 ##' @param path character, path to rds or rda file
 ##' @return GenoSet or related object (only object in RData file)
 ##' @examples
@@ -275,12 +276,15 @@ modeCenter <- function(ds) {
 readGenoSet <- function(path) {
   header = readLines(path, 1)
   if (grepl("^RD", header)[1] == TRUE) {
-    object = get(load(path)[1])
+    x = get(load(path)[1])
   } else {
-    object = readRDS(path)
+    x = readRDS(path)
   }
-  if (!is(object,"GenoSet")) { stop("Loaded object is not an eSet or derived class.") }
-  return( object )
+  if (!is(x,"GenoSet")) { stop("Loaded object is not a GenoSet.") }
+  if ("locData" %in% names(attributes(x))) { # Pre-RangedSummarizedExperiment genoset
+      x = GenoSet(x@locData, as(x@assayData,"list"),as(x@phenoData,"data.frame"),list("annotation"=x@annotation))
+  }
+  return( x )
 }
 
 ##' A fast method for concatenating data.frames
