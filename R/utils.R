@@ -279,7 +279,7 @@ readGenoSet <- function(path) {
   } else {
     object = readRDS(path)
   }
-  if (!is(object,"eSet")) { stop("Loaded object is not an eSet or derived class.") }
+  if (!is(object,"GenoSet")) { stop("Loaded object is not an eSet or derived class.") }
   return( object )
 }
 
