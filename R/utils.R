@@ -282,7 +282,8 @@ readGenoSet <- function(path) {
   }
   if (!is(x,"GenoSet")) { stop("Loaded object is not a GenoSet.") }
   if ("locData" %in% names(attributes(x))) { # Pre-RangedSummarizedExperiment genoset
-      x = GenoSet(x@locData, as(x@assayData,"list"),as(x@phenoData,"data.frame"),list("annotation"=x@annotation))
+      message("Converting old GenoSet to new representation.")
+      x = GenoSet(x@locData, as.list(x@assayData),as(x@phenoData,"data.frame"),list("annotation"=x@annotation))
   }
   return( x )
 }
