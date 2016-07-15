@@ -1,9 +1,7 @@
 ##' @include RleDataFrame-class.R
 NULL
 
-##' @export colMeans
-setGeneric("colMeans", function(x, na.rm=TRUE, dims=1L) standardGeneric("colMeans") )
-
+##' @exportMethod colMeans
 setMethod("colMeans", "RleDataFrame",
           function(x, na.rm=TRUE) {
             mean(x, na.rm=na.rm)
@@ -14,15 +12,12 @@ setMethod("colMeans", signature(x="DataFrame"),
             .Deprecated("colMeans", msg="colMeans on a DataFrame is Deprecated. It is kind of odd given that the column type are arbitrary. Try RleDataFrame, or another class that inherits from AtomicList and DataFrame. But, if you find this DataFrame version useful, let me know.")
             return( vapply(x,mean,na.rm=na.rm, FUN.VALUE=numeric(1), USE.NAMES=TRUE) ) } )
 
-##' @export colSums
-setGeneric("colSums", function(x, na.rm=TRUE, dims=1L) standardGeneric("colSums") )
+##' @exportMethod colSums
 setMethod("colSums", "RleDataFrame",
           function(x, na.rm=TRUE) {
             sum(x, na.rm=na.rm)
           })
-##' @export rowMeans
-setGeneric("rowMeans", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowMeans") )
-#setMethod("rowMeans", signature(x="ANY"), base::rowMeans)
+##' @exportMethod rowMeans
 setMethod("rowMeans", signature(x="RleDataFrame"),
           function(x, na.rm=FALSE, dims=1L) {
             if (na.rm==TRUE) {
@@ -49,9 +44,7 @@ setMethod("rowMeans", signature(x="RleDataFrame"),
             return(means)
           })
 
-##' @export rowSums
-setGeneric("rowSums", function(x, na.rm=FALSE, dims=1L) standardGeneric("rowSums") )
-#setMethod("rowSums", signature(x="ANY"), base::rowSums)
+##' @exportMethod rowSums
 setMethod("rowSums", signature(x="RleDataFrame"),
           function(x, na.rm=FALSE, dims=1L) {
           if (na.rm==TRUE) {
