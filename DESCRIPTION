@@ -5,13 +5,12 @@ Version: 1.29.9
 Date: 2016-07-15
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
-Description: GenoSet provides an extension of the RangedSummarizedExperiment class
-    with additional API
-    features. This class provides convenient and fast methods for working with
-    segmented genomic data. Additionally,
-    GenoSet provides the class RleDataFrame which stores runs of data along the
-    genome for multiple samples and provides very fast summaries of arbitrary
-    row sets (regions of the genome).
+Description: GenoSet provides an extension of the RangedSummarizedExperiment
+    class with additional API features. This class provides convenient and fast
+    methods for working with segmented genomic data. Additionally, GenoSet provides
+    the class RleDataFrame which stores runs of data along the genome for multiple
+    samples and provides very fast summaries of arbitrary row sets (regions of the
+    genome).
 License: Artistic-2.0
 LazyLoad: yes
 Depends:
@@ -50,7 +49,6 @@ Collate:
     'segments.R'
     'test_genoset_package.R'
     'utils.R'
-    'zzz.R'
 VignetteBuilder: knitr
 URL: https://github.com/phaverty/genoset
 Packaged: 2014-10-08 19:15:54 UTC; dtenenba
