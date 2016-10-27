@@ -1,8 +1,8 @@
 Package: genoset
 Type: Package
 Title: A RangedSummarizedExperiment with methods for copy number analysis
-Version: 1.31.0
-Date: 2016-07-15
+Version: 1.31.1
+Date: 2016-10-27
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
 Description: GenoSet provides an extension of the RangedSummarizedExperiment
@@ -42,7 +42,6 @@ Collate:
     'RleDataFrame-class.R'
     'RleDataFrame-methods.R'
     'bounds.R'
-    'deprecated.R'
     'ordering.R'
     'plots.R'
     'rangeSummaries.R'
