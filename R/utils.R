@@ -173,7 +173,7 @@ baf2mbaf <- function(baf, hom.cutoff=0.95, calls=NULL, call.pairs=NULL) {
 ##' @param bsgenome BSgenome, like Hsapiens from BSgenome.Hsapiens.UCSC.hg19 or DNAStringSet.
 ##' @param expand scalar integer, amount to expand each range before calculating gc
 ##' @param bases character, alphabet to count, usually c("G", "C"), but "N" is useful too
-##' @return numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}
+##' @return named numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}
 ##' @examples
 ##  \dontrun{ data(genoset,package="genoset") }
 ##' \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
@@ -198,9 +198,11 @@ calcGC <- function(object, bsgenome, expand=1e6, bases=c("G", "C")) {
   gc.list = lapply(rownames(chr.ind), function(chr.name) {
     range = seq.int(chr.ind[chr.name, 1], chr.ind[chr.name, 2])
     seq = bsgenome[[chr.name]]
-    v = suppressWarnings( Views(seq,  start=start[range], end=end[range]) )
+    v = suppressWarnings( Views(seq, start=start[range], end=end[range]) )
     alf = Biostrings::alphabetFrequency(v, as.prob = TRUE)
     gc = rowSums(alf[, bases, drop=FALSE])
+    names(gc) = names(object)[range]
+    gc
   })
   gc = do.call(c, gc.list)
   return(gc)
