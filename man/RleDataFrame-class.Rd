@@ -54,7 +54,7 @@ of Rle objects, or one or more individual Rle objects.
 }
 \section{Slots}{
   \describe{
-    \item{\code{rownames}:}{Object of class \code{"characterORNULL"}
+    \item{\code{rownames}:}{Object of class \code{"character_OR_NULL"}
       Names to describe each row of the DataFrame. These may end up
       taking more space than your collection of Rle objects, so consider
     leaving this NULL.}
@@ -62,7 +62,7 @@ of Rle objects, or one or more individual Rle objects.
     \item{\code{elementType}:}{Object of class \code{"character"} Notes
       that elements of the internal list are Rle objects. }
     \item{\code{elementMetadata}:}{Object of class
-      \code{"DataTableORNULL"} Metadata on the elements, see DataFrame. }
+      \code{"DataTable_OR_NULL"} Metadata on the elements, see DataFrame. }
     \item{\code{metadata}:}{Object of class \code{"list"} Metadata on
       the whole object, see DataFrame. }
     \item{\code{listData}:}{Object of class \code{"list"} Base list
