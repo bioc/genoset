@@ -25,7 +25,7 @@ Imports:
     methods,
     graphics
 Suggests:
-    RUnit,
+    testthat,
     knitr,
     BiocStyle,
     rmarkdown,
