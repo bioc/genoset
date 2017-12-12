@@ -39,4 +39,3 @@ Get list of unique chromosome names
   chrNames(rowRanges(genoset.ds))  # The same
   chrNames(genoset.ds) = sub("^chr","",chrNames(genoset.ds))
 }
-

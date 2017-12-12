@@ -17,4 +17,3 @@ Rle
 \description{
 Fix NA runs in a Rle when the adjacent runs have equal values
 }
-

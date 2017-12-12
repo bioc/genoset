@@ -22,4 +22,4 @@ Chromosomes make the most sense orded by number, then by letter.
 Other "genome ordering": \code{\link{isGenomeOrder}},
   \code{\link{toGenomeOrder}}
 }
-
+\concept{"genome ordering"}

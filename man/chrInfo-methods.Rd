@@ -24,4 +24,3 @@ Provides a matrix of start, stop and offset, in base numbers for each chromosome
   chrInfo(genoset.ds)
   chrInfo(rowRanges(genoset.ds))  # The same
 }
-

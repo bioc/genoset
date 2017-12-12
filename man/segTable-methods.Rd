@@ -3,8 +3,8 @@
 \docType{methods}
 \name{segTable}
 \alias{segTable}
-\alias{segTable,DataFrame-method}
 \alias{segTable,Rle-method}
+\alias{segTable,DataFrame-method}
 \title{Convert Rle objects to tables of segments}
 \usage{
 segTable(object, ...)
@@ -65,4 +65,4 @@ Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segPairTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-
+\concept{"segmented data"}

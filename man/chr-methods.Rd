@@ -27,4 +27,3 @@ Get chromosome name for each feature.  Returns character.
   chr(genoset.ds)  # c("chr1","chr1","chr1","chr1","chr3","chr3","chrX","chrX","chrX","chrX")
   chr(rowRanges(genoset.ds))  # The same
 }
-

@@ -2,8 +2,8 @@
 % Please edit documentation in R/genoset-class.R
 \docType{package}
 \name{genoset-package}
-\alias{genoset}
 \alias{genoset-package}
+\alias{genoset}
 \title{GenoSet: An eSet for data with genome locations}
 \description{
 Load, manipulate, and plot copynumber and BAF data.
@@ -11,4 +11,3 @@ Load, manipulate, and plot copynumber and BAF data.
 \seealso{
 genoset-datasets
 }
-

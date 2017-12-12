@@ -24,4 +24,3 @@ Values are as.integer( 1e4 * fraction ) for space reasons.
 \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
 \dontrun{ gc = calcGC2(Hsapiens) }
 }
-

@@ -21,4 +21,3 @@ the dominant peak and subtracts that value from the input data.
 \examples{
   modeCenter( matrix( rnorm(150, mean=0), ncol=3 ))
 }
-

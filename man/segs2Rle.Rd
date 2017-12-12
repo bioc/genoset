@@ -33,4 +33,4 @@ Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}
 }
-
+\concept{"segmented data"}

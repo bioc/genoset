@@ -35,4 +35,4 @@ will at least cover two features. Range bounding is performed by the boundingInd
 Other "range summaries": \code{\link{boundingIndicesByChr}},
   \code{\link{boundingIndices}}
 }
-
+\concept{"range summaries"}

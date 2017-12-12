@@ -25,4 +25,3 @@ genome. Chromosomes are ordered numerically, when possible, then lexically.
   head(genoPos(genoset.ds))
   head(genoPos(rowRanges(genoset.ds)))  # The same
 }
-

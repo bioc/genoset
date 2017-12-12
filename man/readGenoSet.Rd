@@ -22,4 +22,3 @@ and return. Objects that pre-date the switch to a RangedSummarizedExperiment int
 \dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
 \dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
 }
-

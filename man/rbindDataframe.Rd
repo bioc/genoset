@@ -26,4 +26,3 @@ For a list of 1000 data.frames with 884 rows and 12 columns `rbindDataframe` tak
 `do.call(rbind,x)` takes 327.304s, a 600X speedup. This pure-R solution is made possible by
 the lovely shallow copy features Michael Lawrence has added to base R.
 }
-

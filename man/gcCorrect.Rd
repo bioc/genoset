@@ -28,4 +28,4 @@ windows >= 100kb.
   ds = rnorm(100) + (0.1 * gc)
   gcCorrect(ds, gc)
 }
-
+\concept{"gc content"}

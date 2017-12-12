@@ -59,4 +59,4 @@ Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-
+\concept{"segmented data"}

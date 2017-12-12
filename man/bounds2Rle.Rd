@@ -30,4 +30,4 @@ Other "segmented data": \code{\link{rangeSegMeanLength}},
   \code{\link{segTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-
+\concept{"segmented data"}

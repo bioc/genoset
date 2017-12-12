@@ -3,9 +3,9 @@
 \docType{methods}
 \name{genoPlot}
 \alias{genoPlot}
-\alias{genoPlot,GenoSetOrGenomicRanges,ANY-method}
-\alias{genoPlot,numeric,Rle-method}
 \alias{genoPlot,numeric,numeric-method}
+\alias{genoPlot,numeric,Rle-method}
+\alias{genoPlot,GenoSetOrGenomicRanges,ANY-method}
 \title{Plot data along the genome}
 \usage{
 genoPlot(x, y, ...)
@@ -74,6 +74,7 @@ Plot numeric location and a vector of Rle data. Uses lines for Rle runs.
 }
 }
 }
+
 \examples{
 data(genoset,package="genoset")
 genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
@@ -83,4 +84,4 @@ genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 \seealso{
 Other "genome plots": \code{\link{genomeAxis}}
 }
-
+\concept{"genome plots"}

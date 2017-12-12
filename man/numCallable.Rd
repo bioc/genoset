@@ -20,4 +20,3 @@ integer vector of length nrow(bounds)
 \description{
 For Rle coverage vector, count number of positions where value >= min, think callable bases.
 }
-

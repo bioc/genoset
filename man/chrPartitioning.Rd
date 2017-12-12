@@ -15,4 +15,3 @@ PartitioningByEnd
 \description{
 Get indices of first and last element in each chromosome.
 }
-

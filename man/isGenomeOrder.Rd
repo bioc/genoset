@@ -28,4 +28,4 @@ rather than chromsome, strand, start, and width.
 Other "genome ordering": \code{\link{chrOrder}},
   \code{\link{toGenomeOrder}}
 }
-
+\concept{"genome ordering"}

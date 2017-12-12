@@ -34,4 +34,4 @@ Label a plot with Mb, kb, bp as appropriate, using tick locations from axTicks
 \seealso{
 Other "genome plots": \code{\link{genoPlot}}
 }
-
+\concept{"genome plots"}

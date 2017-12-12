@@ -3,9 +3,9 @@
 \docType{methods}
 \name{cn2lr}
 \alias{cn2lr}
-\alias{cn2lr,DataFrame-method}
-\alias{cn2lr,matrix-method}
 \alias{cn2lr,numeric-method}
+\alias{cn2lr,matrix-method}
+\alias{cn2lr,DataFrame-method}
 \title{Take vector or matrix of copynumber values, convert to log2ratios}
 \usage{
 cn2lr(x, ploidy)
@@ -31,4 +31,3 @@ is provided lr is log2(cn/ploidy), otherwise log2(cn/2).
 \seealso{
 lr2cn
 }
-

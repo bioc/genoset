@@ -42,4 +42,4 @@ Both query and subject must be in at least weak genome order (sorted by start wi
 Other "range summaries": \code{\link{boundingIndices}},
   \code{\link{rangeSampleMeans}}
 }
-
+\concept{"range summaries"}

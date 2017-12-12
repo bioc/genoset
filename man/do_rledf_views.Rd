@@ -36,5 +36,5 @@ RleDataFrame boundingIndicesByChr
 
 Other views: \code{\link{.do_rledf_range_summary}}
 }
+\concept{views}
 \keyword{internal}
-

@@ -3,8 +3,8 @@
 \docType{methods}
 \name{rangeSegMeanLength}
 \alias{rangeSegMeanLength}
-\alias{rangeSegMeanLength,GRanges,data.frame-method}
 \alias{rangeSegMeanLength,GRanges,list-method}
+\alias{rangeSegMeanLength,GRanges,data.frame-method}
 \title{Get segment widths}
 \usage{
 rangeSegMeanLength(range.gr, segs)
@@ -34,4 +34,4 @@ Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-
+\concept{"segmented data"}

@@ -29,4 +29,3 @@ of integers representing the row indices of features on that chromosome.
   chrIndices(genoset.ds)
   chrIndices(rowRanges(genoset.ds))  # The same
 }
-

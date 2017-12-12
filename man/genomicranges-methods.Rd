@@ -15,4 +15,3 @@ I have extended the API for GenomicRanges a bit so that genoset
 and GenomicRanges can have the same API, at least as far as
 genome location based features go.
 }
-

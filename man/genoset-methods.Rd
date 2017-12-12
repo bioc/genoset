@@ -41,4 +41,4 @@ colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.
 rse=SummarizedExperiment(rowRanges=rowRanges,assays=assays,colData=colData,metadata=metadata)
 gs = GenoSet(rowRanges, assays, colData)
 }
-
+\concept{GenoSet}

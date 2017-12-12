@@ -18,4 +18,3 @@ Utility function for converting log2ratio units (zero is normal) to copynumber u
 \seealso{
 cn2lr
 }
-

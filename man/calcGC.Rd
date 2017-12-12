@@ -31,4 +31,3 @@ match to the nearest.
 \dontrun{ library(BSgenome.Hsapiens.UCSC.hg19) }
 \dontrun{ gc = calcGC(genoset.ds, Hsapiens) }
 }
-

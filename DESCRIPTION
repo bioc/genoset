@@ -37,7 +37,7 @@ Enhances: parallel
 ByteCompile: TRUE
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariation
-Collate:
+Collate: 
     'genoset-class.R'
     'RleDataFrame-class.R'
     'RleDataFrame-methods.R'
@@ -46,9 +46,8 @@ Collate:
     'plots.R'
     'rangeSummaries.R'
     'segments.R'
-    'test_genoset_package.R'
     'utils.R'
 VignetteBuilder: knitr
 URL: https://github.com/phaverty/genoset
 Packaged: 2014-10-08 19:15:54 UTC; dtenenba
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1.9000

@@ -46,4 +46,4 @@ position info coming from a GenoSet or GRanges.
 Other "range summaries": \code{\link{boundingIndicesByChr}},
   \code{\link{rangeSampleMeans}}
 }
-
+\concept{"range summaries"}

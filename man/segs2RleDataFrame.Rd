@@ -31,4 +31,5 @@ Other "segmented data": \code{\link{bounds2Rle}},
   \code{\link{segPairTable}}, \code{\link{segTable}},
   \code{\link{segs2Granges}}, \code{\link{segs2Rle}}
 }
-
+\concept{"segmented data"}
+\concept{segments}
