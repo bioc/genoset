@@ -1,4 +1,4 @@
-library(RUnit)
+library(testthat)
 library(genoset)
 
 ### TO DO
@@ -8,14 +8,14 @@ library(genoset)
 test.sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 
-test_creation <- function() {
+test_that("We can make genosets", {
 
   colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
   cn=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   lrr=matrix(1:30,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   baf=matrix(31:60,nrow=10,ncol=3,dimnames=list(probe.names,test.sample.names))
   locs=GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
-  bad.locs=GRanges(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),seqnames=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)))  
+  bad.locs=GRanges(ranges=IRanges(start=c(5,6,10:7,1:4),width=1,names=probe.names[c(5,6,10:7,1:4)]),seqnames=c(rep("chr3",2),rep("chrX",4),rep("chr1",4)))
 
   tom = GenoSet( rowRanges=locs, assays=list(cn=cn), colData=colData )
 
@@ -26,19 +26,19 @@ test_creation <- function() {
         baf=RleDataFrame(K=Rle(31:40),L=Rle(41:50),M=Rle(51:60),row.names=probe.names)
         ),
     colData=colData)
-  
-    checkException(
+
+    expect_error(
         GenoSet( rowRanges=locs, assays=list(cn=cn[ rev(probe.names), ], foo=cn[ rev(probe.names),]),
                 colData=colData[rev(test.sample.names),]
                 ),
         silent=TRUE
         )
 
-  checkTrue(validObject(tom),"Regular GenoSet")
-  checkTrue(validObject(rle.genoset),"GenoSet with Rle data")
-}
+  expect_true(validObject(tom),"Regular GenoSet")
+  expect_true(validObject(rle.genoset),"GenoSet with Rle data")
+})
 
-test_gs.shared.api.and.getting.genome.info <- function() {
+test_that("Our shared GRanges genoset API works", {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
   point.rowRanges = GRanges(ranges=IRanges(start=1:10,width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
@@ -54,42 +54,42 @@ test_gs.shared.api.and.getting.genome.info <- function() {
     )
   gr = as(point.rowRanges,"GRanges")
 
-  checkEquals( start( point.rowRanges ), start( gs ) )
-  checkEquals( width( point.rowRanges ), width( gs ) )
-  checkEquals( end( point.rowRanges ), end( gs ) )
-  checkEquals( chr(point.rowRanges), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
-  checkEquals( chr(gr), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
-  checkEquals( chr( point.rowRanges ), chr( gs ) )
-  checkEquals( chr( point.rowRanges ), chr( gr ) )
-  checkEquals( pos(point.rowRanges), 1L:10L )
-  checkEquals( pos(wide.rowRanges), seq(from=2L, length=10, by=3L ) )
-  checkEquals( pos( point.rowRanges ), pos( gs ) )
-  checkEquals( pos( point.rowRanges ), pos( gr ) )
-  checkEquals( chrNames( point.rowRanges ), c("chr1","chr3","chrX") )
-  checkEquals( chrNames( point.rowRanges ), chrNames( gs ) )
-  checkEquals( chrNames( gr[1:3,] ), c("chr1"), "chrNames on GRanges with empty levels should give just unique values" )
+  expect_equal( start( point.rowRanges ), start( gs ) )
+  expect_equal( width( point.rowRanges ), width( gs ) )
+  expect_equal( end( point.rowRanges ), end( gs ) )
+  expect_equal( chr(point.rowRanges), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
+  expect_equal( chr(gr), c(rep("chr1",4),rep("chr3",2),rep("chrX",4)) )
+  expect_equal( chr( point.rowRanges ), chr( gs ) )
+  expect_equal( chr( point.rowRanges ), chr( gr ) )
+  expect_equal( pos(point.rowRanges), 1L:10L )
+  expect_equal( pos(wide.rowRanges), seq(from=2L, length=10, by=3L ) )
+  expect_equal( pos( point.rowRanges ), pos( gs ) )
+  expect_equal( pos( point.rowRanges ), pos( gr ) )
+  expect_equal( chrNames( point.rowRanges ), c("chr1","chr3","chrX") )
+  expect_equal( chrNames( point.rowRanges ), chrNames( gs ) )
+  expect_equal( chrNames( gr[1:3,] ), c("chr1"), label = "chrNames on GRanges with empty levels should give just unique values" )
   point.rowRanges2 = point.rowRanges
   chrNames(point.rowRanges2) = sub("chr","",chrNames(point.rowRanges2))
-  checkEquals( chrNames( point.rowRanges2 ), c("1","3","X") )
+  expect_equal( chrNames( point.rowRanges2 ), c("1","3","X") )
   gs2 = gs
   rowRanges(gs2) = point.rowRanges2
-  checkEquals( chrNames( point.rowRanges ), c("chr1","chr3","chrX") )
-  checkEquals( lengths( point.rowRanges ), lengths( gs ) )
-  checkEquals( lengths( point.rowRanges ), lengths( point.rowRanges.gr ) )
-  checkEquals( chrInfo( point.rowRanges ), chrInfo( gs ) )
-  checkEquals( chrInfo( point.rowRanges ), chrInfo( gr ) )
-  checkEquals( chrInfo( point.rowRanges ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
-  checkEquals( chrIndices( point.rowRanges, "chr3"), c(5,6) )
-  checkException( chrIndices( point.rowRanges, "chrFOO"), silent=TRUE )
-  checkEquals( chrIndices( point.rowRanges ), chrIndices( gs ) )
-  checkEquals( chrIndices( point.rowRanges ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
-  checkEquals( chrIndices( point.rowRanges ), chrIndices(point.rowRanges.gr) )
-  checkEquals( chrIndices( point.rowRanges[1:6,] ), chrIndices(point.rowRanges.gr)[1:2,], "Empty levels ignored" )
-  checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
-  checkEquals( genoPos( point.rowRanges ), genoPos( gs ) )
-}
+  expect_equal( chrNames( point.rowRanges ), c("chr1","chr3","chrX") )
+  expect_equal( lengths( point.rowRanges ), lengths( gs ) )
+  expect_equal( lengths( point.rowRanges ), lengths( point.rowRanges.gr ) )
+  expect_equal( chrInfo( point.rowRanges ), chrInfo( gs ) )
+  expect_equal( chrInfo( point.rowRanges ), chrInfo( gr ) )
+  expect_equal( chrInfo( point.rowRanges ), matrix(c(1,5,11,4,10,20,0,4,10),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("start","stop","offset") ) ))
+  expect_equal( chrIndices( point.rowRanges, "chr3"), c(5,6) )
+  expect_error( chrIndices( point.rowRanges, "chrFOO"), silent=TRUE )
+  expect_equal( chrIndices( point.rowRanges ), chrIndices( gs ) )
+  expect_equal( chrIndices( point.rowRanges ), matrix(c(1,5,7,4,6,10,0,4,6),ncol=3,dimnames=list(c("chr1","chr3","chrX"),c("first","last","offset") ) ))
+  expect_equal( chrIndices( point.rowRanges ), chrIndices(point.rowRanges.gr) )
+  expect_equal( chrIndices( point.rowRanges[1:6,] ), chrIndices(point.rowRanges.gr)[1:2,], label = "Empty levels ignored" )
+  expect_equal( genoPos( point.rowRanges ), genoPos( gs ) )
+  expect_equal( genoPos( point.rowRanges ), genoPos( gs ) )
+})
 
-test_subset <- function() {
+test_that("We can subset genoset", {
   test.sample.names = LETTERS[11:13]
   probe.names = letters[1:10]
   test.gr = GRanges(ranges=IRanges(start=8:14,width=1),names=letters[8:14],seqnames=rep("chrX",7))
@@ -105,7 +105,7 @@ test_subset <- function() {
         ),
     colData=colData
     )
-  
+
   expected.ds = GenoSet(
     rowRanges=locs[8:10,],
     assays=list(
@@ -114,7 +114,7 @@ test_subset <- function() {
         ),
     colData=colData
     )
-  
+
   chr3.ds = GenoSet(
     rowRanges=locs[5:6,],
     assays=list(
@@ -123,7 +123,7 @@ test_subset <- function() {
         ),
     colData=colData
     )
-  
+
   ds = GenoSet(
     rowRanges=locs,
     assays=list(
@@ -141,7 +141,7 @@ test_subset <- function() {
         ),
     colData=colData
     )
-  
+
   subset.cols.ds = GenoSet(
     rowRanges=locs,
     assays=list(
@@ -152,20 +152,20 @@ test_subset <- function() {
     )
 
   gene.gr = GRanges(ranges=IRanges(start=2:3,width=1),seqnames=c("chr1","chr1"))
-  
+
   # Subsetting whole object
-  checkEquals( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
-  checkEquals( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
-  checkEquals( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE)
-  
+  expect_equal( ds[ ,2:3], subset.cols.ds, check.attributes=FALSE)
+  expect_equal( ds[ 2:3, ], subset.rows.ds, check.attributes=FALSE)
+  expect_equal( ds[ gene.gr, ], subset.rows.ds, check.attributes=FALSE)
+
   # Subsetting assayData / extracting
-  checkEquals( ds[ 5, 3, "baf"], assay(ds,"baf")[5,3])
-  checkEquals( ds[ , , "lrr"], assay(ds,"lrr"), "Extract whole matrix" )
-  
+  expect_equal( ds[ 5, 3, "baf"], assay(ds,"baf")[5,3])
+  expect_equal( ds[ , , "lrr"], assay(ds,"lrr"), label = "Extract whole matrix" )
+
   # Test subsetting by location
-  checkEquals( test.ds[test.gr,], expected.ds, check.attributes=FALSE)
-  checkEquals( test.ds[8:10,], expected.ds, check.attributes=FALSE)
-  checkEquals( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds, check.attributes=FALSE)
+  expect_equal( test.ds[test.gr,], expected.ds, check.attributes=FALSE)
+  expect_equal( test.ds[8:10,], expected.ds, check.attributes=FALSE)
+  expect_equal( test.ds[ chrIndices(test.ds,"chr3"), ], chr3.ds, check.attributes=FALSE)
 
   # Replace
   ds = GenoSet(
@@ -178,37 +178,37 @@ test_subset <- function() {
     )
 
   ds[,,"baf"] = ds[,,"lrr"]
-  checkEquals(ds[,,"baf"],ds[,,"lrr"],"Replace whole element")
+  expect_equal(ds[,,"baf"],ds[,,"lrr"], label = "Replace whole element")
   bad.names.lrr = ds[,,"lrr"]
   rownames(bad.names.lrr)[1] = "FOO"
   colnames(bad.names.lrr)[1] = "FOO"
-  checkException({ds[,,"baf"] = bad.names.lrr}, "Incoming ad element must have dimnames that matches genoset.",silent=TRUE)
+  expect_error({ds[,,"baf"] = bad.names.lrr}, label = "Incoming ad element must have dimnames that matches genoset.",silent=TRUE)
   lrr.mat = ds[,,"lrr"]
   lrr.mat[1:2,1:2] = 5
   ds[1:2,1:2,"lrr"] = 5
-  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with integer indices")
+  expect_equal(lrr.mat,ds[,,"lrr"], label = "Replace partial matrix with integer indices")
   lrr.mat[6:8,2] = 3
   ds[rowRanges(ds)[6:8,],2,"lrr"] = 3
-  checkEquals(lrr.mat,ds[,,"lrr"],"Replace partial matrix with RangedData subsetting of rows")
+  expect_equal(lrr.mat,ds[,,"lrr"], label = "Replace partial matrix with RangedData subsetting of rows")
   ds[,3,"lrr"] = 3
   lrr.mat[,3] = 3
-  checkEquals(lrr.mat,ds[,,"lrr"],"Replace column")
-}
+  expect_equal(lrr.mat,ds[,,"lrr"], label = "Replace column")
+})
 
-test_genomeOrder <- function() {
+test_that("We can sort the genome", {
   chr.names = c(rep("chr1",3),rep("chr2",3),rep("chr10",4))
 
   ok.locs = GRanges( ranges = IRanges(start=1:10,width=1,names=paste("p",1:10,sep="")), seqnames=factor(chr.names,levels=c("chr1","chr2","chr10")))
-  checkTrue( isGenomeOrder(ok.locs), "Good locs" )
+  expect_true( isGenomeOrder(ok.locs), label = "Good locs" )
 
   bad.locs = GRanges( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr1","chr2","chr10")))
   bad.locs.bad.chr = GRanges( ranges = IRanges(start=c(2,3,1,4,6,5,10:7),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr2","chr1","chr10")))
-  checkTrue( ! isGenomeOrder(bad.locs, strict=TRUE), "Bad within chr, OK chr levels, fail")
+  expect_true( ! isGenomeOrder(bad.locs, strict=TRUE), label = "Bad within chr, OK chr levels, fail")
 
   bad.locs2 = GRanges( ranges = IRanges(start=c(1:10),width=1,names=paste("p",c(2,3,1,4,6,5,10:7),sep="")), seqnames=factor(chr.names,levels=c("chr2","chr1","chr10")))
-  checkTrue( isGenomeOrder(bad.locs2,strict=FALSE) )
-  checkTrue( ! isGenomeOrder(bad.locs2,strict=TRUE) )
-  
+  expect_true( isGenomeOrder(bad.locs2,strict=FALSE) )
+  expect_true( ! isGenomeOrder(bad.locs2,strict=TRUE) )
+
   good.ds = GenoSet(
     rowRanges=ok.locs,
     assays=list(
@@ -224,19 +224,19 @@ test_genomeOrder <- function() {
         ),
     colData=data.frame(matrix(LETTERS[1:15],nrow=3,ncol=5,dimnames=list(test.sample.names,letters[1:5])))
     )
-  checkTrue(isGenomeOrder(good.ds))
-  checkTrue(!isGenomeOrder(bad.ds))
-  checkEquals( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, "GenoSet disordered within chrs" )
-  checkEquals( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, "GenoSet disordered within chrs, disordered chrs" )
+  expect_true(isGenomeOrder(good.ds))
+  expect_true(!isGenomeOrder(bad.ds))
+  expect_equal( good.ds, toGenomeOrder(bad.ds,strict=TRUE), check.attributes=FALSE, label = "GenoSet disordered within chrs" )
+  expect_equal( good.ds, toGenomeOrder(bad.ds.bad.chrs,strict=TRUE), check.attributes=FALSE, label = "GenoSet disordered within chrs, disordered chrs" )
 
   gr1 = GRanges(ranges=IRanges(start=c(9,1,5,4,6,2),width=1,names=LETTERS[c(9,1,5,4,6,2)]),seqnames=Rle(factor(c("A","B","C","C","B","A"),levels=c("A","C","B"))))
   gr2 = GRanges(ranges=IRanges(start=c(2,9,4,5,1,6),width=1,names=LETTERS[c(2,9,4,5,1,6)]),seqnames=Rle(factor(c("A","A","C","C","B","B"),levels=c("A","C","B"))))
   gr3 = GRanges(ranges=IRanges(start=c(2,9,1,6,4,5),width=1,names=LETTERS[c(2,9,1,6,4,5)]),seqnames=Rle(factor(c("A","A","B","B","C","C"),levels=c("A","B","C"))))
-  checkIdentical(toGenomeOrder(gr1,strict=FALSE),gr2,"GRanges with mis-ordered chromosomes, without strict")
-  checkIdentical(toGenomeOrder(gr1,strict=TRUE),gr3,"GRanges with mis-ordered chromosomes, with strict")
-  checkTrue(isGenomeOrder(gr2,strict=FALSE))
-  checkTrue(isGenomeOrder(gr3,strict=TRUE))
-  checkTrue(!isGenomeOrder(gr2,strict=TRUE))
-  checkTrue(!isGenomeOrder(gr1,strict=TRUE), "Not in blocks by chromsome, strict")
-  checkTrue(!isGenomeOrder(gr1,strict=FALSE), "Not in blocks by chromsome, strict")
-}
+  expect_identical(toGenomeOrder(gr1,strict=FALSE),gr2, label = "GRanges with mis-ordered chromosomes, without strict")
+  expect_identical(toGenomeOrder(gr1,strict=TRUE),gr3, label = "GRanges with mis-ordered chromosomes, with strict")
+  expect_true(isGenomeOrder(gr2,strict=FALSE))
+  expect_true(isGenomeOrder(gr3,strict=TRUE))
+  expect_true(!isGenomeOrder(gr2,strict=TRUE))
+  expect_true(!isGenomeOrder(gr1,strict=TRUE), label = "Not in blocks by chromosome, strict")
+  expect_true(!isGenomeOrder(gr1,strict=FALSE), label = "Not in blocks by chromosome, strict")
+})

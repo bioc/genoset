@@ -1,8 +1,8 @@
 ### Tests for summaries of views on RleDataFrame
 library(genoset)
-library(RUnit)
+library(testthat)
 
-test_RleDataFrame_views <- function() {
+test_that("We can make views on RLEDF", {
   # input
   rle_list = list(a = Rle(1:5, rep(2, 5)), b=Rle(6:10, rep(2, 5)))
   rle_df = RleDataFrame(rle_list, row.names=LETTERS[1:10])
@@ -28,17 +28,17 @@ test_RleDataFrame_views <- function() {
   which_min_list = as.list(viewWhichMins(rle_view_list))
   which_max_list = as.list(viewWhichMaxs(rle_view_list))
   # tests
-  checkEquals(rangeSums(rle_df, ir, simplify=FALSE), sum_list)
-  checkEquals(rangeMeans(rle_df, ir, simplify=FALSE, na.rm=TRUE), mean_list)
-  checkEquals(rangeMins(rle_df, ir, simplify=FALSE), min_list)
-  checkEquals(rangeMaxs(rle_df, ir, simplify=FALSE), max_list)
-  checkEquals(rangeWhichMins(rle_df, ir, simplify=FALSE), which_min_list)
-  checkEquals(rangeWhichMaxs(rle_df, ir, simplify=FALSE), which_max_list)
-  checkEquals(rangeSums(rle_df, ir, simplify=TRUE),      matricize(sum_list))
-  checkEquals(rangeMeans(rle_df, ir, simplify=TRUE, na.rm=TRUE),     matricize(mean_list))
-  checkEquals(rangeMins(rle_df, ir, simplify=TRUE),      matricize(min_list))
-  checkEquals(rangeMaxs(rle_df, ir, simplify=TRUE),      matricize(max_list))
-  checkEquals(rangeWhichMins(rle_df, ir, simplify=TRUE), matricize(which_min_list))
-  checkEquals(rangeWhichMaxs(rle_df, ir, simplify=TRUE), matricize(which_max_list))
+  expect_equal(rangeSums(rle_df, ir, simplify=FALSE), sum_list)
+  expect_equal(rangeMeans(rle_df, ir, simplify=FALSE, na.rm=TRUE), mean_list)
+  expect_equal(rangeMins(rle_df, ir, simplify=FALSE), min_list)
+  expect_equal(rangeMaxs(rle_df, ir, simplify=FALSE), max_list)
+  expect_equal(rangeWhichMins(rle_df, ir, simplify=FALSE), which_min_list)
+  expect_equal(rangeWhichMaxs(rle_df, ir, simplify=FALSE), which_max_list)
+  expect_equal(rangeSums(rle_df, ir, simplify=TRUE),      matricize(sum_list))
+  expect_equal(rangeMeans(rle_df, ir, simplify=TRUE, na.rm=TRUE),     matricize(mean_list))
+  expect_equal(rangeMins(rle_df, ir, simplify=TRUE),      matricize(min_list))
+  expect_equal(rangeMaxs(rle_df, ir, simplify=TRUE),      matricize(max_list))
+  expect_equal(rangeWhichMins(rle_df, ir, simplify=TRUE), matricize(which_min_list))
+  expect_equal(rangeWhichMaxs(rle_df, ir, simplify=TRUE), matricize(which_max_list))
 
-}
+})

@@ -1,2 +1,4 @@
-require("genoset") || stop("unable to load genoset package")
-genoset:::.test()
+library(testthat)
+library(genoset)
+
+test_check("genoset")

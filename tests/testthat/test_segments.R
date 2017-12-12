@@ -1,8 +1,9 @@
 #########################################
 # Test for segmentation-related functions
 #########################################
-library(RUnit)
+library(testthat)
 library(genoset)
+
 sample.names = LETTERS[11:13]
 probe.names = letters[1:10]
 locData.gr = GRanges(ranges=IRanges(start=c(1,3,5,7,4,6,2,4,6,8),width=1,names=probe.names),seqnames=c(rep("chr1",4),rep("chr3",2),rep("chrX",4)))
@@ -47,26 +48,26 @@ basic.rds.after = list(
     num.mark = c(1,3,1,1,4), seg.mean = c(3.3,4.3,4.3,6.3,7.3))
   )
 
-test_segs2GRanges <- function() {
-  checkEquals( segs2Granges(basic.segs.after$K), basic.rds.after$K )
-  checkEquals( segs2Granges(basic.segs.after$L), basic.rds.after$L )
-  checkEquals( segs2Granges(basic.segs.after$M), basic.rds.after$M )
-}
+test_that("We can convert segs to GRanges", {
+  expect_equal( segs2Granges(basic.segs.after$K), basic.rds.after$K )
+  expect_equal( segs2Granges(basic.segs.after$L), basic.rds.after$L )
+  expect_equal( segs2Granges(basic.segs.after$M), basic.rds.after$M )
+})
 
-test_segs2Rle <- function() {
+test_that("We can convert segs to Rle", {
   # With GRanges
   na.df = data.frame( chrom = factor(c("chr1", "chr1", "chr3", "chr3", "chrX"), levels=chrNames(locData.gr)),
     loc.start = c(3, 5, 4, 6, 2),  loc.end = c(3, 7, 4, 6, 6),  num.mark = c(1, 2, 1, 1, 3),  seg.mean = c(3.3, 4.3, 4.3, 6.3, 7.3),  stringsAsFactors=FALSE )
   na.rle = Rle( c(NA, 3.3, 4.3, 6.3, 7.3, NA),  c(1, 1, 3, 1, 3, 1) )
-  checkEquals( segs2Rle( basic.segs[[1]], locData.gr ), basic.rle.df[[1]], checkNames=FALSE )
-  checkEquals( segs2Rle( basic.segs[[2]], locData.gr ), basic.rle.df[[2]], checkNames=FALSE )
-  checkEquals( segs2Rle( basic.segs[[3]], locData.gr ), basic.rle.df[[3]], checkNames=FALSE )
-  checkEquals( segs2Rle( na.df, locData.gr ), na.rle , checkNames=FALSE )
-}
+  expect_equal( segs2Rle( basic.segs[[1]], locData.gr ), basic.rle.df[[1]], checkNames=FALSE )
+  expect_equal( segs2Rle( basic.segs[[2]], locData.gr ), basic.rle.df[[2]], checkNames=FALSE )
+  expect_equal( segs2Rle( basic.segs[[3]], locData.gr ), basic.rle.df[[3]], checkNames=FALSE )
+  expect_equal( segs2Rle( na.df, locData.gr ), na.rle , checkNames=FALSE )
+})
 
-test_segs2RleDataFrame <- function() {
-  checkEquals( segs2RleDataFrame( basic.segs, locData.gr ), basic.rle.df, checkNames=FALSE )
-}
+test_that("We can convert segs to DF", {
+  expect_equal( segs2RleDataFrame( basic.segs, locData.gr ), basic.rle.df, checkNames=FALSE )
+})
 
 test_segTable <- function() {
   chr.ind = chrIndices(locData.gr)
@@ -74,15 +75,15 @@ test_segTable <- function() {
   end = end(locData.gr)
 
   # With GRanges
-  checkEquals( segTable( basic.rle.df[["K"]], locData.gr), basic.segs.after[["K"]], checkNames=FALSE )
-  checkEquals( segTable( basic.rle.df[["L"]], locData.gr), basic.segs.after[["L"]], checkNames=FALSE )
-  checkEquals( segTable( basic.rle.df[["M"]], locData.gr), basic.segs.after[["M"]], checkNames=FALSE )
-  checkEquals( segTable( basic.rle.df[["M"]], chr.ind=chr.ind, start=start, end=end), basic.segs.after[["M"]], checkNames=FALSE, "segTable on Rle providing chr.ind, start, end" )
-  checkEquals( segTable( basic.rle.df, locData.gr ), basic.segs.after, checkNames=FALSE )
-  checkEquals( segTable( basic.rle.df, locData.gr, stack=TRUE ), stacked.basic.segs.after, checkNames=FALSE )
+  expect_equal( segTable( basic.rle.df[["K"]], locData.gr), basic.segs.after[["K"]], checkNames=FALSE )
+  expect_equal( segTable( basic.rle.df[["L"]], locData.gr), basic.segs.after[["L"]], checkNames=FALSE )
+  expect_equal( segTable( basic.rle.df[["M"]], locData.gr), basic.segs.after[["M"]], checkNames=FALSE )
+  expect_equal( segTable( basic.rle.df[["M"]], chr.ind=chr.ind, start=start, end=end), basic.segs.after[["M"]], checkNames=FALSE, label = "segTable on Rle providing chr.ind, start, end" )
+  expect_equal( segTable( basic.rle.df, locData.gr ), basic.segs.after, checkNames=FALSE )
+  expect_equal( segTable( basic.rle.df, locData.gr, stack=TRUE ), stacked.basic.segs.after, checkNames=FALSE )
 }
 
-test_segPairTable <- function() {
+test_that("We can convert segs to pair table", {
   cn = Rle(c(3,4,5,6),rep(3,4))
   loh = Rle(c(2,4,6,8,10,12),rep(2,6))
   start = c(9:11,4:9,15:17)
@@ -101,8 +102,8 @@ test_segPairTable <- function() {
 #    x  = c(3,3,4,4,5,5, 6,  6),
 #    y = c(2,4,4,6,8,10,10, 12)
 #    )
-#  checkIdentical(segs.gr, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
-  
+#  expect_identical(segs.gr, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
+
   segs.df = data.frame(
     chrom=factor(c(rep("chr1",2),rep("chr2",4),rep("chr3",2)),levels=c("chr1","chr2","chr3")),
     loc.start = c( 9,11,4,5,7,9,15,16),
@@ -111,43 +112,43 @@ test_segPairTable <- function() {
     x  = c(3,3,4,4,5,5, 6,  6),
     y = c(2,4,4,6,8,10,10, 12)
     )
-  checkEquals(segs.df, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
-  
+  expect_equal(segs.df, segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end))
+
   cn.df = DataFrame(a=cn,b=cn+1)
   loh.df = DataFrame(a=loh,b=loh+1)
   stacked.segs.df = do.call(rbind,list(a = segPairTable(cn,loh,chr.ind=chr.ind,start=start,end=end), b = segPairTable(cn+1,loh+1,chr.ind=chr.ind,start=start,end=end)))
   stacked.segs.df = cbind(
     stacked.segs.df,
-    Sample = factor(rep(c("a","b"),each=8)), 
+    Sample = factor(rep(c("a","b"),each=8)),
     stringsAsFactors=FALSE,row.names=NULL)
-  checkEquals(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
-}
+  expect_equal(stacked.segs.df, segPairTable(cn.df,loh.df,locs=locs.gr,stack=TRUE))
+})
 
-test_fixSegNAs <- function() {
+test_that("We can fix NA segments", {
   x = Rle(c(1,NA,1,5,4,NA,4,2,NA,3), rep(1,10) )
   x.fixed = Rle(c(1,5,4,2,NA,3), c(3,1,3,1,1,1))
-  checkIdentical( fixSegNAs(x), x.fixed, "Easy, no NAs on ends" )
+  expect_identical( fixSegNAs(x), x.fixed, "Easy, no NAs on ends" )
 
   x = Rle(c(1,NA,1,5,4,NA,4,2,NA), rep(1,9) )
   x.fixed = Rle(c(1,5,4,2), c(3,1,3,2))
-  checkIdentical( fixSegNAs(x), x.fixed, "NA at end too" )
+  expect_identical( fixSegNAs(x), x.fixed, "NA at end too" )
 
   x = Rle(c(NA,1,5,4,NA,4,2,NA), rep(1,8) )
   x.fixed = Rle(c(1,5,4,2), c(2,1,3,2))
-  checkIdentical( fixSegNAs(x), x.fixed, "NA at beginning too" )
+  expect_identical( fixSegNAs(x), x.fixed, "NA at beginning too" )
 
   x = Rle(c(NA,1,5,4,NA,4,2,NA,2), c(1,1,1,2,3,2,1,4,2) )
   x.fixed = Rle(c(1,5,4,2,NA,2), c(2,1,7,1,4,2))
-  checkIdentical( fixSegNAs(x), x.fixed, "Longer NA runs" )
-}
+  expect_identical( fixSegNAs(x), x.fixed, "Longer NA runs" )
+})
 
-test_runCBS <- function() {
+test_that("We can run CBS", {
   sample.names = paste("a",1:2,sep="")
   probe.names =  paste("p",1:30,sep="")
   ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
   ds.with.na = matrix(c(c(rep(5,9),NA,rep(5,10),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
   locs.gr = GRanges(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),seqnames=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
-  
+
   seg.rle.result = RleDataFrame( a1 = Rle(c(rep(5,20),rep(3,10))), a2 = Rle(c(rep(2,10),rep(7,10),rep(9,10))), row.names=probe.names )
   seg.list.result = list(
     a1 = data.frame( ID=rep("a1",2), chrom=factor(c("chr1","chr2")), loc.start=c(1,1), loc.end=c(20,10), num.mark=c(20,10), seg.mean=c(5,3), stringsAsFactors=FALSE),
@@ -155,28 +156,28 @@ test_runCBS <- function() {
     )
 
   # With GRanges
-  checkEquals( runCBS(ds,locs.gr, n.cores=8), seg.rle.result, "Return DF of Rle")
-  checkEquals( runCBS(ds.with.na,locs.gr, n.cores=8), seg.rle.result, "Return DF of Rle with some NA in starting data")
-  checkEquals( runCBS(ds,locs.gr, n.cores=8, return.segs=TRUE), seg.list.result, "Return seg dfs")
-  checkEquals( runCBS(seg.rle.result,locs.gr, n.cores=8), seg.rle.result, "Return seg dfs starting from DF of Rle (like mbaf)")
-  checkEquals( runCBS(ds,locs.gr, n.cores=8,alpha=0.01), seg.rle.result, "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
-}
+  expect_equal( runCBS(ds,locs.gr, n.cores=8), seg.rle.result, label = "Return DF of Rle")
+  expect_equal( runCBS(ds.with.na,locs.gr, n.cores=8), seg.rle.result, label = "Return DF of Rle with some NA in starting data")
+  expect_equal( runCBS(ds,locs.gr, n.cores=8, return.segs=TRUE), seg.list.result, label = "Return seg dfs")
+  expect_equal( runCBS(seg.rle.result,locs.gr, n.cores=8), seg.rle.result, label = "Return seg dfs starting from DF of Rle (like mbaf)")
+  expect_equal( runCBS(ds,locs.gr, n.cores=8,alpha=0.01), seg.rle.result, label = "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
+})
 
-test_segs2Granges <- function() {
+test_that("We can convert segs to GRanges", {
   segs = data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
   gr = GRanges(IRanges(start=1:4, end=c(5, 7, 9, 22)), seqnames=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4])
-  checkIdentical(gr, segs2Granges(segs))
-}
+  expect_identical(gr, segs2Granges(segs))
+})
 
-test_rangeSegMeanLength <- function() {
+test_that("We can figure out average segment lengths", {
   segs = data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
   seg.list = list(
-    foo=data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE), 
+    foo=data.frame(loc.start=1:4, loc.end=c(5, 7, 9, 22), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE),
     goo=data.frame(loc.start=2:5, loc.end=c(5, 7, 9, 20), chrom=factor(c("1", "1", "2", "2"), levels=c("1", "2")), num.mark=letters[1:4], goo=LETTERS[1:4], stringsAsFactors=FALSE)
     )
   gene.gr = GRanges(IRanges(start=c(1, 3), end=c(1, 20), names=c("EGFR", "ERBB2")), seqnames=factor(c("1", "2"), levels=c("1", "2")))
   len = c("EGFR"=5, "ERBB2"=13)
   len.mat = matrix(c(5, 13, 4, 11), ncol=2, dimnames=list(c("EGFR", "ERBB2"), c("foo", "goo")))
-  checkIdentical(len, rangeSegMeanLength(gene.gr, segs))
-  checkIdentical(len.mat, rangeSegMeanLength(gene.gr, seg.list))
-}
+  expect_identical(len, rangeSegMeanLength(gene.gr, segs))
+  expect_identical(len.mat, rangeSegMeanLength(gene.gr, seg.list))
+})
