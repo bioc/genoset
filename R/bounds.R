@@ -11,27 +11,27 @@
 ##' @param n integer, the expected length of the Rle, i.e. the number of features in the
 ##' genome/target ranges processed by boundingIndicesByChr.
 ##' @return Rle
-##' @family "segmented data"
-bounds2Rle <- function( bounds, values, n ) {
-  if ( length(values) != nrow(bounds) ) {
-    stop("must have one value for each bound")
-  }
-  if (n < length(values)) {
-    stop("n must be >= length(values)")
-  }
-  run.length = integer((2*nrow(bounds))+1)
-  run.length[1] = bounds[1] - 1
-  run.value = rep(NA_real_, (2*nrow(bounds))+1)
-  data.indices = seq.int(from=2, by=2, length.out=nrow(bounds))
-  widths = (bounds[, 2] - bounds[, 1]) + 1
-  run.length[data.indices] = widths
-  run.value[data.indices] = values
-  run.length[data.indices+1] = diff(c(bounds[, 2], n)) - c(widths[-1], 0)
-
-  if (sum(run.length) != n) {
-    stop("Rle is the wrong length. Look for double counted features in your bounds table.")
-  }
-  return( Rle( run.value, run.length ) )
+##' @family 'segmented data'
+bounds2Rle <- function(bounds, values, n) {
+    if (length(values) != nrow(bounds)) {
+        stop("must have one value for each bound")
+    }
+    if (n < length(values)) {
+        stop("n must be >= length(values)")
+    }
+    run.length = integer((2 * nrow(bounds)) + 1)
+    run.length[1] = bounds[1] - 1
+    run.value = rep(NA_real_, (2 * nrow(bounds)) + 1)
+    data.indices = seq.int(from = 2, by = 2, length.out = nrow(bounds))
+    widths = (bounds[, 2] - bounds[, 1]) + 1
+    run.length[data.indices] = widths
+    run.value[data.indices] = values
+    run.length[data.indices + 1] = diff(c(bounds[, 2], n)) - c(widths[-1], 0)
+    
+    if (sum(run.length) != n) {
+        stop("Rle is the wrong length. Look for double counted features in your bounds table.")
+    }
+    return(Rle(run.value, run.length))
 }
 
 ##' Find indices of features bounding a set of chromosome ranges/genes
@@ -59,23 +59,27 @@ bounds2Rle <- function( bounds, values, n ) {
 ##' @param positions Base positions in which to search
 ##' @param all.indices logical, return a list containing full sequence of indices for each query
 ##' @return integer matrix of 2 columms for start and stop index of range in data or a list of full sequences of indices for each query (see all.indices argument)
-##' @family "range summaries"
+##' @family 'range summaries'
 ##' @export boundingIndices
 ##' @examples
 ##'   starts = seq(10,100,10)
 ##'   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
-boundingIndices <- function(starts, stops, positions, all.indices=FALSE) {
-  if (length(starts) != length(stops)) {
-    stop("starts and stops must be the same length.")
-  }
-  bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions))
-
-  if (all.indices == TRUE) { # Return all covered and bounding indices
-    return( apply( bounds, 1, function(x) { seq(from=x[1], to=x[2]) }) )
-  } else {  # Just return left and right indices
-    return(bounds)
-  }
-
+boundingIndices <- function(starts, stops, positions, all.indices = FALSE) {
+    if (length(starts) != length(stops)) {
+        stop("starts and stops must be the same length.")
+    }
+    bounds = .Call("binary_bound", as.integer(starts), as.integer(stops), as.integer(positions))
+    
+    if (all.indices == TRUE) {
+        # Return all covered and bounding indices
+        return(apply(bounds, 1, function(x) {
+            seq(from = x[1], to = x[2])
+        }))
+    } else {
+        # Just return left and right indices
+        return(bounds)
+    }
+    
 }
 
 ##' Find indices of features bounding a set of chromosome ranges/genes, across chromosomes
@@ -106,34 +110,42 @@ boundingIndices <- function(starts, stops, positions, all.indices=FALSE) {
 ##' @param subject GenomicRanges
 ##' @return integer matrix with two columns corresponding to indices on left and right bound of queries in subject
 ##' @export boundingIndicesByChr
-##' @family "range summaries"
-boundingIndicesByChr <-function(query, subject) {
-  if (!is(query,"GRanges")) {
-    tryCatch({ query = as(query,"GRanges"); }, error=function(e) { stop("Could not convert query into GRanges.\n") })
-  }
-
-  # Subject must have features ordered by start within chromosome. Query need not really, but it's faster.
-  # Just checking query genome order to assure data are in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
-  if (! isGenomeOrder(subject,strict=FALSE) ) {
-    stop("subject must be in genome order.\n")
-  }
-  if (! isGenomeOrder(query,strict=FALSE) ) {
-    stop("query must be in genome order.\n")
-  }
-  query.chr.indices = chrIndices(query)
-  subject.chr.indices = chrIndices(subject)
-  if (! all(rownames(query.chr.indices) %in% rownames(subject.chr.indices))) {
-    stop("Some query chromosomes not represented in subject. Try query = keepSeqlevels( query, value=chrNames(subject) )")
-  }
-  subject.chr.indices = subject.chr.indices[rownames(query.chr.indices),,drop=FALSE]
-  nquery = as.integer(sum(query.chr.indices[,2] - query.chr.indices[,3])) # !!!
-  query.start = start(query)
-  query.end = end(query)
-  query.names = names(query)
-  if (is.null(query.names)) { query.names = as.character(seq.int(from=1,to=nquery)) }
-  subject.start = start(subject)
-  subject.end = end(subject)
-  return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, query.names, subject.chr.indices, subject.start, subject.end))
+##' @family 'range summaries'
+boundingIndicesByChr <- function(query, subject) {
+    if (!is(query, "GRanges")) {
+        tryCatch({
+            query = as(query, "GRanges")
+        }, error = function(e) {
+            stop("Could not convert query into GRanges.\n")
+        })
+    }
+    
+    # Subject must have features ordered by start within chromosome. Query need not
+    # really, but it's faster.  Just checking query genome order to assure data are
+    # in blocks by chromosome in a GRanges. Chromosome order doesn't matter.
+    if (!isGenomeOrder(subject, strict = FALSE)) {
+        stop("subject must be in genome order.\n")
+    }
+    if (!isGenomeOrder(query, strict = FALSE)) {
+        stop("query must be in genome order.\n")
+    }
+    query.chr.indices = chrIndices(query)
+    subject.chr.indices = chrIndices(subject)
+    if (!all(rownames(query.chr.indices) %in% rownames(subject.chr.indices))) {
+        stop("Some query chromosomes not represented in subject. Try query = keepSeqlevels( query, value=chrNames(subject) )")
+    }
+    subject.chr.indices = subject.chr.indices[rownames(query.chr.indices), , drop = FALSE]
+    nquery = as.integer(sum(query.chr.indices[, 2] - query.chr.indices[, 3]))  # !!!
+    query.start = start(query)
+    query.end = end(query)
+    query.names = names(query)
+    if (is.null(query.names)) {
+        query.names = as.character(seq.int(from = 1, to = nquery))
+    }
+    subject.start = start(subject)
+    subject.end = end(subject)
+    return(.Call("binary_bound_by_chr", nquery, query.chr.indices, query.start, query.end, 
+        query.names, subject.chr.indices, subject.start, subject.end))
 }
 
 ##' Average features in ranges per sample
@@ -150,16 +162,17 @@ boundingIndicesByChr <-function(query, subject) {
 ##' @param assay.element character, name of element in assayData to use to extract data
 ##' @param na.rm scalar logical, ignore NAs?
 ##' @return numeric matrix of features in each range averaged by sample
-##' @family "range summaries"
+##' @family 'range summaries'
 ##' @export rangeSampleMeans
 ##' @examples
 ##'   data(genoset)
-##'   my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), seqnames=c("chr17","chr8") )
-##'   rangeSampleMeans( my.genes, genoset.ds, "lrr" )
-rangeSampleMeans <- function(query, subject, assay.element, na.rm=FALSE) {
-  ## Find feature bounds of each query in subject genoset, get feature data average for each sample
-  all.indices = boundingIndicesByChr(query, subject)
-  data.matrix = assay(subject,assay.element)
-  range.means = rangeMeans(data.matrix, all.indices, na.rm=na.rm)
-  return(range.means)
+##'   my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c('HER2','CMYC')), seqnames=c('chr17','chr8') )
+##'   rangeSampleMeans( my.genes, genoset.ds, 'lrr' )
+rangeSampleMeans <- function(query, subject, assay.element, na.rm = FALSE) {
+    ## Find feature bounds of each query in subject genoset, get feature data average
+    ## for each sample
+    all.indices = boundingIndicesByChr(query, subject)
+    data.matrix = assay(subject, assay.element)
+    range.means = rangeMeans(data.matrix, all.indices, na.rm = na.rm)
+    return(range.means)
 }
