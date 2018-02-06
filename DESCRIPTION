@@ -1,8 +1,8 @@
 Package: genoset
 Type: Package
 Title: A RangedSummarizedExperiment with methods for copy number analysis
-Version: 1.35.1
-Date: 2017-12-11
+Version: 1.35.2
+Date: 2018-02-06
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
 Description: GenoSet provides an extension of the RangedSummarizedExperiment
@@ -37,7 +37,7 @@ Enhances: parallel
 ByteCompile: TRUE
 biocViews: Infrastructure, DataRepresentation, Microarray, SNP,
     CopyNumberVariation
-Collate: 
+Collate:
     'genoset-class.R'
     'RleDataFrame-class.R'
     'RleDataFrame-methods.R'
@@ -51,3 +51,5 @@ VignetteBuilder: knitr
 URL: https://github.com/phaverty/genoset
 Packaged: 2014-10-08 19:15:54 UTC; dtenenba
 RoxygenNote: 6.0.1.9000
+Roxygen: list(markdown = TRUE)
+Encoding: UTF-8
