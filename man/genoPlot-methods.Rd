@@ -13,8 +13,8 @@ genoPlot(x, y, ...)
 \S4method{genoPlot}{numeric,numeric}(x, y, add = FALSE, xlab = "",
   ylab = "", col = "black", locs = NULL, ...)
 
-\S4method{genoPlot}{numeric,Rle}(x, y, add = FALSE, xlab = "", ylab = "",
-  col = "red", locs = NULL, lwd = 2, xlim = NULL, ...)
+\S4method{genoPlot}{numeric,Rle}(x, y, add = FALSE, xlab = "",
+  ylab = "", col = "red", locs = NULL, lwd = 2, xlim = NULL, ...)
 
 \S4method{genoPlot}{GenoSetOrGenomicRanges,ANY}(x, y, chr = NULL,
   add = FALSE, pch = ".", xlab = "", ylab = "", ...)
@@ -38,7 +38,7 @@ genoPlot(x, y, ...)
 
 \item{lwd}{numeric, line width for segment plots from an Rle}
 
-\item{xlim}{integer, length two, bounds for genome positions. Used in conjunction with "chr" to subset data for plotting.}
+\item{xlim}{integer, length two, bounds for genome positions. Used in conjunction with 'chr' to subset data for plotting.}
 
 \item{chr}{Chromosome to plot, NULL by default for full genome}
 
@@ -61,27 +61,27 @@ with genome positions in the most appropriate units.
 
 \describe{
 
-\item{\code{signature(x = "GenoSetOrGenomicRanges", y = "ANY")}}{
+\item{\code{signature(x = 'GenoSetOrGenomicRanges', y = 'ANY')}}{
 Plot feature locations and data from one sample.
 }
 
-\item{\code{signature(x = "numeric", y = "numeric")}}{
+\item{\code{signature(x = 'numeric', y = 'numeric')}}{
 Plot numeric location and a vector of numeric data.
 }
 
-\item{\code{signature(x = "numeric", y = "Rle")}}{
+\item{\code{signature(x = 'numeric', y = 'Rle')}}{
 Plot numeric location and a vector of Rle data. Uses lines for Rle runs.
 }
 }
 }
 
 \examples{
-data(genoset,package="genoset")
-genoPlot( x=genoset.ds,y=genoset.ds[,1,"lrr"] )
-genoPlot( genoPos(genoset.ds), genoset.ds[,1,"lrr"], locs=rowRanges(genoset.ds) ) # The same
+data(genoset,package='genoset')
+genoPlot( x=genoset.ds,y=genoset.ds[,1,'lrr'] )
+genoPlot( genoPos(genoset.ds), genoset.ds[,1,'lrr'], locs=rowRanges(genoset.ds) ) # The same
 genoPlot( 1:10, Rle(c(rep(0,5),rep(3,4),rep(1,1))) )
 }
 \seealso{
-Other "genome plots": \code{\link{genomeAxis}}
+Other 'genome plots': \code{\link{genomeAxis}}
 }
-\concept{"genome plots"}
+\concept{'genome plots'}

@@ -22,7 +22,7 @@ cn2lr(x, ploidy)
 \item{ploidy}{numeric, of length ncol(x). Ploidy of each sample.}
 }
 \value{
-data of same type as "x" transformed into log2ratio units
+data of same type as 'x' transformed into log2ratio units
 }
 \description{
 Utility function for converting copynumber units (2 is normal) to log2ratio units (two is normal). If ploidy

@@ -4,8 +4,8 @@
 \alias{.do_rledf_range_summary}
 \title{Calculate min/max/sum/mean/whichmin/whichmax over ranges on each column of an RleDataFrame.}
 \usage{
-.do_rledf_range_summary(x, bounds, na.rm = FALSE, simplify = TRUE, RLEFUN,
-  FUN.TYPE = c("numeric", "double", "integer", "logical"))
+.do_rledf_range_summary(x, bounds, na.rm = FALSE, simplify = TRUE,
+  RLEFUN, FUN.TYPE = c("numeric", "double", "integer", "logical"))
 }
 \arguments{
 \item{x}{RleDataFrame}

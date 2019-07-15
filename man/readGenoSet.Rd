@@ -18,7 +18,7 @@ and return. Objects that pre-date the switch to a RangedSummarizedExperiment int
 1.29.0) are automatically switched to the new format.
 }
 \examples{
-\dontrun{ ds = readGenoSet("/path/to/genoset.RData") }
-\dontrun{ ds = readGenoSet("/path/to/genoset.rda") }
-\dontrun{ ds = readGenoSet("/path/to/genoset.rds") }
+\dontrun{ ds = readGenoSet('/path/to/genoset.RData') }
+\dontrun{ ds = readGenoSet('/path/to/genoset.rda') }
+\dontrun{ ds = readGenoSet('/path/to/genoset.rds') }
 }

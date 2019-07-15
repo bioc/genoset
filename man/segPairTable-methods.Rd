@@ -32,7 +32,7 @@ segPairTable(x, y, ...)
 
 \item{factor.chr}{scalar logical, make 'chrom' column a factor?}
 
-\item{stack}{logical, rbind list of segment tables for each sample and add "Sample" column?}
+\item{stack}{logical, rbind list of segment tables for each sample and add 'Sample' column?}
 }
 \value{
 one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
@@ -44,7 +44,7 @@ columns and makes one or more data.frames with bounds of each new
 segment.  Rle objects are broken up so that each resulting segment
 has one value from each Rle. For a DataFrame, the
 argument \code{stack} combines all of the individual data.frames
-into one large data.frame and adds a "Sample" column of sample ids.
+into one large data.frame and adds a 'Sample' column of sample ids.
 }
 \details{
 For a Rle, the user can provide \code{locs} or \code{chr.ind},
@@ -56,13 +56,13 @@ and this is used in the DataFrame version.
   loh = Rle(c(2,4,6,8,10,12),rep(2,6))
   start = c(9:11,4:9,15:17)
   end = start
-  locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep("chr1",3),rep("chr2",6),rep("chr3",3)))
+  locs = GRanges(IRanges(start=start,end=end),seqnames=c(rep('chr1',3),rep('chr2',6),rep('chr3',3)))
   segPairTable(cn,loh,locs)
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

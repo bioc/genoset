@@ -30,7 +30,7 @@ segTable(object, ...)
 
 \item{factor.chr}{scalar logical, make 'chrom' column a factor?}
 
-\item{stack}{logical, rbind list of segment tables for each sample and add "Sample" column?}
+\item{stack}{logical, rbind list of segment tables for each sample and add 'Sample' column?}
 }
 \value{
 one or a list of data.frames with columns chrom, loc.start, loc.end, num.mark, seg.mean
@@ -43,7 +43,7 @@ segment.  Note the loc.start and loc.stop will correspond
 exactly to probe locations in rowRanges and the input to
 segs2RleDataFrame are not necessarily so. For a DataFrame, the
 argument \code{stack} combines all of the individual data.frames
-into one large data.frame and adds a "Sample" column of sample ids.
+into one large data.frame and adds a 'Sample' column of sample ids.
 }
 \details{
 For a Rle, the user can provide \code{locs} or \code{chr.ind},
@@ -51,18 +51,18 @@ For a Rle, the user can provide \code{locs} or \code{chr.ind},
 and this is used in the DataFrame version.
 }
 \examples{
-  data(genoset,package="genoset")
-  seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  data(genoset,package='genoset')
+  seg.list = runCBS( genoset.ds[, , 'lrr'], rowRanges(genoset.ds), return.segs=TRUE )
   df = segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
-  genoset.ds[ , , "lrr.segs"] = df
+  genoset.ds[ , , 'lrr.segs'] = df
   segTable( df, rowRanges(genoset.ds) )
-  segTable( genoset.ds[ , , "lrr.segs"], rowRanges(genoset.ds) )
-  segTable( genoset.ds[ , 1, "lrr.segs"], rowRanges(genoset.ds), colnames(genoset.ds)[1] )
+  segTable( genoset.ds[ , , 'lrr.segs'], rowRanges(genoset.ds) )
+  segTable( genoset.ds[ , 1, 'lrr.segs'], rowRanges(genoset.ds), colnames(genoset.ds)[1] )
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segPairTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

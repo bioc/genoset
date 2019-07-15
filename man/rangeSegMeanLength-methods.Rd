@@ -29,9 +29,9 @@ segments covered by each gene in each sample. Often only a single segment covers
 a given sample.
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{runCBS}}, \code{\link{segPairTable}},
   \code{\link{segTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

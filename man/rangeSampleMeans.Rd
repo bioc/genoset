@@ -28,11 +28,11 @@ will at least cover two features. Range bounding is performed by the boundingInd
 }
 \examples{
   data(genoset)
-  my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c("HER2","CMYC")), seqnames=c("chr17","chr8") )
-  rangeSampleMeans( my.genes, genoset.ds, "lrr" )
+  my.genes = GRanges( ranges=IRanges(start=c(35e6,128e6),end=c(37e6,129e6),names=c('HER2','CMYC')), seqnames=c('chr17','chr8') )
+  rangeSampleMeans( my.genes, genoset.ds, 'lrr' )
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndicesByChr}},
+Other 'range summaries': \code{\link{boundingIndicesByChr}},
   \code{\link{boundingIndices}}
 }
-\concept{"range summaries"}
+\concept{'range summaries'}

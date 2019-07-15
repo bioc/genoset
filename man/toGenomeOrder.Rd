@@ -26,13 +26,13 @@ toGenomeOrder for GRanges differs from sort in that it orders by chromsome and s
 rather than chromsome, strand, start, and width.
 }
 \examples{
-  data(genoset,package="genoset")
+  data(genoset,package='genoset')
   toGenomeOrder( genoset.ds, strict=TRUE )
   toGenomeOrder( genoset.ds, strict=FALSE )
   toGenomeOrder( rowRanges(genoset.ds) )
 }
 \seealso{
-Other "genome ordering": \code{\link{chrOrder}},
+Other 'genome ordering': \code{\link{chrOrder}},
   \code{\link{isGenomeOrder}}
 }
-\concept{"genome ordering"}
+\concept{'genome ordering'}

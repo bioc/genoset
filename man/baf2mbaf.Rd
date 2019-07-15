@@ -13,7 +13,7 @@ baf2mbaf(baf, hom.cutoff = 0.95, calls = NULL, call.pairs = NULL)
 
 \item{calls}{matrix of NA, CT, AG, etc. genotypes to select HETs (in normals). Dimnames must match baf matrix.}
 
-\item{call.pairs}{list, names represent target samples for HOMs to set to NA. Values represent columns in "calls" matrix.}
+\item{call.pairs}{list, names represent target samples for HOMs to set to NA. Values represent columns in 'calls' matrix.}
 }
 \value{
 numeric matix of mBAF values
@@ -27,9 +27,9 @@ a matched normal) are provided as the matrix 'calls' additional HOMs can be set 
 argument 'call.pairs' is used to match columns in 'calls' to columns in 'baf'.
 }
 \examples{
-   data(genoset,package="genoset")
-   mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 )
-   calls = matrix(sample(c("AT","AA","CG","GC","AT","GG"),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(rownames(genoset.ds),c("K","L")))
-   mbaf = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9, calls = calls, call.pairs = list(K="L",L="L") ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
-   genoset.ds[, ,"mbaf"] = baf2mbaf( genoset.ds[, , "baf"], hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
+   data(genoset,package='genoset')
+   mbaf = baf2mbaf( genoset.ds[, , 'baf'], hom.cutoff=0.9 )
+   calls = matrix(sample(c('AT','AA','CG','GC','AT','GG'),(nrow(genoset.ds) * 2),replace=TRUE),ncol=2,dimnames=list(rownames(genoset.ds),c('K','L')))
+   mbaf = baf2mbaf( genoset.ds[, , 'baf'], hom.cutoff=0.9, calls = calls, call.pairs = list(K='L',L='L') ) # Sample L is matched normal for tumor sample K, M only uses hom.cutoff
+   genoset.ds[, ,'mbaf'] = baf2mbaf( genoset.ds[, , 'baf'], hom.cutoff=0.9 ) # Put mbaf back into the BAFSet object as a new element
 }

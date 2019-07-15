@@ -21,15 +21,15 @@ Given segments, make an RleDataFrame of Rle objects for each sample
 Take table of segments from CBS, convert DataTable of Rle objects for each sample.
 }
 \examples{
-  data(genoset,package="genoset")
-  seg.list = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  data(genoset,package='genoset')
+  seg.list = runCBS( genoset.ds[, , 'lrr'], rowRanges(genoset.ds), return.segs=TRUE )
   segs2RleDataFrame( seg.list, rowRanges(genoset.ds) )  # Loop segs2Rle on list of data.frames in seg.list
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segPairTable}}, \code{\link{segTable}},
   \code{\link{segs2Granges}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}
 \concept{segments}

@@ -17,7 +17,7 @@ numeric vector of feature positions within a chromosome
 Get chromosome position of features/ranges. Defined as floor of mean of start and end.
 }
 \examples{
-  data(genoset,package="genoset")
+  data(genoset,package='genoset')
   pos(genoset.ds)  # 1:10
   pos(rowRanges(genoset.ds))  # The same
 }

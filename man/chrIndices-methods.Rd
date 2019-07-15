@@ -16,7 +16,7 @@ chrIndices(object, chr = NULL)
 \item{chr}{character, specific chromosome name}
 }
 \value{
-data.frame with "first" and "last" columns
+data.frame with 'first' and 'last' columns
 }
 \description{
 Sometimes it is handy to know the first and last index for each chr.
@@ -25,7 +25,7 @@ locations. If chr is specified, the function will return a sequence
 of integers representing the row indices of features on that chromosome.
 }
 \examples{
-  data(genoset,package="genoset")
+  data(genoset,package='genoset')
   chrIndices(genoset.ds)
   chrIndices(rowRanges(genoset.ds))  # The same
 }

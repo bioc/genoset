@@ -4,9 +4,9 @@
 \alias{runCBS}
 \title{Run CBS Segmentation}
 \usage{
-runCBS(data, locs, return.segs = FALSE, n.cores = 1, smooth.region = 2,
-  outlier.SD.scale = 4, smooth.SD.scale = 2, trim = 0.025,
-  alpha = 0.001)
+runCBS(data, locs, return.segs = FALSE, n.cores = 1,
+  smooth.region = 2, outlier.SD.scale = 4, smooth.SD.scale = 2,
+  trim = 0.025, alpha = 0.001)
 }
 \arguments{
 \item{data}{numeric matrix with continuous data in one or more columns}
@@ -38,25 +38,25 @@ Takes care of running CBS segmentation on one or more samples. Makes appropriate
 input, smooths outliers, and segment
 }
 \examples{
-    sample.names = paste("a",1:2,sep="")
-    probe.names =  paste("p",1:30,sep="")
+    sample.names = paste('a',1:2,sep='')
+    probe.names =  paste('p',1:30,sep='')
     ds = matrix(c(c(rep(5,20),rep(3,10)),c(rep(2,10),rep(7,10),rep(9,10))),ncol=2,dimnames=list(probe.names,sample.names))
-    locs = GRanges(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),seqnames=paste("chr",c(rep(1,20),rep(2,10)),sep=""))
+    locs = GRanges(ranges=IRanges(start=c(1:20,1:10),width=1,names=probe.names),seqnames=paste('chr',c(rep(1,20),rep(2,10)),sep=''))
 
     seg.rle.result = RleDataFrame( a1 = Rle(c(rep(5,20),rep(3,10))), a2 = Rle(c(rep(2,10),rep(7,10),rep(9,10))), row.names=probe.names )
     seg.list.result = list(
-      a1 = data.frame( ID=rep("a1",2), chrom=factor(c("chr1","chr2")), loc.start=c(1,1), loc.end=c(20,10), num.mark=c(20,10), seg.mean=c(5,3), stringsAsFactors=FALSE),
-      a2 = data.frame( ID=rep("a2",3), chrom=factor(c("chr1","chr1","chr2")), loc.start=c(1,11,1), loc.end=c(10,20,10), num.mark=c(10,10,10), seg.mean=c(2,7,9), stringsAsFactors=FALSE)
+      a1 = data.frame( ID=rep('a1',2), chrom=factor(c('chr1','chr2')), loc.start=c(1,1), loc.end=c(20,10), num.mark=c(20,10), seg.mean=c(5,3), stringsAsFactors=FALSE),
+      a2 = data.frame( ID=rep('a2',3), chrom=factor(c('chr1','chr1','chr2')), loc.start=c(1,11,1), loc.end=c(10,20,10), num.mark=c(10,10,10), seg.mean=c(2,7,9), stringsAsFactors=FALSE)
       )
 
     runCBS(ds,locs)  # Should give seg.rle.result
     runCBS(ds,locs,return.segs=TRUE) # Should give seg.list.result
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}},
   \code{\link{segPairTable}}, \code{\link{segTable}},
   \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

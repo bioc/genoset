@@ -25,9 +25,9 @@ run with the value NA.  This is typical in the case where data is segmented with
 and some of the data to be segmented is NA.
 }
 \seealso{
-Other "segmented data": \code{\link{rangeSegMeanLength}},
+Other 'segmented data': \code{\link{rangeSegMeanLength}},
   \code{\link{runCBS}}, \code{\link{segPairTable}},
   \code{\link{segTable}}, \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

@@ -26,15 +26,15 @@
 
 \item{drop}{logical drop levels of space factor?}
 
-\item{value}{incoming data for assay "k", rows "i" and cols "j"}
+\item{value}{incoming data for assay 'k', rows 'i' and cols 'j'}
 }
 \description{
 Subset a GenoSet
 }
 \examples{
-  data(genoset,package="genoset")
+  data(genoset,package='genoset')
   genoset.ds[1:5,2:3]  # first five probes and samples 2 and 3
-  genoset.ds[ , "K"]  # Sample called K
-  gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep("chr17",7))
-  genoset.ds[ gr, "K" ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
+  genoset.ds[ , 'K']  # Sample called K
+  gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep('chr17',7))
+  genoset.ds[ gr, 'K' ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 }

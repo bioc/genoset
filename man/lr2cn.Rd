@@ -10,7 +10,7 @@ lr2cn(x)
 \item{x}{numeric data in log2ratio values}
 }
 \value{
-data of same type as "x" transformed into copynumber units
+data of same type as 'x' transformed into copynumber units
 }
 \description{
 Utility function for converting log2ratio units (zero is normal) to copynumber units (two is normal)

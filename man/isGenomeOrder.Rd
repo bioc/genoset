@@ -21,11 +21,11 @@ in that it orders by chromsome and start position only,
 rather than chromsome, strand, start, and width.
 }
 \examples{
-  data(genoset,package="genoset")
+  data(genoset,package='genoset')
   isGenomeOrder( rowRanges(genoset.ds) )
 }
 \seealso{
-Other "genome ordering": \code{\link{chrOrder}},
+Other 'genome ordering': \code{\link{chrOrder}},
   \code{\link{toGenomeOrder}}
 }
-\concept{"genome ordering"}
+\concept{'genome ordering'}

@@ -43,7 +43,7 @@ position info coming from a GenoSet or GRanges.
   boundingIndices( starts=starts, stops=starts+5, positions = 1:100 )
 }
 \seealso{
-Other "range summaries": \code{\link{boundingIndicesByChr}},
+Other 'range summaries': \code{\link{boundingIndicesByChr}},
   \code{\link{rangeSampleMeans}}
 }
-\concept{"range summaries"}
+\concept{'range summaries'}

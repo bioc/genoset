@@ -19,9 +19,9 @@ The three columns specifying the ranges become the GRanges and all other columns
 portion of the GRanges object.
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segPairTable}}, \code{\link{segTable}},
   \code{\link{segs2RleDataFrame}}, \code{\link{segs2Rle}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

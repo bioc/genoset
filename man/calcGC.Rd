@@ -13,7 +13,7 @@ calcGC(object, bsgenome, expand = 1e+06, bases = c("G", "C"))
 
 \item{expand}{scalar integer, amount to expand each range before calculating gc}
 
-\item{bases}{character, alphabet to count, usually c("G", "C"), but "N" is useful too}
+\item{bases}{character, alphabet to count, usually c('G', 'C'), but 'N' is useful too}
 }
 \value{
 named numeric vector, fraction of nucleotides that are G or C in expanded ranges of \code{object}

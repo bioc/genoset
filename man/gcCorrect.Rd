@@ -17,7 +17,7 @@ gcCorrect(ds, gc, retain.mean = TRUE)
 numeric matrix, residuals of ds regressed on gc
 }
 \description{
-Copy number estimates from various platforms show "Genomic Waves" (Diskin et al.,
+Copy number estimates from various platforms show 'Genomic Waves' (Diskin et al.,
 Nucleic Acids Research, 2008, PMID: 18784189) where copy number trends with local GC content.
 This function regresses copy number on GC percentage and removes the effect
 (returns residuals). GC content should be smoothed along the genome in wide
@@ -28,4 +28,4 @@ windows >= 100kb.
   ds = rnorm(100) + (0.1 * gc)
   gcCorrect(ds, gc)
 }
-\concept{"gc content"}
+\concept{'gc content'}

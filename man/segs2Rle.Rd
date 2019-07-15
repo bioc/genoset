@@ -22,15 +22,15 @@ necessarily cover all features in every sample. Using the start and top position
 and the location of each feature, we can make a Rle that represents all features.
 }
 \examples{
-  data(genoset,package="genoset")
-  segs = runCBS( genoset.ds[, , "lrr"], rowRanges(genoset.ds), return.segs=TRUE )
+  data(genoset,package='genoset')
+  segs = runCBS( genoset.ds[, , 'lrr'], rowRanges(genoset.ds), return.segs=TRUE )
   segs2Rle( segs[[1]], rowRanges(genoset.ds) )  # Take a data.frame of segments, say from DNAcopy's segment function, and make Rle's using probe locations in the locs
 }
 \seealso{
-Other "segmented data": \code{\link{bounds2Rle}},
+Other 'segmented data': \code{\link{bounds2Rle}},
   \code{\link{rangeSegMeanLength}}, \code{\link{runCBS}},
   \code{\link{segPairTable}}, \code{\link{segTable}},
   \code{\link{segs2Granges}},
   \code{\link{segs2RleDataFrame}}
 }
-\concept{"segmented data"}
+\concept{'segmented data'}

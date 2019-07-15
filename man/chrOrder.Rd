@@ -16,10 +16,10 @@ character vector of chromosome names in proper order
 Chromosomes make the most sense orded by number, then by letter.
 }
 \examples{
-   chrOrder(c("chr5","chrX","chr3","chr7","chrY"))  #  c("chr3","chr5","chr7","chrX","chrY")
+   chrOrder(c('chr5','chrX','chr3','chr7','chrY'))  #  c('chr3','chr5','chr7','chrX','chrY')
 }
 \seealso{
-Other "genome ordering": \code{\link{isGenomeOrder}},
+Other 'genome ordering': \code{\link{isGenomeOrder}},
   \code{\link{toGenomeOrder}}
 }
-\concept{"genome ordering"}
+\concept{'genome ordering'}
