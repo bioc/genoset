@@ -156,11 +156,11 @@ test_that("We can run CBS", {
     )
 
   # With GRanges
-  expect_equal( runCBS(ds,locs.gr, n.cores=8), seg.rle.result, label = "Return DF of Rle")
-  expect_equal( runCBS(ds.with.na,locs.gr, n.cores=8), seg.rle.result, label = "Return DF of Rle with some NA in starting data")
-  expect_equal( runCBS(ds,locs.gr, n.cores=8, return.segs=TRUE), seg.list.result, label = "Return seg dfs")
-  expect_equal( runCBS(seg.rle.result,locs.gr, n.cores=8), seg.rle.result, label = "Return seg dfs starting from DF of Rle (like mbaf)")
-  expect_equal( runCBS(ds,locs.gr, n.cores=8,alpha=0.01), seg.rle.result, label = "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
+  expect_equal( runCBS(ds,locs.gr, n.cores=1), seg.rle.result, label = "Return DF of Rle")
+  expect_equal( runCBS(ds.with.na,locs.gr, n.cores=1), seg.rle.result, label = "Return DF of Rle with some NA in starting data")
+  expect_equal( runCBS(ds,locs.gr, n.cores=1, return.segs=TRUE), seg.list.result, label = "Return seg dfs")
+  expect_equal( runCBS(seg.rle.result,locs.gr, n.cores=1), seg.rle.result, label = "Return seg dfs starting from DF of Rle (like mbaf)")
+  expect_equal( runCBS(ds,locs.gr, n.cores=1,alpha=0.01), seg.rle.result, label = "Runs OK with alpha at 0.01 (requires loading of data from DNAcopy)")
 })
 
 test_that("We can convert segs to GRanges", {
