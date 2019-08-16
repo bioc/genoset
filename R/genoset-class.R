@@ -3,7 +3,7 @@
 ##' GenoSet: An eSet for data with genome locations
 ##'
 ##' Load, manipulate, and plot copynumber and BAF data.
-##' 
+##'
 ##' @docType package
 ##' @name genoset-package
 ##' @aliases genoset genoset-package
@@ -41,7 +41,7 @@ setClassUnion("GenoSetOrGenomicRanges", c("GenoSet", "GenomicRanges"))
 ##' This function is the preferred method for creating a new GenoSet object. Currently,
 ##' a GenoSet is simply a RangedSummarizedExperiment with some API changes and extra
 ##' methods. Therefore, a GenoSet must always have a rowRanges.
-##' 
+##'
 ##' locations. Rownames are required to match featureNames.
 ##' @param rowRanges GenomicRanges, not a GenomicRangesList
 ##' @param assays list, SimpleList or matrix-like object
@@ -67,7 +67,12 @@ GenoSet <- function(rowRanges, assays, colData, metadata = list()) {
     if (!is(colData, "DataFrame")) {
         colData = as(colData, "DataFrame")
     }
-    rse = SummarizedExperiment(assays = assays, rowRanges = rowRanges, colData = colData, 
+    if (length(assays) > 0) {
+        an = colnames(assays[[1]])
+        stopifnot(!is.null(an) && identical(an,rownames(colData)))
+    }
+
+    rse = SummarizedExperiment(assays = assays, rowRanges = rowRanges, colData = colData,
         metadata = metadata)
     new("GenoSet", rse)
 }
@@ -93,7 +98,7 @@ GenoSet <- function(rowRanges, assays, colData, metadata = list()) {
 ##'   gr = GRanges(ranges=IRanges(start=seq(from=15e6,by=1e6,length=7),width=1,names=letters[8:14]),seqnames=rep('chr17',7))
 ##'   genoset.ds[ gr, 'K' ]  # sample K and probes overlapping those in rd, which overlap specifed ranges on chr17
 ##' @rdname genoset-subset
-setMethod("[", signature = signature(x = "GenoSet", i = "ANY"), function(x, i, j, 
+setMethod("[", signature = signature(x = "GenoSet", i = "ANY"), function(x, i, j,
     k, ..., withDimnames = TRUE, drop = FALSE) {
     if (!missing(i) && is(i, "GenomicRanges")) {
         i = unlist(rowRanges(x) %over% i)
@@ -118,7 +123,7 @@ setMethod("[", signature = signature(x = "GenoSet", i = "ANY"), function(x, i, j
 
 ##' @param value incoming data for assay 'k', rows 'i' and cols 'j'
 ##' @rdname genoset-subset
-setMethod("[<-", signature = signature(x = "GenoSet", i = "ANY"), function(x, i, 
+setMethod("[<-", signature = signature(x = "GenoSet", i = "ANY"), function(x, i,
     j, k, value) {
     if (missing(k)) {
         stop("Must specify k to replace data in the GenoSet")
@@ -133,7 +138,7 @@ setMethod("[<-", signature = signature(x = "GenoSet", i = "ANY"), function(x, i,
         assay(x, k) = value
     } else {
         if (missing(i)) {
-            
+
             assay(x, k)[, j] = value
         } else if (missing(j)) {
             assay(x, k)[i, ] = value
@@ -252,13 +257,13 @@ setMethod("chrInfo", signature(object = "GenoSetOrGenomicRanges"), function(obje
     } else {
         max.val = max.val[chrOrder(chrNames(object))]
     }
-    
-    chr.info = matrix(ncol = 3, nrow = length(max.val), dimnames = list(names(max.val), 
+
+    chr.info = matrix(ncol = 3, nrow = length(max.val), dimnames = list(names(max.val),
         c("start", "stop", "offset")))
     chr.info[, "stop"] = cumsum(as.numeric(max.val))
     chr.info[, "offset"] = c(0, chr.info[-nrow(chr.info), "stop"])
     chr.info[, "start"] = chr.info[, "offset"] + 1
-    
+
     return(chr.info)
 })
 
@@ -267,7 +272,7 @@ setMethod("chrInfo", signature(object = "GenoSetOrGenomicRanges"), function(obje
 ##' Get indices of first and last element in each chromosome.
 ##' @param object GenoSet or GenomicRanges
 ##' @return PartitioningByEnd
-##' @export 
+##' @export
 chrPartitioning <- function(object) {
     rle = Rle(seqnames(object))  # Redundant in some cases
     ends = structure(cumsum(runLength(rle)), names = as.character(runValue(rle)))
@@ -293,12 +298,12 @@ chrPartitioning <- function(object) {
 setGeneric("chrIndices", function(object, chr = NULL) standardGeneric("chrIndices"))
 
 ##' @rdname chrIndices-methods
-setMethod("chrIndices", signature(object = "GenoSetOrGenomicRanges"), function(object, 
+setMethod("chrIndices", signature(object = "GenoSetOrGenomicRanges"), function(object,
     chr = NULL) {
     partitions = chrPartitioning(object)
     chr.first = start(partitions)
     chr.last = end(partitions)
-    chr.info = matrix(c(chr.first, chr.last, chr.first - 1), ncol = 3, nrow = length(chr.first), 
+    chr.info = matrix(c(chr.first, chr.last, chr.first - 1), ncol = 3, nrow = length(chr.first),
         dimnames = list(names(partitions), c("first", "last", "offset")))
     if (!is.null(chr)) {
         if (!chr %in% rownames(chr.info)) {
@@ -326,16 +331,16 @@ setGeneric("genoPos", function(object) standardGeneric("genoPos"))
 
 ##' @rdname genoPos-methods
 setMethod("genoPos", signature(object = "GenoSetOrGenomicRanges"), function(object) {
-    
+
     # For single chr objects, just return pos
     if (length(chrNames(object)) == 1) {
         return(pos(object))
     }
-    
+
     ### Add offset to pos by chr
     offset = chrInfo(object)[, "offset"]
     genopos = pos(object) + unlist(offset[chr(object)])
-    
+
     return(genopos)
 })
 
@@ -356,4 +361,3 @@ setMethod("lengths", signature(x = "GenoSet"), function(x) {
 setMethod("nrow", signature(x = "GenomicRanges"), function(x) {
     length(x)
 })
-
