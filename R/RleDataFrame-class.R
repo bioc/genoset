@@ -6,7 +6,7 @@ NULL
 ##' @exportClass RleDataFrame
 setClass("RleDataFrame", representation(rownames = "character_OR_NULL", nrows = "integer"), 
     prototype(rownames = NULL, nrows = 0L, listData = structure(list(), names = character())), 
-    contains = c("SimpleRleList", "DataFrame"))
+    contains = c("SimpleRleList", "DFrame"))
 
 ##' @export RleDataFrame
 RleDataFrame <- function(..., row.names = NULL, check.names = TRUE) {
