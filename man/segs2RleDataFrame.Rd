@@ -18,7 +18,7 @@ RleDataFrame with nrows same as locs and one column for each sample
 Given segments, make an RleDataFrame of Rle objects for each sample
 }
 \details{
-Take table of segments from CBS, convert DataTable of Rle objects for each sample.
+Take table of segments from CBS, convert DataFrame of Rle objects for each sample.
 }
 \examples{
   data(genoset,package='genoset')

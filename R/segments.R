@@ -35,7 +35,7 @@ segs2Rle <- function(segs, locs) {
 
 ##' Given segments, make an RleDataFrame of Rle objects for each sample
 ##'
-##' Take table of segments from CBS, convert DataTable of Rle objects for each sample.
+##' Take table of segments from CBS, convert DataFrame of Rle objects for each sample.
 ##' @title CBS segments to probe matrix
 ##' @param seg.list list, list of data frames, one per sample, each is result from CBS
 ##' @param locs rowRanges from a GenoSet object

@@ -62,7 +62,7 @@ of Rle objects, or one or more individual Rle objects.
     \item{\code{elementType}:}{Object of class \code{"character"} Notes
       that elements of the internal list are Rle objects. }
     \item{\code{elementMetadata}:}{Object of class
-      \code{"DataTable_OR_NULL"} Metadata on the elements, see DataFrame. }
+      \code{"DataFrame_OR_NULL"} Metadata on the elements, see DataFrame. }
     \item{\code{metadata}:}{Object of class \code{"list"} Metadata on
       the whole object, see DataFrame. }
     \item{\code{listData}:}{Object of class \code{"list"} Base list

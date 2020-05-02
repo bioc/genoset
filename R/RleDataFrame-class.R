@@ -1,4 +1,4 @@
-##### Additional methods for DataFrame class to allow use of DataTable of Rle vectors
+##### Additional methods for DataFrame class to allow use of DataFrame of Rle vectors
 ##### as assayData element
 ##' @include genoset-class.R
 NULL
