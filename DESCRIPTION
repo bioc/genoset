@@ -1,7 +1,7 @@
 Package: genoset
 Type: Package
 Title: A RangedSummarizedExperiment with methods for copy number analysis
-Version: 1.47.0
+Version: 1.47.1
 Date: 2020-05-01
 Author: Peter M. Haverty
 Maintainer: Peter M. Haverty <phaverty@gene.com>
@@ -47,9 +47,11 @@ Collate:
     'rangeSummaries.R'
     'segments.R'
     'utils.R'
+    'zzz.R'
 VignetteBuilder: knitr
 URL: https://github.com/phaverty/genoset
 Packaged: 2014-10-08 19:15:54 UTC; dtenenba
 RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+PackageStatus: Deprecated
